@@ -1,0 +1,12 @@
+{
+  "name": "apv-auction-catalog",
+  "version": "1.5.0",
+  "private": true,
+  "description": "Landing + catalogo Copart APV Motors v15 con auth, galeria JSON, busqueda, Kommo y chat contenido",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

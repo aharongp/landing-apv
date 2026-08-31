@@ -1,0 +1,56 @@
+{
+  "user_final_1788147711190:42009886": {
+    "apvUserId": "user_final_1788147711190",
+    "lot": "42009886",
+    "chatKey": "apv:user_final_1788147711190:vehicle:42009886",
+    "incomingLeadUid": null,
+    "leadId": 21450347,
+    "contactId": 29932061,
+    "syncedAt": "2026-08-31T03:42:02.675Z"
+  },
+  "dd9699188edf3eaa8a9097d00ecaa1eef78dbba77b2903b48db055e1f6423485:45655926": {
+    "apvUserId": "dd9699188edf3eaa8a9097d00ecaa1eef78dbba77b2903b48db055e1f6423485",
+    "lot": "45655926",
+    "chatKey": "apv:dd9699188edf3eaa8a9097d00ecaa1eef78dbba77b2903b48db055e1f6423485:vehicle:45655926",
+    "incomingLeadUid": null,
+    "leadId": 21450451,
+    "contactId": 29931389,
+    "syncedAt": "2026-08-31T04:09:08.986Z"
+  },
+  "dd9699188edf3eaa8a9097d00ecaa1eef78dbba77b2903b48db055e1f6423485:51647646": {
+    "apvUserId": "dd9699188edf3eaa8a9097d00ecaa1eef78dbba77b2903b48db055e1f6423485",
+    "lot": "51647646",
+    "chatKey": "apv:dd9699188edf3eaa8a9097d00ecaa1eef78dbba77b2903b48db055e1f6423485:vehicle:51647646",
+    "incomingLeadUid": null,
+    "leadId": 21450491,
+    "contactId": 29931631,
+    "syncedAt": "2026-08-31T04:17:32.661Z"
+  },
+  "525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c:47273516": {
+    "apvUserId": "525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c",
+    "lot": "47273516",
+    "chatKey": "apv:525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c:vehicle:47273516",
+    "incomingLeadUid": null,
+    "leadId": 21450511,
+    "contactId": 29932217,
+    "syncedAt": "2026-08-31T04:22:58.772Z"
+  },
+  "525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c:41633106": {
+    "apvUserId": "525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c",
+    "lot": "41633106",
+    "chatKey": "apv:525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c:vehicle:41633106",
+    "incomingLeadUid": null,
+    "leadId": 21450555,
+    "contactId": 29932217,
+    "syncedAt": "2026-08-31T04:35:00.601Z"
+  },
+  "525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c:48623656": {
+    "apvUserId": "525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c",
+    "lot": "48623656",
+    "chatKey": "apv:525257a921975241c2813f065427289dbe267b6e7920b524db51461b2132320c:vehicle:48623656",
+    "incomingLeadUid": "b36816bf9a203f3884ef65a0b69f4ef50ee2da5cf372cc4d9066f7bc8e67",
+    "leadId": 21450751,
+    "contactId": 29932361,
+    "syncedAt": "2026-08-31T04:48:49.223Z"
+  }
+}

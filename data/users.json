@@ -1,0 +1,50 @@
+[
+  {
+    "id": "91105dea-1c36-48c6-8d38-0a7b9db5f50d",
+    "name": "aharon",
+    "email": "aharonguedez@gmail.com",
+    "phone": "+584241301718",
+    "passwordSalt": "c32c737b6dbbf33cdd088c3c3964bd8d",
+    "passwordHash": "584ad2051b157acd6c634989955df45e5018e628f5098ad9931c59964d24fddd54529f125e30bdee07e9bc376f31f549726a17943fcbcf706fb22818c988e039",
+    "googleSub": "",
+    "picture": "",
+    "createdAt": "2026-08-30T16:36:59.252Z",
+    "lastLoginAt": "2026-08-30T16:36:59.252Z"
+  },
+  {
+    "id": "02646906-7709-4098-be08-2531ec383f2b",
+    "name": "aharon",
+    "email": "aharonguedez23@gmail.com",
+    "phone": "+584241301718",
+    "passwordSalt": "99ce240eeb2a1779a23f13e1fab8dd80",
+    "passwordHash": "3a615f4fb5a0d121c0c3bc649ee28a7739ca5c447ef744b87cb041d8ca2d29adef232a9d1ae27bd648b428d000f45c1d3fad4d6e8ae434407af8770ecdece796",
+    "googleSub": "",
+    "picture": "",
+    "createdAt": "2026-08-31T01:31:56.793Z",
+    "lastLoginAt": "2026-08-31T01:44:35.167Z"
+  },
+  {
+    "id": "a05e7a0c-608f-4855-b388-9b512803949e",
+    "name": "aharon",
+    "email": "aharonguedez12@gmail.com",
+    "phone": "+584241301718",
+    "passwordSalt": "3db55ed4c72c6f1289b38d1db8877471",
+    "passwordHash": "dbfe2788404806cc78a11da3e7eb949670d02c40f3fb9addb2c2e33fe436c1ed797e18b1567f8f8d7107492e3f1de6c68d9ede1c698c44421036f0ccf3e27ce6",
+    "googleSub": "",
+    "picture": "",
+    "createdAt": "2026-08-31T01:44:47.320Z",
+    "lastLoginAt": "2026-08-31T03:15:35.488Z"
+  },
+  {
+    "id": "33b50ac6-3768-47e9-be88-85cf82e83629",
+    "name": "aharon",
+    "email": "aharon@aharon1.com",
+    "phone": "+584241301718",
+    "passwordSalt": "88afa4f1bcb03855e27618293e1a2b23",
+    "passwordHash": "4874a22040ee1329865b88832a1cf5a6f387eb4b802aab8a61613822ae269cc18db3088806d0d1c27ce6a3507b16f83625eccb66d248d0e0bd2898cc1ef002d9",
+    "googleSub": "",
+    "picture": "",
+    "createdAt": "2026-08-31T04:22:42.010Z",
+    "lastLoginAt": "2026-08-31T04:22:42.010Z"
+  }
+]

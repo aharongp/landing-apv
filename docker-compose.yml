@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  apv-catalog:
+    build: .
+    container_name: apv-auction-catalog
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - ADMIN_KEY=${ADMIN_KEY:-change-me}
+      - SESSION_SECRET=${SESSION_SECRET:-use-a-long-random-secret}
+      - KOMMO_ENABLED=true
+      - KOMMO_SUBDOMAIN=${KOMMO_SUBDOMAIN:-apvmotorusa}
+      - KOMMO_TOKEN=${KOMMO_TOKEN}
+      - KOMMO_PIPELINE_ID=${KOMMO_PIPELINE_ID:-14370344}
+    volumes:
+      - apv_data:/app/data
+
+volumes:
+  apv_data:
+    driver: local

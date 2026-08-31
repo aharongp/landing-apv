@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Compra vehículos de subastas en Estados Unidos 100% online con APV Motors." />
+  <title>APV Motors | Subastas de vehículos en EE. UU.</title>
+  <link rel="stylesheet" href="/styles.css?v=15.0.0" />
+  <script>
+    // Configuracion del Website Chat Button de Kommo.
+    // Debe existir ANTES de cargar https://gso.kommo.com/js/button.js.
+    window.crmPluginConfig = {
+      hidden: true,
+      onlinechat: {
+        mode: 'frame',
+        container: '#kommo-chat-frame',
+        locale: {
+          extends: 'es',
+          compose_placeholder: 'Escribe un mensaje…'
+        },
+        theme: {
+          header: false,
+          background: '#ffffff',
+          system_color: '#64748b',
+          message: {
+            outgoing_background: '#0f172a',
+            outgoing_color: '#ffffff',
+            incoming_background: '#f1f5f9',
+            incoming_color: '#0f172a'
+          },
+          compose: { button_background: '#0f172a' }
+        }
+      }
+    };
+
+    // Respaldo minimo: el boton de acceso abre el modal incluso si otra
+    // parte de la pagina falla mientras se inicializa. app.js reemplaza
+    // esta funcion por la version completa al cargar.
+    window.openAPVAuth = function () {
+      var overlay = document.getElementById('auth-overlay');
+      if (!overlay) return false;
+      overlay.classList.remove('hidden');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      setTimeout(function () {
+        var input = overlay.querySelector('input');
+        if (input) input.focus();
+      }, 0);
+      return false;
+    };
+    window.closeAPVAuth = function () {
+      var overlay = document.getElementById('auth-overlay');
+      if (!overlay) return false;
+      overlay.classList.add('hidden');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      return false;
+    };
+
+
+    // Diagnóstico mínimo siempre disponible, incluso si /kommo.js no carga.
+    window.__APV_PAGE_VERSION__ = '15.0.0';
+    window.__APV_KOMMO_MODULE_STATE__ = 'bootstrap';
+    window.apvKommo = window.apvKommo || {
+      __bootstrapOnly: true,
+      init: function () { return false; },
+      isReady: function () { return false; },
+      getStatus: function () { return window.__APV_KOMMO_MODULE_STATE__ || 'bootstrap'; },
+      debug: function () {
+        var script = document.querySelector('script[src*="/kommo.js"]');
+        return {
+          version: '15.0.0-bootstrap',
+          status: window.__APV_KOMMO_MODULE_STATE__ || 'bootstrap',
+          pageUrl: location.href,
+          pageVersion: window.__APV_PAGE_VERSION__,
+          scriptFound: !!script,
+          scriptSrc: script ? script.src : null,
+          scriptLoadError: !!window.__APV_KOMMO_LOAD_ERROR__,
+          executionContextHint: 'Si ves este objeto desde el contexto top de DevTools, el bootstrap esta activo.'
+        };
+      }
+    };
+  </script>
+</head>
+<body>
+  <div id="scroll-progress-bar" class="scroll-progress-bar"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="APV Motors inicio">
+      <span class="brand-mark">APV</span>
+      <span class="brand-name">MOTORS</span>
+    </a>
+    <nav class="nav-links" aria-label="Navegación principal">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#ayuda">Ayuda</a>
+    </nav>
+    <div class="topbar-account">
+      <button id="auth-button" class="btn btn-ghost btn-small" type="button" data-open-auth onclick="return window.openAPVAuth ? window.openAPVAuth() : false">Iniciar sesión</button>
+      <div id="account-chip" class="account-chip hidden">
+        <span id="account-avatar" class="account-avatar">AP</span>
+        <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
+        <button id="my-bids-button" class="btn btn-ghost btn-small" type="button" title="Ver mis pujas y conversaciones">💬 Mis Pujas</button>
+        <button id="logout-button" class="account-logout" type="button">Salir</button>
+      </div>
+      <a class="btn btn-dark btn-small topbar-catalog" href="#catalogo">Ver vehículos</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg-orb hero-bg-orb-1" aria-hidden="true"></div>
+      <div class="hero-bg-orb hero-bg-orb-2" aria-hidden="true"></div>
+      <div class="hero-copy reveal-on-scroll">
+        <span class="eyebrow">SUBASTAS EN ESTADOS UNIDOS · 100% ONLINE</span>
+        <h1>Compra tu carro en subastas de EE. UU. sin complicarte.</h1>
+        <p>Encuentra vehículos de Copart, define cuánto quieres ofertar y APV Motors te acompaña desde la puja hasta la documentación y el traslado.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#catalogo">Explorar catálogo</a>
+          <a class="btn btn-ghost" href="#como-funciona">Ver cómo funciona</a>
+        </div>
+        <div class="hero-stats" aria-label="Beneficios">
+          <div><strong id="hero-total">—</strong><span>vehículos cargados</span></div>
+          <div><strong>6</strong><span>pasos claros</span></div>
+          <div><strong>1:1</strong><span>atención en español</span></div>
+        </div>
+      </div>
+      <div class="hero-panel reveal-on-scroll">
+        <div class="hero-search-card">
+          <div class="hero-search-heading">
+            <span class="mini-label">BUSCA EN SEGUNDOS</span>
+            <h2>Encuentra tu próximo carro</h2>
+            <p>Busca por marca, modelo, lote o VIN.</p>
+          </div>
+          <form id="hero-search-form" class="hero-search-live" role="search">
+            <div class="hero-search-field">
+              <span class="hero-search-icon" aria-hidden="true">⌕</span>
+              <input id="hero-search-input" type="search" aria-label="Buscar vehículo" placeholder="Ej. Toyota Camry, 41633106 o VIN" autocomplete="off" />
+            </div>
+            <button class="hero-search-submit" type="submit">Buscar</button>
+          </form>
+          <div id="hero-quick-results" class="hero-quick-results hidden" aria-live="polite"></div>
+          <div class="hero-featured-label">VEHÍCULO DESTACADO</div>
+          <button id="hero-vehicle-card" class="hero-vehicle-card hero-vehicle-button" type="button" aria-label="Abrir vehículo destacado">
+            <div class="hero-car-photo" id="hero-car-photo"></div>
+            <div><span class="live-pill">● SUBASTA</span><h3 id="hero-car-title">Vehículos de Copart</h3><p id="hero-car-meta">Datos actualizados desde tu CSV.</p></div>
+            <span class="hero-card-arrow" aria-hidden="true">→</span>
+          </button>
+          <p class="hero-search-hint">El VIN completo se revela después de iniciar sesión.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps-section reveal-on-scroll" id="como-funciona">
+      <div class="section-heading">
+        <span class="eyebrow">ASÍ DE SIMPLE</span>
+        <h2>De encontrar el vehículo a tenerlo listo.</h2>
+        <p>El catálogo cubre el primer paso. Desde que eliges cuánto quieres ofertar, continuamos contigo por chat.</p>
+      </div>
+      <div class="steps-grid">
+        <article class="step-card featured"><span>01</span><h3>Seleccionar el vehículo</h3><p>Explora las subastas de Copart directamente desde nuestro catálogo.</p></article>
+        <article class="step-card"><span>02</span><h3>Identificar el monto</h3><p>Define el tope máximo que deseas ofertar por el vehículo.</p></article>
+        <article class="step-card"><span>03</span><h3>Depósito de seguridad</h3><p>Realiza el depósito requerido para que podamos gestionar tu participación.</p></article>
+        <article class="step-card"><span>04</span><h3>Pago del vehículo</h3><p>Si ganas la subasta, te guiamos con el pago correspondiente.</p></article>
+        <article class="step-card"><span>05</span><h3>Traslado en grúa</h3><p>Coordina el traslado del vehículo con nuestro equipo.</p><a href="https://api.whatsapp.com/send?phone=13462048308&text=Buenas%2C%20" target="_blank" rel="noreferrer">Contratar traslado →</a></article>
+        <article class="step-card"><span>06</span><h3>Traspaso, taxes y placas</h3><p>Te apoyamos con la gestión de documentos necesaria para cerrar el proceso.</p></article>
+      </div>
+    </section>
+
+    <section class="catalog-section reveal-on-scroll" id="catalogo">
+      <div class="section-heading catalog-heading">
+        <div>
+          <span class="eyebrow">CATÁLOGO DE SUBASTA</span>
+          <h2>Encuentra el vehículo correcto.</h2>
+          <p><span id="catalog-count">—</span> resultados disponibles.</p>
+        </div>
+        <div class="search-bar"><span>⌕</span><input id="search-input" type="search" placeholder="Buscar VIN, lote, marca o modelo" autocomplete="off" /><button id="search-button" class="btn btn-dark btn-small">Buscar</button></div>
+      </div>
+
+      <div class="catalog-shell">
+        <aside class="filters" id="filters-panel">
+          <div class="filters-head"><strong>Filtros</strong><button id="clear-filters" class="link-button">Limpiar</button></div>
+          <label class="filter-group"><span>Marca</span><select id="filter-make"><option value="">Todas</option></select></label>
+          <div class="filter-group two-cols"><label><span>Año desde</span><input id="filter-year-min" type="number" inputmode="numeric" /></label><label><span>Año hasta</span><input id="filter-year-max" type="number" inputmode="numeric" /></label></div>
+          <label class="filter-group"><span>Daño principal</span><select id="filter-damage"><option value="">Todos</option></select></label>
+          <label class="filter-group"><span>Condición</span><select id="filter-run"><option value="">Todas</option></select></label>
+          <label class="filter-group"><span>Estado</span><select id="filter-state"><option value="">Todos</option></select></label>
+          <label class="toggle-line"><span>Solo con llaves</span><input id="filter-keys" type="checkbox" /></label>
+          <label class="toggle-line"><span>Solo Buy It Now</span><input id="filter-buy-now" type="checkbox" /></label>
+          <label class="filter-group range-line"><span>Odómetro máximo <strong id="odometer-label"></strong></span><input id="filter-odometer" type="range" min="0" step="5000" /></label>
+          <button id="apply-filters" class="btn btn-dark full">Aplicar filtros</button>
+        </aside>
+
+        <div class="catalog-content">
+          <div class="catalog-toolbar">
+            <button class="mobile-filter-button" id="mobile-filter-button">☰ Filtros</button>
+            <div class="view-note">Precios en USD · el VIN completo se muestra a usuarios registrados</div>
+            <label class="sort-select">Ordenar por <select id="sort-select"><option value="saleSoon">Subasta más próxima</option><option value="newest">Año: más nuevo</option><option value="priceAsc">Precio: menor</option><option value="priceDesc">Precio: mayor</option><option value="odometerAsc">Menor millaje</option></select></label>
+          </div>
+          <div id="catalog-list" class="vehicle-list" aria-live="polite"></div>
+          <div id="catalog-empty" class="empty-state hidden"><h3>No encontramos vehículos</h3><p>Prueba otra búsqueda o limpia los filtros.</p><button class="btn btn-ghost" id="empty-clear">Limpiar filtros</button></div>
+          <div id="pagination" class="pagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="help-strip reveal-on-scroll" id="ayuda">
+      <div><span class="eyebrow">¿NO SABES CUÁNTO PUJAR?</span><h2>Encuentra el carro primero. Nosotros te ayudamos con lo demás.</h2></div>
+      <a class="btn btn-primary" href="#catalogo">Buscar un vehículo</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="brand"><span class="brand-mark">APV</span><span class="brand-name">MOTORS</span></div>
+    <p>Catálogo de vehículos de subasta · EE. UU.</p>
+    <p>La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.</p>
+  </footer>
+
+  <div class="overlay hidden" id="vehicle-overlay" role="dialog" aria-modal="true" aria-labelledby="vehicle-detail-title">
+    <div class="detail-modal"><button class="modal-close" data-close="vehicle" aria-label="Cerrar">×</button><div id="vehicle-detail-content"></div></div>
+  </div>
+
+  <div class="overlay hidden auth-overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <div class="auth-modal">
+      <button class="modal-close" data-close="auth" aria-label="Cerrar" onclick="return window.closeAPVAuth ? window.closeAPVAuth() : false">×</button>
+      <div class="auth-intro">
+        <span class="eyebrow">CUENTA APV MOTORS</span>
+        <h2 id="auth-title">Guarda tu conversación y continúa desde cualquier dispositivo.</h2>
+        <p id="auth-reason">Regístrate para ver el VIN completo y hablar con un asesor.</p>
+      </div>
+      <div class="auth-tabs" role="tablist"><button class="auth-tab active" data-auth-tab="login" type="button">Iniciar sesión</button><button class="auth-tab" data-auth-tab="register" type="button">Crear cuenta</button></div>
+      <form id="login-form" class="auth-form">
+        <label><span>Correo electrónico</span><input id="login-email" type="email" autocomplete="email" required /></label>
+        <label><span>Contraseña</span><input id="login-password" type="password" autocomplete="current-password" required /></label>
+        <button class="btn btn-dark full" type="submit">Entrar y continuar</button>
+      </form>
+      <form id="register-form" class="auth-form hidden">
+        <label><span>Nombre completo</span><input id="register-name" type="text" autocomplete="name" required /></label>
+        <label><span>Correo electrónico</span><input id="register-email" type="email" autocomplete="email" required /></label>
+        <label><span>Teléfono / WhatsApp</span><input id="register-phone" type="tel" autocomplete="tel" required /></label>
+        <label><span>Contraseña</span><input id="register-password" type="password" minlength="8" autocomplete="new-password" required /></label>
+        <button class="btn btn-primary full" type="submit">Crear cuenta y continuar</button>
+        <small>Al crear la cuenta podremos usar un identificador estable en Kommo para recuperar tu historial de chat cuando inicies sesión en otro dispositivo.</small>
+      </form>
+      <div id="auth-status" class="auth-status hidden"></div>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="bid-overlay" role="dialog" aria-modal="true" aria-labelledby="bid-title">
+    <div class="bid-modal">
+      <button class="modal-close" data-close="bid" aria-label="Cerrar">×</button>
+      <div id="bid-step-amount" class="bid-step">
+        <span class="eyebrow">PASO 2 DE TU COMPRA</span>
+        <h2 id="bid-title">Establece tu tope de puja</h2>
+        <p class="muted">Indica el máximo que deseas ofertar por este vehículo. Esto no realiza ningún cargo automático.</p>
+        <div id="bid-vehicle-mini" class="bid-vehicle-mini"></div>
+        <label class="bid-input-wrap"><span>Mi tope de puja</span><div><b>$</b><input id="bid-amount" type="number" min="1" step="50" placeholder="5,000" inputmode="decimal" /><em>USD</em></div></label>
+        <div class="bid-actions"><button id="bid-continue" class="btn btn-primary full">Continuar por chat</button><button class="btn btn-ghost full" data-close="bid">Cancelar</button></div>
+      </div>
+
+      <div id="bid-step-chat" class="bid-chat-step hidden">
+        <div class="chat-topline"><div><span class="eyebrow">APV MOTORS · ASISTENCIA DE PUJA</span><h2>Continúa con un asesor</h2></div><span class="secure-pill">● Sesión protegida</span></div>
+        <div id="chat-history-selector" class="chat-history-selector hidden"></div>
+        <pre id="auto-message-preview" class="hidden" aria-hidden="true"></pre>
+        <div class="kommo-chat-shell">
+          <div id="kommo-chat-frame"></div>
+          <div id="kommo-fallback" class="kommo-fallback">
+            <div class="fallback-message"><span class="avatar">APV</span><div><strong>Tu solicitud está lista.</strong><p id="fallback-copy">Conectando con el chat de APV Motors…</p></div></div>
+            <div class="fallback-payload" id="fallback-payload"></div>
+            <div class="fallback-footer"><span>Tu cuenta mantiene un identificador estable para conservar la conversación.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="chat-reopen-button" class="chat-reopen-button hidden" type="button" title="Volver al chat" aria-label="Volver a abrir tu conversación con APV Motors">
+    <span class="chat-reopen-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 6a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 7 10Zm5 0a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 12 10Zm5 0a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 17 10Z"/></svg></span>
+  </button>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="/kommo.js?v=15.0.0" onload="if(window.__APV_KOMMO_MODULE_STATE__!=='module-ready')window.__APV_KOMMO_MODULE_STATE__='script-loaded'" onerror="window.__APV_KOMMO_LOAD_ERROR__=true;window.__APV_KOMMO_MODULE_STATE__='script-error';console.error('[APV] No se pudo cargar /kommo.js?v=15.0.0')"></script>
+  <script src="/app.js?v=15.0.0" onerror="console.error('[APV] No se pudo cargar /app.js?v=15.0.0')"></script>
+</body>
+</html>
