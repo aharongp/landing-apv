@@ -863,13 +863,14 @@
   };
 
   async function boot(){
-    try{
-      initMotionEffects();
-      await initAuth();
-      await initFilters();
-      await loadVehicles();
-      const m=location.pathname.match(/^\/vehiculo\/([^/]+)/); if(m) await openDetail(decodeURIComponent(m[1]),false);
-    }catch(err){ showToast(err.message); }
+    initMotionEffects();
+    try { await initAuth(); } catch(e) { console.warn('[APV] Auth init note:', e); }
+    try { await initFilters(); } catch(e) { console.warn('[APV] Filters init note:', e); }
+    try { await loadVehicles(); } catch(e) { showToast('Error al cargar el catálogo: ' + e.message); }
+    try {
+      const m=location.pathname.match(/^\/vehiculo\/([^/]+)/);
+      if(m) await openDetail(decodeURIComponent(m[1]),false);
+    } catch(_){}
   }
   boot();
 })();
