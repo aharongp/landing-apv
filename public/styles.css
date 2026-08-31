@@ -787,3 +787,624 @@ footer{min-height:130px;padding:28px max(22px,calc((100vw - 1320px)/2));display:
   border-color: #f87171;
   color: #dc2626;
 }
+
+/* ==========================================================================
+   APV MOBILE & TABLET RESPONSIVE ENGINE (V15.0 - ZERO OVERFLOW)
+   ========================================================================== */
+
+/* Global Anti-Overflow Rules */
+html, body {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+img, svg, iframe, canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  /* --- Topbar & Navigation --- */
+  .topbar {
+    min-height: 60px;
+    padding: 10px 14px;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .brand-mark { font-size: 22px; }
+  .brand-name { font-size: 13px; }
+
+  .topbar-account {
+    margin-left: auto;
+    gap: 6px;
+    max-width: 65%;
+  }
+
+  .account-chip {
+    padding: 4px 8px;
+    min-height: 38px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .account-copy {
+    display: none !important;
+  }
+
+  .topbar-catalog {
+    display: none !important;
+  }
+
+  /* --- Hero Section --- */
+  .hero {
+    padding: 36px 16px 44px;
+    min-height: auto;
+    gap: 28px;
+  }
+
+  .hero h1 {
+    font-size: clamp(28px, 7.5vw, 42px) !important;
+    line-height: 1.1;
+    margin: 12px 0 16px;
+    word-break: break-word;
+  }
+
+  .hero-copy > p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .hero-stats {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    padding-top: 18px;
+    text-align: center;
+  }
+
+  .hero-stats strong { font-size: 18px; }
+  .hero-stats span { font-size: 10px; }
+
+  /* Hero Card Search */
+  .hero-panel {
+    min-height: auto;
+    width: 100%;
+  }
+
+  .hero-search-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 18px 14px !important;
+    border-radius: 20px !important;
+    transform: none !important;
+  }
+
+  .hero-search-heading h2 { font-size: 20px; }
+  .hero-search-heading p { font-size: 12px; }
+
+  .hero-search-live {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    min-height: auto;
+  }
+
+  .hero-search-field {
+    min-height: 50px;
+    padding: 0 12px;
+  }
+
+  .hero-search-submit {
+    width: 100% !important;
+    height: 48px !important;
+    border-radius: 12px !important;
+  }
+
+  .hero-vehicle-card {
+    grid-template-columns: 84px minmax(0, 1fr) 24px !important;
+    gap: 10px !important;
+    padding: 8px 10px !important;
+  }
+
+  .hero-car-photo { height: 64px !important; }
+  .hero-vehicle-card h3 { font-size: 14px !important; }
+  .hero-vehicle-card p { font-size: 10px !important; }
+
+  /* --- Steps & Sections --- */
+  .steps-section, .catalog-section {
+    padding: 48px 14px !important;
+  }
+
+  .section-heading h2 {
+    font-size: 28px !important;
+    line-height: 1.15;
+  }
+
+  .section-heading p {
+    font-size: 14px !important;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* --- Catalog & Search Bar --- */
+  .catalog-heading {
+    margin-bottom: 16px !important;
+    gap: 16px !important;
+  }
+
+  .search-bar {
+    width: 100% !important;
+    min-height: 50px !important;
+    padding: 4px 6px 4px 12px !important;
+  }
+
+  .search-bar input {
+    font-size: 13px !important;
+    min-width: 0 !important;
+  }
+
+  .search-bar .btn {
+    min-height: 40px !important;
+    padding: 0 12px !important;
+    font-size: 12px !important;
+  }
+
+  .catalog-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .mobile-filter-button {
+    display: inline-flex !important;
+    flex: 1 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 42px !important;
+    font-size: 13px !important;
+    border-radius: 12px !important;
+  }
+
+  .sort-select {
+    flex: 1 !important;
+    margin-left: 0 !important;
+  }
+
+  .sort-select select {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 42px !important;
+    font-size: 12px !important;
+    border-radius: 12px !important;
+  }
+
+  /* --- Mobile Filter Drawer --- */
+  .filters {
+    display: none;
+  }
+
+  .filters.mobile-open {
+    display: flex !important;
+    flex-direction: column !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    background: #ffffff !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+  }
+
+  .filters.mobile-open .filters-head {
+    padding: 16px !important;
+    border-bottom: 1px solid var(--line) !important;
+    margin-bottom: 0 !important;
+    background: #f8fafc !important;
+  }
+
+  .filters.mobile-open .filters-head strong { font-size: 17px; }
+
+  .filters.mobile-open .filter-group, 
+  .filters.mobile-open .toggle-line,
+  .filters.mobile-open .range-line {
+    padding: 12px 16px !important;
+  }
+
+  .filters.mobile-open #apply-filters {
+    margin-top: auto !important;
+    margin-bottom: 16px !important;
+    width: calc(100% - 32px) !important;
+    align-self: center !important;
+    min-height: 50px !important;
+    border-radius: 14px !important;
+    font-size: 15px !important;
+  }
+
+  /* --- Single-Column Mobile Vehicle Card --- */
+  .vehicle-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .vehicle-card {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07) !important;
+  }
+
+  .vehicle-photo-wrap {
+    padding: 10px 10px 0 !important;
+    width: 100% !important;
+  }
+
+  .vehicle-photo {
+    height: 185px !important;
+    border-radius: 14px !important;
+    width: 100% !important;
+  }
+
+  .vehicle-main {
+    padding: 14px 14px 10px !important;
+    width: 100% !important;
+  }
+
+  .vehicle-main h3 {
+    font-size: 17px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .vehicle-identifiers {
+    font-size: 11px !important;
+    margin-bottom: 8px !important;
+    white-space: normal !important;
+    word-break: break-all !important;
+  }
+
+  .spec-chips {
+    gap: 5px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .spec-chip {
+    font-size: 9px !important;
+    padding: 4px 8px !important;
+  }
+
+  .info-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px 12px !important;
+    padding: 10px 12px !important;
+    background: #f8fafc !important;
+    border-radius: 12px !important;
+    margin-top: 6px !important;
+  }
+
+  .info-line {
+    grid-template-columns: 75px 1fr !important;
+    min-height: 24px !important;
+    border-bottom: 0 !important;
+  }
+
+  .info-line span { font-size: 9px !important; }
+  .info-line strong { font-size: 10px !important; }
+
+  .vehicle-side {
+    grid-column: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--line) !important;
+    padding: 12px 14px 14px !important;
+    background: #fafcff !important;
+  }
+
+  .bid-box {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    border-radius: 12px !important;
+  }
+
+  .bid-box > div { padding: 9px 6px !important; }
+  .bid-box strong { font-size: 15px !important; }
+
+  .card-actions {
+    display: flex !important;
+    gap: 8px !important;
+    margin-top: 2px !important;
+  }
+
+  .card-actions button {
+    flex: 1 !important;
+    min-height: 44px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    border-radius: 12px !important;
+  }
+
+  /* --- Vehicle Detail Modal (Mobile Drawer) --- */
+  .overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .detail-modal {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 92dvh !important;
+    max-height: 92dvh !important;
+    border-radius: 24px 24px 0 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  .modal-close {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    z-index: 100 !important;
+    width: 38px !important;
+    height: 38px !important;
+    background: rgba(15, 23, 42, 0.75) !important;
+    color: #ffffff !important;
+    border: 0 !important;
+    border-radius: 50% !important;
+    font-size: 22px !important;
+  }
+
+  .detail-hero {
+    grid-template-columns: 1fr !important;
+    border-bottom: 0 !important;
+  }
+
+  .detail-gallery {
+    padding: 0 !important;
+    background: #000000 !important;
+  }
+
+  .detail-gallery-main {
+    min-height: 230px !important;
+    height: 250px !important;
+    max-height: 270px !important;
+    border-radius: 0 !important;
+  }
+
+  .detail-gallery-main img {
+    min-height: 0 !important;
+    max-height: 250px !important;
+    object-fit: contain !important;
+  }
+
+  .detail-gallery-thumbs {
+    padding: 8px 10px !important;
+  }
+
+  .gallery-thumb {
+    width: 68px !important;
+    height: 48px !important;
+  }
+
+  .detail-summary {
+    padding: 16px 16px 20px !important;
+  }
+
+  .detail-summary h2 {
+    font-size: 22px !important;
+    line-height: 1.2 !important;
+    margin: 6px 0 4px !important;
+  }
+
+  .detail-price-grid {
+    gap: 8px !important;
+    margin: 12px 0 !important;
+  }
+
+  .detail-price {
+    padding: 10px 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .detail-price strong { font-size: 17px !important; }
+
+  .buy-now-highlight {
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    margin: 12px 0 6px !important;
+  }
+
+  .buy-now-highlight strong { font-size: 24px !important; }
+
+  .detail-body {
+    padding: 16px !important;
+  }
+
+  .quick-tech-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px 14px !important;
+    padding: 12px 0 !important;
+  }
+
+  .quick-spec {
+    min-height: 0 !important;
+    padding: 6px 0 !important;
+  }
+
+  .quick-spec strong { font-size: 13px !important; }
+
+  .detail-all-photos {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .full-tech-toggle {
+    min-height: 46px !important;
+    font-size: 13px !important;
+  }
+
+  /* --- Bid & Chat Modal (Mobile Fullscreen) --- */
+  .bid-modal {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    max-height: 92dvh !important;
+    border-radius: 24px 24px 0 0 !important;
+    overflow-y: auto !important;
+  }
+
+  .bid-step {
+    padding: 22px 16px 20px !important;
+  }
+
+  .bid-step h2 {
+    font-size: 24px !important;
+    margin: 6px 0 !important;
+  }
+
+  .bid-vehicle-mini {
+    grid-template-columns: 70px 1fr !important;
+    gap: 10px !important;
+    padding: 8px !important;
+    margin: 12px 0 !important;
+  }
+
+  .bid-vehicle-mini .thumb { height: 54px !important; }
+  .bid-vehicle-mini h4 { font-size: 13px !important; }
+
+  .bid-input-wrap > div {
+    height: 52px !important;
+    padding: 0 12px !important;
+  }
+
+  .bid-input-wrap input { font-size: 22px !important; }
+
+  .bid-actions {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+  }
+
+  .bid-actions button {
+    min-height: 46px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Chat Mode Drawer - Full viewport */
+  .bid-modal.chat-mode {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+  }
+
+  .bid-modal.chat-mode .bid-chat-step {
+    padding: 12px 12px 10px !important;
+    gap: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .bid-modal.chat-mode .chat-topline {
+    padding-right: 36px !important;
+    min-height: 40px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .bid-modal.chat-mode .chat-topline h2 {
+    font-size: 18px !important;
+  }
+
+  .bid-modal.chat-mode .chat-context {
+    font-size: 11px !important;
+    padding: 8px 10px !important;
+    min-height: 42px !important;
+  }
+
+  .bid-modal.chat-mode .chat-history-selector {
+    margin-bottom: 4px !important;
+    padding: 6px 8px !important;
+  }
+
+  .bid-modal.chat-mode .chat-tabs-scroll {
+    gap: 6px !important;
+  }
+
+  .bid-modal.chat-mode .chat-tab {
+    padding: 5px 9px !important;
+    font-size: 11px !important;
+  }
+
+  .bid-modal.chat-mode .kommo-chat-shell {
+    flex: 1 !important;
+    min-height: 0 !important;
+    border-radius: 12px !important;
+  }
+
+  /* Chat Reopen Floating Button */
+  .chat-reopen-button {
+    right: 14px !important;
+    bottom: 14px !important;
+    width: 52px !important;
+    height: 52px !important;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.4) !important;
+  }
+
+  /* Help strip & footer */
+  .help-strip {
+    margin: 0 14px 44px !important;
+    padding: 24px 18px !important;
+    border-radius: 20px !important;
+  }
+
+  .help-strip h2 { font-size: 24px !important; }
+
+  footer {
+    padding: 24px 16px !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 28px !important; }
+  .quick-tech-grid { grid-template-columns: 1fr !important; }
+  .quick-spec { border-bottom: 1px solid #eef2f7 !important; }
+  .quick-spec:last-child { border-bottom: 0 !important; }
+  .info-grid { grid-template-columns: 1fr !important; }
+}
+
