@@ -1555,3 +1555,117 @@ img, svg, iframe, canvas {
   background: rgba(30, 58, 138, 0.08) !important;
   border: 1px solid rgba(30, 58, 138, 0.2) !important;
 }
+
+/* --- OFFICIAL BRAND LOGO IMAGE --- */
+.brand-logo-img {
+  height: 40px !important;
+  width: auto !important;
+  max-width: 220px !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+
+.modal-brand-header .brand-logo-img {
+  height: 44px !important;
+  margin: 0 auto !important;
+}
+
+footer .brand-logo-img {
+  height: 42px !important;
+  margin-bottom: 12px !important;
+}
+
+/* --- MINIMALIST STEP SECTION (MATCHING REFERENCE IMAGE) --- */
+.steps-heading-wrap {
+  text-align: center !important;
+  margin-bottom: 40px !important;
+}
+
+.red-section-title {
+  font-size: clamp(26px, 4vw, 38px) !important;
+  font-weight: 900 !important;
+  color: #dc2626 !important;
+  text-align: center !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 !important;
+}
+
+.steps-minimal-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 20px !important;
+  align-items: start !important;
+}
+
+@media (max-width: 1024px) {
+  .steps-minimal-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 30px 20px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .steps-minimal-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 32px 14px !important;
+  }
+}
+
+.step-minimal-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.step-icon-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 54px !important;
+  margin-bottom: 8px !important;
+}
+
+.step-icon-wrap svg {
+  fill: #dc2626 !important;
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.step-minimal-num {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  color: #111827 !important;
+  margin-bottom: 8px !important;
+  line-height: 1 !important;
+}
+
+.step-minimal-item h3 {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  line-height: 1.35 !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.step-minimal-item p {
+  font-size: 12px !important;
+  color: #64748b !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+}
+
+.red-step-link {
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+  text-decoration: underline !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.red-step-link:hover {
+  opacity: 0.8 !important;
+}

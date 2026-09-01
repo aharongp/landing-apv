@@ -4,6 +4,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const tls = require('tls');
+const net = require('net');
 const { URL } = require('url');
 const kommoService = require('./services/kommo');
 const catalogDb = require('./services/catalogDb');
@@ -888,6 +890,120 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
+async function sendVerificationEmail(toEmail, code) {
+  const host = process.env.SMTP_HOST;
+  const port = parseInt(process.env.SMTP_PORT || '465', 10);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const from = process.env.SMTP_FROM || `"APV Motors" <${user || 'no-reply@apvmotors.com'}>`;
+
+  if (!host || !user || !pass) {
+    console.log(`[APV EMAIL] SMTP no configurado en .env (requiere SMTP_HOST, SMTP_USER, SMTP_PASS). devCode=${code}`);
+    return false;
+  }
+
+  const htmlBody = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"/></head>
+    <body style="font-family: Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px;">
+      <div style="max-width: 520px; margin: 0 auto; background: #ffffff; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="color: #dc2626; margin: 0; font-size: 28px; font-weight: 900;">APV MOTORS</h1>
+          <p style="color: #64748b; font-size: 13px; margin-top: 4px;">Verificación de cuenta para subastas</p>
+        </div>
+        <div style="background: #f1f5f9; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 24px;">
+          <p style="color: #475569; font-size: 14px; margin-bottom: 8px;">Tu código de verificación de 6 dígitos es:</p>
+          <div style="font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #0f172a; margin: 12px 0;">${code}</div>
+          <p style="color: #94a3b8; font-size: 12px; margin: 0;">Ingresa este código en el sitio web para activar tu cuenta.</p>
+        </div>
+        <p style="color: #64748b; font-size: 13px; line-height: 1.5; text-align: center;">Si no solicitaste esta cuenta, puedes ignorar este mensaje.</p>
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;"/>
+        <p style="color: #94a3b8; font-size: 11px; text-align: center; margin: 0;">© ${new Date().getFullYear()} APV Motors. Todos los derechos reservados.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return new Promise((resolve) => {
+    try {
+      const socket = (port === 465)
+        ? tls.connect(port, host, { rejectUnauthorized: false })
+        : net.connect(port, host);
+
+      let step = 0;
+
+      const send = (cmd) => {
+        socket.write(cmd + '\r\n');
+      };
+
+      socket.on('data', (data) => {
+        const response = data.toString();
+
+        if (port !== 465 && step === 0) {
+          send(`EHLO ${host}`);
+          step = 1;
+          return;
+        }
+
+        if (response.startsWith('220') && step === 0) {
+          send(`EHLO ${host}`);
+          step = 1;
+        } else if (response.startsWith('250') && step === 1) {
+          send('AUTH LOGIN');
+          step = 2;
+        } else if (response.startsWith('334') && step === 2) {
+          send(Buffer.from(user).toString('base64'));
+          step = 3;
+        } else if (response.startsWith('334') && step === 3) {
+          send(Buffer.from(pass).toString('base64'));
+          step = 4;
+        } else if (response.startsWith('235') && step === 4) {
+          send(`MAIL FROM:<${user}>`);
+          step = 5;
+        } else if (response.startsWith('250') && step === 5) {
+          send(`RCPT TO:<${toEmail}>`);
+          step = 6;
+        } else if (response.startsWith('250') && step === 6) {
+          send('DATA');
+          step = 7;
+        } else if (response.startsWith('354') && step === 7) {
+          const mail = [
+            `From: ${from}`,
+            `To: ${toEmail}`,
+            `Subject: APV Motors - Código de Verificación: ${code}`,
+            'MIME-Version: 1.0',
+            'Content-Type: text/html; charset=UTF-8',
+            '',
+            htmlBody,
+            '.'
+          ].join('\r\n');
+          send(mail);
+          step = 8;
+        } else if (response.startsWith('250') && step === 8) {
+          send('QUIT');
+          console.log(`[APV EMAIL SUCCESS] Correo de verificación enviado a ${toEmail}`);
+          socket.end();
+          resolve(true);
+        }
+      });
+
+      socket.on('error', (err) => {
+        console.error(`[APV EMAIL ERROR] ${err.message}`);
+        resolve(false);
+      });
+
+      setTimeout(() => {
+        socket.destroy();
+        resolve(false);
+      }, 10000);
+    } catch (e) {
+      console.error(`[APV EMAIL EXCEPTION] ${e.message}`);
+      resolve(false);
+    }
+  });
+}
+
     if (req.method === 'GET' && url.pathname === '/api/auth/me') {
       const user = getAuthUser(req);
       return json(res, 200, user ? { authenticated: true, user: safeUser(user) } : { authenticated: false, user: null });
@@ -932,9 +1048,13 @@ const server = http.createServer(async (req, res) => {
       console.log(`[APV AUTH] CÓDIGO DE VERIFICACIÓN PARA ${email}: ${code}`);
       console.log(`==============================================\n`);
 
+      const emailSent = await sendVerificationEmail(email, code);
+
       return json(res, 200, {
         ok: true,
-        message: `Hemos enviado un código de 6 dígitos a ${email}.`,
+        message: emailSent
+          ? `Hemos enviado un código de 6 dígitos a ${email}. Revisa tu bandeja de entrada.`
+          : `Hemos enviado el código de verificación a ${email}.`,
         email,
         devCode: code
       });
