@@ -1423,3 +1423,135 @@ img, svg, iframe, canvas {
   .info-grid { grid-template-columns: 1fr !important; }
 }
 
+/* --- STEP CARDS WITH APV ICONS --- */
+.step-header-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 14px !important;
+}
+
+.step-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 14px !important;
+  background: rgba(30, 58, 138, 0.08) !important;
+  color: #1e3a8a !important;
+  transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.step-card:hover .step-icon {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+  transform: scale(1.08) !important;
+}
+
+.step-num {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: var(--muted) !important;
+}
+
+/* --- MODAL BRAND HEADER & INLINES --- */
+.modal-brand-header {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding-bottom: 12px !important;
+  margin-bottom: 12px !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+.brand-mark-inline {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 4px !important;
+}
+
+.brand-mark-inline .brand-mark {
+  background: #1e3a8a !important;
+  color: #ffffff !important;
+  padding: 2px 6px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+.brand-mark-inline .brand-name {
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* --- INTERACTIVE GALLERY ARROWS --- */
+.detail-gallery-main {
+  position: relative !important;
+}
+
+.gallery-arrow {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 25 !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: rgba(15, 23, 42, 0.75) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  font-size: 26px !important;
+  line-height: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease, transform 0.2s ease !important;
+  user-select: none !important;
+}
+
+.gallery-arrow:hover, .gallery-arrow:active {
+  background: rgba(15, 23, 42, 0.95) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+.gallery-arrow.prev {
+  left: 12px !important;
+}
+
+.gallery-arrow.next {
+  right: 12px !important;
+}
+
+/* --- EMAIL VERIFICATION CODE UI --- */
+.verify-intro {
+  text-align: center !important;
+  margin-bottom: 16px !important;
+}
+
+.verify-intro h3 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 4px !important;
+}
+
+.verify-intro p {
+  font-size: 13px !important;
+  color: var(--muted) !important;
+}
+
+#verify-code {
+  letter-spacing: 6px !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+}
+
+.highlight-price {
+  background: rgba(30, 58, 138, 0.08) !important;
+  border: 1px solid rgba(30, 58, 138, 0.2) !important;
+}

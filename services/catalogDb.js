@@ -84,6 +84,8 @@ function initDatabase() {
       passwordHash TEXT,
       googleSub TEXT,
       picture TEXT,
+      emailVerified INTEGER DEFAULT 0,
+      verificationCode TEXT,
       createdAt TEXT,
       lastLoginAt TEXT
     );
@@ -110,6 +112,9 @@ function initDatabase() {
       syncedAt TEXT
     );
   `);
+
+  try { db.exec("ALTER TABLE users ADD COLUMN emailVerified INTEGER DEFAULT 0;"); } catch (_) {}
+  try { db.exec("ALTER TABLE users ADD COLUMN verificationCode TEXT;"); } catch (_) {}
 
   const metaRow = db.prepare("SELECT value FROM catalog_meta WHERE key = 'updatedAt'").get();
   if (metaRow && metaRow.value) {
@@ -698,8 +703,8 @@ function findUserByEmail(email) {
 function saveUser(user) {
   const database = initDatabase();
   database.prepare(`
-    INSERT INTO users (id, name, email, phone, passwordSalt, passwordHash, googleSub, picture, createdAt, lastLoginAt)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO users (id, name, email, phone, passwordSalt, passwordHash, googleSub, picture, emailVerified, verificationCode, createdAt, lastLoginAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(id) DO UPDATE SET
       name=excluded.name,
       email=excluded.email,
@@ -708,12 +713,15 @@ function saveUser(user) {
       passwordHash=excluded.passwordHash,
       googleSub=excluded.googleSub,
       picture=excluded.picture,
+      emailVerified=excluded.emailVerified,
+      verificationCode=excluded.verificationCode,
       createdAt=excluded.createdAt,
       lastLoginAt=excluded.lastLoginAt
   `).run(
     user.id, user.name, user.email, user.phone || '',
     user.passwordSalt || '', user.passwordHash || '',
     user.googleSub || '', user.picture || '',
+    user.emailVerified ? 1 : 0, user.verificationCode || '',
     user.createdAt || new Date().toISOString(),
     user.lastLoginAt || new Date().toISOString()
   );

@@ -255,7 +255,7 @@
   function renderVehicles(items){
     dom.list.innerHTML=items.map(v=>`
       <article class="vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="vehicle-photo-wrap"><div class="vehicle-photo" ${imageStyle(v.image)}>${v.image?'':'<div class="image-fallback">SIN FOTO</div>'}</div></div>
+        <div class="vehicle-photo-wrap" data-action="detail"><div class="vehicle-photo" ${imageStyle(v.image)}>${v.image?'':'<div class="image-fallback">SIN FOTO</div>'}</div></div>
         <div class="vehicle-main">
           <div class="vehicle-title-row"><h3 data-action="detail">${esc(v.title)}</h3><span class="source-pill">COPART</span></div>
           <div class="vehicle-identifiers">⌗ ${esc(vinText(v))} &nbsp;•&nbsp; Lote ${esc(v.lot)}</div>
@@ -286,7 +286,7 @@
           </div>
           <div class="bid-box"><div><span>Puja actual</span><strong>${esc(money(v.currentBid))}</strong></div><div><span>Buy now</span><strong>${esc(money(v.buyNow))}</strong></div></div>
           <div class="side-status">● ${esc(v.saleStatus||'PRÓXIMA')}</div>
-          <div class="card-actions"><button class="btn btn-ghost" data-action="detail">Ver ficha</button><button class="btn btn-primary" data-action="bid">Solicitar puja</button></div>
+          <div class="card-actions"><button class="btn btn-ghost" data-action="detail">Ver ficha</button><button class="btn btn-primary" data-action="bid">Quiero ofertar</button></div>
         </aside>
       </article>`).join('');
   }
@@ -323,11 +323,14 @@
   function renderDetail(v){
     const hasBuyNow=Number(v.buyNow)>0;
     const coverImage=v.image?v.image.replace(/_thb\./i,'_ful.'):'';
+    state.currentPhotoIdx = 0;
     dom.vehicleDetail.innerHTML=`
       <div class="detail-hero">
         <div class="detail-gallery" id="detail-gallery">
-          <div class="detail-gallery-main">
+          <div class="detail-gallery-main" id="detail-gallery-main">
+            <button class="gallery-arrow prev" id="gallery-prev-btn" type="button" aria-label="Foto anterior">‹</button>
             ${coverImage?`<img id="detail-main-image" src="${esc(coverImage)}" alt="${esc(v.title)}" />`:'<div class="image-fallback">SIN FOTO DISPONIBLE</div>'}
+            <button class="gallery-arrow next" id="gallery-next-btn" type="button" aria-label="Siguiente foto">›</button>
             <span id="detail-photo-count" class="photo-count">1 foto</span>
           </div>
           <div id="detail-gallery-thumbs" class="detail-gallery-thumbs">${coverImage?`<button class="gallery-thumb active" data-gallery-src="${esc(coverImage)}"><img src="${esc(coverImage)}" alt="Foto 1" /></button>`:''}</div>
@@ -337,9 +340,14 @@
           <h2 id="vehicle-detail-title">${esc(v.title)}</h2>
           <div class="title-document-badge">${esc(titleDoc(v))}</div>
           <div class="detail-pills"><span class="condition-pill">${esc(conditionLabel(v.runsDrives))}</span><span class="spec-chip">🔑 ${v.hasKeys==='YES'?'Llaves':'Sin confirmar'}</span><span class="spec-chip">⚙ ${esc(v.transmission||'N/D')}</span></div>
-          ${hasBuyNow?`<div class="buy-now-highlight"><span>BUY IT NOW</span><strong>${esc(money(v.buyNow))}</strong></div>`:''}
-          <div class="detail-price-grid"><div class="detail-price"><span>Puja actual</span><strong>${esc(money(v.currentBid))}</strong></div><div class="detail-price"><span>Valor retail estimado</span><strong>${esc(money(v.retailValue))}</strong></div><div class="detail-price"><span>Fecha de subasta</span><strong class="small-value">${esc(dateLabel(v.saleDate,v.timeZone))}</strong></div><div class="detail-price"><span>Ubicación</span><strong class="small-value">${esc(locationLabel(v))}</strong></div></div>
-          <button class="btn btn-primary" data-detail-bid>Solicitar puja</button>
+          ${hasBuyNow?`<div class="buy-now-highlight"><span>PRECIO COMPRA DIRECTA (BUY IT NOW)</span><strong>${esc(money(v.buyNow))}</strong></div>`:''}
+          <div class="detail-price-grid">
+            <div class="detail-price highlight-price"><span>Puja actual subasta</span><strong>${esc(money(v.currentBid))}</strong></div>
+            <div class="detail-price"><span>Valor retail estimado</span><strong>${esc(money(v.retailValue))}</strong></div>
+            <div class="detail-price"><span>Fecha de subasta</span><strong class="small-value">${esc(dateLabel(v.saleDate,v.timeZone))}</strong></div>
+            <div class="detail-price"><span>Ubicación</span><strong class="small-value">${esc(locationLabel(v))}</strong></div>
+          </div>
+          <button class="btn btn-primary full" data-detail-bid>Quiero ofertar</button>
           ${!state.user?'<p class="signin-detail-note">🔒 Debes registrarte para ver el VIN completo y abrir el chat.</p>':''}
         </div>
       </div>
@@ -348,20 +356,28 @@
           <div class="technical-heading"><div><span class="eyebrow">GALERÍA DEL LOTE</span><h3>Todas las fotos</h3></div><span id="all-photos-count" class="detail-source">Cargando…</span></div>
           <div id="detail-all-photos" class="detail-all-photos">${coverImage?`<button type="button" data-gallery-src="${esc(coverImage)}"><img src="${esc(coverImage)}" alt="Foto del vehículo" /></button>`:''}</div>
         </section>
-        <div class="technical-heading"><div><span class="eyebrow">FICHA TÉCNICA</span><h3>Datos principales del vehículo</h3></div><span class="detail-source">Datos del CSV de Copart</span></div>
+        <div class="technical-heading"><div><span class="eyebrow">FICHA TÉCNICA Y PRECIOS</span><h3>Información completa del vehículo</h3></div><span class="detail-source">Datos oficiales Copart</span></div>
         <div class="quick-tech-grid">
+          ${hasBuyNow?quickSpec('Buy It Now (Compra directa)', money(v.buyNow)):''}
+          ${quickSpec('Puja actual subasta', money(v.currentBid))}
+          ${quickSpec('Valor retail estimado', money(v.retailValue))}
+          ${v.repairCost?quickSpec('Costo estim. reparación', money(v.repairCost)):''}
           ${vinQuickSpec(v)}
           ${quickSpec('Odómetro',miles(v.odometer)+(v.odometer?' · '+km(v.odometer):''))}
-          ${quickSpec('Daño',[v.primaryDamage,v.secondaryDamage].filter(Boolean).join('; ')||'N/D')}
-          ${quickSpec('Tipo de pérdida',v.lossType||'N/D')}
-          ${quickSpec('Carrocería',v.body||'N/D')}
+          ${quickSpec('Transmisión',v.transmission||'N/D')}
           ${quickSpec('Motor',v.engine||'N/D')}
+          ${quickSpec('Cilindros',v.cylinders?`${v.cylinders} cyl`:'N/D')}
           ${quickSpec('Tracción',v.drive||'N/D')}
           ${quickSpec('Combustible',v.fuel||'N/D')}
-          ${quickSpec('Llaves',v.hasKeys==='YES'?'Sí':'No / N/D')}
-          ${quickSpec('Ubicación',locationLabel(v))}
+          ${quickSpec('Daño principal',v.primaryDamage||'N/D')}
+          ${quickSpec('Daño secundario',v.secondaryDamage||'N/D')}
+          ${quickSpec('Tipo de pérdida',v.lossType||'N/D')}
+          ${quickSpec('Carrocería',v.body||'N/D')}
+          ${quickSpec('Llaves disponibles',v.hasKeys==='YES'?'Sí':'No / N/D')}
+          ${quickSpec('Título / Documento',titleDoc(v))}
+          ${quickSpec('Ubicación / Patio',locationLabel(v))}
         </div>
-        <button id="toggle-full-tech" class="full-tech-toggle" type="button" aria-expanded="false">Ver toda la información <span>⌄</span></button>
+        <button id="toggle-full-tech" class="full-tech-toggle" type="button" aria-expanded="false">Ver toda la información técnica <span>⌄</span></button>
         <div id="full-tech" class="full-tech hidden">
           <div class="detail-specs">
             ${detailSpec('Lote',v.lot)}
@@ -400,10 +416,44 @@
           ${v.specialNote||v.announcements?`<div class="detail-text-info">${v.specialNote?`<div><span>NOTA ESPECIAL</span><p>${esc(v.specialNote)}</p></div>`:''}${v.announcements?`<div><span>ANUNCIOS</span><p>${esc(v.announcements)}</p></div>`:''}</div>`:''}
         </div>
         <div class="detail-bottom">
-          <div class="detail-note"><h4>¿Listo para ofertar?</h4><p>Después de iniciar sesión defines tu tope. APV envía a Kommo la ficha, el VIN, el lote, el monto y tus datos de cuenta.</p><button class="btn btn-dark" style="margin-top:14px" data-detail-bid>Establecer mi puja</button></div>
+          <div class="detail-note"><h4>¿Listo para ofertar?</h4><p>Después de iniciar sesión defines tu tope. APV envía a Kommo la ficha, el VIN, el lote, el monto y tus datos de cuenta.</p><button class="btn btn-primary" style="margin-top:14px" data-detail-bid>Quiero ofertar</button></div>
           <div class="detail-note"><h4>Fuente de la información</h4><p>La ficha se construye con el CSV y las fotos se consultan bajo demanda usando el enlace Image URL de Copart.</p><a href="${esc(v.copartUrl)}" target="_blank" rel="noreferrer">Abrir lote en Copart →</a></div>
         </div>
       </div>`;
+
+    setupGalleryNavigation();
+  }
+
+  function setupGalleryNavigation(){
+    const mainContainer = $('#detail-gallery-main');
+    if(!mainContainer) return;
+    mainContainer.onclick = (e) => {
+      if(!state.galleryImages || !state.galleryImages.length) return;
+      if(e.target.closest('#gallery-prev-btn')) {
+        changePhotoIndex(-1);
+        return;
+      }
+      if(e.target.closest('#gallery-next-btn')) {
+        changePhotoIndex(1);
+        return;
+      }
+      const rect = mainContainer.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      if(clickX < rect.width * 0.4) {
+        changePhotoIndex(-1);
+      } else {
+        changePhotoIndex(1);
+      }
+    };
+  }
+
+  function changePhotoIndex(dir){
+    if(!state.galleryImages || !state.galleryImages.length) return;
+    state.currentPhotoIdx = (state.currentPhotoIdx + dir + state.galleryImages.length) % state.galleryImages.length;
+    const newSrc = state.galleryImages[state.currentPhotoIdx];
+    const mainImg = $('#detail-main-image');
+    if(mainImg && newSrc) mainImg.src = newSrc;
+    $$('.gallery-thumb').forEach((t, i) => t.classList.toggle('active', i === state.currentPhotoIdx));
   }
 
   async function loadGallery(lot){
@@ -447,6 +497,8 @@
     if(!thumbs||!count) return;
     const fallbackCover = state.currentVehicle && state.currentVehicle.image ? [state.currentVehicle.image.replace(/_thb\./i, '_ful.')] : [];
     const finalImages=images.length?images:fallbackCover;
+    state.galleryImages = finalImages;
+    state.currentPhotoIdx = 0;
     const label=`${finalImages.length} ${finalImages.length===1?'foto':'fotos'}`;
     count.textContent=label;
     if(allCount) allCount.textContent=label;
@@ -495,6 +547,7 @@
     $$('[data-auth-tab]').forEach(b=>b.classList.toggle('active',b.dataset.authTab===tab));
     $('#login-form').classList.toggle('hidden',tab!=='login');
     $('#register-form').classList.toggle('hidden',tab!=='register');
+    $('#verify-form').classList.add('hidden');
     setAuthStatus('');
   }
 
@@ -538,8 +591,27 @@
   async function submitRegister(e){
     e.preventDefault(); setAuthStatus('');
     const button=e.currentTarget.querySelector('button[type=submit]'); button.disabled=true;
+    const email = $('#register-email').value.trim();
     try{
-      const d=await api('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('#register-name').value,email:$('#register-email').value,phone:$('#register-phone').value,password:$('#register-password').value})});
+      const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('#register-name').value,email,phone:$('#register-phone').value,password:$('#register-password').value})});
+      state.pendingVerifyEmail = email;
+      $('#register-form').classList.add('hidden');
+      $('#verify-form').classList.remove('hidden');
+      if ($('#verify-target-email')) $('#verify-target-email').textContent = email;
+      if (d.devCode) {
+        $('#verify-code').value = d.devCode;
+        setAuthStatus(`Código enviado a tu correo. (Desarrollo: ${d.devCode})`, 'info');
+      }
+      showToast(d.message || 'Código de 6 dígitos enviado.');
+    }catch(err){ setAuthStatus(err.message); }
+    finally{ button.disabled=false; }
+  }
+
+  async function submitVerify(e){
+    e.preventDefault(); setAuthStatus('');
+    const button=e.currentTarget.querySelector('button[type=submit]'); button.disabled=true;
+    try{
+      const d=await api('/api/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email: state.pendingVerifyEmail || $('#register-email').value, code:$('#verify-code').value.trim()})});
       await completeAuth(d.user);
     }catch(err){ setAuthStatus(err.message); }
     finally{ button.disabled=false; }
@@ -753,6 +825,12 @@
   $$('[data-auth-tab]').forEach(b=>b.addEventListener('click',()=>switchAuthTab(b.dataset.authTab)));
   $('#login-form').addEventListener('submit',submitLogin);
   $('#register-form').addEventListener('submit',submitRegister);
+  $('#verify-form')?.addEventListener('submit',submitVerify);
+  $('#verify-back')?.addEventListener('click',()=>{
+    $('#verify-form').classList.add('hidden');
+    $('#register-form').classList.remove('hidden');
+    setAuthStatus('');
+  });
 
   if(dom.heroSearchForm){
     dom.heroSearchForm.addEventListener('submit',e=>{ e.preventDefault(); heroSearchToCatalog(dom.heroSearchInput.value); });

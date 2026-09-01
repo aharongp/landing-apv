@@ -893,6 +893,74 @@ const server = http.createServer(async (req, res) => {
       return json(res, 200, user ? { authenticated: true, user: safeUser(user) } : { authenticated: false, user: null });
     }
 
+    if (req.method === 'POST' && url.pathname === '/api/auth/register-request') {
+      const body = JSON.parse((await readRequestBody(req, 128 * 1024)).toString('utf8') || '{}');
+      const name = str(body.name).slice(0, 120);
+      const email = normalizeEmail(body.email);
+      const phone = str(body.phone).slice(0, 40);
+      const password = String(body.password || '');
+      if (name.length < 2) return json(res, 400, { error: 'Escribe tu nombre completo.' });
+      if (!validEmail(email)) return json(res, 400, { error: 'Escribe un correo válido.' });
+      if (phone.replace(/\D/g, '').length < 7) return json(res, 400, { error: 'Escribe un teléfono válido.' });
+      if (password.length < 8) return json(res, 400, { error: 'La contraseña debe tener al menos 8 caracteres.' });
+      
+      const existing = catalogDb.findUserByEmail(email);
+      if (existing && existing.emailVerified) {
+        return json(res, 409, { error: 'Ya existe una cuenta verificada con ese correo.' });
+      }
+
+      const pass = hashPassword(password);
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+      const userId = existing ? existing.id : crypto.randomUUID();
+      const user = {
+        id: userId,
+        name,
+        email,
+        phone,
+        passwordSalt: pass.salt,
+        passwordHash: pass.digest,
+        googleSub: '',
+        picture: '',
+        emailVerified: 0,
+        verificationCode: code,
+        createdAt: existing ? existing.createdAt : new Date().toISOString(),
+        lastLoginAt: new Date().toISOString()
+      };
+      catalogDb.saveUser(user);
+
+      console.log(`\n==============================================`);
+      console.log(`[APV AUTH] CÓDIGO DE VERIFICACIÓN PARA ${email}: ${code}`);
+      console.log(`==============================================\n`);
+
+      return json(res, 200, {
+        ok: true,
+        message: `Hemos enviado un código de 6 dígitos a ${email}.`,
+        email,
+        devCode: code
+      });
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/auth/verify-email') {
+      const body = JSON.parse((await readRequestBody(req, 128 * 1024)).toString('utf8') || '{}');
+      const email = normalizeEmail(body.email);
+      const code = String(body.code || '').trim();
+      if (!email || !validEmail(email)) return json(res, 400, { error: 'Correo no válido.' });
+      if (!code || code.length !== 6) return json(res, 400, { error: 'Ingresa el código de 6 dígitos.' });
+
+      const user = catalogDb.findUserByEmail(email);
+      if (!user) return json(res, 404, { error: 'No se encontró la solicitud de registro.' });
+      if (String(user.verificationCode).trim() !== code) {
+        return json(res, 400, { error: 'El código ingresado es incorrecto.' });
+      }
+
+      user.emailVerified = 1;
+      user.verificationCode = '';
+      user.lastLoginAt = new Date().toISOString();
+      catalogDb.saveUser(user);
+
+      return json(res, 200, { ok: true, user: safeUser(user) }, { 'Set-Cookie': sessionCookie(req, signSession(user.id)) });
+    }
+
     if (req.method === 'POST' && url.pathname === '/api/auth/register') {
       const body = JSON.parse((await readRequestBody(req, 128 * 1024)).toString('utf8') || '{}');
       const name = str(body.name).slice(0, 120);
@@ -914,6 +982,8 @@ const server = http.createServer(async (req, res) => {
         passwordHash: pass.digest,
         googleSub: '',
         picture: '',
+        emailVerified: 1,
+        verificationCode: '',
         createdAt: new Date().toISOString(),
         lastLoginAt: new Date().toISOString()
       };

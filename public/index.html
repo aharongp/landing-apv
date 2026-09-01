@@ -157,12 +157,37 @@
         <p>El catálogo cubre el primer paso. Desde que eliges cuánto quieres ofertar, continuamos contigo por chat.</p>
       </div>
       <div class="steps-grid">
-        <article class="step-card featured"><span>01</span><h3>Seleccionar el vehículo</h3><p>Explora las subastas de Copart directamente desde nuestro catálogo.</p></article>
-        <article class="step-card"><span>02</span><h3>Identificar el monto</h3><p>Define el tope máximo que deseas ofertar por el vehículo.</p></article>
-        <article class="step-card"><span>03</span><h3>Depósito de seguridad</h3><p>Realiza el depósito requerido para que podamos gestionar tu participación.</p></article>
-        <article class="step-card"><span>04</span><h3>Pago del vehículo</h3><p>Si ganas la subasta, te guiamos con el pago correspondiente.</p></article>
-        <article class="step-card"><span>05</span><h3>Traslado en grúa</h3><p>Coordina el traslado del vehículo con nuestro equipo.</p><a href="https://api.whatsapp.com/send?phone=13462048308&text=Buenas%2C%20" target="_blank" rel="noreferrer">Contratar traslado →</a></article>
-        <article class="step-card"><span>06</span><h3>Traspaso, taxes y placas</h3><p>Te apoyamos con la gestión de documentos necesaria para cerrar el proceso.</p></article>
+        <article class="step-card featured">
+          <div class="step-header-row"><span class="step-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2 11.1 2 11.5 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></span><span class="step-num">01</span></div>
+          <h3>Seleccionar el vehículo</h3>
+          <p>Explora las subastas de Copart directamente desde nuestro catálogo.</p>
+        </article>
+        <article class="step-card">
+          <div class="step-header-row"><span class="step-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span class="step-num">02</span></div>
+          <h3>Quiero ofertar</h3>
+          <p>Define el tope máximo que deseas ofertar por el vehículo.</p>
+        </article>
+        <article class="step-card">
+          <div class="step-header-row"><span class="step-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="step-num">03</span></div>
+          <h3>Depósito de seguridad</h3>
+          <p>Realiza el depósito requerido para que podamos gestionar tu participación.</p>
+        </article>
+        <article class="step-card">
+          <div class="step-header-row"><span class="step-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span><span class="step-num">04</span></div>
+          <h3>Pago del vehículo</h3>
+          <p>Si ganas la subasta, te guiamos con el pago correspondiente.</p>
+        </article>
+        <article class="step-card">
+          <div class="step-header-row"><span class="step-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span><span class="step-num">05</span></div>
+          <h3>Traslado en grúa</h3>
+          <p>Coordina el traslado del vehículo con nuestro equipo.</p>
+          <a href="https://api.whatsapp.com/send?phone=13462048308&text=Buenas%2C%20cotizar%20traslado" target="_blank" rel="noreferrer">Contratar traslado →</a>
+        </article>
+        <article class="step-card">
+          <div class="step-header-row"><span class="step-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span><span class="step-num">06</span></div>
+          <h3>Traspaso, taxes y placas</h3>
+          <p>Te apoyamos con la gestión de documentos necesaria para cerrar el proceso.</p>
+        </article>
       </div>
     </section>
 
@@ -222,6 +247,9 @@
   <div class="overlay hidden auth-overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
     <div class="auth-modal">
       <button class="modal-close" data-close="auth" aria-label="Cerrar" onclick="return window.closeAPVAuth ? window.closeAPVAuth() : false">×</button>
+      <div class="modal-brand-header">
+        <div class="brand"><span class="brand-mark">APV</span><span class="brand-name">MOTORS</span></div>
+      </div>
       <div class="auth-intro">
         <span class="eyebrow">CUENTA APV MOTORS</span>
         <h2 id="auth-title">Guarda tu conversación y continúa desde cualquier dispositivo.</h2>
@@ -238,8 +266,17 @@
         <label><span>Correo electrónico</span><input id="register-email" type="email" autocomplete="email" required /></label>
         <label><span>Teléfono / WhatsApp</span><input id="register-phone" type="tel" autocomplete="tel" required /></label>
         <label><span>Contraseña</span><input id="register-password" type="password" minlength="8" autocomplete="new-password" required /></label>
-        <button class="btn btn-primary full" type="submit">Crear cuenta y continuar</button>
-        <small>Al crear la cuenta podremos usar un identificador estable en Kommo para recuperar tu historial de chat cuando inicies sesión en otro dispositivo.</small>
+        <button class="btn btn-primary full" type="submit">Enviar código de verificación</button>
+        <small>Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
+      </form>
+      <form id="verify-form" class="auth-form hidden">
+        <div class="verify-intro">
+          <h3>Confirma tu correo electrónico</h3>
+          <p>Ingresa el código de 6 dígitos que enviamos a <strong id="verify-target-email"></strong>.</p>
+        </div>
+        <label><span>Código de 6 dígitos</span><input id="verify-code" type="text" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Ej. 482910" autocomplete="one-time-code" required /></label>
+        <button class="btn btn-primary full" type="submit">Verificar y activar cuenta</button>
+        <button id="verify-back" class="link-button" type="button">← Modificar datos de registro</button>
       </form>
       <div id="auth-status" class="auth-status hidden"></div>
     </div>
@@ -248,17 +285,27 @@
   <div class="overlay hidden" id="bid-overlay" role="dialog" aria-modal="true" aria-labelledby="bid-title">
     <div class="bid-modal">
       <button class="modal-close" data-close="bid" aria-label="Cerrar">×</button>
+      <div class="modal-brand-header">
+        <div class="brand"><span class="brand-mark">APV</span><span class="brand-name">MOTORS</span></div>
+      </div>
       <div id="bid-step-amount" class="bid-step">
         <span class="eyebrow">PASO 2 DE TU COMPRA</span>
-        <h2 id="bid-title">Establece tu tope de puja</h2>
+        <h2 id="bid-title">Establece tu tope de oferta</h2>
         <p class="muted">Indica el máximo que deseas ofertar por este vehículo. Esto no realiza ningún cargo automático.</p>
         <div id="bid-vehicle-mini" class="bid-vehicle-mini"></div>
-        <label class="bid-input-wrap"><span>Mi tope de puja</span><div><b>$</b><input id="bid-amount" type="number" min="1" step="50" placeholder="5,000" inputmode="decimal" /><em>USD</em></div></label>
-        <div class="bid-actions"><button id="bid-continue" class="btn btn-primary full">Continuar por chat</button><button class="btn btn-ghost full" data-close="bid">Cancelar</button></div>
+        <label class="bid-input-wrap"><span>Mi tope de oferta</span><div><b>$</b><input id="bid-amount" type="number" min="1" step="50" placeholder="Escribe tu monto" inputmode="decimal" /><em>USD</em></div></label>
+        <div class="bid-actions"><button id="bid-continue" class="btn btn-primary full">Quiero ofertar</button><button class="btn btn-ghost full" data-close="bid">Cancelar</button></div>
       </div>
 
       <div id="bid-step-chat" class="bid-chat-step hidden">
-        <div class="chat-topline"><div><span class="eyebrow">APV MOTORS · ASISTENCIA DE PUJA</span><h2>Continúa con un asesor</h2></div><span class="secure-pill">● Sesión protegida</span></div>
+        <div class="chat-topline">
+          <div>
+            <div class="brand-mark-inline"><span class="brand-mark">APV</span><span class="brand-name">MOTORS</span></div>
+            <span class="eyebrow">ASISTENCIA DE PUJA</span>
+            <h2>Continúa con un asesor</h2>
+          </div>
+          <span class="secure-pill">● Sesión protegida</span>
+        </div>
         <div id="chat-history-selector" class="chat-history-selector hidden"></div>
         <pre id="auto-message-preview" class="hidden" aria-hidden="true"></pre>
         <div class="kommo-chat-shell">
