@@ -6,8 +6,8 @@
   --soft:#f1f5f9;
   --soft-2:#f8fafc;
   --white:#fff;
-  --primary:#1d4ed8;
-  --primary-2:#2563eb;
+  --primary:#dc2626;
+  --primary-2:#b91c1c;
   --green:#15803d;
   --green-soft:#ecfdf3;
   --shadow:0 18px 50px rgba(15,23,42,.09);
@@ -26,8 +26,8 @@ button{cursor:pointer}
 .eyebrow{display:inline-block;font-size:12px;line-height:1.2;font-weight:800;letter-spacing:.11em;color:#64748b}
 .btn{border:0;border-radius:13px;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;font-weight:800;transition:.18s ease;white-space:nowrap}
 .btn:hover{transform:translateY(-1px)}
-.btn-primary{background:var(--primary);color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.22)}
-.btn-primary:hover{background:#1e40af}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 10px 24px rgba(220,38,38,.25)}
+.btn-primary:hover{background:#b91c1c}
 .btn-dark{background:var(--ink);color:#fff}
 .btn-dark:hover{background:#020617}
 .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
@@ -1584,7 +1584,7 @@ footer .brand-logo-img {
 .red-section-title {
   font-size: clamp(26px, 4vw, 38px) !important;
   font-weight: 900 !important;
-  color: #1e3a8a !important;
+  color: #dc2626 !important;
   text-align: center !important;
   letter-spacing: -0.02em !important;
   margin: 0 !important;
@@ -1631,7 +1631,7 @@ footer .brand-logo-img {
 }
 
 .step-icon-wrap svg {
-  fill: #1e3a8a !important;
+  fill: #dc2626 !important;
   width: 44px !important;
   height: 44px !important;
 }

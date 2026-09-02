@@ -639,6 +639,44 @@ async function acceptUnsortedLead(incomingUid, statusId) {
   }
 }
 
+async function acceptAllPendingUnsortedLeadsForUser(user) {
+  if (!user || !user.kommoUserId) return;
+  try {
+    const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
+    const chatKey = `apv:${user.kommoUserId}`;
+    const userEmail = (user.email || '').toLowerCase().trim();
+
+    const res = await kommoFetch('/api/v4/leads/unsorted?filter[category][]=chats&limit=50');
+    if (res.status === 204 || !res.data || !res.data._embedded || !Array.isArray(res.data._embedded.unsorted)) {
+      return;
+    }
+
+    const contactId = await findOrCreateContact(user).catch(() => null);
+
+    for (const item of res.data._embedded.unsorted) {
+      const visitorUid = item.metadata?.origin?.visitor_uid || item.metadata?.visitor_uid || '';
+      const clientEmail = (item.metadata?.client?.email || '').toLowerCase().trim();
+
+      if (visitorUid === chatKey || (userEmail && clientEmail === userEmail)) {
+        console.log(`[KOMMO] Found pending unsorted chat lead uid=${item.uid} for user=${user.name}. Accepting...`);
+        await acceptUnsortedLead(item.uid, targetPipelineId);
+
+        const acceptedLeadId = item._embedded?.leads?.[0]?.id || item.lead_id || null;
+        if (acceptedLeadId && contactId) {
+          try {
+            await kommoFetch(`/api/v4/leads/${acceptedLeadId}/link`, {
+              method: 'POST',
+              body: [{ to_entity_id: Number(contactId), to_entity_type: 'contacts' }]
+            });
+          } catch (_) {}
+        }
+      }
+    }
+  } catch (err) {
+    console.warn(`[KOMMO WARN] acceptAllPendingUnsortedLeadsForUser error:`, err.message);
+  }
+}
+
 async function syncBid(params) {
   const { user, vehicle, maxBid } = params;
 
@@ -756,6 +794,9 @@ async function syncBid(params) {
 
 async function updateActiveBidsSummary(user) {
   if (!user || !user.kommoUserId) return null;
+
+  // Always clean and accept any pending unsorted chat leads for this user first
+  await acceptAllPendingUnsortedLeadsForUser(user);
 
   const apvUserId = user.kommoUserId;
   const contactId = await findOrCreateContact(user);

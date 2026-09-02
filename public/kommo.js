@@ -381,9 +381,17 @@
 
     if (loaderState === 'idle' || loaderState === 'error') injectOfficialScript();
 
-    // Si la instancia ya estaba lista para este vehículo, reabrimos el frame.
+    // Si la instancia ya estaba lista para este vehículo, reabrimos el frame y enviamos mensaje inicial
     if (chatReady) {
       try { window.crmPlugin('runChatShow'); } catch (_) {}
+      try {
+        const initialMsg = `Hola, quiero ofertar por el vehículo ${vehicle.title || ''} (Lote: ${vehicle.lot}). Mi tope de oferta es $${maxBid} USD.`;
+        if (typeof window.crmPlugin === 'function') {
+          window.crmPlugin('sendMessage', initialMsg);
+        } else if (typeof window.amoSocialButton === 'function') {
+          window.amoSocialButton('sendMessage', initialMsg);
+        }
+      } catch (_) {}
       if (chatShown) {
         scheduleCrmSyncAfterVisible();
         scheduleHookAfterVisible();
