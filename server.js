@@ -874,12 +874,23 @@ const server = http.createServer(async (req, res) => {
       return json(res, 200, { ok: true, bids });
     }
 
-    if (req.method === 'DELETE' && url.pathname === '/api/user/bids') {
+    if (req.method === 'DELETE' && url.pathname.startsWith('/api/user/bids')) {
       const user = requireAuth(req, res);
       if (!user) return;
       const apvUserId = kommoUserId(user);
-      kommoService.clearUserSyncRecords(apvUserId);
-      return json(res, 200, { ok: true, message: 'Historial de pujas limpiado.' });
+      const lotMatch = url.pathname.match(/^\/api\/user\/bids\/([^/]+)$/);
+      if (lotMatch) {
+        const lot = decodeURIComponent(lotMatch[1]);
+        catalogDb.deleteUserSyncRecord(apvUserId, lot);
+        const userFull = { ...safeUser(user), phone: user.phone || '' };
+        await kommoService.updateActiveBidsSummary(userFull).catch(() => {});
+        return json(res, 200, { ok: true, message: `Puja para el lote ${lot} eliminada.` });
+      } else {
+        kommoService.clearUserSyncRecords(apvUserId);
+        const userFull = { ...safeUser(user), phone: user.phone || '' };
+        await kommoService.updateActiveBidsSummary(userFull).catch(() => {});
+        return json(res, 200, { ok: true, message: 'Historial de pujas limpiado.' });
+      }
     }
 
     if (req.method === 'GET' && url.pathname === '/api/config') {

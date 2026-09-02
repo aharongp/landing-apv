@@ -805,6 +805,12 @@ function clearUserSyncRecords(apvUserId) {
   database.prepare("DELETE FROM kommo_sync WHERE apvUserId = ?").run(String(apvUserId));
 }
 
+function deleteUserSyncRecord(apvUserId, lot) {
+  const database = initDatabase();
+  const key = `${apvUserId}:${lot}`;
+  database.prepare("DELETE FROM kommo_sync WHERE key = ?").run(key);
+}
+
 function clearVehicles() {
   const database = initDatabase();
   database.exec("DELETE FROM vehicles;");
@@ -832,5 +838,6 @@ module.exports = {
   getSyncRecord,
   saveSyncRecord,
   getUserSyncRecords,
-  clearUserSyncRecords
+  clearUserSyncRecords,
+  deleteUserSyncRecord
 };

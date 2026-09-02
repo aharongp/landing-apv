@@ -741,6 +741,13 @@ async function syncBid(params) {
     contactId
   });
 
+  // 8. Post/Update consolidated active bids summary note
+  try {
+    await updateActiveBidsSummary(user);
+  } catch (sumErr) {
+    console.warn(`[KOMMO WARN] Error updating active bids summary: ${sumErr.message}`);
+  }
+
   return {
     ok: true,
     incomingLeadUid,
@@ -748,6 +755,119 @@ async function syncBid(params) {
     contactId,
     verified
   };
+}
+
+async function updateActiveBidsSummary(user) {
+  if (!user || !user.kommoUserId) return null;
+
+  const apvUserId = user.kommoUserId;
+  const contactId = await findOrCreateContact(user);
+
+  const userRecords = catalogDb.getUserSyncRecords(apvUserId);
+  let leadId = (userRecords && userRecords.length > 0) ? userRecords.find(r => r.leadId)?.leadId : null;
+
+  if (!leadId && contactId) {
+    leadId = await findLeadForContact(contactId);
+  }
+
+  if (!leadId) {
+    return null;
+  }
+
+  const allIntents = catalogDb.getBidIntents();
+  const activeBids = [];
+  for (const r of userRecords) {
+    const vehicle = catalogDb.findVehicleByLotOrId(r.lot);
+    const intent = allIntents.find(i => String(i.userId) === String(user.id) && String(i.lot) === String(r.lot));
+    const title = vehicle ? vehicle.title : (intent ? intent.vehicle : `Lote ${r.lot}`);
+    const vin = vehicle ? vehicle.vin : (intent ? intent.vin : 'N/D');
+    const maxBid = intent ? intent.maxBid : 0;
+    activeBids.push({
+      lot: r.lot,
+      title,
+      vin,
+      maxBid
+    });
+  }
+
+  const formattedDate = new Date().toLocaleString('es-US', { timeZone: 'America/New_York' });
+
+  let summaryText = '';
+  if (activeBids.length === 0) {
+    summaryText = [
+      `📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE`,
+      `----------------------------------------`,
+      `El cliente no tiene vehículos activos en su lista de pujas actualmente.`,
+      `----------------------------------------`,
+      `🕒 Última actualización: ${formattedDate}`
+    ].join('\n');
+  } else {
+    const lines = activeBids.map((b, idx) => {
+      const budget = b.maxBid > 0 ? `$${Number(b.maxBid).toLocaleString('en-US')} USD` : 'Sin definir';
+      return `${idx + 1}. ${b.title}\n   • Lote: ${b.lot} | VIN: ${b.vin || 'N/D'}\n   • Tope de Oferta: ${budget}`;
+    });
+
+    const totalVal = activeBids.reduce((sum, b) => sum + (Number(b.maxBid) || 0), 0);
+    const totalValFormatted = totalVal > 0 ? `$${totalVal.toLocaleString('en-US')} USD` : 'Sin definir';
+
+    summaryText = [
+      `📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE`,
+      `========================================`,
+      lines.join('\n\n'),
+      `========================================`,
+      `📊 Total de vehículos a subastar: ${activeBids.length}`,
+      `💰 Suma de topes de oferta: ${totalValFormatted}`,
+      `🕒 Última actualización: ${formattedDate}`
+    ].join('\n');
+  }
+
+  const lastBid = activeBids[activeBids.length - 1];
+  const lastTitle = lastBid ? lastBid.title : 'Sin pujas activas';
+  const lastPrice = lastBid ? Number(lastBid.maxBid || 0) : 0;
+
+  const fieldIds = await getLeadFieldIds();
+  const custom_fields_values = [];
+  if (lastBid) {
+    if (fieldIds.vehicleModel) custom_fields_values.push({ field_id: fieldIds.vehicleModel, values: [{ value: String(lastTitle) }] });
+    if (lastBid.vin && fieldIds.vin) custom_fields_values.push({ field_id: fieldIds.vin, values: [{ value: String(lastBid.vin) }] });
+    if (lastBid.lot && fieldIds.lot) custom_fields_values.push({ field_id: fieldIds.lot, values: [{ value: String(lastBid.lot) }] });
+    if (fieldIds.maxBid) custom_fields_values.push({ field_id: fieldIds.maxBid, values: [{ value: String(lastPrice) }] });
+  }
+
+  const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
+  const payload = {
+    name: activeBids.length > 0 ? `Pujas (${activeBids.length} autos) | ${user.name}` : `Cliente | ${user.name}`,
+    price: lastPrice,
+    sale: lastPrice,
+    pipeline_id: targetPipelineId,
+    custom_fields_values
+  };
+
+  try {
+    await kommoFetch(`/api/v4/leads/${leadId}`, {
+      method: 'PATCH',
+      body: payload
+    });
+  } catch (pErr) {
+    console.warn(`[KOMMO WARN] Error patching lead: ${pErr.message}`);
+  }
+
+  try {
+    await kommoFetch(`/api/v4/leads/${leadId}/notes`, {
+      method: 'POST',
+      body: [
+        {
+          note_type: 'common',
+          params: { text: summaryText }
+        }
+      ]
+    });
+    console.log(`[KOMMO] Active bids summary note posted for leadId=${leadId}`);
+  } catch (noteErr) {
+    console.warn(`[KOMMO WARN] Error posting summary note:`, noteErr.message);
+  }
+
+  return { leadId, contactId, summaryText };
 }
 
 function getUserSyncRecords(apvUserId) {
@@ -769,6 +889,7 @@ module.exports = {
   updateLead,
   verifySync,
   syncBid,
+  updateActiveBidsSummary,
   getSyncRecord,
   getUserSyncRecords,
   clearUserSyncRecords
