@@ -496,6 +496,24 @@ async function verifySync(leadId, contactId) {
   };
 }
 
+async function findLeadForContact(contactId) {
+  if (!contactId) return null;
+  try {
+    const res = await kommoFetch(`/api/v4/contacts/${contactId}?with=leads`);
+    if (res.status === 200 && res.data && res.data._embedded && Array.isArray(res.data._embedded.leads) && res.data._embedded.leads.length > 0) {
+      const leads = res.data._embedded.leads;
+      const latestLead = leads[leads.length - 1];
+      if (latestLead && latestLead.id) {
+        console.log(`[KOMMO] Found existing leadId=${latestLead.id} for contactId=${contactId}`);
+        return Number(latestLead.id);
+      }
+    }
+  } catch (err) {
+    console.warn(`[KOMMO WARN] Error querying leads for contactId=${contactId}:`, err.message);
+  }
+  return null;
+}
+
 async function findOrCreateContact(user) {
   let contactId = null;
   if (user.email) {
@@ -640,19 +658,36 @@ async function syncBid(params) {
   const sale = Math.max(0, Math.round(Number(maxBid || 0)));
   const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
 
-  // Check idempotency store first
+  // 1. Resolve contactId first
+  let contactId = await findOrCreateContact(user);
+
+  // 2. Resolve leadId (Check lot record -> Check user records -> Check Contact's leads in Kommo API -> Poll Unsorted -> Create via API)
   let existingRecord = getSyncRecord(apvUserId, lot);
   let leadId = existingRecord ? existingRecord.leadId : null;
-  let contactId = existingRecord ? existingRecord.contactId : null;
   let incomingLeadUid = existingRecord ? existingRecord.incomingLeadUid : null;
 
   if (!leadId) {
-    console.log(`[KOMMO] No prior sync record for ${apvUserId}:${lot}. Polling incoming chat lead...`);
-    const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 10000 });
+    const userRecords = getUserSyncRecords(apvUserId);
+    if (Array.isArray(userRecords) && userRecords.length > 0) {
+      const rec = userRecords.find(r => r.leadId);
+      if (rec) {
+        leadId = rec.leadId;
+        console.log(`[KOMMO] Reusing existing leadId=${leadId} from user sync history for ${apvUserId}`);
+      }
+    }
+  }
+
+  if (!leadId && contactId) {
+    leadId = await findLeadForContact(contactId);
+  }
+
+  if (!leadId) {
+    console.log(`[KOMMO] No prior leadId found for ${apvUserId}. Polling incoming chat lead...`);
+    const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 3000 });
     if (found && found.leadId) {
       incomingLeadUid = found.incomingUid;
       leadId = found.leadId;
-      contactId = found.contactId;
+      if (found.contactId) contactId = found.contactId;
 
       if (incomingLeadUid) {
         await acceptUnsortedLead(incomingLeadUid, targetPipelineId);
@@ -660,30 +695,24 @@ async function syncBid(params) {
     }
   }
 
-  if (!contactId) {
-    contactId = await findOrCreateContact(user);
+  if (!leadId) {
+    console.log(`[KOMMO] Live chat lead not found. Creating Lead & Contact directly via REST API v4...`);
+    const direct = await findOrCreateLeadAndContactViaApi(user, vehicle, sale);
+    leadId = direct.leadId;
+    contactId = direct.contactId;
   }
 
+  // 3. Link contact to lead if needed
   if (leadId && contactId) {
     try {
       await kommoFetch(`/api/v4/leads/${leadId}/link`, {
         method: 'POST',
         body: [{ to_entity_id: Number(contactId), to_entity_type: 'contacts' }]
       });
-      console.log(`[KOMMO] Explicitly linked contactId=${contactId} to leadId=${leadId}`);
-    } catch (linkErr) {
-      console.warn(`[KOMMO WARN] Error linking contact to lead: ${linkErr.message}`);
-    }
+    } catch (_) {}
   }
 
-  if (!leadId) {
-    console.log(`[KOMMO] Live chat lead not found after polling. Creating Lead & Contact directly via REST API v4...`);
-    const direct = await findOrCreateLeadAndContactViaApi(user, vehicle, sale);
-    leadId = direct.leadId;
-    contactId = direct.contactId;
-  }
-
-  // Update Contact
+  // 4. Update Contact
   await updateContact(contactId, {
     name: user.name,
     phone: user.phone,
@@ -691,30 +720,7 @@ async function syncBid(params) {
     apvUserId
   });
 
-  // Post note to Contact timeline so advisors see complete bid history under Contact card
-  if (contactId) {
-    try {
-      const formattedDate = new Date().toLocaleString('es-US', { timeZone: 'America/New_York' });
-      const contactNoteText = [
-        `🚗 NUEVA PUJA DE CLIENTE`,
-        `• Vehículo: ${vehicleModel}`,
-        `• Tope de Oferta: ${sale > 0 ? `$${sale.toLocaleString('en-US')} USD` : 'Sin definir'}`,
-        `• Lote: ${lot}`,
-        `• VIN: ${vin || 'N/D'}`,
-        `• Fecha: ${formattedDate}`
-      ].join('\n');
-
-      await kommoFetch(`/api/v4/contacts/${contactId}/notes`, {
-        method: 'POST',
-        body: [{ note_type: 'common', params: { text: contactNoteText } }]
-      });
-      console.log(`[KOMMO] Contact note posted for contactId=${contactId}`);
-    } catch (cNoteErr) {
-      console.warn(`[KOMMO WARN] Error posting contact note:`, cNoteErr.message);
-    }
-  }
-
-  // Update Lead
+  // 5. Update Lead (patches custom fields and posts ONE single clean note on lead timeline)
   await updateLead(leadId, {
     vehicleModel,
     vin,
@@ -722,10 +728,10 @@ async function syncBid(params) {
     maxBid: sale
   });
 
-  // Mandatory verification GETs
+  // 6. Mandatory verification GETs
   const verified = await verifySync(leadId, contactId);
 
-  // Save to sync log
+  // 7. Save to sync log
   saveSyncRecord({
     apvUserId,
     lot,
