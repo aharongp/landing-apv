@@ -102,9 +102,14 @@
         mode: 'frame',
         container: '#kommo-chat-frame',
         user_id: nextKey,
+        fields: {
+          name: user ? user.name : '',
+          email: user ? user.email : '',
+          phone: user ? user.phone : ''
+        },
         locale: {
           extends: 'es',
-          compose_placeholder: 'Escribe un mensaje…'
+          compose_placeholder: 'Escribe tu mensaje para ofertar…'
         },
         theme: {
           header: false,
@@ -118,7 +123,7 @@
           },
           compose: {
             height: 64,
-            button_background: '#0f172a'
+            button_background: '#dc2626'
           }
         }
       }
@@ -147,13 +152,17 @@
     ensureOfficialBootstrapObjects();
     const botParams = buildContext(vehicle);
     try {
-      // Deliberadamente separado de lead/contact/note. Kommo documenta bot_params
-      // como la fuente que el Salesbot lee al arrancar; esta llamada ocurre antes
-      // de button.js y se repite al recibir onChatReady.
-      window.crm_plugin.setMeta({ bot_params: botParams });
+      window.crm_plugin.setMeta({
+        visitor: {
+          name: currentUser ? currentUser.name : '',
+          email: currentUser ? currentUser.email : '',
+          phone: currentUser ? currentUser.phone : ''
+        },
+        bot_params: botParams
+      });
       botParamsQueueCount += 1;
       lastMetaStage = stage || 'bot_params';
-      log('bot_params enviados (' + lastMetaStage + '):', botParams);
+      log('bot_params y visitor enviados (' + lastMetaStage + '):', botParams);
       return { ok: true, botParams, message: botParams.vehicle_message };
     } catch (err) {
       log('bot_params error:', err);

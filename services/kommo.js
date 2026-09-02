@@ -244,10 +244,11 @@ async function findKommoIncomingLead(chatKey, options = {}) {
 
           console.log(`[KOMMO] visitor_uid exact match! visitor_uid=${visitorUid} chat_id=${chatId} incoming_uid=${incomingUid} contact_id=${contactId} lead_id=${leadId}`);
 
-          if (incomingUid && leadId) {
+          if (incomingUid) {
+            console.log(`[KOMMO] visitor_uid exact match! visitor_uid=${visitorUid} chat_id=${chatId} incoming_uid=${incomingUid} contact_id=${contactId} lead_id=${leadId}`);
             return {
               incomingUid,
-              leadId: Number(leadId),
+              leadId: leadId ? Number(leadId) : null,
               contactId: contactId ? Number(contactId) : null,
               chatId
             };
@@ -269,11 +270,11 @@ async function findKommoIncomingLead(chatKey, options = {}) {
           const incomingUid = item.uid || null;
           const chatId = item.metadata?.origin?.chat_id || item.metadata?.chat_id || '';
 
-          if (incomingUid && leadId) {
+          if (incomingUid) {
             console.log(`[KOMMO] Matched recent onlinechat lead! created_at=${new Date(createdAtMs).toISOString()} incoming_uid=${incomingUid} contact_id=${contactId} lead_id=${leadId}`);
             return {
               incomingUid,
-              leadId: Number(leadId),
+              leadId: leadId ? Number(leadId) : null,
               contactId: contactId ? Number(contactId) : null,
               chatId
             };
@@ -622,16 +623,23 @@ async function findOrCreateLeadAndContactViaApi(user, vehicle, maxBid) {
   throw new Error('No se pudo crear la oportunidad (Lead) en Kommo CRM.');
 }
 
-async function acceptUnsortedLead(incomingUid, statusId) {
+async function acceptUnsortedLead(incomingUid, statusId, targetLeadId) {
   if (!incomingUid) return null;
   try {
+    const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
+    const body = {
+      status_id: Number(statusId || 70685710),
+      pipeline_id: targetPipelineId
+    };
+    if (targetLeadId) {
+      body.lead_id = Number(targetLeadId);
+      body.accept_result = { lead_id: Number(targetLeadId) };
+    }
     const res = await kommoFetch(`/api/v4/leads/unsorted/${incomingUid}/accept`, {
       method: 'POST',
-      body: {
-        status_id: Number(statusId || 110996284)
-      }
+      body
     });
-    console.log(`[KOMMO] Accepted unsorted lead incomingUid=${incomingUid} status=${res.status}`);
+    console.log(`[KOMMO] Accepted unsorted lead incomingUid=${incomingUid} linkedToLeadId=${targetLeadId || 'new'} status=${res.status}`);
     return res.data;
   } catch (err) {
     console.warn(`[KOMMO WARN] acceptUnsortedLead error for ${incomingUid}:`, err.message);
@@ -639,12 +647,13 @@ async function acceptUnsortedLead(incomingUid, statusId) {
   }
 }
 
-async function acceptAllPendingUnsortedLeadsForUser(user) {
+async function acceptAllPendingUnsortedLeadsForUser(user, targetLeadId) {
   if (!user || !user.kommoUserId) return;
   try {
     const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
     const chatKey = `apv:${user.kommoUserId}`;
     const userEmail = (user.email || '').toLowerCase().trim();
+    const userPhone = String(user.phone || '').replace(/\D/g, '');
 
     const res = await kommoFetch('/api/v4/leads/unsorted?filter[category][]=chats&limit=50');
     if (res.status === 204 || !res.data || !res.data._embedded || !Array.isArray(res.data._embedded.unsorted)) {
@@ -652,19 +661,34 @@ async function acceptAllPendingUnsortedLeadsForUser(user) {
     }
 
     const contactId = await findOrCreateContact(user).catch(() => null);
+    let leadId = targetLeadId;
+    if (!leadId && contactId) {
+      leadId = await findLeadForContact(contactId);
+    }
+    if (!leadId) {
+      const userRecords = catalogDb.getUserSyncRecords(user.kommoUserId);
+      if (userRecords && userRecords.length > 0) {
+        leadId = userRecords.find(r => r.leadId)?.leadId;
+      }
+    }
 
     for (const item of res.data._embedded.unsorted) {
       const visitorUid = item.metadata?.origin?.visitor_uid || item.metadata?.visitor_uid || '';
       const clientEmail = (item.metadata?.client?.email || '').toLowerCase().trim();
+      const clientPhone = String(item.metadata?.client?.phone || '').replace(/\D/g, '');
 
-      if (visitorUid === chatKey || (userEmail && clientEmail === userEmail)) {
-        console.log(`[KOMMO] Found pending unsorted chat lead uid=${item.uid} for user=${user.name}. Accepting...`);
-        await acceptUnsortedLead(item.uid, targetPipelineId);
+      const isMatch = (chatKey && visitorUid === chatKey) ||
+                      (userEmail && clientEmail === userEmail) ||
+                      (userPhone && clientPhone && clientPhone.length >= 7 && clientPhone.endsWith(userPhone.slice(-7)));
 
-        const acceptedLeadId = item._embedded?.leads?.[0]?.id || item.lead_id || null;
-        if (acceptedLeadId && contactId) {
+      if (isMatch) {
+        console.log(`[KOMMO] Found pending unsorted chat lead uid=${item.uid} for user=${user.name}. Accepting & merging into leadId=${leadId}...`);
+        await acceptUnsortedLead(item.uid, 70685710, leadId);
+
+        const activeLeadId = leadId || item._embedded?.leads?.[0]?.id || item.lead_id || null;
+        if (activeLeadId && contactId) {
           try {
-            await kommoFetch(`/api/v4/leads/${acceptedLeadId}/link`, {
+            await kommoFetch(`/api/v4/leads/${activeLeadId}/link`, {
               method: 'POST',
               body: [{ to_entity_id: Number(contactId), to_entity_type: 'contacts' }]
             });
@@ -719,12 +743,12 @@ async function syncBid(params) {
     leadId = await findLeadForContact(contactId);
   }
 
-  // Always check if an unsorted chat lead exists for this chatKey and accept it
+  // Always check if an unsorted chat lead exists for this chatKey and accept it into existing leadId
   const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 1500 });
   if (found && found.incomingUid) {
     incomingLeadUid = found.incomingUid;
-    console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting into pipeline...`);
-    await acceptUnsortedLead(incomingLeadUid, targetPipelineId);
+    console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting into pipeline & leadId=${leadId}...`);
+    await acceptUnsortedLead(incomingLeadUid, targetPipelineId, leadId);
     if (!leadId && found.leadId) {
       leadId = found.leadId;
     }
@@ -736,6 +760,9 @@ async function syncBid(params) {
     leadId = direct.leadId;
     contactId = direct.contactId;
   }
+
+  // Accept and clean up any remaining pending unsorted chat leads for this user into leadId
+  await acceptAllPendingUnsortedLeadsForUser(user, leadId);
 
   // 3. Link contact to lead if needed
   if (leadId && contactId) {
