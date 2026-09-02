@@ -446,24 +446,32 @@ async function updateLead(leadId, data) {
 
   console.log(`[KOMMO] lead PATCH status ${res.status}`);
 
-  // Create a timeline note on the lead so advisors immediately see the budget in the lead timeline
-  if (priceAmount > 0) {
-    try {
-      await kommoFetch(`/api/v4/leads/${leadId}/notes`, {
-        method: 'POST',
-        body: [
-          {
-            note_type: 'common',
-            params: {
-              text: `🚗 SOLICITUD DE PUJA ENVIADA\n• Presupuesto / Tope de puja: ${formattedBudget}\n• Vehículo: ${vehicleTitle}\n• VIN: ${data.vin || 'N/D'}\n• Lote: ${data.lot || 'N/D'}`
-            }
-          }
-        ]
-      });
-      console.log(`[KOMMO] Lead note posted for leadId=${leadId}`);
-    } catch (noteErr) {
-      console.warn(`[KOMMO WARN] Error posting lead note:`, noteErr.message);
-    }
+  // Create a timeline note on the lead so advisors immediately see the budget and vehicle specs
+  try {
+    const formattedDate = new Date().toLocaleString('es-US', { timeZone: 'America/New_York' });
+    const noteText = [
+      `🚗 SOLICITUD DE PUJA REGISTRADA`,
+      `---------------------------------`,
+      `• Vehículo: ${vehicleTitle}`,
+      `• Tope de Oferta (Presupuesto): ${formattedBudget}`,
+      `• N° Lote: ${data.lot || 'N/D'}`,
+      `• VIN: ${data.vin || 'N/D'}`,
+      `• Fecha: ${formattedDate}`,
+      `---------------------------------`
+    ].join('\n');
+
+    await kommoFetch(`/api/v4/leads/${leadId}/notes`, {
+      method: 'POST',
+      body: [
+        {
+          note_type: 'common',
+          params: { text: noteText }
+        }
+      ]
+    });
+    console.log(`[KOMMO] Lead note posted for leadId=${leadId}`);
+  } catch (noteErr) {
+    console.warn(`[KOMMO WARN] Error posting lead note:`, noteErr.message);
   }
 
   return res.data;
@@ -626,7 +634,7 @@ async function syncBid(params) {
 
   const apvUserId = user.kommoUserId;
   const lot = String(vehicle.lot);
-  const chatKey = `apv:${apvUserId}:vehicle:${lot}`;
+  const chatKey = `apv:${apvUserId}`;
   const vehicleModel = vehicle.title || [vehicle.year, vehicle.make, vehicle.model, vehicle.trim].filter(Boolean).join(' ');
   const vin = vehicle.vin || '';
   const sale = Math.max(0, Math.round(Number(maxBid || 0)));
@@ -682,6 +690,29 @@ async function syncBid(params) {
     email: user.email,
     apvUserId
   });
+
+  // Post note to Contact timeline so advisors see complete bid history under Contact card
+  if (contactId) {
+    try {
+      const formattedDate = new Date().toLocaleString('es-US', { timeZone: 'America/New_York' });
+      const contactNoteText = [
+        `🚗 NUEVA PUJA DE CLIENTE`,
+        `• Vehículo: ${vehicleModel}`,
+        `• Tope de Oferta: ${sale > 0 ? `$${sale.toLocaleString('en-US')} USD` : 'Sin definir'}`,
+        `• Lote: ${lot}`,
+        `• VIN: ${vin || 'N/D'}`,
+        `• Fecha: ${formattedDate}`
+      ].join('\n');
+
+      await kommoFetch(`/api/v4/contacts/${contactId}/notes`, {
+        method: 'POST',
+        body: [{ note_type: 'common', params: { text: contactNoteText } }]
+      });
+      console.log(`[KOMMO] Contact note posted for contactId=${contactId}`);
+    } catch (cNoteErr) {
+      console.warn(`[KOMMO WARN] Error posting contact note:`, cNoteErr.message);
+    }
+  }
 
   // Update Lead
   await updateLead(leadId, {

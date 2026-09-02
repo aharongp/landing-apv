@@ -63,9 +63,8 @@
     }
   }
 
-  function chatKey(user, vehicle) {
-    const lot = vehicle && vehicle.lot ? String(vehicle.lot) : 'general';
-    return `apv:${user.kommoUserId}:vehicle:${lot}`;
+  function chatKey(user) {
+    return user && user.kommoUserId ? `apv:${user.kommoUserId}` : 'apv:guest';
   }
 
   function resetPluginForChat(nextKey) {
@@ -92,7 +91,7 @@
   }
 
   function configureForUser(user, vehicle) {
-    const nextKey = chatKey(user, vehicle);
+    const nextKey = chatKey(user);
     resetPluginForChat(nextKey);
     activeChatKey = nextKey;
 
