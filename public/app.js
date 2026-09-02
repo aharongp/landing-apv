@@ -116,6 +116,23 @@
     renderConversationSelector();
   }
 
+  async function deleteSingleBid(lot){
+    if(!lot) return;
+    try {
+      await api('/api/user/bids/' + encodeURIComponent(lot), { method: 'DELETE' });
+    } catch(_) {}
+    if(state.user && state.user.id){
+      try{
+        const store=JSON.parse(localStorage.getItem(BIDS_HISTORY_KEY)||'{}');
+        const list=Array.isArray(store[state.user.id])?store[state.user.id]:[];
+        store[state.user.id]=list.filter(b=>String(b.lot)!==String(lot));
+        localStorage.setItem(BIDS_HISTORY_KEY, JSON.stringify(store));
+      }catch(_){}
+    }
+    showToast(`Puja para lote ${lot} eliminada.`);
+    renderConversationSelector();
+  }
+
   async function renderConversationSelector(){
     const container=$('#chat-history-selector');
     if(!container||!state.user) return;
@@ -149,19 +166,29 @@
     container.innerHTML=`
       <div class="chat-history-title">
         <span>Tus Conversaciones Activas (${bids.length})</span>
-        <button type="button" class="btn-clear-bids" id="btn-clear-bids" title="Reiniciar historial de pujas">🗑 Reiniciar pujas</button>
+        <button type="button" class="btn-clear-bids" id="btn-clear-bids" title="Reiniciar todas las pujas">🗑 Borrar todas</button>
       </div>
       <div class="chat-tabs-scroll">
         ${bids.map(b=>`
-          <button type="button" class="chat-tab ${String(b.lot)===currentLot?'active':''}" data-switch-lot="${esc(b.lot)}">
-            🚗 ${esc(b.title.slice(0, 22))}${b.maxBid?` <span class="tab-bid-chip">$${Number(b.maxBid).toLocaleString()}</span>`:''}
-          </button>
+          <div class="chat-tab-wrap ${String(b.lot)===currentLot?'active':''}">
+            <button type="button" class="chat-tab" data-switch-lot="${esc(b.lot)}">
+              🚗 ${esc(b.title.slice(0, 22))}${b.maxBid?` <span class="tab-bid-chip">$${Number(b.maxBid).toLocaleString()}</span>`:''}
+            </button>
+            <button type="button" class="btn-delete-single-bid" data-delete-lot="${esc(b.lot)}" title="Eliminar esta puja">×</button>
+          </div>
         `).join('')}
       </div>
     `;
 
     const clearBtn=$('#btn-clear-bids', container);
     if(clearBtn) clearBtn.onclick=clearUserBids;
+
+    $$('[data-delete-lot]', container).forEach(btn => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        deleteSingleBid(btn.dataset.deleteLot);
+      };
+    });
   }
 
   function showToast(msg){ dom.toast.textContent=msg; dom.toast.classList.remove('hidden'); clearTimeout(showToast.timer); showToast.timer=setTimeout(()=>dom.toast.classList.add('hidden'),3200); }

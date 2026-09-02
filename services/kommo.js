@@ -681,17 +681,14 @@ async function syncBid(params) {
     leadId = await findLeadForContact(contactId);
   }
 
-  if (!leadId) {
-    console.log(`[KOMMO] No prior leadId found for ${apvUserId}. Polling incoming chat lead...`);
-    const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 3000 });
-    if (found && found.leadId) {
-      incomingLeadUid = found.incomingUid;
+  // Always check if an unsorted chat lead exists for this chatKey and accept it
+  const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 1500 });
+  if (found && found.incomingUid) {
+    incomingLeadUid = found.incomingUid;
+    console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting into pipeline...`);
+    await acceptUnsortedLead(incomingLeadUid, targetPipelineId);
+    if (!leadId && found.leadId) {
       leadId = found.leadId;
-      if (found.contactId) contactId = found.contactId;
-
-      if (incomingLeadUid) {
-        await acceptUnsortedLead(incomingLeadUid, targetPipelineId);
-      }
     }
   }
 
