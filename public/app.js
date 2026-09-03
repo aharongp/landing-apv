@@ -133,29 +133,6 @@
     renderConversationSelector();
   }
 
-  async function renderConversationSelector(){
-    const container=$('#chat-history-selector');
-    if(!container||!state.user) return;
-
-    let bids=getUserBidsHistory();
-    try{
-      const serverBids=await api('/api/user/bids').catch(()=>null);
-      if(serverBids && serverBids.ok && Array.isArray(serverBids.bids)){
-        serverBids.bids.forEach(sb=>{
-          if(sb.vehicle && !bids.some(b=>String(b.lot)===String(sb.lot))){
-            bids.push({
-              lot: String(sb.lot),
-              title: sb.vehicle.title||`Lote ${sb.lot}`,
-              vin: sb.vehicle.vin||'',
-              maxBid: 0,
-              image: sb.vehicle.image||'',
-              date: sb.syncedAt
-            });
-          }
-        });
-      }
-    }catch(_){}
-
   const TRANSLATIONS = {
     es: {
       navCatalog: 'Catálogo',
@@ -239,21 +216,23 @@
     if(!container) return;
 
     let bids=[];
-    if(state.user && state.user.kommoUserId){
-      bids=getUserBidsHistory();
-      if(bids.length===0 && state.currentVehicle){
-        const savedBids=catalogMemory.get('apv_bids_v15')||[];
-        savedBids.forEach(sb=>{
-          if(String(sb.userId)===String(state.user.id) && sb.vehicle){
-            bids.push({
-              lot: String(sb.vehicle.lot),
-              title: sb.vehicle.title||'Vehículo',
-              maxBid: 0,
-              image: sb.vehicle.image||'',
-              date: sb.syncedAt
-            });
-          }
-        });
+    try {
+      if(state.user && state.user.kommoUserId){
+        bids=getUserBidsHistory();
+        if(bids.length===0 && state.currentVehicle){
+          const savedBids=catalogMemory.get('apv_bids_v15')||[];
+          savedBids.forEach(sb=>{
+            if(String(sb.userId)===String(state.user.id) && sb.vehicle){
+              bids.push({
+                lot: String(sb.vehicle.lot),
+                title: sb.vehicle.title||'Vehículo',
+                maxBid: 0,
+                image: sb.vehicle.image||'',
+                date: sb.syncedAt
+              });
+            }
+          });
+        }
       }
     }catch(_){}
 
