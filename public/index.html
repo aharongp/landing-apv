@@ -94,14 +94,19 @@
       <a href="#ayuda">Ayuda</a>
     </nav>
     <div class="topbar-account">
-      <button id="auth-button" class="btn btn-ghost btn-small" type="button" data-open-auth onclick="return window.openAPVAuth ? window.openAPVAuth() : false">Iniciar sesión</button>
+      <div class="lang-switch-toggle" id="lang-switch">
+        <button type="button" class="lang-btn active" data-lang="es">ES</button>
+        <span class="lang-divider">|</span>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button id="auth-button" class="btn btn-ghost btn-small" type="button" data-open-auth data-i18n="login" onclick="return window.openAPVAuth ? window.openAPVAuth() : false">Iniciar sesión</button>
       <div id="account-chip" class="account-chip hidden">
         <span id="account-avatar" class="account-avatar">AP</span>
         <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
-        <button id="my-bids-button" class="btn btn-ghost btn-small" type="button" title="Ver mis pujas y conversaciones">💬 Mis Pujas</button>
-        <button id="logout-button" class="account-logout" type="button">Salir</button>
+        <button id="my-bids-button" class="btn btn-ghost btn-small" type="button" title="Ver mis pujas y conversaciones" data-i18n="myBids">💬 Mis Pujas</button>
+        <button id="logout-button" class="account-logout" type="button" data-i18n="logout">Salir</button>
       </div>
-      <a class="btn btn-dark btn-small topbar-catalog" href="#catalogo">Ver vehículos</a>
+      <a class="btn btn-dark btn-small topbar-catalog" href="#catalogo" data-i18n="viewVehicles">Ver vehículos</a>
     </div>
   </header>
 
@@ -281,12 +286,39 @@
         <button class="btn btn-dark full" type="submit">Entrar y continuar</button>
       </form>
       <form id="register-form" class="auth-form hidden">
-        <label><span>Nombre completo</span><input id="register-name" type="text" autocomplete="name" required /></label>
-        <label><span>Correo electrónico</span><input id="register-email" type="email" autocomplete="email" required /></label>
-        <label><span>Teléfono / WhatsApp</span><input id="register-phone" type="tel" autocomplete="tel" required /></label>
-        <label><span>Contraseña</span><input id="register-password" type="password" minlength="8" autocomplete="new-password" required /></label>
-        <button class="btn btn-primary full" type="submit">Enviar código de verificación</button>
-        <small>Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
+        <label><span data-i18n="fullName">Nombre completo</span><input id="register-name" type="text" autocomplete="name" required /></label>
+        <label><span data-i18n="email">Correo electrónico</span><input id="register-email" type="email" autocomplete="email" required /></label>
+        <label>
+          <span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
+          <div class="phone-input-group">
+            <select id="register-country-code" class="country-code-select" aria-label="Código de país">
+              <option value="+1">🇺🇸 +1 (EE. UU.)</option>
+              <option value="+58">🇻🇪 +58 (Venezuela)</option>
+              <option value="+52">🇲🇽 +52 (México)</option>
+              <option value="+57">🇨🇴 +57 (Colombia)</option>
+              <option value="+34">🇪🇸 +34 (España)</option>
+              <option value="+54">🇦🇷 +54 (Argentina)</option>
+              <option value="+56">🇨🇱 +56 (Chile)</option>
+              <option value="+51">🇵🇪 +51 (Perú)</option>
+              <option value="+593">🇪🇨 +593 (Ecuador)</option>
+              <option value="+502">🇬🇹 +502 (Guatemala)</option>
+              <option value="+503">🇸🇻 +503 (El Salvador)</option>
+              <option value="+504">🇭🇳 +504 (Honduras)</option>
+              <option value="+505">🇳🇮 +505 (Nicaragua)</option>
+              <option value="+506">🇨🇷 +506 (Costa Rica)</option>
+              <option value="+507">🇵🇦 +507 (Panamá)</option>
+              <option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
+              <option value="+598">🇺🇾 +598 (Uruguay)</option>
+              <option value="+591">🇧🇴 +591 (Bolivia)</option>
+              <option value="+509">🇭🇹 +509 (Haití)</option>
+              <option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
+            </select>
+            <input id="register-phone" type="tel" autocomplete="tel" placeholder="414 123 4567" required />
+          </div>
+        </label>
+        <label><span data-i18n="password">Contraseña</span><input id="register-password" type="password" minlength="8" autocomplete="new-password" required /></label>
+        <button class="btn btn-primary full" type="submit" data-i18n="sendVerificationCode">Enviar código de verificación</button>
+        <small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
       </form>
       <form id="verify-form" class="auth-form hidden">
         <div class="verify-intro">

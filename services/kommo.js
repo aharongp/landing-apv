@@ -961,7 +961,24 @@ async function updateActiveBidsSummary(user) {
     });
     console.log(`[KOMMO] Active bids summary note posted for leadId=${leadId}`);
   } catch (noteErr) {
-    console.warn(`[KOMMO WARN] Error posting summary note:`, noteErr.message);
+    console.warn(`[KOMMO WARN] Error posting lead summary note:`, noteErr.message);
+  }
+
+  if (contactId) {
+    try {
+      await kommoFetch(`/api/v4/contacts/${contactId}/notes`, {
+        method: 'POST',
+        body: [
+          {
+            note_type: 'common',
+            params: { text: summaryText }
+          }
+        ]
+      });
+      console.log(`[KOMMO] Active bids summary note posted for contactId=${contactId}`);
+    } catch (cNoteErr) {
+      console.warn(`[KOMMO WARN] Error posting contact summary note:`, cNoteErr.message);
+    }
   }
 
   return { leadId, contactId, summaryText };

@@ -156,6 +156,107 @@
       }
     }catch(_){}
 
+  const TRANSLATIONS = {
+    es: {
+      navCatalog: 'Catálogo',
+      navHow: 'Cómo funciona',
+      navHelp: 'Ayuda',
+      login: 'Iniciar sesión',
+      createAccount: 'Crear cuenta',
+      myBids: '💬 Mis Pujas',
+      logout: 'Salir',
+      viewVehicles: 'Ver vehículos',
+      fullName: 'Nombre completo',
+      email: 'Correo electrónico',
+      phoneLabel: 'Teléfono / WhatsApp',
+      password: 'Contraseña',
+      sendVerificationCode: 'Enviar código de verificación',
+      sendCodeNote: 'Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.',
+      yourActiveBids: 'Tus Pujas Activas',
+      clearAllBids: '🗑 Borrar todas',
+      wantToBid: 'Quiero ofertar',
+      viewVehicle: 'Ver ficha'
+    },
+    en: {
+      navCatalog: 'Catalog',
+      navHow: 'How it works',
+      navHelp: 'Help',
+      login: 'Log in',
+      createAccount: 'Create account',
+      myBids: '💬 My Bids',
+      logout: 'Log out',
+      viewVehicles: 'View vehicles',
+      fullName: 'Full name',
+      email: 'Email address',
+      phoneLabel: 'Phone / WhatsApp',
+      password: 'Password',
+      sendVerificationCode: 'Send verification code',
+      sendCodeNote: 'We will send a 6-digit verification code to your email to safely activate your account.',
+      yourActiveBids: 'Your Active Bids',
+      clearAllBids: '🗑 Clear all',
+      wantToBid: 'I want to bid',
+      viewVehicle: 'View details'
+    }
+  };
+
+  let currentLang = localStorage.getItem('APV_LANG') || 'es';
+
+  function t(key, fallback) {
+    if (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) {
+      return TRANSLATIONS[currentLang][key];
+    }
+    return fallback || (TRANSLATIONS.es[key] || key);
+  }
+
+  function setLanguage(lang) {
+    if (!TRANSLATIONS[lang]) return;
+    currentLang = lang;
+    localStorage.setItem('APV_LANG', lang);
+    document.documentElement.lang = lang;
+
+    $$('#lang-switch .lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    $$('[data-i18n]').forEach(el => {
+      const k = el.dataset.i18n;
+      if (TRANSLATIONS[lang] && TRANSLATIONS[lang][k]) {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+          el.placeholder = TRANSLATIONS[lang][k];
+        } else {
+          el.textContent = TRANSLATIONS[lang][k];
+        }
+      }
+    });
+
+    if (state.user) {
+      renderConversationSelector();
+    }
+  }
+
+  function renderConversationSelector(){
+    const container = dom.chatTabsContainer;
+    if(!container) return;
+
+    let bids=[];
+    if(state.user && state.user.kommoUserId){
+      bids=getUserBidsHistory();
+      if(bids.length===0 && state.currentVehicle){
+        const savedBids=catalogMemory.get('apv_bids_v15')||[];
+        savedBids.forEach(sb=>{
+          if(String(sb.userId)===String(state.user.id) && sb.vehicle){
+            bids.push({
+              lot: String(sb.vehicle.lot),
+              title: sb.vehicle.title||'Vehículo',
+              maxBid: 0,
+              image: sb.vehicle.image||'',
+              date: sb.syncedAt
+            });
+          }
+        });
+      }
+    }catch(_){}
+
     if(bids.length===0){
       container.classList.add('hidden');
       return;
@@ -165,13 +266,13 @@
     container.classList.remove('hidden');
     container.innerHTML=`
       <div class="chat-history-title">
-        <span>Tus Conversaciones Activas (${bids.length})</span>
-        <button type="button" class="btn-clear-bids" id="btn-clear-bids" title="Reiniciar todas las pujas">🗑 Borrar todas</button>
+        <span>${t('yourActiveBids', 'Tus Pujas Activas')} (${bids.length})</span>
+        <button type="button" class="btn-clear-bids" id="btn-clear-bids" title="Reiniciar todas las pujas">${t('clearAllBids', '🗑 Borrar todas')}</button>
       </div>
       <div class="chat-tabs-scroll">
         ${bids.map(b=>`
           <div class="chat-tab-wrap ${String(b.lot)===currentLot?'active':''}">
-            <button type="button" class="chat-tab" data-switch-lot="${esc(b.lot)}">
+            <button type="button" class="chat-tab ${String(b.lot)===currentLot?'active':''}" data-switch-lot="${esc(b.lot)}">
               🚗 ${esc(b.title.slice(0, 22))}${b.maxBid?` <span class="tab-bid-chip">$${Number(b.maxBid).toLocaleString()}</span>`:''}
             </button>
             <button type="button" class="btn-delete-single-bid" data-delete-lot="${esc(b.lot)}" title="Eliminar esta puja">×</button>
@@ -619,8 +720,12 @@
     e.preventDefault(); setAuthStatus('');
     const button=e.currentTarget.querySelector('button[type=submit]'); button.disabled=true;
     const email = $('#register-email').value.trim();
+    const countryCode = $('#register-country-code')?.value || '+1';
+    const rawPhone = $('#register-phone').value.trim();
+    const phone = rawPhone.startsWith('+') ? rawPhone : `${countryCode} ${rawPhone}`;
+
     try{
-      const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('#register-name').value,email,phone:$('#register-phone').value,password:$('#register-password').value})});
+      const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('#register-name').value,email,phone,password:$('#register-password').value})});
       state.pendingVerifyEmail = email;
       $('#register-form').classList.add('hidden');
       $('#verify-form').classList.remove('hidden');
@@ -969,6 +1074,13 @@
 
   async function boot(){
     initMotionEffects();
+
+    // Language Switcher Bindings
+    $$('#lang-switch .lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+    setLanguage(currentLang);
+
     try { await initAuth(); } catch(e) { console.warn('[APV] Auth init note:', e); }
     try { await initFilters(); } catch(e) { console.warn('[APV] Filters init note:', e); }
     try { await loadVehicles(); } catch(e) { showToast('Error al cargar el catálogo: ' + e.message); }
