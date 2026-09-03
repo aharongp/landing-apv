@@ -623,7 +623,7 @@ async function findOrCreateLeadAndContactViaApi(user, vehicle, maxBid) {
   throw new Error('No se pudo crear la oportunidad (Lead) en Kommo CRM.');
 }
 
-async function acceptUnsortedLead(incomingUid, statusId, targetLeadId) {
+async function acceptUnsortedLead(incomingUid, statusId) {
   if (!incomingUid) return null;
   try {
     const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
@@ -631,15 +631,11 @@ async function acceptUnsortedLead(incomingUid, statusId, targetLeadId) {
       status_id: Number(statusId || 70685710),
       pipeline_id: targetPipelineId
     };
-    if (targetLeadId) {
-      body.lead_id = Number(targetLeadId);
-      body.accept_result = { lead_id: Number(targetLeadId) };
-    }
     const res = await kommoFetch(`/api/v4/leads/unsorted/${incomingUid}/accept`, {
       method: 'POST',
       body
     });
-    console.log(`[KOMMO] Accepted unsorted lead incomingUid=${incomingUid} linkedToLeadId=${targetLeadId || 'new'} status=${res.status}`);
+    console.log(`[KOMMO] Accepted unsorted lead incomingUid=${incomingUid} status=${res.status}`);
     return res.data;
   } catch (err) {
     console.warn(`[KOMMO WARN] acceptUnsortedLead error for ${incomingUid}:`, err.message);
@@ -650,14 +646,12 @@ async function acceptUnsortedLead(incomingUid, statusId, targetLeadId) {
 async function acceptAllPendingUnsortedLeadsForUser(user, targetLeadId) {
   if (!user || !user.kommoUserId) return;
   try {
-    const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
     const targetStatusId = 70685710;
     const chatKey = `apv:${user.kommoUserId}`;
     const rawUserId = String(user.kommoUserId);
     const userEmail = (user.email || '').toLowerCase().trim();
     const userPhone = String(user.phone || '').replace(/\D/g, '');
 
-    // Fetch all unsorted items without restrictive filters
     const res = await kommoFetch('/api/v4/leads/unsorted?limit=50');
     if (res.status === 204 || !res.data || !res.data._embedded || !Array.isArray(res.data._embedded.unsorted)) {
       return;
@@ -689,27 +683,26 @@ async function acceptAllPendingUnsortedLeadsForUser(user, targetLeadId) {
                       (user.name && embeddedName && embeddedName.includes(user.name.toLowerCase().trim()));
 
       if (isMatch) {
-        console.log(`[KOMMO] Found pending unsorted lead uid=${item.uid} for user=${user.name}. Accepting & linking...`);
-        const acceptRes = await acceptUnsortedLead(item.uid, targetStatusId, leadId);
+        console.log(`[KOMMO] Found pending unsorted lead uid=${item.uid} for user=${user.name}. Accepting...`);
+        const acceptRes = await acceptUnsortedLead(item.uid, targetStatusId);
 
         const acceptedLeadId = acceptRes?._embedded?.leads?.[0]?.id || item.lead_id || leadId || null;
         const acceptedContactId = acceptRes?._embedded?.contacts?.[0]?.id || item.contact_id || contactId || null;
 
-        // Explicitly link contactId to acceptedLeadId in Kommo
-        if (acceptedLeadId && contactId) {
+        const activeLeadId = leadId || acceptedLeadId;
+
+        // Explicitly link contactId to activeLeadId in Kommo
+        if (activeLeadId && contactId) {
           try {
-            await kommoFetch(`/api/v4/leads/${acceptedLeadId}/link`, {
+            await kommoFetch(`/api/v4/leads/${activeLeadId}/link`, {
               method: 'POST',
               body: [{ to_entity_id: Number(contactId), to_entity_type: 'contacts' }]
             });
             await kommoFetch(`/api/v4/contacts/${contactId}/link`, {
               method: 'POST',
-              body: [{ to_entity_id: Number(acceptedLeadId), to_entity_type: 'leads' }]
+              body: [{ to_entity_id: Number(activeLeadId), to_entity_type: 'leads' }]
             });
-            console.log(`[KOMMO] Linked contactId=${contactId} <-> acceptedLeadId=${acceptedLeadId}`);
-          } catch (linkErr) {
-            console.warn(`[KOMMO WARN] Error linking contact to lead:`, linkErr.message);
-          }
+          } catch (_) {}
         }
 
         // If secondary contactId was created by chat, sync phone & email to unify
@@ -745,69 +738,62 @@ async function syncBid(params) {
   const vehicleModel = vehicle.title || [vehicle.year, vehicle.make, vehicle.model, vehicle.trim].filter(Boolean).join(' ');
   const vin = vehicle.vin || '';
   const sale = Math.max(0, Math.round(Number(maxBid || 0)));
-  const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
 
-  // 1. Check existing local records for this user to reuse leadId / contactId
+  // 1. Resolve contactId first (find by email/phone or create)
+  let contactId = await findOrCreateContact(user);
+
+  // 2. Resolve leadId for this user
   let existingRecord = getSyncRecord(apvUserId, lot);
   let leadId = existingRecord ? existingRecord.leadId : null;
-  let contactId = existingRecord ? existingRecord.contactId : null;
   let incomingLeadUid = existingRecord ? existingRecord.incomingLeadUid : null;
 
-  if (!leadId || !contactId) {
+  if (!leadId) {
     const userRecords = getUserSyncRecords(apvUserId);
     if (Array.isArray(userRecords) && userRecords.length > 0) {
       const rec = userRecords.find(r => r.leadId);
       if (rec) {
-        if (!leadId) leadId = rec.leadId;
-        if (!contactId) contactId = rec.contactId;
-        console.log(`[KOMMO] Reusing existing leadId=${leadId} contactId=${contactId} from user sync history`);
+        leadId = rec.leadId;
+        console.log(`[KOMMO] Reusing existing leadId=${leadId} from user sync history for ${apvUserId}`);
       }
     }
   }
 
-  // 2. Poll for incoming unsorted chat lead created by the chat widget
-  // Wait up to 3.5 seconds for the chat widget's unsorted lead
-  const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 3500 });
-  if (found && found.incomingUid) {
-    incomingLeadUid = found.incomingUid;
-    console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting into pipeline & merging into leadId=${leadId}...`);
-    const acceptRes = await acceptUnsortedLead(incomingLeadUid, 70685710, leadId);
-
-    const chatLeadId = acceptRes?._embedded?.leads?.[0]?.id || acceptRes?.lead_id || found.leadId;
-    const chatContactId = acceptRes?._embedded?.contacts?.[0]?.id || acceptRes?.contact_id || found.contactId;
-
-    if (!leadId && chatLeadId) leadId = Number(chatLeadId);
-    if (!contactId && chatContactId) contactId = Number(chatContactId);
-  }
-
-  // 3. If STILL no contactId exists, find existing contact by email/phone or create one
-  if (!contactId) {
-    contactId = await findOrCreateContact(user);
-  }
-
-  // 4. If STILL no leadId exists, find existing lead for contact or create one
   if (!leadId && contactId) {
     leadId = await findLeadForContact(contactId);
   }
 
+  // 3. Check for unsorted chat lead created by the chat widget and accept it
+  const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 2500 });
+  if (found && found.incomingUid) {
+    incomingLeadUid = found.incomingUid;
+    console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting...`);
+    const acceptRes = await acceptUnsortedLead(incomingLeadUid, 70685710);
+
+    const acceptedLeadId = acceptRes?._embedded?.leads?.[0]?.id || acceptRes?.lead_id || found.leadId;
+    const acceptedContactId = acceptRes?._embedded?.contacts?.[0]?.id || acceptRes?.contact_id || found.contactId;
+
+    if (!leadId && acceptedLeadId) {
+      leadId = Number(acceptedLeadId);
+    }
+    if (acceptedContactId && Number(acceptedContactId) !== Number(contactId)) {
+      await updateContact(acceptedContactId, {
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+        apvUserId
+      }).catch(() => null);
+    }
+  }
+
+  // 4. If still no leadId, create clean Lead via REST API
   if (!leadId) {
-    console.log(`[KOMMO] Live chat lead not found. Creating Lead & Contact directly via REST API v4...`);
+    console.log(`[KOMMO] Creating Lead & Contact via REST API...`);
     const direct = await findOrCreateLeadAndContactViaApi(user, vehicle, sale);
     leadId = direct.leadId;
     contactId = direct.contactId;
   }
 
-  // 5. Update Contact with user's name, phone, email & apvUserId
-  if (contactId) {
-    await updateContact(contactId, {
-      name: user.name,
-      phone: user.phone,
-      email: user.email,
-      apvUserId
-    }).catch(() => null);
-  }
-
-  // 6. Explicitly link contactId <-> leadId
+  // 5. Explicitly link contactId <-> leadId
   if (leadId && contactId) {
     try {
       await kommoFetch(`/api/v4/leads/${leadId}/link`, {
@@ -821,6 +807,14 @@ async function syncBid(params) {
     } catch (_) {}
   }
 
+  // 6. Update Contact details
+  await updateContact(contactId, {
+    name: user.name,
+    phone: user.phone,
+    email: user.email,
+    apvUserId
+  });
+
   // 7. Update Lead custom fields
   await updateLead(leadId, {
     vehicleModel,
@@ -829,13 +823,10 @@ async function syncBid(params) {
     maxBid: sale
   });
 
-  // 8. Accept any other remaining pending unsorted chat leads for this user into leadId
+  // 8. Accept any remaining unsorted chat leads for this user
   await acceptAllPendingUnsortedLeadsForUser(user, leadId);
 
-  // 9. Mandatory verification GETs
-  const verified = await verifySync(leadId, contactId);
-
-  // 7. Save to sync log
+  // 9. Save sync log
   saveSyncRecord({
     apvUserId,
     lot,
@@ -845,7 +836,7 @@ async function syncBid(params) {
     contactId
   });
 
-  // 8. Post/Update consolidated active bids summary note
+  // 10. Update Active Bids Summary Note on lead timeline
   try {
     await updateActiveBidsSummary(user);
   } catch (sumErr) {
@@ -856,8 +847,7 @@ async function syncBid(params) {
     ok: true,
     incomingLeadUid,
     leadId,
-    contactId,
-    verified
+    contactId
   };
 }
 
