@@ -714,6 +714,15 @@ async function acceptAllPendingUnsortedLeadsForUser(user, targetLeadId) {
             apvUserId: user.kommoUserId
           }).catch(() => null);
         }
+        // Save sync record for this accepted lead
+        if (activeLeadId) {
+          saveSyncRecord({
+            apvUserId: user.kommoUserId,
+            incomingLeadUid: item.uid,
+            leadId: activeLeadId,
+            contactId: contactId || acceptedContactId
+          });
+        }
       }
     }
   } catch (err) {
@@ -742,7 +751,7 @@ async function syncBid(params) {
   // 1. Resolve contactId first (find by email/phone or create)
   let contactId = await findOrCreateContact(user);
 
-  // 2. Resolve leadId for this user
+  // 2. Resolve leadId for this user if already existing
   let existingRecord = getSyncRecord(apvUserId, lot);
   let leadId = existingRecord ? existingRecord.leadId : null;
   let incomingLeadUid = existingRecord ? existingRecord.incomingLeadUid : null;
@@ -763,7 +772,7 @@ async function syncBid(params) {
   }
 
   // 3. Check for unsorted chat lead created by the chat widget and accept it
-  const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 2500 });
+  const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 3000 });
   if (found && found.incomingUid) {
     incomingLeadUid = found.incomingUid;
     console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting...`);
@@ -785,12 +794,19 @@ async function syncBid(params) {
     }
   }
 
-  // 4. If still no leadId, create clean Lead via REST API
+  // 4. Do NOT pre-create REST lead. If user has not typed in chat yet, record intent locally and wait for chat lead.
   if (!leadId) {
-    console.log(`[KOMMO] Creating Lead & Contact via REST API...`);
-    const direct = await findOrCreateLeadAndContactViaApi(user, vehicle, sale);
-    leadId = direct.leadId;
-    contactId = direct.contactId;
+    console.log(`[KOMMO] Chat conversation not yet initiated in widget. Recording bid intent locally for ${apvUserId}`);
+    saveSyncRecord({
+      apvUserId,
+      lot,
+      chatKey
+    });
+    return {
+      ok: true,
+      pendingChat: true,
+      contactId
+    };
   }
 
   // 5. Explicitly link contactId <-> leadId
@@ -836,7 +852,7 @@ async function syncBid(params) {
     contactId
   });
 
-  // 10. Update Active Bids Summary Note on lead timeline
+  // 10. Update Active Bids Summary Note on lead & contact timelines
   try {
     await updateActiveBidsSummary(user);
   } catch (sumErr) {

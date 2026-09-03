@@ -23,7 +23,7 @@
     buyNow: $('#filter-buy-now'), odometer: $('#filter-odometer'), odometerLabel: $('#odometer-label'), sort: $('#sort-select'), filtersPanel: $('#filters-panel'),
     vehicleOverlay: $('#vehicle-overlay'), vehicleDetail: $('#vehicle-detail-content'), bidOverlay: $('#bid-overlay'), bidModal: $('.bid-modal'), bidAmount: $('#bid-amount'),
     bidVehicleMini: $('#bid-vehicle-mini'), bidAmountStep: $('#bid-step-amount'), bidChatStep: $('#bid-step-chat'), chatContext: $('#chat-context'),
-    kommoFallback: $('#kommo-fallback'), fallbackPayload: $('#fallback-payload'), autoMessagePreview: $('#auto-message-preview'), toast: $('#toast'),
+    kommoFallback: $('#kommo-fallback'), fallbackPayload: $('#fallback-payload'), autoMessagePreview: $('#auto-message-preview'), toast: $('#toast'), chatTabsContainer: $('#chat-history-selector'),
     authOverlay: $('#auth-overlay'), authButton: $('#auth-button'), accountChip: $('#account-chip'), accountAvatar: $('#account-avatar'),
     accountName: $('#account-name'), accountEmail: $('#account-email'), authReason: $('#auth-reason'), authStatus: $('#auth-status'),
     heroSearchForm: $('#hero-search-form'), heroSearchInput: $('#hero-search-input'), heroQuickResults: $('#hero-quick-results'), heroVehicleCard: $('#hero-vehicle-card'),
@@ -143,6 +143,16 @@
       myBids: '💬 Mis Pujas',
       logout: 'Salir',
       viewVehicles: 'Ver vehículos',
+      heroEyebrow: 'SUBASTAS EN ESTADOS UNIDOS · 100% ONLINE',
+      heroTitle: 'Compra tu carro en subastas de EE. UU. sin complicarte.',
+      heroSub: 'Encuentra vehículos de Copart, define cuánto quieres ofertar y APV Motors te acompaña desde la puja hasta la documentación y el traslado.',
+      heroSearchPlaceholder: 'Ej. Toyota Camry, 41633106 o VIN',
+      heroSearchButton: 'Buscar',
+      statVehicles: 'vehículos cargados',
+      filtersEyebrow: 'BÚSQUEDA AVANZADA',
+      filtersTitle: 'Filtros',
+      clearFilters: 'Limpiar',
+      applyFilters: 'Aplicar filtros',
       fullName: 'Nombre completo',
       email: 'Correo electrónico',
       phoneLabel: 'Teléfono / WhatsApp',
@@ -163,6 +173,16 @@
       myBids: '💬 My Bids',
       logout: 'Log out',
       viewVehicles: 'View vehicles',
+      heroEyebrow: 'UNITED STATES AUCTIONS · 100% ONLINE',
+      heroTitle: 'Buy your car in US auctions effortlessly.',
+      heroSub: 'Find vehicles from Copart, define how much you want to bid, and APV Motors guides you from bid to transport.',
+      heroSearchPlaceholder: 'E.g. Toyota Camry, 41633106 or VIN',
+      heroSearchButton: 'Search',
+      statVehicles: 'vehicles loaded',
+      filtersEyebrow: 'ADVANCED SEARCH',
+      filtersTitle: 'Filters',
+      clearFilters: 'Clear',
+      applyFilters: 'Apply filters',
       fullName: 'Full name',
       email: 'Email address',
       phoneLabel: 'Phone / WhatsApp',
@@ -206,6 +226,12 @@
       }
     });
 
+    if (state.filters) {
+      loadVehicles();
+    }
+    if (state.currentVehicle && !dom.vehicleOverlay.classList.contains('hidden')) {
+      renderDetail(state.currentVehicle);
+    }
     if (state.user) {
       renderConversationSelector();
     }
