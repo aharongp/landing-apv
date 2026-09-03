@@ -12,6 +12,7 @@
   };
 
   let currentUser = null;
+  let currentLocale = KOMMO.locale;
   let chatReady = false;
   let chatShown = false;
   let loaderState = 'idle';
@@ -32,6 +33,7 @@
   let crmSyncTimers = [];
   const readyCallbacks = [];
   const statusCallbacks = [];
+  const syncCallbacks = [];
 
   function log() {
     try { console.info.apply(console, ['[APV Kommo]'].concat(Array.from(arguments))); } catch (_) {}
@@ -50,7 +52,7 @@
     window.crm_plugin = window.crm_plugin || {
       id: KOMMO.id,
       hash: KOMMO.hash,
-      locale: KOMMO.locale,
+      locale: currentLocale,
       setMeta: function (p) {
         this.params = (this.params || []).concat([p]);
       }
@@ -108,8 +110,8 @@
           phone: user ? user.phone : ''
         },
         locale: {
-          extends: 'es',
-          compose_placeholder: 'Escribe tu mensaje para ofertar…'
+          extends: currentLocale,
+          compose_placeholder: currentLocale === 'en' ? 'Write your message to bid…' : 'Escribe tu mensaje para ofertar…'
         },
         theme: {
           header: false,
@@ -130,36 +132,37 @@
     };
   }
 
-  function buildVehicleMessage(vehicle) {
+  function buildVehicleMessage(vehicle, maxBid, user) {
     const model = vehicle.title || [vehicle.year, vehicle.make, vehicle.model, vehicle.trim].filter(Boolean).join(' ');
-    return [
+    const lines = [
       `Vehículo: ${model || 'N/D'}`,
-      `VIN: ${vehicle.vin || 'N/D'}`
-    ].join('\n');
+      `VIN: ${vehicle.vin || 'N/D'}`,
+      `Lote: ${vehicle.lot || 'N/D'}`
+    ];
+    if (Number(maxBid) > 0) lines.push(`Tope de oferta: $${Number(maxBid).toLocaleString('en-US')} USD`);
+    if (user?.name) lines.push(`Cliente: ${user.name}`);
+    if (user?.email) lines.push(`Correo: ${user.email}`);
+    if (user?.phone) lines.push(`Teléfono: ${user.phone}`);
+    return lines.join('\n');
   }
 
-  function buildContext(vehicle) {
-    const vehicleMessage = buildVehicleMessage(vehicle);
+  function buildContext(vehicle, maxBid, user) {
+    const vehicleMessage = buildVehicleMessage(vehicle, maxBid, user);
     return {
       context: 'apv_auction_bid_request',
       vin: vehicle.vin || '',
+      lot: String(vehicle.lot || ''),
+      max_bid: Math.max(0, Math.round(Number(maxBid || 0))),
       vehicle_model: vehicle.title || [vehicle.year, vehicle.make, vehicle.model, vehicle.trim].filter(Boolean).join(' '),
       vehicle_message: vehicleMessage
     };
   }
 
-  function setBotParamsOnly(vehicle, stage) {
+  function setBotParamsOnly(vehicle, maxBid, user, stage) {
     ensureOfficialBootstrapObjects();
-    const botParams = buildContext(vehicle);
+    const botParams = buildContext(vehicle, maxBid, user || currentUser);
     try {
-      window.crm_plugin.setMeta({
-        visitor: {
-          name: currentUser ? currentUser.name : '',
-          email: currentUser ? currentUser.email : '',
-          phone: currentUser ? currentUser.phone : ''
-        },
-        bot_params: botParams
-      });
+      window.crm_plugin.setMeta({ bot_params: botParams });
       botParamsQueueCount += 1;
       lastMetaStage = stage || 'bot_params';
       log('bot_params y visitor enviados (' + lastMetaStage + '):', botParams);
@@ -170,9 +173,134 @@
     }
   }
 
+  function summaryFingerprint(bids) {
+    const seed = bids
+      .map(function (bid) { return `${bid.lot}:${Number(bid.maxBid || 0)}`; })
+      .sort()
+      .join('|');
+    let hash = 2166136261;
+    for (let i = 0; i < seed.length; i += 1) hash = Math.imul(hash ^ seed.charCodeAt(i), 16777619);
+    return (hash >>> 0).toString(16).padStart(8, '0');
+  }
+
+  function buildBidsSummary(activeBids, vehicle, maxBid) {
+    const bids = Array.isArray(activeBids) && activeBids.length
+      ? activeBids
+      : [{ lot: vehicle.lot, title: vehicle.title, vin: vehicle.vin, maxBid }];
+    const normalized = bids.map(function (bid) {
+      return {
+        lot: String(bid.lot || ''),
+        title: bid.title || `Lote ${bid.lot || 'N/D'}`,
+        vin: bid.vin || 'N/D',
+        maxBid: Math.max(0, Math.round(Number(bid.maxBid || 0)))
+      };
+    }).filter(function (bid) { return bid.lot; });
+    const lines = normalized.map(function (bid, index) {
+      return `${index + 1}. ${bid.title}\n   • Lote: ${bid.lot} | VIN: ${bid.vin}\n   • Tope de Oferta: $${bid.maxBid.toLocaleString('en-US')} USD`;
+    });
+    const total = normalized.reduce(function (sum, bid) { return sum + bid.maxBid; }, 0);
+    return [
+      `[APV_BIDS_SUMMARY:${summaryFingerprint(normalized)}]`,
+      '📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE',
+      '========================================',
+      lines.join('\n\n'),
+      '========================================',
+      `📊 Total de vehículos a subastar: ${normalized.length}`,
+      `💰 Suma de topes de oferta: $${total.toLocaleString('en-US')} USD`
+    ].join('\n');
+  }
+
+  function setCrmMeta(vehicle, maxBid, user, activeBids, stage) {
+    ensureOfficialBootstrapObjects();
+    const botParams = buildContext(vehicle, maxBid, user);
+    const contactFields = [];
+    const leadFields = [];
+    if (user?.phone) contactFields.push({ id: 479324, values: [{ value: user.phone, enum: 'MOB' }] });
+    if (user?.email) contactFields.push({ id: 479326, values: [{ value: user.email, enum: 'PRIV' }] });
+    if (user?.kommoUserId) contactFields.push({ id: 1126783, values: [{ value: user.kommoUserId }] });
+    if (botParams.vehicle_model) leadFields.push({ id: 1126777, values: [{ value: botParams.vehicle_model }] });
+    if (vehicle?.vin) leadFields.push({ id: 1126779, values: [{ value: vehicle.vin }] });
+    if (vehicle?.lot) leadFields.push({ id: 1126781, values: [{ value: String(vehicle.lot) }] });
+    leadFields.push({ id: 1126785, values: [{ value: Math.max(0, Math.round(Number(maxBid || 0))) }] });
+
+    const payload = {
+      bot_params: botParams,
+      contact: {
+        name: user?.name || 'Cliente web APV',
+        custom_fields: contactFields
+      },
+      lead: {
+        name: `Puja ($${Math.max(0, Math.round(Number(maxBid || 0))).toLocaleString('en-US')} USD) | ${botParams.vehicle_model || 'Vehículo'}`,
+        sale: Math.max(0, Math.round(Number(maxBid || 0))),
+        custom_fields: leadFields
+      },
+      note: {
+        text: buildBidsSummary(activeBids, vehicle, maxBid),
+        element_type: 2,
+        note_type: 'common'
+      }
+    };
+    lastCrmPayload = JSON.parse(JSON.stringify(payload));
+    try {
+      window.crm_plugin.setMeta(payload);
+      crmMetaQueueCount += 1;
+      lastMetaStage = stage || 'crm_meta';
+      lastCrmMetaResult = { ok: true, stage: lastMetaStage, at: Date.now() };
+      log('metadata completa de contacto, lead y resumen encolada (' + lastMetaStage + ')');
+      return { ok: true };
+    } catch (err) {
+      lastCrmMetaResult = { ok: false, stage: stage || 'crm_meta', at: Date.now(), error: err.message };
+      log('metadata CRM error:', err);
+      return { ok: false, error: err.message };
+    }
+  }
+
   function clearCrmSyncTimers() {
     crmSyncTimers.forEach(function (id) { try { window.clearTimeout(id); } catch (_) {} });
     crmSyncTimers = [];
+  }
+
+  function emitSync(result) {
+    syncCallbacks.forEach(function (callback) {
+      try { callback(result); } catch (_) {}
+    });
+  }
+
+  async function syncPendingBid(stage) {
+    const context = pendingBid;
+    if (!context || context.crmNoteSent || context.crmSyncInFlight) return;
+    context.crmSyncInFlight = true;
+    context.crmSyncAttempts = (context.crmSyncAttempts || 0) + 1;
+    crmSyncAttempts += 1;
+    try {
+      const result = await syncBidBackend(context.lot, context.maxBid);
+      context.lastCrmSyncStage = stage;
+      const audit = { ok: true, pendingChat: !!result.pendingChat, attempt: context.crmSyncAttempts, stage, at: Date.now() };
+      lastCrmSyncResults.push(audit);
+      if (!result.pendingChat) {
+        context.crmNoteSent = true;
+        clearCrmSyncTimers();
+        emitSync({ ok: true, pendingChat: false, result });
+      } else {
+        emitSync({ ok: true, pendingChat: true, attempt: context.crmSyncAttempts });
+      }
+    } catch (err) {
+      lastCrmSyncResults.push({ ok: false, attempt: context.crmSyncAttempts, stage, at: Date.now(), error: err.message });
+      emitSync({ ok: false, pendingChat: true, attempt: context.crmSyncAttempts, error: err.message });
+    } finally {
+      context.crmSyncInFlight = false;
+    }
+  }
+
+  function scheduleCrmSyncAfterVisible() {
+    if (!pendingBid || pendingBid.crmNoteSent) return;
+    clearCrmSyncTimers();
+    [900, 3000, 6500, 12000, 20000, 32000].forEach(function (delay, index) {
+      const timer = window.setTimeout(function () {
+        if (pendingBid && !pendingBid.crmNoteSent) syncPendingBid(`chat-visible-${index + 1}`);
+      }, delay);
+      crmSyncTimers.push(timer);
+    });
   }
 
   async function syncBidBackend(lot, maxBid) {
@@ -191,9 +319,10 @@
     return data;
   }
 
-  function setMetaForBid(vehicle, maxBid, user, stage) {
-    const bot = setBotParamsOnly(vehicle, stage || 'before-script');
-    return { ok: bot.ok, ready: chatReady, botParams: bot.botParams, message: bot.message, error: bot.error };
+  function setMetaForBid(vehicle, maxBid, user, activeBids, stage) {
+    const bot = setBotParamsOnly(vehicle, maxBid, user, stage || 'before-script');
+    const crm = setCrmMeta(vehicle, maxBid, user, activeBids, (stage || 'before-script') + ':entities');
+    return { ok: bot.ok && crm.ok, ready: chatReady, botParams: bot.botParams, message: bot.message, error: bot.error || crm.error };
   }
 
   function dispatchKeyActionHook(context) {
@@ -267,7 +396,7 @@
     // Reaplicamos primero SOLO bot_params sobre la implementación real. De esta
     // forma el Salesbot recibe VIN/modelo antes de abrir visualmente el chat.
     if (pendingBid && pendingBid.vehicle && pendingBid.user) {
-      setBotParamsOnly(pendingBid.vehicle, 'onChatReady');
+      setBotParamsOnly(pendingBid.vehicle, pendingBid.maxBid, pendingBid.user, 'onChatReady');
     }
 
     readyCallbacks.forEach(function (cb) {
@@ -308,6 +437,7 @@
       conversationsChangeCount += 1;
       lastConversations = conversations;
       log('onConversationsChange', conversations);
+      if (pendingBid && !pendingBid.crmNoteSent) syncPendingBid('conversation-change');
     });
   }
 
@@ -346,6 +476,7 @@
           conversationsChangeCount += 1;
           lastConversations = conversations;
           log('onConversationsChange', conversations);
+          if (pendingBid && !pendingBid.crmNoteSent) syncPendingBid('conversation-change-loaded');
         });
       } catch (_) {}
     };
@@ -362,22 +493,29 @@
     return true;
   }
 
-  function sendBidContext(vehicle, maxBid, user) {
+  function setLocale(locale) {
+    currentLocale = locale === 'en' ? 'en' : 'es';
+    if (window.crm_plugin && !chatReady) window.crm_plugin.locale = currentLocale;
+    return currentLocale;
+  }
+
+  function sendBidContext(vehicle, maxBid, user, activeBids) {
     currentUser = user || currentUser;
     if (!currentUser || !currentUser.kommoUserId) {
-      return { ok: false, ready: false, botParams: buildContext(vehicle), error: 'Usuario no autenticado' };
+      return { ok: false, ready: false, botParams: buildContext(vehicle, maxBid, currentUser), error: 'Usuario no autenticado' };
     }
 
     configureForUser(currentUser, vehicle);
     ensureOfficialBootstrapObjects();
 
     // Orden crítico: meta primero, luego button.js.
-    const result = setMetaForBid(vehicle, maxBid, currentUser, 'before-button-js');
+    const result = setMetaForBid(vehicle, maxBid, currentUser, activeBids, 'before-button-js');
     pendingBid = {
       lot: vehicle.lot,
       vehicle,
       maxBid,
       user: currentUser,
+      activeBids: Array.isArray(activeBids) ? activeBids : [],
       hookSent: false,
       hookAttempts: 0,
       crmNoteSent: false,
@@ -469,6 +607,14 @@
     return dispatchKeyActionHook(context);
   }
 
+  function syncCrmNow() {
+    const context = pendingBid || lastBidContext;
+    if (!context || !context.vehicle || !context.user) return { ok: false, reason: 'no_bid_context' };
+    const meta = setCrmMeta(context.vehicle, context.maxBid, context.user, context.activeBids || [], 'manual');
+    if (pendingBid) syncPendingBid('manual');
+    return meta;
+  }
+
   function onReady(callback) {
     if (typeof callback !== 'function') return;
     readyCallbacks.push(callback);
@@ -481,12 +627,18 @@
     callback({ status: loaderState, detail: '' });
   }
 
+  function onSync(callback) {
+    if (typeof callback === 'function') syncCallbacks.push(callback);
+  }
+
   window.apvKommo = {
     init,
+    setLocale,
     retry,
     reopenConversation,
     showChat,
     testHook,
+    syncCrmNow,
     syncBidBackend,
     isReady: function () { return chatReady; },
     getStatus: function () { return loaderState; },
@@ -496,6 +648,7 @@
     sendBidContext,
     onReady,
     onStatus,
+    onSync,
     debug: function () {
       return {
         version: '15.0.0',
