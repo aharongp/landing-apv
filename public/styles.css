@@ -700,10 +700,10 @@ footer{min-height:130px;padding:28px max(22px,calc((100vw - 1320px)/2));display:
 
 .chat-history-title {
   font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #64748b;
+  color: #0f172a !important;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -728,17 +728,24 @@ footer{min-height:130px;padding:28px max(22px,calc((100vw - 1320px)/2));display:
   -webkit-overflow-scrolling: touch;
 }
 
+.chat-tab-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
 .chat-tab {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 7px 12px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 9999px;
   font-size: 0.82rem;
-  font-weight: 600;
-  color: #334155;
+  font-weight: 700 !important;
+  color: #0f172a !important;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
@@ -746,29 +753,55 @@ footer{min-height:130px;padding:28px max(22px,calc((100vw - 1320px)/2));display:
 }
 
 .chat-tab:hover {
-  border-color: #0284c7;
-  background: #f0f9ff;
-  color: #0369a1;
+  border-color: #dc2626 !important;
+  background: #fff5f5 !important;
+  color: #b91c1c !important;
 }
 
 .chat-tab.active {
-  background: #0f172a;
-  border-color: #0f172a;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  background: #fee2e2 !important;
+  border: 2px solid #dc2626 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 .chat-tab .tab-bid-chip {
-  background: rgba(14, 165, 233, 0.15);
-  color: #0284c7;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  font-weight: 700;
   font-size: 0.75rem;
   padding: 2px 6px;
   border-radius: 4px;
 }
 
 .chat-tab.active .tab-bid-chip {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background: #b91c1c !important;
+  color: #ffffff !important;
+}
+
+.btn-delete-single-bid {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 2px !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-delete-single-bid:hover {
+  background: #b91c1c !important;
+  transform: scale(1.15) !important;
 }
 
 .btn-clear-bids {
