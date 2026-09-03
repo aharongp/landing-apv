@@ -747,38 +747,47 @@ async function syncBid(params) {
   const sale = Math.max(0, Math.round(Number(maxBid || 0)));
   const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
 
-  // 1. Resolve contactId first
-  let contactId = await findOrCreateContact(user);
-
-  // 2. Resolve leadId (Check lot record -> Check user records -> Check Contact's leads in Kommo API -> Poll Unsorted -> Create via API)
+  // 1. Check existing local records for this user to reuse leadId / contactId
   let existingRecord = getSyncRecord(apvUserId, lot);
   let leadId = existingRecord ? existingRecord.leadId : null;
+  let contactId = existingRecord ? existingRecord.contactId : null;
   let incomingLeadUid = existingRecord ? existingRecord.incomingLeadUid : null;
 
-  if (!leadId) {
+  if (!leadId || !contactId) {
     const userRecords = getUserSyncRecords(apvUserId);
     if (Array.isArray(userRecords) && userRecords.length > 0) {
       const rec = userRecords.find(r => r.leadId);
       if (rec) {
-        leadId = rec.leadId;
-        console.log(`[KOMMO] Reusing existing leadId=${leadId} from user sync history for ${apvUserId}`);
+        if (!leadId) leadId = rec.leadId;
+        if (!contactId) contactId = rec.contactId;
+        console.log(`[KOMMO] Reusing existing leadId=${leadId} contactId=${contactId} from user sync history`);
       }
     }
   }
 
-  if (!leadId && contactId) {
-    leadId = await findLeadForContact(contactId);
-  }
-
-  // Always check if an unsorted chat lead exists for this chatKey and accept it into existing leadId
-  const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 1500 });
+  // 2. Poll for incoming unsorted chat lead created by the chat widget
+  // Wait up to 3.5 seconds for the chat widget's unsorted lead
+  const found = await findKommoIncomingLead(chatKey, { maxWaitMs: 3500 });
   if (found && found.incomingUid) {
     incomingLeadUid = found.incomingUid;
-    console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting into pipeline & leadId=${leadId}...`);
-    await acceptUnsortedLead(incomingLeadUid, targetPipelineId, leadId);
-    if (!leadId && found.leadId) {
-      leadId = found.leadId;
-    }
+    console.log(`[KOMMO] Found incoming chat lead uid=${incomingLeadUid}. Accepting into pipeline & merging into leadId=${leadId}...`);
+    const acceptRes = await acceptUnsortedLead(incomingLeadUid, 70685710, leadId);
+
+    const chatLeadId = acceptRes?._embedded?.leads?.[0]?.id || acceptRes?.lead_id || found.leadId;
+    const chatContactId = acceptRes?._embedded?.contacts?.[0]?.id || acceptRes?.contact_id || found.contactId;
+
+    if (!leadId && chatLeadId) leadId = Number(chatLeadId);
+    if (!contactId && chatContactId) contactId = Number(chatContactId);
+  }
+
+  // 3. If STILL no contactId exists, find existing contact by email/phone or create one
+  if (!contactId) {
+    contactId = await findOrCreateContact(user);
+  }
+
+  // 4. If STILL no leadId exists, find existing lead for contact or create one
+  if (!leadId && contactId) {
+    leadId = await findLeadForContact(contactId);
   }
 
   if (!leadId) {
@@ -788,28 +797,31 @@ async function syncBid(params) {
     contactId = direct.contactId;
   }
 
-  // Accept and clean up any remaining pending unsorted chat leads for this user into leadId
-  await acceptAllPendingUnsortedLeadsForUser(user, leadId);
+  // 5. Update Contact with user's name, phone, email & apvUserId
+  if (contactId) {
+    await updateContact(contactId, {
+      name: user.name,
+      phone: user.phone,
+      email: user.email,
+      apvUserId
+    }).catch(() => null);
+  }
 
-  // 3. Link contact to lead if needed
+  // 6. Explicitly link contactId <-> leadId
   if (leadId && contactId) {
     try {
       await kommoFetch(`/api/v4/leads/${leadId}/link`, {
         method: 'POST',
         body: [{ to_entity_id: Number(contactId), to_entity_type: 'contacts' }]
       });
+      await kommoFetch(`/api/v4/contacts/${contactId}/link`, {
+        method: 'POST',
+        body: [{ to_entity_id: Number(leadId), to_entity_type: 'leads' }]
+      });
     } catch (_) {}
   }
 
-  // 4. Update Contact
-  await updateContact(contactId, {
-    name: user.name,
-    phone: user.phone,
-    email: user.email,
-    apvUserId
-  });
-
-  // 5. Update Lead (patches custom fields and posts ONE single clean note on lead timeline)
+  // 7. Update Lead custom fields
   await updateLead(leadId, {
     vehicleModel,
     vin,
@@ -817,7 +829,10 @@ async function syncBid(params) {
     maxBid: sale
   });
 
-  // 6. Mandatory verification GETs
+  // 8. Accept any other remaining pending unsorted chat leads for this user into leadId
+  await acceptAllPendingUnsortedLeadsForUser(user, leadId);
+
+  // 9. Mandatory verification GETs
   const verified = await verifySync(leadId, contactId);
 
   // 7. Save to sync log
