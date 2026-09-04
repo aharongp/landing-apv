@@ -13,7 +13,9 @@
     config: null,
     pendingAuthAction: null,
     galleryImages: [],
-    heroSearchTimer: null
+    heroSearchTimer: null,
+    featuredVehicles: [],
+    featuredPage: 1
   };
 
   const dom = {
@@ -27,6 +29,9 @@
     authOverlay: $('#auth-overlay'), authButton: $('#auth-button'), accountChip: $('#account-chip'), accountAvatar: $('#account-avatar'),
     accountName: $('#account-name'), accountEmail: $('#account-email'), authReason: $('#auth-reason'), authStatus: $('#auth-status'),
     heroSearchForm: $('#hero-search-form'), heroSearchInput: $('#hero-search-input'), heroQuickResults: $('#hero-quick-results'), heroVehicleCard: $('#hero-vehicle-card'),
+    heroFilterForm: $('#hero-filter-form'), heroFilterMake: $('#hero-filter-make'), heroFilterModel: $('#hero-filter-model'),
+    heroFilterYearMin: $('#hero-filter-year-min'), heroFilterYearMax: $('#hero-filter-year-max'), heroFilterBuyNow: $('#hero-filter-buy-now'), heroFilterState: $('#hero-filter-state'),
+    heroFeaturedGrid: $('#hero-featured-grid'), featuredPrevBtn: $('#featured-prev-btn'), featuredNextBtn: $('#featured-next-btn'), featuredDots: $('#featured-dots'),
     chatReopenButton: $('#chat-reopen-button')
   };
 
@@ -164,6 +169,12 @@
       copartVehicles: 'Vehículos de Copart',
       csvUpdated: 'Datos actualizados desde tu CSV.',
       vinLoginHint: 'El VIN completo se revela después de iniciar sesión.',
+      startSearch: 'BUSCAR',
+      allModels: 'Todos los modelos',
+      allMakes: 'Todas las marcas',
+      buyItNow: 'Buy it now',
+      heroAuctionNotice: 'Acceso a lotes en venta en subastas de Copart e IAA',
+      featuredVehiclesTitle: 'Vehículos más destacados',
       howTitle: '¿Cómo comprar un vehículo de subasta?',
       step1Title: 'Seleccionar el vehículo', step1Text: 'en las subastas de Copart o IAA.',
       step2Title: 'Identificar el monto', step2Text: 'que deseas ofertar por el vehículo.',
@@ -235,6 +246,12 @@
       heroSearchTitle: 'Find your next car',
       heroSearchSub: 'Search by make, model, lot, or VIN.',
       featuredVehicle: 'FEATURED VEHICLE', openFeaturedVehicle: 'Open featured vehicle', auctionLive: '● AUCTION', copartVehicles: 'Copart vehicles', csvUpdated: 'Data updated from your CSV.', vinLoginHint: 'The full VIN is revealed after you log in.',
+      startSearch: 'START SEARCH',
+      allModels: 'All models',
+      allMakes: 'All makes',
+      buyItNow: 'Buy it now',
+      heroAuctionNotice: 'Access to lots for sale at Copart and IAA auctions',
+      featuredVehiclesTitle: 'Featured vehicles',
       howTitle: 'How do I buy an auction vehicle?',
       step1Title: 'Select the vehicle', step1Text: 'at a Copart or IAA auction.',
       step2Title: 'Choose the amount', step2Text: 'you want to bid on the vehicle.',
@@ -401,12 +418,122 @@
 
   async function initFilters(){
     const f=await api('/api/filters'); state.filters=f;
-    $('#hero-total').textContent = f.total.toLocaleString('en-US');
+    const heroTotal = $('#hero-total');
+    if(heroTotal) heroTotal.textContent = f.total.toLocaleString('en-US');
     populate(dom.make, f.makes); populate(dom.damage, f.damages); populate(dom.run, f.runStates); populate(dom.state, f.states);
+    if(dom.heroFilterMake) populate(dom.heroFilterMake, f.makes);
+    if(dom.heroFilterState) populate(dom.heroFilterState, f.states);
+    populateYears(dom.heroFilterYearMin, f.minYear, f.maxYear);
+    populateYears(dom.heroFilterYearMax, f.minYear, f.maxYear);
     dom.yearMin.value=f.minYear; dom.yearMin.min=f.minYear; dom.yearMin.max=f.maxYear;
     dom.yearMax.value=f.maxYear; dom.yearMax.min=f.minYear; dom.yearMax.max=f.maxYear;
     const maxOdo=Math.max(100000,Math.ceil((f.maxOdometer||250000)/25000)*25000); dom.odometer.max=maxOdo; dom.odometer.value=maxOdo; updateOdometerLabel();
+    loadFeaturedVehicles();
   }
+
+  function populateYears(select, minYear, maxYear) {
+    if(!select) return;
+    const currentVal = select.value;
+    select.innerHTML = '';
+    const defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = select === dom.heroFilterYearMin ? (currentLang === 'en' ? 'Min year' : 'Año desde') : (currentLang === 'en' ? 'Max year' : 'Año hasta');
+    select.appendChild(defaultOpt);
+    for(let y = maxYear; y >= minYear; y--) {
+      const o = document.createElement('option');
+      o.value = y;
+      o.textContent = y;
+      select.appendChild(o);
+    }
+    select.value = currentVal;
+  }
+
+  async function loadFeaturedVehicles(){
+    try {
+      const data = await api('/api/vehicles?page=1&pageSize=6&sort=saleSoon');
+      state.featuredVehicles = data.items || [];
+      renderFeaturedVehicles();
+    } catch(err) {
+      console.warn('[APV] Error loading featured vehicles:', err);
+    }
+  }
+
+  function renderFeaturedVehicles(){
+    if(!dom.heroFeaturedGrid) return;
+    const startIndex = (state.featuredPage - 1) * 3;
+    const items = state.featuredVehicles.slice(startIndex, startIndex + 3);
+    if(!items.length){
+      dom.heroFeaturedGrid.innerHTML = `<div class="hero-quick-empty">${t('loading')}</div>`;
+      return;
+    }
+    dom.heroFeaturedGrid.innerHTML = items.map(v => `
+      <article class="featured-vehicle-card" data-lot="${esc(v.lot)}">
+        <div class="featured-card-photo" ${imageStyle(v.image)} data-action="detail">
+          <span class="featured-card-badge">● SUBASTA COPART</span>
+        </div>
+        <div class="featured-card-body">
+          <h3 class="featured-card-title" data-action="detail">${esc(v.title)}</h3>
+          <div class="featured-card-meta">${t('lot')} ${esc(v.lot)} · ${esc(locationLabel(v))}</div>
+          <div class="featured-card-prices">
+            <div class="featured-price-item">
+              <span>${t('currentBid')}</span>
+              <strong>${esc(money(v.currentBid))}</strong>
+            </div>
+            <div class="featured-price-item">
+              <span>${t('buyNow')}</span>
+              <strong>${esc(money(v.buyNow))}</strong>
+            </div>
+          </div>
+          <div class="featured-card-actions">
+            <button type="button" class="btn btn-ghost featured-card-btn" data-action="detail">${t('viewVehicle')}</button>
+            <button type="button" class="btn btn-primary featured-card-btn" data-action="bid">${t('wantToBid')}</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    if(dom.featuredPrevBtn) dom.featuredPrevBtn.disabled = (state.featuredPage <= 1);
+    if(dom.featuredNextBtn) dom.featuredNextBtn.disabled = (state.featuredPage >= 2 || state.featuredVehicles.length <= (startIndex + 3));
+
+    if(dom.featuredDots){
+      $$('.featured-dot', dom.featuredDots).forEach(dot => {
+        dot.classList.toggle('active', Number(dot.dataset.page) === state.featuredPage);
+      });
+    }
+  }
+
+  async function updateHeroModels(makeValue){
+    if(!dom.heroFilterModel) return;
+    const prevVal = dom.heroFilterModel.value;
+    dom.heroFilterModel.innerHTML = `<option value="">${t('allModels')}</option>`;
+    if(!makeValue) return;
+    try {
+      const data = await api(`/api/vehicles?make=${encodeURIComponent(makeValue)}&pageSize=50`);
+      const models = [...new Set((data.items || []).map(v => v.model).filter(Boolean))].sort();
+      models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        dom.heroFilterModel.appendChild(opt);
+      });
+      dom.heroFilterModel.value = prevVal;
+    } catch(_) {}
+  }
+
+  function applyHeroFiltersToCatalog(){
+    const textQuery = (dom.heroSearchInput ? dom.heroSearchInput.value.trim() : '') || (dom.heroFilterModel ? dom.heroFilterModel.value : '');
+    if(dom.search) dom.search.value = textQuery;
+    if(dom.heroFilterMake && dom.make) dom.make.value = dom.heroFilterMake.value || '';
+    if(dom.heroFilterState && dom.state) dom.state.value = dom.heroFilterState.value || '';
+    if(dom.heroFilterYearMin && dom.yearMin) dom.yearMin.value = dom.heroFilterYearMin.value || '';
+    if(dom.heroFilterYearMax && dom.yearMax) dom.yearMax.value = dom.heroFilterYearMax.value || '';
+    if(dom.heroFilterBuyNow && dom.buyNow) dom.buyNow.checked = dom.heroFilterBuyNow.checked;
+
+    state.page = 1;
+    loadVehicles();
+    document.querySelector('#catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function populate(select, items){ for(const item of items){ const o=document.createElement('option'); o.value=item; o.textContent=item; select.appendChild(o); } }
   function updateOdometerLabel(){ dom.odometerLabel.textContent=Number(dom.odometer.value||0).toLocaleString('en-US')+' mi'; }
 
@@ -429,17 +556,19 @@
       dom.count.textContent=data.total.toLocaleString('en-US');
       renderVehicles(data.items); renderPagination(data);
       if(!data.items.length) dom.empty.classList.remove('hidden');
-      if(data.items[0] && !$('#hero-car-photo').dataset.ready) setHeroVehicle(data.items[0]);
+      const heroPhoto = $('#hero-car-photo');
+      if(data.items[0] && heroPhoto && !heroPhoto.dataset.ready) setHeroVehicle(data.items[0]);
     }catch(err){ dom.list.innerHTML=''; dom.empty.classList.remove('hidden'); showToast(err.message); }
     finally{ state.loading=false; }
   }
 
   function setHeroVehicle(v){
     const photo=$('#hero-car-photo');
+    if(!photo) return;
     photo.dataset.ready='1';
     photo.style.backgroundImage=v.image?`url('${v.image}')`:'';
-    $('#hero-car-title').textContent=v.title;
-    $('#hero-car-meta').textContent=`${t('lot')} ${v.lot} · ${locationLabel(v)}`;
+    const titleEl = $('#hero-car-title'); if(titleEl) titleEl.textContent=v.title;
+    const metaEl = $('#hero-car-meta'); if(metaEl) metaEl.textContent=`${t('lot')} ${v.lot} · ${locationLabel(v)}`;
     if(dom.heroVehicleCard) dom.heroVehicleCard.dataset.lot=v.lot;
   }
 
@@ -1121,6 +1250,62 @@
       showToast('No se pudo cargar el chat de este vehículo: ' + err.message);
     }
   });
+
+  if(dom.heroFilterMake){
+    dom.heroFilterMake.addEventListener('change', (e) => updateHeroModels(e.target.value));
+  }
+
+  if(dom.heroFilterForm){
+    dom.heroFilterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      applyHeroFiltersToCatalog();
+    });
+  }
+
+  if(dom.featuredPrevBtn){
+    dom.featuredPrevBtn.addEventListener('click', () => {
+      if(state.featuredPage > 1){
+        state.featuredPage--;
+        renderFeaturedVehicles();
+      }
+    });
+  }
+
+  if(dom.featuredNextBtn){
+    dom.featuredNextBtn.addEventListener('click', () => {
+      if(state.featuredPage < 2){
+        state.featuredPage++;
+        renderFeaturedVehicles();
+      }
+    });
+  }
+
+  if(dom.featuredDots){
+    dom.featuredDots.addEventListener('click', (e) => {
+      const dot = e.target.closest('.featured-dot');
+      if(dot && dot.dataset.page){
+        state.featuredPage = Number(dot.dataset.page);
+        renderFeaturedVehicles();
+      }
+    });
+  }
+
+  if(dom.heroFeaturedGrid){
+    dom.heroFeaturedGrid.addEventListener('click', async (e) => {
+      const card = e.target.closest('[data-lot]');
+      if(!card) return;
+      const lot = card.dataset.lot;
+      const action = e.target.closest('[data-action]')?.dataset.action || 'detail';
+      if(action === 'bid'){
+        try {
+          const v = await getVehicle(lot);
+          openBid(v);
+        } catch(err) { showToast(err.message); }
+      } else {
+        openDetail(lot);
+      }
+    });
+  }
 
   $('#bid-continue').addEventListener('click',continueBid); dom.bidAmount.addEventListener('keydown',e=>{if(e.key==='Enter') continueBid();});
   dom.searchButton.addEventListener('click',()=>{state.page=1;loadVehicles();}); dom.search.addEventListener('keydown',e=>{if(e.key==='Enter'){state.page=1;loadVehicles();}}); dom.sort.addEventListener('change',()=>{state.page=1;loadVehicles();});

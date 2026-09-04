@@ -647,10 +647,14 @@ function getFilterMetadata() {
 
   const statsRow = database.prepare("SELECT MIN(year) as minYear, MAX(year) as maxYear, MAX(odometer) as maxOdometer, MAX(buyNow) as maxPrice FROM vehicles").get() || {};
 
+  const cleanStates = statesRows
+    .map(r => str(r.locationState))
+    .filter(s => s && s.length <= 10 && !s.includes('*') && !/^\d+$/.test(s) && !/AUCTION|REGION|SAFETY|DEFAULT|MINIMUM/i.test(s));
+
   return {
     total,
     makes: makesRows.map(r => r.make),
-    states: statesRows.map(r => r.locationState),
+    states: cleanStates,
     damages: damageRows.map(r => r.primaryDamage),
     runStates: runRows.map(r => r.runsDrives),
     minYear: statsRow.minYear || 1990,

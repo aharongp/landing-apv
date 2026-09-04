@@ -111,45 +111,87 @@
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero hero-centered">
       <div class="hero-bg-orb hero-bg-orb-1" aria-hidden="true"></div>
       <div class="hero-bg-orb hero-bg-orb-2" aria-hidden="true"></div>
-      <div class="hero-copy reveal-on-scroll">
-        <span class="eyebrow" data-i18n="heroEyebrow">SUBASTAS EN ESTADOS UNIDOS · 100% ONLINE</span>
+      
+      <div class="hero-header-center reveal-on-scroll">
         <h1 data-i18n="heroMainTitle">Compra tu carro en subastas de EE. UU. sin complicarte.</h1>
-        <p data-i18n="heroMainSub">Encuentra vehículos de Copart, define cuánto quieres ofertar y APV Motors te acompaña desde la puja hasta la documentación y el traslado.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#catalogo" data-i18n="exploreCatalog">Explorar catálogo</a>
-          <a class="btn btn-ghost" href="#como-funciona" data-i18n="seeHow">Ver cómo funciona</a>
-        </div>
-        <div class="hero-stats" aria-label="Beneficios">
-          <div><strong id="hero-total">—</strong><span data-i18n="statVehicles">vehículos cargados</span></div>
-          <div><strong>6</strong><span data-i18n="statSteps">pasos claros</span></div>
-          <div><strong>1:1</strong><span data-i18n="statSupport">atención personalizada</span></div>
-        </div>
+        <p data-i18n="heroMainSub">Busca autos usados y con título de salvamento, realiza ofertas y gana online. Sin necesidad de licencia. Bajas tarifas.</p>
       </div>
-      <div class="hero-panel reveal-on-scroll">
-        <div class="hero-search-card">
-          <div class="hero-search-heading">
-            <span class="mini-label" data-i18n="heroSearchEyebrow">BUSCA EN SEGUNDOS</span>
-            <h2 data-i18n="heroSearchTitle">Encuentra tu próximo carro</h2>
-            <p data-i18n="heroSearchSub">Busca por marca, modelo, lote o VIN.</p>
-          </div>
-          <form id="hero-search-form" class="hero-search-live" role="search">
-            <div class="hero-search-field">
-              <span class="hero-search-icon" aria-hidden="true">⌕</span>
-              <input id="hero-search-input" type="search" aria-label="Buscar vehículo" placeholder="Ej. Toyota Camry, 41633106 o VIN" autocomplete="off" data-i18n="heroSearchPlaceholder" />
+
+      <div class="hero-filter-card-wrap reveal-on-scroll">
+        <form id="hero-filter-form" class="hero-filter-card" role="search">
+          <div class="hero-filter-search-row">
+            <div class="hero-filter-field full-width">
+              <label for="hero-search-input" data-i18n="catalogSearchPlaceholder">Buscar por VIN, lote, marca o modelo</label>
+              <div class="hero-search-input-wrap">
+                <span class="hero-search-icon">⌕</span>
+                <input id="hero-search-input" type="search" placeholder="Ej. Toyota Camry, 41633106 o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" />
+              </div>
             </div>
-            <button class="hero-search-submit" type="submit" data-i18n="heroSearchButton">Buscar</button>
-          </form>
-          <div id="hero-quick-results" class="hero-quick-results hidden" aria-live="polite"></div>
-          <div class="hero-featured-label" data-i18n="featuredVehicle">VEHÍCULO DESTACADO</div>
-          <button id="hero-vehicle-card" class="hero-vehicle-card hero-vehicle-button" type="button" aria-label="Abrir vehículo destacado" data-i18n-aria-label="openFeaturedVehicle">
-            <div class="hero-car-photo" id="hero-car-photo"></div>
-            <div><span class="live-pill" data-i18n="auctionLive">● SUBASTA</span><h3 id="hero-car-title" data-i18n="copartVehicles">Vehículos de Copart</h3><p id="hero-car-meta" data-i18n="csvUpdated">Datos actualizados desde tu CSV.</p></div>
-            <span class="hero-card-arrow" aria-hidden="true">→</span>
-          </button>
-          <p class="hero-search-hint" data-i18n="vinLoginHint">El VIN completo se revela después de iniciar sesión.</p>
+          </div>
+
+          <div class="hero-filter-grid">
+            <div class="hero-filter-field">
+              <label for="hero-filter-make" data-i18n="brand">Marca</label>
+              <select id="hero-filter-make">
+                <option value="" data-i18n="allMakes">Todas las marcas</option>
+              </select>
+            </div>
+            <div class="hero-filter-field">
+              <label for="hero-filter-model" data-i18n="model">Modelo</label>
+              <select id="hero-filter-model">
+                <option value="" data-i18n="allModels">Todos los modelos</option>
+              </select>
+            </div>
+            <div class="hero-filter-field">
+              <label for="hero-filter-state" data-i18n="state">Ubicación / Estado</label>
+              <select id="hero-filter-state">
+                <option value="" data-i18n="allMasculine">Todos</option>
+              </select>
+            </div>
+            <div class="hero-filter-field">
+              <label for="hero-filter-year-min" data-i18n="yearFrom">Año desde</label>
+              <select id="hero-filter-year-min">
+                <option value="">1998</option>
+              </select>
+            </div>
+            <div class="hero-filter-field">
+              <label for="hero-filter-year-max" data-i18n="yearTo">Año hasta</label>
+              <select id="hero-filter-year-max">
+                <option value="">2027</option>
+              </select>
+            </div>
+            <div class="hero-filter-submit-wrap">
+              <button id="hero-filter-submit" class="btn btn-primary hero-submit-btn" type="submit" data-i18n="startSearch">BUSCAR</button>
+            </div>
+          </div>
+          
+          <div class="hero-filter-footer">
+            <label class="hero-toggle-buy-now">
+              <input id="hero-filter-buy-now" type="checkbox" />
+              <span data-i18n="buyItNow">Buy it now</span>
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <div class="hero-featured-section reveal-on-scroll">
+        <div class="hero-featured-header">
+          <h2 data-i18n="featuredVehiclesTitle">Vehículos más destacados</h2>
+          <div class="featured-pagination-controls">
+            <button type="button" id="featured-prev-btn" class="featured-nav-btn" aria-label="Página anterior">‹</button>
+            <div class="featured-dots" id="featured-dots">
+              <button type="button" class="featured-dot active" data-page="1" aria-label="Página 1"></button>
+              <button type="button" class="featured-dot" data-page="2" aria-label="Página 2"></button>
+            </div>
+            <button type="button" id="featured-next-btn" class="featured-nav-btn" aria-label="Página siguiente">›</button>
+          </div>
+        </div>
+
+        <div id="hero-featured-grid" class="hero-featured-grid" aria-live="polite">
+          <!-- Se puebla dinámicamente desde app.js (máx 3 tarjetas por página) -->
         </div>
       </div>
     </section>
