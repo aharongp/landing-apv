@@ -215,11 +215,30 @@
       viewVehicle: 'Ver ficha',
       resetAllBids: 'Reiniciar todas las pujas', deleteBid: 'Eliminar esta puja', vehicle: 'Vehículo', lot: 'Lote', vin: 'VIN',
       noMatches: 'No encontramos coincidencias para', fullCatalog: 'Ver el catálogo completo', allResultsFor: 'Ver todos los resultados para',
-      noPhoto: 'SIN FOTO', keyAvailable: 'Llave disponible', keyUnknown: 'Llave N/D', odometer: 'Odómetro', location: 'Ubicación', damage: 'Daño', document: 'Documento', body: 'Carrocería', color: 'Color', retail: 'Retail', auction: 'Subasta', currentBid: 'Puja actual', buyNow: 'Buy now', upcoming: 'PRÓXIMA',
+      noPhoto: 'SIN FOTO', keyAvailable: 'Llave disponible', keyUnknown: 'Llave N/D', odometer: 'Odómetro', location: 'Ubicación', damage: 'Daño', document: 'Documento', body: 'Carrocería', color: 'Color',
       registerForVin: 'Regístrate para ver el VIN', previousPhoto: 'Foto anterior', nextPhoto: 'Siguiente foto', photo: 'foto', photos: 'fotos', keys: 'Llaves', unconfirmed: 'Sin confirmar', directPrice: 'PRECIO COMPRA DIRECTA (BUY IT NOW)', auctionCurrentBid: 'Puja actual subasta', estimatedRetail: 'Valor retail estimado', auctionDate: 'Fecha de subasta', signInVinChat: '🔒 Debes registrarte para ver el VIN completo y abrir el chat.', lotGallery: 'GALERÍA DEL LOTE', allPhotos: 'Todas las fotos', loading: 'Cargando…', technicalPrices: 'FICHA TÉCNICA Y PRECIOS', completeVehicleInfo: 'Información completa del vehículo', officialCopartData: 'Datos oficiales Copart', directPurchase: 'Buy It Now (Compra directa)', estimatedRepair: 'Costo estim. reparación', transmission: 'Transmisión', engine: 'Motor', cylinders: 'Cilindros', traction: 'Tracción', fuel: 'Combustible', secondaryDamage: 'Daño secundario', lossType: 'Tipo de pérdida', availableKeys: 'Llaves disponibles', titleDocument: 'Título / Documento', yardLocation: 'Ubicación / Patio', showAllTechnical: 'Ver toda la información técnica', hideInformation: 'Ocultar información', item: 'Item', vehicleType: 'Tipo de vehículo', year: 'Año', model: 'Modelo', modelGroup: 'Grupo de modelo', trim: 'Trim', conditionCode: 'Código condición', odometerBrand: 'Odómetro brand', saleStatus: 'Estado de venta', repairCost: 'Costo reparación', yard: 'Patio', country: 'País', seller: 'Seller', updated: 'Actualizado', specialNote: 'NOTA ESPECIAL', announcements: 'ANUNCIOS', readyToBid: '¿Listo para ofertar?', afterSignIn: 'Después de iniciar sesión defines tu tope. APV envía a Kommo la ficha, el VIN, el lote, el monto y tus datos de cuenta.', informationSource: 'Fuente de la información', sourceDescription: 'La ficha se construye con el CSV y las fotos se consultan bajo demanda usando el enlace Image URL de Copart.', openCopart: 'Abrir lote en Copart →',
+      pricingAuction: 'Precios y Subasta', mechanicalSpecs: 'Especificaciones Mecánicas', vehicleIdentity: 'Datos del Vehículo', conditionDamage: 'Estado y Condición', locationSeller: 'Ubicación y Subasta',
+      calculatorTitle: 'Calculadora de Costos y Total a Pagar',
+      costCalculator: 'HERRAMIENTA DE CÁLCULO DE FEES',
+      calculatorSub: 'Ingresa tu tope de puja para calcular el desglose exacto de tarifas de subasta y honorarios.',
+      calculatorLockedTitle: 'Calculadora Exclusiva',
+      calculatorLockedSub: 'Inicia sesión o regístrate para usar la Calculadora de Costos y ver el desglose exacto de fees para este vehículo.',
+      calculatorInputLabel: 'Ingresa tu tope de puja ($ USD)',
+      unlockedFor: 'Sesión activa',
+      loginToUseCalc: 'Iniciar sesión para usar la calculadora',
+      yourBid: 'Tope de puja (Oferta)',
+      copartFeeLabel: 'Tarifa comprador Copart',
+      copartVirtualFeeLabel: 'Tarifa puja en vivo / Internet',
+      apvFeeLabel: 'Honorarios APV Motors',
+      gateFeeLabel: 'Gastos de portón (Gate fee)',
+      bankFeeLabel: 'Comisión bancaria (Bank fee)',
+      titlePickupFeeLabel: 'Retiro de título (Title pickup)',
+      totalToPay: 'TOTAL ESTIMADO A PAGAR',
+      bidWithThisAmount: 'Ofertar con este tope',
+      totalDisclaimer: '* No incluye costo de flete/transporte ni impuestos locales.',
       noData: 'N/D', notAvailable: 'N/A', starts: 'Arranca', unverified: 'Sin verificar', protectedVin: 'VIN protegido · inicia sesión para verlo',
       maxRequested: 'Tope solicitado', conversation: 'Conversación', savedInKommo: 'Guardada en Kommo',
-      welcome: 'Bienvenido', codeSent: 'Código de 6 dígitos enviado.', validBid: 'Indica un tope de puja válido.', preparingRequest: 'Preparando tu solicitud...', processing: 'PROCESANDO', waitingChatInstruction: 'Abre o continúa la conversación para asociar la solicitud.', waitingChat: 'ESPERANDO CHAT', associatedConversation: 'Solicitud asociada a esta conversación', completed: 'COMPLETADO', waitingKommo: 'Esperando que la conversación aparezca en Kommo…'
+      welcome: 'Bienvenido', codeSent: 'Código de 6 dígitos enviado.', validBid: 'Indica un tope de puja válido.', preparingRequest: 'Preparando tu solicitud...', processing: 'PROCESANDO', waitingChatInstruction: 'Abre o continúa la conversación para asociar la solicitud.', waitingChat: 'ESPERANDO CHAT', associatedConversation: 'Solicitud asociada a esta conversación', completed: 'COMPLETED', waitingKommo: 'Esperando que la conversación aparezca en Kommo…'
     },
     en: {
       pageTitle: 'APV Motors | Vehicle auctions in the USA',
@@ -287,6 +306,25 @@
       noMatches: 'We found no matches for', fullCatalog: 'View the full catalog', allResultsFor: 'View all results for',
       noPhoto: 'NO PHOTO', keyAvailable: 'Key available', keyUnknown: 'Key N/A', odometer: 'Odometer', location: 'Location', damage: 'Damage', document: 'Document', body: 'Body style', color: 'Color', retail: 'Retail', auction: 'Auction', currentBid: 'Current bid', buyNow: 'Buy now', upcoming: 'UPCOMING',
       registerForVin: 'Sign up to view the VIN', previousPhoto: 'Previous photo', nextPhoto: 'Next photo', photo: 'photo', photos: 'photos', keys: 'Keys', unconfirmed: 'Unconfirmed', directPrice: 'DIRECT PURCHASE PRICE (BUY IT NOW)', auctionCurrentBid: 'Current auction bid', estimatedRetail: 'Estimated retail value', auctionDate: 'Auction date', signInVinChat: '🔒 You must sign up to view the full VIN and open the chat.', lotGallery: 'LOT GALLERY', allPhotos: 'All photos', loading: 'Loading…', technicalPrices: 'TECHNICAL DETAILS AND PRICES', completeVehicleInfo: 'Complete vehicle information', officialCopartData: 'Official Copart data', directPurchase: 'Buy It Now (Direct purchase)', estimatedRepair: 'Est. repair cost', transmission: 'Transmission', engine: 'Engine', cylinders: 'Cylinders', traction: 'Drive', fuel: 'Fuel', secondaryDamage: 'Secondary damage', lossType: 'Loss type', availableKeys: 'Keys available', titleDocument: 'Title / Document', yardLocation: 'Location / Yard', showAllTechnical: 'View all technical information', hideInformation: 'Hide information', item: 'Item', vehicleType: 'Vehicle type', year: 'Year', model: 'Model', modelGroup: 'Model group', trim: 'Trim', conditionCode: 'Condition code', odometerBrand: 'Odometer brand', saleStatus: 'Sale status', repairCost: 'Repair cost', yard: 'Yard', country: 'Country', seller: 'Seller', updated: 'Updated', specialNote: 'SPECIAL NOTE', announcements: 'ANNOUNCEMENTS', readyToBid: 'Ready to bid?', afterSignIn: 'After logging in, you set your maximum. APV sends Kommo the vehicle details, VIN, lot, amount, and your account information.', informationSource: 'Information source', sourceDescription: 'Details come from the CSV, and photos are requested on demand through Copart’s Image URL.', openCopart: 'Open lot on Copart →',
+      pricingAuction: 'Pricing & Auction', mechanicalSpecs: 'Mechanical Specs', vehicleIdentity: 'Vehicle Specifications', conditionDamage: 'Condition & Damage', locationSeller: 'Location & Yard',
+      calculatorTitle: 'Cost & Total Payment Calculator',
+      costCalculator: 'FEE CALCULATOR TOOL',
+      calculatorSub: 'Enter your maximum bid to calculate the exact breakdown of auction fees and service charges.',
+      calculatorLockedTitle: 'Exclusive Calculator',
+      calculatorLockedSub: 'Log in or create an account to use the Cost Calculator and view exact fee breakdown for this vehicle.',
+      calculatorInputLabel: 'Enter your maximum bid ($ USD)',
+      unlockedFor: 'Active session',
+      loginToUseCalc: 'Log in to use the calculator',
+      yourBid: 'Maximum bid amount',
+      copartFeeLabel: 'Copart Buyer Fee',
+      copartVirtualFeeLabel: 'Live / Internet Bid Fee',
+      apvFeeLabel: 'APV Motors Service Fee',
+      gateFeeLabel: 'Gate Fee',
+      bankFeeLabel: 'Bank Fee',
+      titlePickupFeeLabel: 'Title Pickup Fee',
+      totalToPay: 'ESTIMATED TOTAL TO PAY',
+      bidWithThisAmount: 'Bid with this amount',
+      totalDisclaimer: '* Does not include shipping/towing cost or local taxes.',
       noData: 'N/A', notAvailable: 'N/A', starts: 'Starts', unverified: 'Unverified', protectedVin: 'Protected VIN · log in to view it',
       maxRequested: 'Requested maximum', conversation: 'Conversation', savedInKommo: 'Saved in Kommo',
       welcome: 'Welcome', codeSent: '6-digit code sent.', validBid: 'Enter a valid maximum bid.', preparingRequest: 'Preparing your request...', processing: 'PROCESSING', waitingChatInstruction: 'Open or continue the conversation to associate the request.', waitingChat: 'WAITING FOR CHAT', associatedConversation: 'Request associated with this conversation', completed: 'COMPLETED', waitingKommo: 'Waiting for the conversation to appear in Kommo…'
@@ -656,7 +694,426 @@
     btn.push(`<button class="page-btn" data-page="${data.page+1}" ${data.page===data.pages?'disabled':''}>›</button>`); dom.pagination.innerHTML=btn.join('');
   }
 
-  async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(lot)); }
+async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(lot)); }
+
+  function vinQuickSpec(v){
+    if(v.vin) return quickSpec(t('vin'),v.vin);
+    if(state.user) return quickSpec(t('vin'),v.vin||t('unverified'));
+    return `<div class="quick-spec locked-spec"><span>${t('vin')}</span><button type="button" data-auth-vin>🔒 ${t('registerForVin')}</button></div>`;
+  }
+
+  function vinQuickSpecValue(v){
+    if(v.vin) return esc(v.vin);
+    if(state.user) return esc(v.vin||t('unverified'));
+    return `<button type="button" class="btn-auth-vin-inline" data-auth-vin>🔒 ${t('registerForVin')}</button>`;
+  }
+
+  function quickSpec(label,value){ return `<div class="quick-spec"><span>${esc(label)}</span><strong>${esc(value||'N/D')}</strong></div>`; }
+  function detailSpec(label,value){ return `<div class="detail-spec"><span>${esc(label)}</span><strong>${esc(value||'N/D')}</strong></div>`; }
+
+  function detectTitleType(v) {
+    if (!v) return 'salvage';
+    const str = ((v.titleType || '') + ' ' + (v.titleDoc || '') + ' ' + (v.titleState || '') + ' ' + (v.title || '')).toLowerCase();
+    if (str.includes('clean') || str.includes('clear') || str.includes('limpio') || str.includes('rebuilt')) {
+      return 'clean';
+    }
+    return 'salvage';
+  }
+
+  function detectVehicleType(v) {
+    if (!v) return 'standard';
+    const str = ((v.vehicleType || '') + ' ' + (v.body || '') + ' ' + (v.title || '')).toLowerCase();
+    if (
+      str.includes('heavy') ||
+      str.includes('industrial') ||
+      str.includes('truck') ||
+      str.includes('trailer') ||
+      str.includes('bus') ||
+      str.includes('tractor') ||
+      str.includes('commercial') ||
+      str.includes('medium duty') ||
+      str.includes('pesado')
+    ) {
+      return 'heavy';
+    }
+    return 'standard';
+  }
+
+  function getCopartBuyerFee(bid, vehicleType = 'standard') {
+    const b = Math.max(0, Number(bid) || 0);
+    if (b <= 0) return 0;
+    if (vehicleType === 'heavy') {
+      return Math.max(250, Math.round(b * 0.10));
+    }
+    if (b < 100) return 35;
+    if (b < 200) return 60;
+    if (b < 300) return 75;
+    if (b < 400) return 90;
+    if (b < 500) return 105;
+    if (b < 600) return 135;
+    if (b < 700) return 150;
+    if (b < 800) return 160;
+    if (b < 900) return 175;
+    if (b < 1000) return 185;
+    if (b < 1200) return 210;
+    if (b < 1300) return 220;
+    if (b < 1400) return 230;
+    if (b < 1500) return 240;
+    if (b < 1700) return 260;
+    if (b < 2000) return 280;
+    if (b < 2400) return 310;
+    if (b < 3000) return 350;
+    if (b < 3500) return 400;
+    if (b < 4500) return 480;
+    if (b < 5000) return 520;
+    if (b < 6000) return 565;
+    if (b < 7500) return 625;
+    if (b < 10000) return 700;
+    if (b < 15000) return 775;
+    return Math.round(b * 0.055 * 100) / 100;
+  }
+
+  function getCopartVirtualBidFee(bid, offerType = 'live') {
+    const b = Math.max(0, Number(bid) || 0);
+    if (b <= 0) return 0;
+    if (offerType === 'prebid') {
+      if (b < 100) return 0;
+      if (b < 500) return 29;
+      if (b < 1000) return 39;
+      if (b < 1500) return 49;
+      if (b < 2000) return 59;
+      if (b < 4000) return 69;
+      if (b < 6000) return 79;
+      if (b < 8000) return 89;
+      if (b < 10000) return 99;
+      return 109;
+    }
+    if (b < 100) return 0;
+    if (b < 500) return 39;
+    if (b < 1000) return 49;
+    if (b < 1500) return 69;
+    if (b < 2000) return 79;
+    if (b < 4000) return 89;
+    if (b < 6000) return 99;
+    if (b < 8000) return 109;
+    if (b < 10000) return 119;
+    return 129;
+  }
+
+  function getApvFee(bid) {
+    const b = Math.max(0, Number(bid) || 0);
+    if (b <= 0) return 0;
+    if (b <= 5999) return 350;
+    if (b <= 9999) return 450;
+    if (b <= 14999) return 650;
+    return 700;
+  }
+
+  function calculateCostBreakdown(bid, options = {}) {
+    const b = Math.max(0, Number(bid) || 0);
+    const paymentMethod = options.paymentMethod || 'secure';
+    const offerType = options.offerType || 'live';
+    const titleType = options.titleType || 'clean';
+    const vehicleType = options.vehicleType || 'standard';
+
+    if (b <= 0) {
+      return {
+        bid: 0,
+        copartBuyerFee: 0,
+        copartVirtualFee: 0,
+        unsecuredPaymentFee: 0,
+        cleanTitleFee: 0,
+        apvFee: 0,
+        gateFee: 0,
+        bankFee: 0,
+        titlePickupFee: 0,
+        fixedOtherFees: 0,
+        totalCopartFees: 0,
+        total: 0,
+        options: { paymentMethod, offerType, titleType, vehicleType }
+      };
+    }
+
+    const copartBuyerFee = getCopartBuyerFee(b, vehicleType);
+    const copartVirtualFee = getCopartVirtualBidFee(b, offerType);
+    const unsecuredPaymentFee = paymentMethod === 'unsecured' ? Math.max(35, Math.round(b * 0.035)) : 0;
+    const cleanTitleFee = titleType === 'clean' ? 50 : 0;
+
+    const apvFee = getApvFee(b);
+    const gateFee = 79;
+    const bankFee = 30;
+    const titlePickupFee = 20;
+    const fixedOtherFees = gateFee + bankFee + titlePickupFee;
+
+    const totalCopartFees = copartBuyerFee + copartVirtualFee + unsecuredPaymentFee + cleanTitleFee;
+    const total = b + totalCopartFees + apvFee + fixedOtherFees;
+
+    return {
+      bid: b,
+      copartBuyerFee,
+      copartVirtualFee,
+      unsecuredPaymentFee,
+      cleanTitleFee,
+      apvFee,
+      gateFee,
+      bankFee,
+      titlePickupFee,
+      fixedOtherFees,
+      totalCopartFees,
+      total,
+      options: { paymentMethod, offerType, titleType, vehicleType }
+    };
+  }
+
+  function renderCalculatorHTML(v) {
+    const isLoggedIn = Boolean(state.user);
+    const autoTitle = detectTitleType(v);
+    const autoVehicle = detectVehicleType(v);
+
+    return `
+      <div class="calc-section-container" id="vehicle-fee-calculator" data-vehicle-lot="${esc(v.lot)}">
+        <div class="calc-section-header">
+          <div class="calc-header-title">
+            <span class="eyebrow-red">🧮 ${t('costCalculator')}</span>
+            <h3>Calculadora de Costos & Opciones de Puja</h3>
+          </div>
+          ${isLoggedIn ? `<span class="calc-badge-user">✓ ${t('unlockedFor')}</span>` : ''}
+        </div>
+
+        <div class="calc-grid-layout">
+          <!-- LEFT SIDE: Opciones que afectan los fees -->
+          <div class="calc-options-card">
+            <h4 class="calc-options-title">⚙️ Parámetros de la Oferta</h4>
+
+            <!-- Método de Pago -->
+            <div class="calc-opt-group">
+              <label class="calc-opt-label">Método de Pago:</label>
+              <div class="calc-radio-toggle">
+                <label class="calc-radio-btn">
+                  <input type="radio" name="calc_payment" value="secure" checked />
+                  <span>🔒 Pago Seguro</span>
+                </label>
+                <label class="calc-radio-btn">
+                  <input type="radio" name="calc_payment" value="unsecured" />
+                  <span>⚠️ Pago no garantizado</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tipo de Oferta -->
+            <div class="calc-opt-group">
+              <label class="calc-opt-label">Tipo de Oferta:</label>
+              <div class="calc-radio-toggle">
+                <label class="calc-radio-btn">
+                  <input type="radio" name="calc_offer" value="live" checked />
+                  <span>⚡ Oferta en Vivo</span>
+                </label>
+                <label class="calc-radio-btn">
+                  <input type="radio" name="calc_offer" value="prebid" />
+                  <span>📝 Pre oferta</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tipo de Título (Fijo según el vehículo) -->
+            <div class="calc-opt-group">
+              <label class="calc-opt-label">
+                Tipo de Título:
+                <span class="auto-badge locked-badge" title="Ajustado obligatoriamente por la ficha del vehículo">🔒 Fijo por vehículo</span>
+              </label>
+              <div class="calc-radio-toggle is-locked">
+                <label class="calc-radio-btn ${autoTitle === 'clean' ? 'is-selected-locked' : 'is-disabled'}">
+                  <input type="radio" name="calc_title" value="clean" ${autoTitle === 'clean' ? 'checked' : ''} disabled />
+                  <span>📄 Título Limpio</span>
+                </label>
+                <label class="calc-radio-btn ${autoTitle === 'salvage' ? 'is-selected-locked' : 'is-disabled'}">
+                  <input type="radio" name="calc_title" value="salvage" ${autoTitle === 'salvage' ? 'checked' : ''} disabled />
+                  <span>🛠️ Título Salvage</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tipo de Vehículo (Fijo según el vehículo) -->
+            <div class="calc-opt-group">
+              <label class="calc-opt-label">
+                Tipo de Vehículo:
+                <span class="auto-badge locked-badge" title="Ajustado obligatoriamente por la categoría del vehículo">🔒 Fijo por vehículo</span>
+              </label>
+              <div class="calc-radio-toggle is-locked">
+                <label class="calc-radio-btn ${autoVehicle === 'standard' ? 'is-selected-locked' : 'is-disabled'}">
+                  <input type="radio" name="calc_vehicle" value="standard" ${autoVehicle === 'standard' ? 'checked' : ''} disabled />
+                  <span>🚗 Vehículos Estándar</span>
+                </label>
+                <label class="calc-radio-btn ${autoVehicle === 'heavy' ? 'is-selected-locked' : 'is-disabled'}">
+                  <input type="radio" name="calc_vehicle" value="heavy" ${autoVehicle === 'heavy' ? 'checked' : ''} disabled />
+                  <span>🚛 Vehículo pesado</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE: Calculadora más pequeña -->
+          <div class="calc-breakdown-card">
+            ${!isLoggedIn ? `
+              <div class="calc-locked-content">
+                <div class="calc-locked-icon">🔒</div>
+                <div class="calc-locked-info">
+                  <span class="eyebrow-red">${t('calculatorLockedTitle')}</span>
+                  <h4>${t('calculatorTitle')}</h4>
+                  <p>${t('calculatorLockedSub')}</p>
+                </div>
+                <button class="btn btn-primary btn-red" data-auth-calc="${esc(v.lot)}">
+                  🔑 ${t('loginToUseCalc')}
+                </button>
+              </div>
+            ` : `
+              <div class="calc-input-section">
+                <label for="calc-bid-input">
+                  <span>Ingresa tu tope de puja:</span>
+                </label>
+                <div class="calc-input-row">
+                  <div class="calc-input-currency-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="calc-bid-input" class="calc-bid-input" min="100" step="50" value="" placeholder="Ingresa tu tope de puja" />
+                    <span class="currency-code">USD</span>
+                  </div>
+                  <div class="calc-quick-add">
+                    <button type="button" class="btn-quick-add" data-add="250">+$250</button>
+                    <button type="button" class="btn-quick-add" data-add="500">+$500</button>
+                    <button type="button" class="btn-quick-add" data-add="1000">+$1,000</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="calc-results-wrap"></div>
+            `}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function getSelectedCalcOptions() {
+    const root = dom.vehicleDetail;
+    const paymentMethod = root.querySelector('input[name="calc_payment"]:checked')?.value || 'secure';
+    const offerType = root.querySelector('input[name="calc_offer"]:checked')?.value || 'live';
+    const titleType = root.querySelector('input[name="calc_title"]:checked')?.value || 'clean';
+    const vehicleType = root.querySelector('input[name="calc_vehicle"]:checked')?.value || 'standard';
+    return { paymentMethod, offerType, titleType, vehicleType };
+  }
+
+  function updateCalculatorResults(bidAmount) {
+    const wrap = $('#calc-results-wrap');
+    if (!wrap) return;
+    const b = Number(bidAmount || 0);
+
+    if (b <= 0) {
+      wrap.innerHTML = `
+        <div class="calc-empty-prompt">
+          <span class="prompt-icon">💡</span>
+          <p>Ingresa tu tope de puja arriba para ver el desglose exacto de tarifas y el total a pagar.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const options = getSelectedCalcOptions();
+    const breakdown = calculateCostBreakdown(b, options);
+
+    wrap.innerHTML = `
+      <div class="calc-breakdown-container">
+        <div class="calc-breakdown-list">
+          <div class="calc-row">
+            <div class="calc-label"><span class="calc-icon">🏎️</span> <span>${t('yourBid')}</span></div>
+            <strong class="calc-val">${money(breakdown.bid)}</strong>
+          </div>
+
+          <!-- Grouped Copart Fees Row -->
+          <div class="calc-group-row" id="toggle-copart-group">
+            <div class="calc-row calc-row-toggle">
+              <div class="calc-label">
+                <span class="calc-icon">🏛️</span>
+                <span>Copart fees</span>
+                <span class="calc-info-badge">Desglose ⌄</span>
+              </div>
+              <div class="calc-val-wrap">
+                <strong class="calc-val">${money(breakdown.totalCopartFees)}</strong>
+                <span class="calc-arrow-icon" id="copart-arrow">⌄</span>
+              </div>
+            </div>
+            <div class="calc-subdetails hidden" id="copart-subdetails">
+              <div class="calc-subrow">
+                <span>${t('copartFeeLabel')} (${breakdown.options.vehicleType === 'heavy' ? 'Vehículo Pesado' : 'Estándar'})</span>
+                <span>${money(breakdown.copartBuyerFee)}</span>
+              </div>
+              <div class="calc-subrow">
+                <span>${t('copartVirtualFeeLabel')} (${breakdown.options.offerType === 'prebid' ? 'Pre oferta' : 'En vivo'})</span>
+                <span>${money(breakdown.copartVirtualFee)}</span>
+              </div>
+              ${breakdown.unsecuredPaymentFee > 0 ? `
+                <div class="calc-subrow warning-subrow">
+                  <span>Recargo Pago no garantizado (3.5%)</span>
+                  <span>${money(breakdown.unsecuredPaymentFee)}</span>
+                </div>
+              ` : ''}
+              ${breakdown.cleanTitleFee > 0 ? `
+                <div class="calc-subrow">
+                  <span>Procesamiento Título Limpio</span>
+                  <span>${money(breakdown.cleanTitleFee)}</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- Grouped Other Fees Row -->
+          <div class="calc-group-row" id="toggle-other-group">
+            <div class="calc-row calc-row-toggle">
+              <div class="calc-label">
+                <span class="calc-icon">📋</span>
+                <span>Otros fees (Portón, Banco, Título)</span>
+                <span class="calc-info-badge">Desglose ⌄</span>
+              </div>
+              <div class="calc-val-wrap">
+                <strong class="calc-val">${money(breakdown.fixedOtherFees)}</strong>
+                <span class="calc-arrow-icon" id="other-arrow">⌄</span>
+              </div>
+            </div>
+            <div class="calc-subdetails hidden" id="other-subdetails">
+              <div class="calc-subrow">
+                <span>${t('gateFeeLabel')}</span>
+                <span>${money(breakdown.gateFee)}</span>
+              </div>
+              <div class="calc-subrow">
+                <span>${t('bankFeeLabel')}</span>
+                <span>${money(breakdown.bankFee)}</span>
+              </div>
+              <div class="calc-subrow">
+                <span>${t('titlePickupFeeLabel')}</span>
+                <span>${money(breakdown.titlePickupFee)}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- APV Motors Fee -->
+          <div class="calc-row highlight-apv">
+            <div class="calc-label"><span class="calc-icon">🤝</span> <span>${t('apvFeeLabel')}</span></div>
+            <strong class="calc-val red-text">${money(breakdown.apvFee)}</strong>
+          </div>
+        </div>
+
+        <div class="calc-total-box">
+          <div class="calc-total-left">
+            <span class="calc-total-eyebrow">${t('totalToPay')}</span>
+            <h2 class="calc-total-amount">${money(breakdown.total)}</h2>
+            <small class="calc-total-note">* Nota: Las tarifas y honorarios son estimados y pueden variar de acuerdo con la subasta, ubicación del vehículo y regulaciones aplicables. No incluye costos de flete/transporte ni impuestos locales.</small>
+          </div>
+          <button class="btn btn-red-action" id="calc-proceed-bid" data-calc-bid-val="${breakdown.bid}">
+            ${t('bidWithThisAmount')} →
+          </button>
+        </div>
+      </div>
+    `;
+  }
 
   async function openDetail(lot, push=true){
     try{
@@ -667,200 +1124,135 @@
     }catch(err){ showToast(err.message); }
   }
 
-  function vinQuickSpec(v){
-    if(v.vin) return quickSpec(t('vin'), v.vin);
-    return `<div class="quick-spec locked-spec"><span>${t('vin')}</span><button type="button" data-auth-vin>🔒 ${t('registerForVin')}</button></div>`;
-  }
-
-  function quickSpec(label,value){ return `<div class="quick-spec"><span>${esc(label)}</span><strong>${esc(value||'N/D')}</strong></div>`; }
-  function detailSpec(label,value){ return `<div class="detail-spec"><span>${esc(label)}</span><strong>${esc(value||'N/D')}</strong></div>`; }
-
   function renderDetail(v){
-    const hasBuyNow=Number(v.buyNow)>0;
-    const coverImage=v.image?v.image.replace(/_thb\./i,'_ful.'):'';
+    const hasBuyNow = Number(v.buyNow) > 0;
+    const coverImage = v.image ? v.image.replace(/_thb\./i,'_ful.') : '';
     state.currentPhotoIdx = 0;
-    dom.vehicleDetail.innerHTML=`
-      <div class="detail-hero">
-        <div class="detail-gallery" id="detail-gallery">
-          <div class="detail-gallery-main" id="detail-gallery-main">
-            <button class="gallery-arrow prev" id="gallery-prev-btn" type="button" aria-label="${t('previousPhoto')}">‹</button>
-            ${coverImage?`<img id="detail-main-image" src="${esc(coverImage)}" alt="${esc(v.title)}" />`:`<div class="image-fallback">${t('noPhoto')}</div>`}
-            <button class="gallery-arrow next" id="gallery-next-btn" type="button" aria-label="${t('nextPhoto')}">›</button>
-            <span id="detail-photo-count" class="photo-count">1 ${t('photo')}</span>
+
+    dom.vehicleDetail.innerHTML = `
+      <!-- TOP GRID: Gallery (Left), Auction & Pricing (Center), Bidding Sidebar (Right) -->
+      <div class="detail-top-grid">
+        <!-- Gallery Column -->
+        <div class="detail-gallery-col">
+          <div class="detail-gallery" id="detail-gallery">
+            <div class="detail-gallery-main" id="detail-gallery-main">
+              <button class="gallery-arrow prev" id="gallery-prev-btn" type="button" aria-label="${t('previousPhoto')}">‹</button>
+              ${coverImage ? `<img id="detail-main-image" src="${esc(coverImage)}" alt="${esc(v.title)}" />` : `<div class="image-fallback">${t('noPhoto')}</div>`}
+              <button class="gallery-arrow next" id="gallery-next-btn" type="button" aria-label="${t('nextPhoto')}">›</button>
+              <span id="detail-photo-count" class="photo-count">1 ${t('photo')}</span>
+            </div>
+            <div id="detail-gallery-thumbs" class="detail-gallery-thumbs">${coverImage ? `<button class="gallery-thumb active" data-gallery-src="${esc(coverImage)}"><img src="${esc(coverImage)}" alt="Foto 1" /></button>` : ''}</div>
           </div>
-          <div id="detail-gallery-thumbs" class="detail-gallery-thumbs">${coverImage?`<button class="gallery-thumb active" data-gallery-src="${esc(coverImage)}"><img src="${esc(coverImage)}" alt="Foto 1" /></button>`:''}</div>
         </div>
-        <div class="detail-summary">
-          <span class="eyebrow">${t('lot').toUpperCase()} ${esc(v.lot)} · COPART</span>
-          <h2 id="vehicle-detail-title">${esc(v.title)}</h2>
-          <div class="title-document-badge">${esc(titleDoc(v))}</div>
-          <div class="detail-pills"><span class="condition-pill">${esc(conditionLabel(v.runsDrives))}</span><span class="spec-chip">🔑 ${v.hasKeys==='YES'?t('keys'):t('unconfirmed')}</span><span class="spec-chip">⚙ ${esc(v.transmission||t('noData'))}</span></div>
-          ${hasBuyNow?`<div class="buy-now-highlight"><span>${t('directPrice')}</span><strong>${esc(money(v.buyNow))}</strong></div>`:''}
-          <div class="detail-price-grid">
-            <div class="detail-price highlight-price"><span>${t('auctionCurrentBid')}</span><strong>${esc(money(v.currentBid))}</strong></div>
-            <div class="detail-price"><span>${t('estimatedRetail')}</span><strong>${esc(money(v.retailValue))}</strong></div>
-            <div class="detail-price"><span>${t('auctionDate')}</span><strong class="small-value">${esc(dateLabel(v.saleDate,v.timeZone))}</strong></div>
-            <div class="detail-price"><span>${t('location')}</span><strong class="small-value">${esc(locationLabel(v))}</strong></div>
+
+        <!-- Center Column (Auction Card + Pricing Card) -->
+        <div class="detail-center-col">
+          <div class="detail-card">
+            <div class="detail-card-header">
+              <span class="detail-card-icon">⚖️</span>
+              <h3>Auction / Subasta</h3>
+            </div>
+            <div class="detail-card-grid">
+              <div class="detail-card-row"><span>VIN</span><strong>${vinQuickSpecValue(v)}</strong></div>
+              <div class="detail-card-row"><span>${t('lot')}</span><strong>${esc(v.lot)}</strong></div>
+              <div class="detail-card-row"><span>Fecha de subasta</span><strong>${esc(dateLabel(v.saleDate, v.timeZone))}</strong></div>
+              <div class="detail-card-row"><span>Nombre de venta</span><strong>${esc(v.yardName || 'Copart Yard')}</strong></div>
+              <div class="detail-card-row"><span>Ubicación</span><strong>${esc(locationLabel(v))}</strong></div>
+              <div class="detail-card-row"><span>Vendedor</span><strong>${esc(v.sellerName || 'Copart Seller')}</strong></div>
+            </div>
           </div>
-          <button class="btn btn-primary full" data-detail-bid>${t('wantToBid')}</button>
-          ${!state.user?`<p class="signin-detail-note">${t('signInVinChat')}</p>`:''}
+
+          <div class="detail-card">
+            <div class="detail-card-header">
+              <span class="detail-card-icon">🧰</span>
+              <h3>Pricing analysis / Análisis de Precios</h3>
+            </div>
+            <div class="detail-card-grid">
+              <div class="detail-card-row"><span>Valor Retail Estimado</span><strong>${esc(money(v.retailValue))}</strong></div>
+              ${hasBuyNow ? `<div class="detail-card-row"><span>Compra directa (Buy Now)</span><strong>${esc(money(v.buyNow))}</strong></div>` : ''}
+              <div class="detail-card-row"><span>Estado de Venta</span><strong>${esc(v.saleStatus || 'Subasta activa')}</strong></div>
+              <div class="detail-card-row"><span>Reserva Vendedor</span><strong>${esc(v.saleStatus || 'Pujas habilitadas')}</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Bidding Sidebar Column -->
+        <div class="detail-right-col">
+          <div class="bidding-action-card">
+            <div class="bidding-card-header">
+              <span class="bidding-timer-icon">⏱️</span>
+              <span>Tiempo para puja preliminar</span>
+            </div>
+            <div class="bidding-current-bid">
+              <span class="bid-label">${t('auctionCurrentBid').toUpperCase()}</span>
+              <h2 class="bid-amount">${esc(money(v.currentBid))} USD</h2>
+            </div>
+            <button class="btn btn-primary btn-bid-now" data-detail-bid>
+              🔨 ${t('wantToBid').toUpperCase()} / OFERTAR
+            </button>
+            <p class="bidding-disclaimer">Vehículos vendidos en su estado actual "as is - where is", todas las ventas son finales.</p>
+          </div>
         </div>
       </div>
-      <div class="detail-body">
-        <section class="all-photos-section" id="all-photos-section">
-          <div class="technical-heading"><div><span class="eyebrow">${t('lotGallery')}</span><h3>${t('allPhotos')}</h3></div><span id="all-photos-count" class="detail-source">${t('loading')}</span></div>
-          <div id="detail-all-photos" class="detail-all-photos">${coverImage?`<button type="button" data-gallery-src="${esc(coverImage)}"><img src="${esc(coverImage)}" alt="${t('vehicle')}" /></button>`:''}</div>
-        </section>
-        <div class="technical-heading"><div><span class="eyebrow">${t('technicalPrices')}</span><h3>${t('completeVehicleInfo')}</h3></div><span class="detail-source">${t('officialCopartData')}</span></div>
-        <div class="quick-tech-grid">
-          ${hasBuyNow?quickSpec(t('directPurchase'), money(v.buyNow)):''}
-          ${quickSpec(t('auctionCurrentBid'), money(v.currentBid))}
-          ${quickSpec(t('estimatedRetail'), money(v.retailValue))}
-          ${v.repairCost?quickSpec(t('estimatedRepair'), money(v.repairCost)):''}
-          ${vinQuickSpec(v)}
-          ${quickSpec(t('odometer'),miles(v.odometer)+(v.odometer?' · '+km(v.odometer):''))}
-          ${quickSpec(t('transmission'),v.transmission||t('noData'))}
-          ${quickSpec(t('engine'),v.engine||t('noData'))}
-          ${quickSpec(t('cylinders'),v.cylinders?`${v.cylinders} cyl`:t('noData'))}
-          ${quickSpec(t('traction'),v.drive||t('noData'))}
-          ${quickSpec(t('fuel'),v.fuel||t('noData'))}
-          ${quickSpec(t('primaryDamage'),v.primaryDamage||t('noData'))}
-          ${quickSpec(t('secondaryDamage'),v.secondaryDamage||t('noData'))}
-          ${quickSpec(t('lossType'),v.lossType||t('noData'))}
-          ${quickSpec(t('body'),v.body||t('noData'))}
-          ${quickSpec(t('availableKeys'),v.hasKeys==='YES'?(currentLang==='en'?'Yes':'Sí'):`No / ${t('noData')}`)}
-          ${quickSpec(t('titleDocument'),titleDoc(v))}
-          ${quickSpec(t('yardLocation'),locationLabel(v))}
-        </div>
-        <button id="toggle-full-tech" class="full-tech-toggle" type="button" aria-expanded="false">${t('showAllTechnical')} <span>⌄</span></button>
-        <div id="full-tech" class="full-tech hidden">
-          <div class="detail-specs">
-            ${detailSpec(t('lot'),v.lot)}
-            ${detailSpec(t('item'),v.item||t('noData'))}
-            ${detailSpec(t('vehicleType'),v.vehicleType||t('noData'))}
-            ${detailSpec(t('year'),v.year||t('noData'))}
-            ${detailSpec(t('brand'),v.make||t('noData'))}
-            ${detailSpec(t('model'),v.model||t('noData'))}
-            ${detailSpec(t('modelGroup'),v.modelGroup||t('noData'))}
-            ${detailSpec(t('trim'),v.trim||t('noData'))}
-            ${detailSpec(t('color'),v.color||t('noData'))}
-            ${detailSpec(t('primaryDamage'),v.primaryDamage||t('noData'))}
-            ${detailSpec(t('secondaryDamage'),v.secondaryDamage||t('noData'))}
-            ${detailSpec(t('condition'),conditionLabel(v.runsDrives))}
-            ${detailSpec(t('document'),titleDoc(v))}
-            ${detailSpec(t('conditionCode'),v.conditionCode||t('noData'))}
-            ${detailSpec(t('odometerBrand'),v.odometerBrand||t('noData'))}
-            ${detailSpec(t('engine'),v.engine||t('noData'))}
-            ${detailSpec(t('cylinders'),v.cylinders?`${v.cylinders} cyl`:t('noData'))}
-            ${detailSpec(t('transmission'),v.transmission||t('noData'))}
-            ${detailSpec(t('saleStatus'),v.saleStatus||t('noData'))}
-            ${detailSpec('Make an Offer',v.makeOfferEligible?(currentLang==='en'?'Yes':'Sí'):'No')}
-            ${detailSpec('Buy It Now',money(v.buyNow))}
-            ${detailSpec(t('currentBid'),money(v.currentBid))}
-            ${detailSpec(t('estimatedRetail'),money(v.retailValue))}
-            ${detailSpec(t('repairCost'),money(v.repairCost))}
-            ${detailSpec(t('yard'),v.yardName||t('noData'))}
-            ${detailSpec('Yard number',v.yardNumber||t('noData'))}
-            ${detailSpec('ZIP',v.locationZip||t('noData'))}
-            ${detailSpec(t('country'),v.locationCountry||t('noData'))}
-            ${detailSpec(t('seller'),v.sellerName||t('noData'))}
-            ${detailSpec('Sale light',v.saleLight||t('noData'))}
-            ${detailSpec('AutoGrade',v.autoGrade||t('noData'))}
-            ${detailSpec(t('updated'),v.lastUpdated||t('noData'))}
-          </div>
-          ${v.specialNote||v.announcements?`<div class="detail-text-info">${v.specialNote?`<div><span>${t('specialNote')}</span><p>${esc(v.specialNote)}</p></div>`:''}${v.announcements?`<div><span>${t('announcements')}</span><p>${esc(v.announcements)}</p></div>`:''}</div>`:''}
-        </div>
-        <div class="detail-bottom">
-          <div class="detail-note"><h4>${t('readyToBid')}</h4><p>${t('afterSignIn')}</p><button class="btn btn-primary" style="margin-top:14px" data-detail-bid>${t('wantToBid')}</button></div>
-          <div class="detail-note"><h4>${t('informationSource')}</h4><p>${t('sourceDescription')}</p><a href="${esc(v.copartUrl)}" target="_blank" rel="noreferrer">${t('openCopart')}</a></div>
-        </div>
-      </div>`;
 
+      <!-- MIDDLE GRID: Damage Card (Left) & Vehicle Info Card (Right) -->
+      <div class="detail-mid-grid">
+        <div class="detail-card">
+          <div class="detail-card-header">
+            <span class="detail-card-icon">🛠️</span>
+            <h3>Damage / Daños y Condición</h3>
+          </div>
+          <div class="detail-card-grid two-col">
+            <div class="detail-card-row"><span>Daño principal</span><strong>${esc(v.primaryDamage || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>Daño secundario</span><strong>${esc(v.secondaryDamage || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>Condición</span><strong>${esc(conditionLabel(v.runsDrives))}</strong></div>
+            <div class="detail-card-row"><span>Título / Doc</span><strong>${esc(titleDoc(v))}</strong></div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-card-header">
+            <span class="detail-card-icon">⚙️</span>
+            <h3>Vehicle Info / Información del Vehículo</h3>
+          </div>
+          <div class="detail-card-grid two-col">
+            <div class="detail-card-row"><span>Odómetro</span><strong>${miles(v.odometer)}</strong></div>
+            <div class="detail-card-row"><span>Tiene Llave</span><strong>${v.hasKeys === 'YES' ? 'Sí' : 'No / N/D'}</strong></div>
+            <div class="detail-card-row"><span>Cilindros</span><strong>${v.cylinders ? `${v.cylinders} cyl` : 'N/D'}</strong></div>
+            <div class="detail-card-row"><span>Tipo de motor</span><strong>${esc(v.engine || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>Tracción</span><strong>${esc(v.drive || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>Transmisión</span><strong>${esc(v.transmission || 'N/D')}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM SECTION: Price Calculator -->
+      ${renderCalculatorHTML(v)}
+    `;
+
+    if (state.user) {
+      updateCalculatorResults($('#calc-bid-input')?.value || 0);
+    }
     setupGalleryNavigation();
   }
 
   function setupGalleryNavigation(){
-    const mainContainer = $('#detail-gallery-main');
-    if(!mainContainer) return;
-    mainContainer.onclick = (e) => {
-      if(!state.galleryImages || !state.galleryImages.length) return;
-      if(e.target.closest('#gallery-prev-btn')) {
-        changePhotoIndex(-1);
-        return;
-      }
-      if(e.target.closest('#gallery-next-btn')) {
-        changePhotoIndex(1);
-        return;
-      }
-      const rect = mainContainer.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      if(clickX < rect.width * 0.4) {
-        changePhotoIndex(-1);
-      } else {
-        changePhotoIndex(1);
-      }
-    };
-  }
+    const thumbs = $('#detail-gallery-thumbs');
+    const main = $('#detail-main-image');
+    const count = $('#detail-photo-count');
+    const allGrid = $('#detail-all-grid');
+    const allCount = $('#detail-all-count');
 
-  function changePhotoIndex(dir){
-    if(!state.galleryImages || !state.galleryImages.length) return;
-    state.currentPhotoIdx = (state.currentPhotoIdx + dir + state.galleryImages.length) % state.galleryImages.length;
-    const newSrc = state.galleryImages[state.currentPhotoIdx];
-    const mainImg = $('#detail-main-image');
-    if(mainImg && newSrc) mainImg.src = newSrc;
-    $$('.gallery-thumb').forEach((t, i) => t.classList.toggle('active', i === state.currentPhotoIdx));
-  }
-
-  async function loadGallery(lot){
-    try{
-      const data=await api('/api/vehicles/'+encodeURIComponent(lot)+'/images');
-      if(!state.currentVehicle || String(state.currentVehicle.lot) !== String(lot)) return;
-      let images=(data.images||[]).filter(Boolean);
-
-      if(images.length <= 1 && state.currentVehicle.imageApi) {
-        try {
-          const res = await fetch(state.currentVehicle.imageApi);
-          if(res.ok) {
-            const clientData = await res.json();
-            if(clientData && Array.isArray(clientData.lotImages)) {
-              const extracted = clientData.lotImages.map(item => {
-                const link = Array.isArray(item.link) ? (item.link.find(l => l.url && (l.url.includes('_ful.') || l.url.includes('_hrs.'))) || item.link[0]) : null;
-                return link ? String(link.url).trim().replace(/^http:/i, 'https:') : null;
-              }).filter(Boolean);
-              if(extracted.length > 0) {
-                images = [...new Set([...extracted, ...images])];
-              }
-            }
-          }
-        } catch(_) {}
-      }
-
-      state.galleryImages=images;
-      renderGallery(images);
-    }catch(_){
-      if(state.currentVehicle && String(state.currentVehicle.lot) === String(lot)) {
-        const cover = state.currentVehicle.image ? [state.currentVehicle.image.replace(/_thb\./i, '_ful.'), state.currentVehicle.image] : [];
-        state.galleryImages = cover;
-        renderGallery(cover);
-      }
-    }
-  }
-
-  function renderGallery(images){
-    const main=$('#detail-main-image'); const thumbs=$('#detail-gallery-thumbs'); const count=$('#detail-photo-count');
-    const allGrid=$('#detail-all-photos'); const allCount=$('#all-photos-count');
     if(!thumbs||!count) return;
     const fallbackCover = state.currentVehicle && state.currentVehicle.image ? [state.currentVehicle.image.replace(/_thb\./i, '_ful.')] : [];
-    const finalImages=images.length?images:fallbackCover;
-    state.galleryImages = finalImages;
-    state.currentPhotoIdx = 0;
+    const finalImages=state.galleryImages||fallbackCover;
     const label=`${finalImages.length} ${finalImages.length===1?'foto':'fotos'}`;
     count.textContent=label;
     if(allCount) allCount.textContent=label;
     if(!finalImages.length){ thumbs.innerHTML=''; if(allGrid) allGrid.innerHTML='<div class="photo-empty">No hay fotos disponibles para este lote.</div>'; return; }
     if(main) main.src=finalImages[0];
-    thumbs.innerHTML=finalImages.map((src,i)=>`<button class="gallery-thumb ${i===0?'active':''}" data-gallery-src="${esc(src)}" aria-label="Ver foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle.title)}" loading="lazy" /></button>`).join('');
-    if(allGrid) allGrid.innerHTML=finalImages.map((src,i)=>`<button type="button" data-gallery-src="${esc(src)}" aria-label="Ampliar foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle.title)}" loading="lazy" /></button>`).join('');
+    thumbs.innerHTML=finalImages.map((src,i)=>`<button class="gallery-thumb ${i===0?'active':''}" data-gallery-src="${esc(src)}" aria-label="Ver foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle?.title||'')}" loading="lazy" /></button>`).join('');
+    if(allGrid) allGrid.innerHTML=finalImages.map((src,i)=>`<button type="button" data-gallery-src="${esc(src)}" aria-label="Ampliar foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle?.title||'')}" loading="lazy" /></button>`).join('');
   }
 
   function closeDetail(changeUrl=true){
@@ -891,9 +1283,6 @@
     if(dom.bidOverlay.classList.contains('hidden')&&dom.vehicleOverlay.classList.contains('hidden')) document.body.style.overflow='';
   }
 
-  // Public fallback used by the header and by any future CTA. Keeping this
-  // tiny API independent from boot() means the login window still opens even
-  // if another part of the page has a temporary initialization error.
   window.APVAuth={open:openAuth,close:closeAuth};
   window.openAPVAuth=function(reason){ openAuth(reason||'Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.'); return false; };
   window.closeAPVAuth=function(){ closeAuth(); return false; };
@@ -925,7 +1314,9 @@
     showToast(`Bienvenido, ${user.name.split(' ')[0]}.`);
     await loadVehicles();
     if(action&&action.type==='bid'){
-      try{ await openBid(await getVehicle(action.lot)); }catch(err){ showToast(err.message); }
+      try{ await openBid(await getVehicle(action.lot), action.amount); }catch(err){ showToast(err.message); }
+    }else if(action&&action.type==='calc'){
+      await openDetail(action.lot,false);
     }else if(action&&action.type==='vin'){
       await openDetail(action.lot,false);
     }else if(!dom.vehicleOverlay.classList.contains('hidden')&&state.currentVehicle){
@@ -995,14 +1386,77 @@
 
   async function logout(){
     try{ await api('/api/auth/logout',{method:'POST'}); }catch(_){}
-    // Recargar es intencional: Kommo debe reiniciarse sin el user_id de la cuenta anterior.
     location.reload();
   }
 
-  async function openBid(v){
-    if(!state.user){ openAuth('Crea tu cuenta o inicia sesión para solicitar la puja. Tu cuenta mantiene el historial de Kommo entre dispositivos.',{type:'bid',lot:v.lot}); return; }
+  function updateBidCostPreview(bidAmount) {
+    const container = $('#bid-cost-preview');
+    if (!container) return;
+    const v = state.currentVehicle;
+    if (!v) { container.innerHTML = ''; return; }
+    const b = Number(bidAmount || 0);
+
+    if (b <= 0) {
+      container.innerHTML = `
+        <div class="bid-mini-prompt">
+          <span>💡 Ingresa tu tope de oferta para ver el desglose estimado de costos.</span>
+        </div>
+      `;
+      return;
+    }
+
+    const autoTitle = detectTitleType(v);
+    const autoVehicle = detectVehicleType(v);
+    const options = {
+      paymentMethod: 'secure',
+      offerType: 'live',
+      titleType: autoTitle,
+      vehicleType: autoVehicle
+    };
+    const breakdown = calculateCostBreakdown(b, options);
+
+    container.innerHTML = `
+      <div class="bid-mini-breakdown">
+        <div class="bid-mini-header">
+          <span>📊 Desglose estimado para tu tope de ${money(breakdown.bid)}</span>
+        </div>
+        <div class="bid-mini-grid">
+          <div class="bid-mini-row">
+            <span>Puja (Tope)</span>
+            <strong>${money(breakdown.bid)}</strong>
+          </div>
+          <div class="bid-mini-row">
+            <span>Copart fees (${autoVehicle === 'heavy' ? 'Vehículo Pesado' : 'Estándar'})</span>
+            <strong>${money(breakdown.totalCopartFees)}</strong>
+          </div>
+          <div class="bid-mini-row">
+            <span>Otros fees (Portón, Banco, Título)</span>
+            <strong>${money(breakdown.fixedOtherFees)}</strong>
+          </div>
+          <div class="bid-mini-row red-highlight">
+            <span>Fee APV Motors</span>
+            <strong class="red-text">${money(breakdown.apvFee)}</strong>
+          </div>
+        </div>
+        <div class="bid-mini-total">
+          <div class="bid-total-left">
+            <span class="bid-total-label">Total estimado a pagar</span>
+            <small class="bid-total-sub">* Sujeto a variaciones de subasta y ubicación</small>
+          </div>
+          <strong class="bid-total-amount">${money(breakdown.total)} USD</strong>
+        </div>
+      </div>
+    `;
+  }
+
+  async function openBid(v, initialAmount){
+    if(!state.user){ openAuth('Crea tu cuenta o inicia sesión para solicitar la puja. Tu cuenta mantiene el historial de Kommo entre dispositivos.',{type:'bid',lot:v.lot,amount:initialAmount}); return; }
     try{ if(!v.vin) v=await getVehicle(v.lot); }catch(_){}
-    state.currentVehicle=v; closeDetail(false); dom.bidModal?.classList.remove('chat-mode'); dom.bidAmount.value=''; dom.bidAmountStep.classList.remove('hidden'); dom.bidChatStep.classList.add('hidden'); dom.kommoFallback.classList.remove('hidden');
+    state.currentVehicle=v; closeDetail(false); dom.bidModal?.classList.remove('chat-mode');
+    const startVal = initialAmount ? Number(initialAmount) : '';
+    dom.bidAmount.value = startVal ? String(startVal) : '';
+    updateBidCostPreview(startVal);
+    dom.bidAmountStep.classList.remove('hidden'); dom.bidChatStep.classList.add('hidden'); dom.kommoFallback.classList.remove('hidden');
     dom.bidVehicleMini.innerHTML=`<div class="thumb" ${imageStyle(v.image)}></div><div><h4>${esc(v.title)}</h4><p>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</p><p>Puja actual ${esc(money(v.currentBid))} · Retail ${esc(money(v.retailValue))}</p></div>`;
     dom.bidOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; syncChatReopenButton(); setTimeout(()=>dom.bidAmount.focus(),100);
   }
@@ -1062,7 +1516,7 @@
       const api=window.apvKommo;
       if(api&&!api.__bootstrapOnly&&typeof api.reopenConversation==='function'){
         const result=api.reopenConversation(v,state.user);
-        if(result.ok&&result.ready) dom.kommoFallback.classList.add('hidden');
+        if(result.ok&&result.ready) dom.kommoFallback.classList.remove('hidden');
       }else{
         $('#fallback-copy').textContent='El módulo Kommo no cargó. Usa “Copiar diagnóstico” para ver la causa.';
       }
@@ -1081,13 +1535,86 @@
     if(action==='bid'){ try{ await openBid(await getVehicle(lot)); }catch(err){showToast(err.message);} }
   });
   dom.pagination.addEventListener('click',e=>{ const b=e.target.closest('[data-page]'); if(!b||b.disabled)return; state.page=Number(b.dataset.page); loadVehicles(); document.querySelector('#catalogo').scrollIntoView({behavior:'smooth'}); });
+  
+  dom.bidAmount.addEventListener('input', e => {
+    updateBidCostPreview(e.target.value);
+  });
+
+  dom.vehicleDetail.addEventListener('input', e => {
+    if (e.target.id === 'calc-bid-input') {
+      updateCalculatorResults(e.target.value);
+    }
+  });
+
+  dom.vehicleDetail.addEventListener('change', e => {
+    if (e.target.matches('input[name^="calc_"]')) {
+      const input = $('#calc-bid-input');
+      const val = input ? input.value : (state.currentVehicle?.currentBid || 1000);
+      updateCalculatorResults(val);
+    }
+  });
+
   dom.vehicleDetail.addEventListener('click',async e=>{
+    const toggleCopart = e.target.closest('#toggle-copart-group');
+    if (toggleCopart) {
+      const sub = $('#copart-subdetails', dom.vehicleDetail);
+      const arrow = $('#copart-arrow', dom.vehicleDetail);
+      if (sub) sub.classList.toggle('hidden');
+      if (arrow) arrow.classList.toggle('is-open');
+      return;
+    }
+
+    const toggleOther = e.target.closest('#toggle-other-group');
+    if (toggleOther) {
+      const sub = $('#other-subdetails', dom.vehicleDetail);
+      const arrow = $('#other-arrow', dom.vehicleDetail);
+      if (sub) sub.classList.toggle('hidden');
+      if (arrow) arrow.classList.toggle('is-open');
+      return;
+    }
+
+    const quickAdd = e.target.closest('[data-add]');
+    if (quickAdd) {
+      const input = $('#calc-bid-input');
+      if (input) {
+        const current = Number(input.value || 0);
+        const add = Number(quickAdd.dataset.add || 0);
+        input.value = current + add;
+        updateCalculatorResults(input.value);
+      }
+      return;
+    }
+
+    const authCalc = e.target.closest('[data-auth-calc]');
+    if (authCalc) {
+      openAuth('Regístrate o inicia sesión para usar la calculadora de costos.', { type: 'calc', lot: authCalc.dataset.authCalc });
+      return;
+    }
+
+    const proceedBtn = e.target.closest('#calc-proceed-bid');
+    if (proceedBtn && state.currentVehicle) {
+      const amount = Number(proceedBtn.dataset.calcBidVal || 0);
+      await openBid(state.currentVehicle, amount);
+      return;
+    }
+
     const thumb=e.target.closest('[data-gallery-src]');
     if(thumb){ const img=$('#detail-main-image'); if(img) img.src=thumb.dataset.gallerySrc; $$('.gallery-thumb',dom.vehicleDetail).forEach(b=>b.classList.toggle('active',b===thumb)); return; }
     if(e.target.closest('[data-detail-bid]')&&state.currentVehicle){ await openBid(state.currentVehicle); return; }
     if(e.target.closest('[data-auth-vin]')&&state.currentVehicle){ openAuth('Regístrate o inicia sesión para revelar el VIN completo.',{type:'vin',lot:state.currentVehicle.lot}); return; }
-    const toggle=e.target.closest('#toggle-full-tech');
-    if(toggle){ const full=$('#full-tech'); const expanded=toggle.getAttribute('aria-expanded')==='true'; toggle.setAttribute('aria-expanded',String(!expanded)); full.classList.toggle('hidden',expanded); toggle.innerHTML=expanded?'Ver toda la información <span>⌄</span>':'Ocultar información <span>⌃</span>'; }
+    const toggle = e.target.closest('#toggle-full-tech');
+    if (toggle) {
+      const full = $('#full-tech');
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      full.classList.toggle('hidden', expanded);
+
+      const label = $('#toggle-tech-label', toggle);
+      const arrow = $('#toggle-tech-arrow', toggle);
+      if (label) label.textContent = expanded ? t('showAllTechnical') : t('hideInformation');
+      if (arrow) arrow.textContent = expanded ? '⌄' : '⌃';
+      toggle.classList.toggle('is-open', !expanded);
+    }
   });
 
   $$('[data-close="vehicle"]').forEach(b=>b.addEventListener('click',()=>closeDetail()));
