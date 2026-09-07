@@ -277,7 +277,7 @@
           <label class="filter-group"><span data-i18n="state">Estado</span><select id="filter-state"><option value="" data-i18n="allMasculine">Todos</option></select></label>
           <label class="toggle-line"><span data-i18n="keysOnly">Solo con llaves</span><input id="filter-keys" type="checkbox" /></label>
           <label class="toggle-line"><span data-i18n="buyNowOnly">Solo Buy It Now</span><input id="filter-buy-now" type="checkbox" /></label>
-          <label class="filter-group range-line"><span><span data-i18n="maxOdometer">Odómetro máximo</span> <strong id="odometer-label"></strong></span><input id="filter-odometer" type="range" min="0" max="500000" value="500000" step="5000" /></label>
+          <label class="filter-group range-line"><span><span data-i18n="maxOdometer">Odómetro máximo</span> <strong id="odometer-label"></strong></span><input id="filter-odometer" type="range" min="0" max="1000000" value="1000000" step="10000" /></label>
           <button id="apply-filters" class="btn btn-dark full" data-i18n="applyFilters">Aplicar filtros</button>
         </aside>
 
@@ -303,11 +303,47 @@
   <footer>
     <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
     <p data-i18n="footerCatalog">Catálogo de vehículos de subasta · EE. UU.</p>
+    <p data-i18n="footerSource">Inventory data sourced from public Copart auction listings.</p>
     <p data-i18n="footerDisclaimer">La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.</p>
+    <div class="footer-legal-links">
+      <button type="button" class="legal-link-btn" id="terms-link-btn" data-i18n="termsOfService">Términos de Servicio</button>
+      <span class="legal-sep">·</span>
+      <button type="button" class="legal-link-btn" id="privacy-link-btn" data-i18n="privacyPolicy">Políticas de Privacidad</button>
+    </div>
   </footer>
 
   <div class="overlay hidden" id="vehicle-overlay" role="dialog" aria-modal="true" aria-labelledby="vehicle-detail-title">
     <div class="detail-modal"><button class="modal-close" data-close="vehicle" aria-label="Cerrar" data-i18n-aria-label="close">×</button><div id="vehicle-detail-content"></div></div>
+  </div>
+
+  <div class="overlay hidden legal-overlay" id="terms-overlay" role="dialog" aria-modal="true" aria-labelledby="terms-title">
+    <div class="legal-modal">
+      <button class="modal-close" data-close="terms" aria-label="Cerrar" data-i18n-aria-label="close">×</button>
+      <div class="legal-modal-header">
+        <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
+        <span class="eyebrow" data-i18n="termsEyebrow">ASPECTOS LEGALES</span>
+        <h2 id="terms-title" data-i18n="termsTitle">Términos de Servicio</h2>
+      </div>
+      <div class="legal-modal-body" data-i18n-html="termsContent"></div>
+      <div class="legal-modal-footer">
+        <button class="btn btn-dark" data-close="terms" data-i18n="close">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay hidden legal-overlay" id="privacy-overlay" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+    <div class="legal-modal">
+      <button class="modal-close" data-close="privacy" aria-label="Cerrar" data-i18n-aria-label="close">×</button>
+      <div class="legal-modal-header">
+        <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
+        <span class="eyebrow" data-i18n="privacyEyebrow">PROTECCIÓN DE DATOS</span>
+        <h2 id="privacy-title" data-i18n="privacyTitle">Políticas de Privacidad</h2>
+      </div>
+      <div class="legal-modal-body" data-i18n-html="privacyContent"></div>
+      <div class="legal-modal-footer">
+        <button class="btn btn-dark" data-close="privacy" data-i18n="close">Cerrar</button>
+      </div>
+    </div>
   </div>
 
   <div class="overlay hidden auth-overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
@@ -419,6 +455,23 @@
   </button>
 
   <div class="toast hidden" id="toast"></div>
+
+  <!-- Cookie Acceptance Banner -->
+  <div class="cookie-banner hidden" id="cookie-banner" role="region" aria-label="Aviso de cookies">
+    <div class="cookie-banner-content">
+      <div class="cookie-banner-text">
+        <span class="cookie-icon">🍪</span>
+        <div>
+          <strong data-i18n="cookieTitle">Uso de cookies y privacidad</strong>
+          <p data-i18n-html="cookieText">Utilizamos cookies para guardar tu sesión, preferencias y ofrecerte asistencia personalizada. Al continuar navegando, aceptas nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn" data-i18n="termsOfService">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn" data-i18n="privacyPolicy">Políticas de Privacidad</button>.</p>
+        </div>
+      </div>
+      <div class="cookie-banner-actions">
+        <button type="button" id="cookie-accept-btn" class="btn btn-primary btn-sm" data-i18n="acceptCookies">Aceptar todas</button>
+        <button type="button" id="cookie-decline-btn" class="btn btn-ghost btn-sm" data-i18n="declineCookies">Solo esenciales</button>
+      </div>
+    </div>
+  </div>
 
   <script src="/kommo.js?v=15.0.0" onload="if(window.__APV_KOMMO_MODULE_STATE__!=='module-ready')window.__APV_KOMMO_MODULE_STATE__='script-loaded'" onerror="window.__APV_KOMMO_LOAD_ERROR__=true;window.__APV_KOMMO_MODULE_STATE__='script-error';console.error('[APV] No se pudo cargar /kommo.js?v=15.0.0')"></script>
   <script src="/app.js?v=15.0.0" onerror="console.error('[APV] No se pudo cargar /app.js?v=15.0.0')"></script>

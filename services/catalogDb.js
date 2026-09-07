@@ -602,6 +602,15 @@ function queryVehicles(params = {}) {
     whereClauses.push("buyNow > 0");
   }
 
+  if (sort === 'randomClean' || sort === 'featuredClean' || params.featured === '1' || params.featuredClean === '1') {
+    whereClauses.push("imageUrl IS NOT NULL AND imageUrl != ''");
+    whereClauses.push("year >= 2016");
+    whereClauses.push("runsDrives = 'Run & Drive Verified'");
+    whereClauses.push("primaryDamage IN ('MINOR DENT/SCRATCHES', 'NORMAL WEAR', 'NO DAMAGE', 'HAIL', 'VANDALISM', 'CLEAN TITLE')");
+    whereClauses.push("make NOT IN ('OTHERS', 'OTHER', 'CLUB CAR', 'CUSHMAN', 'EZGO', 'YAMAHA', 'POLARIS', 'KAWASAKI', 'SEA-DOO', 'CAN-AM', 'KUBOTA', 'HINO', 'FREIGHTLINER', 'INTERNATIONAL', 'PETERBILT', 'KENWORTH')");
+    whereClauses.push("title NOT LIKE '%BOAT%' AND title NOT LIKE '%TRAILER%' AND title NOT LIKE '%VESSEL%' AND title NOT LIKE '%MOTORCYCLE%' AND title NOT LIKE '%BUS%' AND title NOT LIKE '%TRANSIT%' AND title NOT LIKE '%UNKNOWN%' AND title NOT LIKE '%MINI%' AND title NOT LIKE '%TRACTOR%' AND title NOT LIKE '%COMMERCIAL%' AND title NOT LIKE '%VAN%' AND title NOT LIKE '%BOX%' AND title NOT LIKE '%PROMASTER%' AND title NOT LIKE '%EXPRESS%' AND title NOT LIKE '%CUTAWAY%'");
+  }
+
   const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
   const countSql = `SELECT COUNT(*) as total FROM vehicles ${whereSql}`;
@@ -614,7 +623,9 @@ function queryVehicles(params = {}) {
     oldest: "year ASC",
     priceAsc: "COALESCE(NULLIF(buyNow, 0), NULLIF(currentBid, 0), retailValue) ASC",
     priceDesc: "COALESCE(NULLIF(buyNow, 0), NULLIF(currentBid, 0), retailValue) DESC",
-    odometerAsc: "odometer ASC"
+    odometerAsc: "odometer ASC",
+    randomClean: "RANDOM()",
+    featuredClean: "RANDOM()"
   };
 
   const orderBy = sortSqlMap[sort] || sortSqlMap.saleSoon;
@@ -659,7 +670,7 @@ function getFilterMetadata() {
     runStates: runRows.map(r => r.runsDrives),
     minYear: statsRow.minYear || 1990,
     maxYear: statsRow.maxYear || new Date().getFullYear(),
-    maxOdometer: statsRow.maxOdometer || 250000,
+    maxOdometer: Math.min(1000000, statsRow.maxOdometer || 1000000),
     maxPrice: statsRow.maxPrice || 100000,
     updatedAt: lastUpdatedAt
   };

@@ -32,7 +32,9 @@
     heroFilterForm: $('#hero-filter-form'), heroFilterMake: $('#hero-filter-make'), heroFilterModel: $('#hero-filter-model'),
     heroFilterYearMin: $('#hero-filter-year-min'), heroFilterYearMax: $('#hero-filter-year-max'), heroFilterBuyNow: $('#hero-filter-buy-now'), heroFilterState: $('#hero-filter-state'),
     heroFeaturedGrid: $('#hero-featured-grid'), featuredPrevBtn: $('#featured-prev-btn'), featuredNextBtn: $('#featured-next-btn'), featuredDots: $('#featured-dots'),
-    chatReopenButton: $('#chat-reopen-button')
+    chatReopenButton: $('#chat-reopen-button'),
+    termsOverlay: $('#terms-overlay'), privacyOverlay: $('#privacy-overlay'),
+    termsLinkBtn: $('#terms-link-btn'), privacyLinkBtn: $('#privacy-link-btn')
   };
 
   function esc(v){ return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
@@ -196,7 +198,15 @@
       sortSaleSoon: 'Subasta más próxima', sortNewest: 'Año: más nuevo', sortPriceAsc: 'Precio: menor', sortPriceDesc: 'Precio: mayor', sortMileage: 'Menor millaje',
       emptyTitle: 'No encontramos vehículos', emptyText: 'Prueba otra búsqueda o limpia los filtros.',
       helpEyebrow: '¿NO SABES CUÁNTO PUJAR?', helpTitle: 'Encuentra el carro primero. Nosotros te ayudamos con lo demás.', findVehicle: 'Buscar un vehículo',
-      footerCatalog: 'Catálogo de vehículos de subasta · EE. UU.', footerDisclaimer: 'La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.',
+      footerCatalog: 'Catálogo de vehículos de subasta · EE. UU.', footerSource: 'Datos de inventario obtenidos de listados públicos de subastas de Copart.', footerDisclaimer: 'La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.',
+      cookieTitle: 'Uso de cookies y privacidad',
+      cookieText: 'Utilizamos cookies para guardar tu sesión, preferencias y ofrecerte asistencia personalizada. Al continuar navegando, aceptas nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Políticas de Privacidad</button>.',
+      acceptCookies: 'Aceptar todas',
+      declineCookies: 'Solo esenciales',
+      termsOfService: 'Términos de Servicio', privacyPolicy: 'Políticas de Privacidad', termsEyebrow: 'ASPECTOS LEGALES', termsTitle: 'Términos de Servicio',
+      termsContent: '<h3>1. Aceptación de los Términos</h3><p>Al acceder y utilizar el portal de APV Motors, el usuario acepta cumplir con los presentes Términos de Servicio. Si no está de acuerdo con alguno de los términos, debe abstenerse de utilizar el sitio.</p><h3>2. Servicios de Intermediación</h3><p>APV Motors actúa como un facilitador e intermediario de servicios para la consulta de catálogo y asistencia en subastas de vehículos en Estados Unidos (como Copart e IAA). APV Motors no es el dueño directo de los vehículos de subasta listados en el catálogo público.</p><h3>3. Ofertas y Pujas</h3><p>Las ofertas o intenciones de puja registradas por los usuarios en la plataforma representan límites de puja deseados y están sujetas a verificación y confirmación por parte de un asesor de APV Motors antes de ser presentadas en la subasta oficial.</p><h3>4. Información de Vehículos</h3><p>La información, fotografías y especificaciones de los vehículos provienen de listados públicos de subastas. Los usuarios son responsables de revisar los detalles técnicos, historial y estado del vehículo antes de autorizar una oferta final.</p><h3>5. Modificaciones</h3><p>APV Motors se reserva el derecho de actualizar o modificar estos términos en cualquier momento para reflejar cambios legales o de servicio.</p>',
+      privacyEyebrow: 'PROTECCIÓN DE DATOS', privacyTitle: 'Políticas de Privacidad',
+      privacyContent: '<h3>1. Información que Recopilamos</h3><p>Recopilamos información personal que usted nos proporciona voluntariamente al registrarse o enviar una solicitud, como su nombre completo, dirección de correo electrónico, número de teléfono/WhatsApp e intenciones de puja.</p><h3>2. Uso de la Información</h3><p>Utilizamos sus datos personales para: brindar asistencia personalizada con asesores de APV Motors, gestionar sus solicitudes de puja, conservar el historial de su conversación y enviarle notificaciones relevantes sobre subastas de su interés.</p><h3>3. Integración con Servicios de Terceros</h3><p>Sus datos pueden ser procesados a través de nuestro sistema de gestión de relaciones con clientes (Kommo CRM) de forma segura para garantizar la continuidad del soporte técnico y comercial.</p><h3>4. Protección y Confidencialidad</h3><p>APV Motors implementa medidas de seguridad técnicas y organizativas para proteger sus datos personales contra acceso no autorizado, alteración o divulgación.</p><h3>5. Sus Derechos</h3><p>Usted puede solicitar en cualquier momento el acceso, corrección o eliminación de sus datos personales comunicándose con nuestro equipo de soporte.</p>',
       close: 'Cerrar', accountEyebrow: 'CUENTA APV MOTORS', authTitle: 'Guarda tu conversación y continúa desde cualquier dispositivo.', authReason: 'Regístrate para ver el VIN completo y hablar con un asesor.',
       fullName: 'Nombre completo',
       email: 'Correo electrónico',
@@ -285,7 +295,15 @@
       brand: 'Make', allFeminine: 'All', allMasculine: 'All', yearFrom: 'Year from', yearTo: 'Year to', primaryDamage: 'Primary damage', condition: 'Condition', state: 'State', keysOnly: 'Keys only', buyNowOnly: 'Buy It Now only', maxOdometer: 'Maximum odometer',
       mobileFilters: '☰ Filters', viewNote: 'Prices in USD · the full VIN is shown to registered users', sortBy: 'Sort by', sortSaleSoon: 'Soonest auction', sortNewest: 'Year: newest', sortPriceAsc: 'Price: lowest', sortPriceDesc: 'Price: highest', sortMileage: 'Lowest mileage',
       emptyTitle: 'No vehicles found', emptyText: 'Try another search or clear the filters.', helpEyebrow: 'NOT SURE HOW MUCH TO BID?', helpTitle: 'Find the car first. We will help you with the rest.', findVehicle: 'Find a vehicle',
-      footerCatalog: 'Auction vehicle catalog · USA', footerDisclaimer: 'Availability, bids, and final conditions depend on the auction and may change.',
+      footerCatalog: 'Auction vehicle catalog · USA', footerSource: 'Inventory data sourced from public Copart auction listings.', footerDisclaimer: 'Availability, bids, and final conditions depend on the auction and may change.',
+      cookieTitle: 'Cookies and Privacy',
+      cookieText: 'We use cookies to save your session, preferences, and provide personalized support. By continuing to browse, you accept our <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Terms of Service</button> and <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Privacy Policy</button>.',
+      acceptCookies: 'Accept all',
+      declineCookies: 'Essential only',
+      termsOfService: 'Terms of Service', privacyPolicy: 'Privacy Policy', termsEyebrow: 'LEGAL TERMS', termsTitle: 'Terms of Service',
+      termsContent: '<h3>1. Acceptance of Terms</h3><p>By accessing and using the APV Motors portal, you agree to comply with these Terms of Service. If you do not agree with any part of these terms, please do not use the website.</p><h3>2. Intermediary Services</h3><p>APV Motors acts as a service facilitator and intermediary for catalog browsing and auction assistance for vehicles in the United States (such as Copart and IAA). APV Motors does not directly own the public auction vehicles listed in the catalog.</p><h3>3. Offers and Bids</h3><p>Bids or purchase intentions submitted by users on the platform represent maximum desired limits and are subject to verification and confirmation by an APV Motors advisor before being placed in the official auction.</p><h3>4. Vehicle Information</h3><p>Vehicle details, photographs, and specifications originate from public auction listings. Users are responsible for reviewing technical specifications, history, and vehicle condition before authorizing a final bid.</p><h3>5. Modifications</h3><p>APV Motors reserves the right to update or modify these terms at any time to reflect legal or operational changes.</p>',
+      privacyEyebrow: 'DATA PROTECTION', privacyTitle: 'Privacy Policy',
+      privacyContent: '<h3>1. Information We Collect</h3><p>We collect personal information that you voluntarily provide when registering or submitting a request, such as your full name, email address, phone/WhatsApp number, and bidding intentions.</p><h3>2. How We Use Information</h3><p>We use your personal data to: provide personalized assistance with APV Motors advisors, manage your bid requests, save your conversation history, and send relevant notifications about auctions of interest.</p><h3>3. Integration with Third-Party Services</h3><p>Your data may be processed securely through our Customer Relationship Management system (Kommo CRM) to ensure continuous technical and commercial support.</p><h3>4. Security and Confidentiality</h3><p>APV Motors implements technical and organizational security measures to protect your personal data against unauthorized access, alteration, or disclosure.</p><h3>5. Your Rights</h3><p>You may request access to, correction, or deletion of your personal data at any time by contacting our support team.</p>',
       close: 'Close', accountEyebrow: 'APV MOTORS ACCOUNT', authTitle: 'Save your conversation and continue from any device.', authReason: 'Sign up to view the full VIN and chat with an advisor.',
       fullName: 'Full name',
       email: 'Email address',
@@ -358,6 +376,13 @@
       const k = el.dataset.i18n;
       if (TRANSLATIONS[lang] && TRANSLATIONS[lang][k]) {
         el.textContent = TRANSLATIONS[lang][k];
+      }
+    });
+
+    $$('[data-i18n-html]').forEach(el => {
+      const k = el.dataset.i18nHtml;
+      if (TRANSLATIONS[lang] && TRANSLATIONS[lang][k]) {
+        el.innerHTML = TRANSLATIONS[lang][k];
       }
     });
 
@@ -465,7 +490,7 @@
     populateYears(dom.heroFilterYearMax, f.minYear, f.maxYear);
     dom.yearMin.value=f.minYear; dom.yearMin.min=f.minYear; dom.yearMin.max=f.maxYear;
     dom.yearMax.value=f.maxYear; dom.yearMax.min=f.minYear; dom.yearMax.max=f.maxYear;
-    const maxOdo=Math.max(100000,Math.ceil((f.maxOdometer||250000)/25000)*25000); dom.odometer.max=maxOdo; dom.odometer.value=maxOdo; updateOdometerLabel();
+    const maxOdo=1000000; dom.odometer.max=maxOdo; dom.odometer.value=maxOdo; updateOdometerLabel();
     loadFeaturedVehicles();
   }
 
@@ -488,7 +513,7 @@
 
   async function loadFeaturedVehicles(){
     try {
-      const data = await api('/api/vehicles?page=1&pageSize=6&sort=saleSoon');
+      const data = await api('/api/vehicles?page=1&pageSize=6&sort=randomClean');
       state.featuredVehicles = data.items || [];
       renderFeaturedVehicles();
     } catch(err) {
@@ -1838,7 +1863,46 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   dom.searchButton.addEventListener('click',()=>{state.page=1;loadVehicles();}); dom.search.addEventListener('keydown',e=>{if(e.key==='Enter'){state.page=1;loadVehicles();}}); dom.sort.addEventListener('change',()=>{state.page=1;loadVehicles();});
   $('#apply-filters').addEventListener('click',()=>{state.page=1;dom.filtersPanel.classList.remove('mobile-open');loadVehicles();}); $('#clear-filters').addEventListener('click',clearFilters); $('#empty-clear').addEventListener('click',clearFilters); dom.odometer.addEventListener('input',updateOdometerLabel);
   $('#mobile-filter-button').addEventListener('click',()=>dom.filtersPanel.classList.toggle('mobile-open'));
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(!dom.authOverlay.classList.contains('hidden')) closeAuth(); else if(!dom.bidOverlay.classList.contains('hidden')) closeBid(); else if(!dom.vehicleOverlay.classList.contains('hidden')) closeDetail(); } });
+
+  if(dom.termsLinkBtn && dom.termsOverlay) {
+    dom.termsLinkBtn.addEventListener('click', () => {
+      dom.termsOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  if(dom.privacyLinkBtn && dom.privacyOverlay) {
+    dom.privacyLinkBtn.addEventListener('click', () => {
+      dom.privacyOverlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+  $$('[data-close="terms"]').forEach(btn => btn.addEventListener('click', () => {
+    dom.termsOverlay?.classList.add('hidden');
+    if(dom.bidOverlay.classList.contains('hidden') && dom.authOverlay.classList.contains('hidden') && dom.vehicleOverlay.classList.contains('hidden')) document.body.style.overflow = '';
+  }));
+  $$('[data-close="privacy"]').forEach(btn => btn.addEventListener('click', () => {
+    dom.privacyOverlay?.classList.add('hidden');
+    if(dom.bidOverlay.classList.contains('hidden') && dom.authOverlay.classList.contains('hidden') && dom.vehicleOverlay.classList.contains('hidden')) document.body.style.overflow = '';
+  }));
+  [dom.termsOverlay, dom.privacyOverlay].forEach(overlay => {
+    overlay?.addEventListener('click', (e) => {
+      if(e.target === overlay) {
+        overlay.classList.add('hidden');
+        if(dom.bidOverlay.classList.contains('hidden') && dom.authOverlay.classList.contains('hidden') && dom.vehicleOverlay.classList.contains('hidden')) document.body.style.overflow = '';
+      }
+    });
+  });
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      if(dom.termsOverlay && !dom.termsOverlay.classList.contains('hidden')) dom.termsOverlay.classList.add('hidden');
+      else if(dom.privacyOverlay && !dom.privacyOverlay.classList.contains('hidden')) dom.privacyOverlay.classList.add('hidden');
+      else if(!dom.authOverlay.classList.contains('hidden')) closeAuth();
+      else if(!dom.bidOverlay.classList.contains('hidden')) closeBid();
+      else if(!dom.vehicleOverlay.classList.contains('hidden')) closeDetail();
+      if(dom.termsOverlay.classList.contains('hidden') && dom.privacyOverlay.classList.contains('hidden') && dom.bidOverlay.classList.contains('hidden') && dom.authOverlay.classList.contains('hidden') && dom.vehicleOverlay.classList.contains('hidden')) document.body.style.overflow = '';
+    }
+  });
   window.addEventListener('popstate',()=>{ const m=location.pathname.match(/^\/vehiculo\/([^/]+)/); if(m) openDetail(decodeURIComponent(m[1]),false); else {dom.vehicleOverlay.classList.add('hidden'); if(dom.bidOverlay.classList.contains('hidden')&&dom.authOverlay.classList.contains('hidden')) document.body.style.overflow='';} });
 
   function initMotionEffects() {
@@ -1880,8 +1944,49 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     };
   };
 
+  function initCookieBanner() {
+    const banner = $('#cookie-banner');
+    if (!banner) return;
+
+    const consent = localStorage.getItem('apv_cookie_consent');
+    if (!consent) {
+      setTimeout(() => banner.classList.remove('hidden'), 500);
+    }
+
+    const acceptBtn = $('#cookie-accept-btn');
+    const declineBtn = $('#cookie-decline-btn');
+
+    if (acceptBtn) {
+      acceptBtn.addEventListener('click', () => {
+        localStorage.setItem('apv_cookie_consent', 'all');
+        banner.classList.add('hidden');
+      });
+    }
+
+    if (declineBtn) {
+      declineBtn.addEventListener('click', () => {
+        localStorage.setItem('apv_cookie_consent', 'essential');
+        banner.classList.add('hidden');
+      });
+    }
+
+    banner.addEventListener('click', (e) => {
+      const termsBtn = e.target.closest('#cookie-terms-btn');
+      const privacyBtn = e.target.closest('#cookie-privacy-btn');
+      if (termsBtn && dom.termsOverlay) {
+        dom.termsOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      if (privacyBtn && dom.privacyOverlay) {
+        dom.privacyOverlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  }
+
   async function boot(){
     initMotionEffects();
+    initCookieBanner();
 
     // Language Switcher Bindings
     $$('#lang-switch .lang-btn').forEach(btn => {
