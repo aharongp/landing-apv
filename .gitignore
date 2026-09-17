@@ -16,6 +16,7 @@ data/*.db-journal
 data/*.db-wal
 data/*.db-shm
 data/current_catalog.csv
+data/backups/
 data/uploads/
 data/tmp/
 

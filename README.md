@@ -166,3 +166,21 @@ npm start
 # Producción con modo debug activado
 APV_DEBUG_KOMMO=true PORT=3000 npm start
 ```
+
+
+## Correcciones del catálogo
+
+Requiere Node.js 22.13 o superior (`node:sqlite`). Ejecuta `npm test` para verificar importación, filtros y recuperación de imágenes; reinicia el servidor con `npm start` para cargar los cambios.
+
+La carga CSV es un reemplazo completo y transaccional del inventario: usa siempre un export completo. Valida columnas y registros, deduplica por lote y excluye subastas cuya hora programada ya pasó, usando la zona horaria del export. La limpieza se repite cada minuto. Fecha `0` o vacía significa subasta por anunciar; se conserva. Un archivo sin registros válidos conserva el inventario anterior. Las filas inválidas se contabilizan en el resultado de carga. El mismo archivo no se reprocesa al reiniciar.
+
+Los filtros separan marca y modelo, incluyen todos los modelos del inventario, años desde 1950, condición normalizada y Run & Drive. La búsqueda permite combinar palabras en cualquier orden, por ejemplo `Silverado 2023`. Los favoritos se guardan en la cuenta (hasta 500) y se consultan desde **♥ Mis favoritos**, junto a Mis Pujas. Requieren iniciar sesión y están disponibles desde otros dispositivos.
+
+La galería consulta las fotos bajo demanda y permite navegar con flechas y miniaturas. Si Copart no responde, conserva la portada. Los metadatos de filtros se almacenan en caché y las consultas usan índices de marca/modelo y fecha de subasta.
+
+`APV_DATA_DIR` permite usar un directorio de datos aislado para pruebas. Los respaldos locales de la reparación están en `data/backups/` y se excluyen de Git.
+
+
+### Reparar el catálogo del servidor
+
+En `/admin`, introduce la clave de administración y pulsa **Reparar base de datos**. La operación crea un respaldo privado en `data/backups/`, fuerza la lectura del último CSV aunque no haya cambiado, reconstruye los vehículos y muestra el resultado. Conserva cuentas, favoritos y pujas. Requiere `ADMIN_KEY` configurada; sin el CSV original no se puede reconstruir el inventario. También se respalda el catálogo antes de reemplazarlo automáticamente al arrancar con un CSV nuevo o una nueva versión del importador. La reparación corrige registros del catálogo; no sustituye una restauración de SQLite si el archivo está físicamente dañado.

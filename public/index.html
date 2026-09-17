@@ -103,6 +103,7 @@
       <div id="account-chip" class="account-chip hidden">
         <span id="account-avatar" class="account-avatar">AP</span>
         <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
+        <button id="my-favorites-button" class="btn btn-ghost btn-small" type="button" data-i18n="myFavorites">♥ Mis favoritos</button>
         <button id="my-bids-button" class="btn btn-ghost btn-small" type="button" title="Ver mis pujas y conversaciones" data-i18n="myBids">💬 Mis Pujas</button>
         <button id="logout-button" class="account-logout" type="button" data-i18n="logout">Salir</button>
       </div>
@@ -127,7 +128,7 @@
               <label for="hero-search-input" data-i18n="catalogSearchPlaceholder">Buscar por VIN, lote, marca o modelo</label>
               <div class="hero-search-input-wrap">
                 <span class="hero-search-icon">⌕</span>
-                <input id="hero-search-input" type="search" placeholder="Ej. Toyota Camry, 41633106 o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" />
+                <input id="hero-search-input" type="search" placeholder="Ej. Silverado 2023, número de lote o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" />
               </div>
             </div>
           </div>
@@ -169,6 +170,7 @@
           </div>
           
           <div class="hero-filter-footer">
+            <label class="toggle-line"><input id="hero-filter-run-drive" type="checkbox" /> Run &amp; Drive</label>
             <label class="hero-toggle-buy-now">
               <input id="hero-filter-buy-now" type="checkbox" />
               <span data-i18n="buyItNow">Buy it now</span>
@@ -264,18 +266,21 @@
           <h2 data-i18n="catalogTitle">Encuentra el vehículo correcto.</h2>
           <p><span id="catalog-count">—</span> <span data-i18n="resultsAvailable">resultados disponibles.</span></p>
         </div>
-        <div class="search-bar"><span>⌕</span><input id="search-input" type="search" placeholder="Buscar VIN, lote, marca o modelo" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" /><button id="search-button" class="btn btn-dark btn-small" data-i18n="search">Buscar</button></div>
+        <div id="favorites-heading" class="favorites-heading hidden"><strong data-i18n="myFavorites">♥ Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button id="exit-favorites" class="btn btn-ghost btn-small" type="button" data-i18n="viewVehicles">Ver vehículos</button></div>
+        <div class="search-bar"><span>⌕</span><input id="search-input" type="search" placeholder="Ej. Silverado 2023, número de lote o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" /><button id="search-button" class="btn btn-dark btn-small" data-i18n="search">Buscar</button></div>
       </div>
 
       <div class="catalog-shell">
         <aside class="filters" id="filters-panel">
           <div class="filters-head"><strong data-i18n="filtersTitle">Filtros</strong><button id="clear-filters" class="link-button" data-i18n="clearFilters">Limpiar</button></div>
           <label class="filter-group"><span data-i18n="brand">Marca</span><select id="filter-make"><option value="" data-i18n="allFeminine">Todas</option></select></label>
+          <label class="filter-group"><span data-i18n="model">Modelo</span><select id="filter-model"><option value="">Todos</option></select></label>
           <div class="filter-group two-cols"><label><span data-i18n="yearFrom">Año desde</span><input id="filter-year-min" type="number" inputmode="numeric" /></label><label><span data-i18n="yearTo">Año hasta</span><input id="filter-year-max" type="number" inputmode="numeric" /></label></div>
           <label class="filter-group"><span data-i18n="primaryDamage">Daño principal</span><select id="filter-damage"><option value="" data-i18n="allMasculine">Todos</option></select></label>
           <label class="filter-group"><span data-i18n="condition">Condición</span><select id="filter-run"><option value="" data-i18n="allFeminine">Todas</option></select></label>
           <label class="filter-group"><span data-i18n="state">Estado</span><select id="filter-state"><option value="" data-i18n="allMasculine">Todos</option></select></label>
           <label class="toggle-line"><span data-i18n="keysOnly">Solo con llaves</span><input id="filter-keys" type="checkbox" /></label>
+          <label class="toggle-line"><span>Run &amp; Drive</span><input id="filter-run-drive" type="checkbox" /></label>
           <label class="toggle-line"><span data-i18n="buyNowOnly">Solo Buy It Now</span><input id="filter-buy-now" type="checkbox" /></label>
           <label class="filter-group range-line"><span><span data-i18n="maxOdometer">Odómetro máximo</span> <strong id="odometer-label"></strong></span><input id="filter-odometer" type="range" min="0" max="1000000" value="1000000" step="10000" /></label>
           <button id="apply-filters" class="btn btn-dark full" data-i18n="applyFilters">Aplicar filtros</button>

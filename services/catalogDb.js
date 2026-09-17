@@ -2,7 +2,10 @@ const path = require('path');
 const fs = require('fs');
 const { DatabaseSync } = require('node:sqlite');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const DATA_DIR = process.env.APV_DATA_DIR || path.join(__dirname, '..', 'data');
+const crypto = require('crypto');
+let filterCache = null;
+let lastPruned = 0;
 const DB_FILE = path.join(DATA_DIR, 'catalog.db');
 
 if (!fs.existsSync(DATA_DIR)) {
@@ -70,6 +73,13 @@ function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_v_buynow ON vehicles(buyNow);
     CREATE INDEX IF NOT EXISTS idx_v_keys ON vehicles(hasKeys);
 
+    CREATE TABLE IF NOT EXISTS favorites (
+      userId TEXT NOT NULL,
+      lot TEXT NOT NULL,
+      createdAt TEXT NOT NULL,
+      PRIMARY KEY (userId, lot)
+    );
+
     CREATE TABLE IF NOT EXISTS catalog_meta (
       key TEXT PRIMARY KEY,
       value TEXT
@@ -116,14 +126,22 @@ function initDatabase() {
   try { db.exec("ALTER TABLE users ADD COLUMN emailVerified INTEGER DEFAULT 0;"); } catch (_) {}
   try { db.exec("ALTER TABLE users ADD COLUMN verificationCode TEXT;"); } catch (_) {}
 
+  try { db.exec('ALTER TABLE vehicles ADD COLUMN saleAt INTEGER'); } catch (_) {}
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_v_sale ON vehicles(saleAt);
+    CREATE INDEX IF NOT EXISTS idx_v_model ON vehicles(make, model);
+    CREATE INDEX IF NOT EXISTS idx_v_upcoming ON vehicles(saleAt IS NULL, saleAt, year DESC, lot);
+    CREATE INDEX IF NOT EXISTS idx_v_date ON vehicles(saleDate, year DESC);`);
   const metaRow = db.prepare("SELECT value FROM catalog_meta WHERE key = 'updatedAt'").get();
   if (metaRow && metaRow.value) {
     lastUpdatedAt = metaRow.value;
   }
 
+  // Legacy files must never overwrite newer accounts or chats on restart.
+  const legacyMigrated = db.prepare("SELECT value FROM catalog_meta WHERE key = 'legacyJsonMigrated'").get();
+  if (!legacyMigrated) {
   // --- AUTOMATED DATA MIGRATIONS FROM LEGACY JSON FILES ---
   const usersJsonPath = path.join(DATA_DIR, 'users.json');
-  if (fs.existsSync(usersJsonPath)) {
+  if (fs.existsSync(usersJsonPath) && db.prepare('SELECT COUNT(*) AS n FROM users').get().n === 0) {
     try {
       const raw = fs.readFileSync(usersJsonPath, 'utf8');
       const list = JSON.parse(raw);
@@ -178,7 +196,7 @@ function initDatabase() {
   }
 
   const kommoSyncPath = path.join(DATA_DIR, 'kommo_sync.json');
-  if (fs.existsSync(kommoSyncPath)) {
+  if (fs.existsSync(kommoSyncPath) && db.prepare('SELECT COUNT(*) AS n FROM kommo_sync').get().n === 0) {
     try {
       const raw = fs.readFileSync(kommoSyncPath, 'utf8');
       const store = JSON.parse(raw);
@@ -205,6 +223,8 @@ function initDatabase() {
     }
   }
 
+  db.prepare("INSERT OR REPLACE INTO catalog_meta (key, value) VALUES ('legacyJsonMigrated', '1')").run();
+  }
   console.log(`[CATALOG DB] SQLite database initialized at ${DB_FILE}`);
   return db;
 }
@@ -255,7 +275,7 @@ function parseCsv(content) {
         field += c;
       }
     } else {
-      if (c === '"') {
+      if (c === '"' && field.trim() === '') {
         inQuotes = true;
       } else if (c === ',') {
         row.push(field.trim());
@@ -276,6 +296,7 @@ function parseCsv(content) {
     }
   }
 
+  if (inQuotes) throw new Error('CSV inválido: comillas sin cerrar.');
   if (field || row.length > 0) {
     row.push(field.trim());
     if (row.length > 1 || (row.length === 1 && row[0] !== '')) {
@@ -300,7 +321,7 @@ function num(val) {
 function normalizeRecord(raw) {
   const lot = str(raw['Lot number']);
   const year = num(raw['Year']);
-  const make = str(raw['Make']);
+  const make = str(raw['Make']).toUpperCase().replace(/\s+/g, ' ').replace(/ TRUCK(?:\/VAN)?$/, '').replace(/^FORD - FORD$/, 'FORD');
   const model = str(raw['Model Group'] || raw['Model Detail'] || raw['Model']);
   const trim = str(raw['Trim']);
   const title = [year, make, model, trim].filter(Boolean).join(' ') || str(raw['Title']);
@@ -320,12 +341,12 @@ function normalizeRecord(raw) {
     locationState: str(raw['Location state']),
     primaryDamage: str(raw['Damage Description']),
     secondaryDamage: str(raw['Secondary Damage']),
-    runsDrives: str(raw['Runs/Drives']),
+    runsDrives: normalizeCondition(raw['Runs/Drives']),
     buyNow: num(raw['Buy-It-Now Price']),
     currentBid: num(raw['High Bid =non-vix,Sealed=Vix']),
     retailValue: num(raw['Est. Retail Value']),
     repairCost: num(raw['Repair cost']),
-    saleDate: str(raw['Sale Date M/D/CY']),
+    saleDate: str(raw['Sale Date M/D/CY']) === '0' ? '' : str(raw['Sale Date M/D/CY']),
     saleTime: str(raw['Sale time (HHMM)']),
     timeZone: str(raw['Time Zone']),
     hasKeys: str(raw['Has Keys-Yes or No']).toUpperCase(),
@@ -351,8 +372,41 @@ function normalizeRecord(raw) {
   };
 }
 
-function upsertCatalogFromCsv(csvText) {
+function normalizeCondition(value) {
+  const v = str(value).toLowerCase();
+  if (['run & drive verified', 'run & drive', 'runs & drives', 'run and drive'].includes(v)) return 'Run & Drive Verified';
+  if (['vehicle starts', 'engine start program', 'engine starts'].includes(v)) return 'Vehicle Starts';
+  return 'Unverified';
+}
+
+function saleTimestamp(date, time, zone) {
+  if (!/^\d{8}$/.test(date)) return null;
+  const t = str(time).padStart(4, '0');
+  if (!/^\d{4}$/.test(t) || +t.slice(0,2) > 23 || +t.slice(2) > 59) return null;
+  const y = +date.slice(0,4), m = +date.slice(4,6), d = +date.slice(6);
+  const check = new Date(Date.UTC(y, m-1, d));
+  if (check.getUTCFullYear() !== y || check.getUTCMonth() !== m-1 || check.getUTCDate() !== d) return null;
+  const offsets = {EST: -5, EDT: -4, CST: -6, CDT: -5, MST: -7, MDT: -6, PST: -8, PDT: -7, AKST: -9, AKDT: -8, HST: -10, AST: -4, ADT: -3, UTC: 0, GMT: 0};
+  const offset = offsets[str(zone).toUpperCase()];
+  // Unknown zones: retain until the end of the sale day in UTC-12.
+  return offset === undefined ? Date.UTC(y, m-1, d+1, 12) : Date.UTC(y, m-1, d, +t.slice(0,2)-offset, +t.slice(2));
+}
+
+function pruneExpired() {
   const database = initDatabase();
+  if (Date.now() - lastPruned < 60000) return;
+  const result = database.prepare('DELETE FROM vehicles WHERE saleAt <= ?').run(Date.now());
+  lastPruned = Date.now();
+  if (result.changes) filterCache = null;
+}
+
+function upsertCatalogFromCsv(csvText, options = {}) {
+  const database = initDatabase();
+  const digest = crypto.createHash('sha256').update('catalog-v3:').update(csvText).digest('hex');
+  if (!options.force && database.prepare("SELECT value FROM catalog_meta WHERE key = 'sourceHash'").get()?.value === digest) {
+    pruneExpired();
+    return { totalInDb: getVehicleCount(), unchanged: true, updatedAt: lastUpdatedAt };
+  }
   const rows = parseCsv(csvText.replace(/^\uFEFF/, ''));
   if (rows.length < 2) throw new Error('El CSV no contiene filas de datos válidas.');
 
@@ -364,8 +418,12 @@ function upsertCatalogFromCsv(csvText) {
   const nowIso = new Date().toISOString();
   let addedCount = 0;
   let updatedCount = 0;
+  let skipped = 0, expired = 0, valid = 0, duplicates = 0;
+  const seen = new Set();
 
-  const countBefore = database.prepare("SELECT COUNT(*) as count FROM vehicles").get().count;
+  const previousLots = new Set(database.prepare('SELECT lot FROM vehicles').all().map(r=>r.lot));
+  const countBefore = previousLots.size;
+  const backup = options.backupBeforeReplace && countBefore ? backupDatabase() : undefined;
 
   const upsertStmt = database.prepare(`
     INSERT INTO vehicles (
@@ -427,13 +485,21 @@ function upsertCatalogFromCsv(csvText) {
 
   database.exec('BEGIN TRANSACTION');
   try {
+    database.exec('DELETE FROM vehicles');
+    const setSaleAt = database.prepare('UPDATE vehicles SET saleAt = ? WHERE lot = ?');
     for (let i = 1; i < rows.length; i++) {
       const cells = rows[i];
-      if (!cells || cells.length < 5) continue;
+      if (!cells || cells.length !== headers.length || cells.some(c => c.length > 4000)) { skipped++; continue; }
       const raw = {};
       headers.forEach((h, idx) => { if (h) raw[h] = cells[idx] ?? ''; });
       const rec = normalizeRecord(raw);
-      if (!rec.lot || !rec.year) continue;
+      if (!/^\d{5,12}$/.test(rec.lot) || rec.year < 1900 || rec.year > new Date().getFullYear()+2 || !rec.make || rec.make.length > 60 || rec.model.length > 100 || /[\r\n]/.test(rec.make + rec.model) || rec.vin.length > 25) { skipped++; continue; }
+      const saleAt = saleTimestamp(rec.saleDate, rec.saleTime, rec.timeZone);
+      if (rec.saleDate && !saleAt) { skipped++; continue; }
+      valid++;
+      if (saleAt && saleAt <= Date.now()) { expired++; continue; }
+      if (seen.has(rec.lot)) duplicates++;
+      seen.add(rec.lot);
 
       upsertStmt.run(
         rec.lot, rec.id, rec.year, rec.make, rec.model, rec.title, rec.vin, rec.odometer,
@@ -443,27 +509,70 @@ function upsertCatalogFromCsv(csvText) {
         rec.itemNumber, rec.yardName, rec.saleTitleState, rec.saleTitleType, rec.lotCondCode, rec.odometerBrand,
         rec.specialNote, rec.gridRow, rec.trim, rec.sellerName, rec.saleStatus, rec.imageThumbnail, rec.imageUrl, rec.rawJson, nowIso
       );
+      setSaleAt.run(saleAt, rec.lot);
     }
+    if (!valid) throw new Error('No hay vehículos válidos; se conserva el catálogo anterior.');
+    database.prepare("INSERT OR REPLACE INTO catalog_meta (key, value) VALUES ('sourceHash', ?)").run(digest);
+    database.prepare("INSERT OR REPLACE INTO catalog_meta (key, value) VALUES ('updatedAt', ?)").run(nowIso);
     database.exec('COMMIT');
+    filterCache = null;
   } catch (err) {
     database.exec('ROLLBACK');
     throw err;
   }
 
   const countAfter = database.prepare("SELECT COUNT(*) as count FROM vehicles").get().count;
-  addedCount = Math.max(0, countAfter - countBefore);
-  updatedCount = (rows.length - 1) - addedCount;
+  addedCount = [...seen].filter(lot => !previousLots.has(lot)).length;
+  updatedCount = seen.size - addedCount;
 
   lastUpdatedAt = nowIso;
   database.prepare("INSERT INTO catalog_meta (key, value) VALUES ('updatedAt', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(nowIso);
 
   console.log(`[CATALOG DB] Upsert complete. Added: ${addedCount}, Total in DB: ${countAfter}, Updated: ${updatedCount}`);
   return {
+    backup,
     totalInCsv: rows.length - 1,
     added: addedCount,
+    skipped, expired, duplicates, updated: updatedCount,
+    removed: [...previousLots].filter(lot => !seen.has(lot)).length,
     totalInDb: countAfter,
     updatedAt: nowIso
   };
+}
+
+function backupDatabase() {
+  const database = initDatabase();
+  const backupDir = path.join(DATA_DIR, 'backups');
+  fs.mkdirSync(backupDir, { recursive: true, mode: 0o700 });
+  const backup = `catalog-repair-${Date.now()}-${crypto.randomBytes(4).toString('hex')}.db`;
+  const backupPath = path.join(backupDir, backup);
+  database.prepare('VACUUM INTO ?').run(backupPath);
+  fs.chmodSync(backupPath, 0o600);
+  return backup;
+}
+
+function repairCatalogFromCsv(csvText) {
+  const database = initDatabase();
+  const backup = backupDatabase();
+  const stats = upsertCatalogFromCsv(csvText, { force: true });
+  database.exec('PRAGMA optimize');
+  return { ...stats, backup };
+}
+
+function getFavorites(userId) {
+  return initDatabase().prepare('SELECT lot FROM favorites WHERE userId = ? ORDER BY createdAt DESC, lot').all(String(userId)).map(row => row.lot);
+}
+
+function setFavorite(userId, lot, favorite) {
+  const database = initDatabase();
+  if (!/^\d{5,12}$/.test(String(lot))) throw Object.assign(new Error('Lote inválido.'), { statusCode: 400 });
+  if (favorite) {
+    if (!findVehicleByLotOrId(lot)) throw Object.assign(new Error('Vehículo no disponible.'), { statusCode: 404 });
+    const existing = getFavorites(userId);
+    if (!existing.includes(String(lot)) && existing.length >= 500) throw Object.assign(new Error('Puedes guardar hasta 500 favoritos.'), { statusCode: 400 });
+    database.prepare('INSERT OR IGNORE INTO favorites (userId, lot, createdAt) VALUES (?, ?, ?)').run(String(userId), String(lot), new Date().toISOString());
+  } else database.prepare('DELETE FROM favorites WHERE userId = ? AND lot = ?').run(String(userId), String(lot));
+  return getFavorites(userId);
 }
 
 function ensureHttps(url) {
@@ -476,6 +585,7 @@ function ensureHttps(url) {
 
 function rowToVehicle(row) {
   if (!row) return null;
+  const raw = row.rawJson ? JSON.parse(row.rawJson) : {};
   const rawImg = ensureHttps(row.imageThumbnail);
   const image = rawImg ? rawImg.trim().replace(/_thb\.jpg$/i, '_ful.jpg') : '';
 
@@ -498,7 +608,7 @@ function rowToVehicle(row) {
     currentBid: Number(row.currentBid || 0),
     retailValue: Number(row.retailValue || 0),
     repairCost: Number(row.repairCost || 0),
-    saleDate: str(row.saleDate),
+    saleDate: /^\d{8}$/.test(row.saleDate) ? `${row.saleDate.slice(0,4)}-${row.saleDate.slice(4,6)}-${row.saleDate.slice(6,8)}T12:00:00` : '',
     saleTime: str(row.saleTime),
     timeZone: str(row.timeZone),
     hasKeys: str(row.hasKeys),
@@ -523,13 +633,19 @@ function rowToVehicle(row) {
     image,
     imageApi: str(row.imageUrl),
     copartUrl: row.lot ? `https://www.copart.com/lot/${encodeURIComponent(row.lot)}` : 'https://www.copart.com/',
-    rawJson: row.rawJson ? JSON.parse(row.rawJson) : {}
+    titleState: str(row.saleTitleState),
+    titleType: str(row.saleTitleType),
+    conditionCode: str(row.lotCondCode),
+    modelGroup: str(raw['Model Group']), body: str(raw['Body Style']), vehicleType: str(raw['Vehicle Type']),
+    item: str(row.itemNumber), locationCountry: str(raw['Location country']),
+    announcements: str(raw.Announcements), lastUpdated: str(raw['Last Updated Time'])
   };
 }
 
 function queryVehicles(params = {}) {
   const database = initDatabase();
 
+  pruneExpired();
   const page = Math.max(1, Number(params.page) || 1);
   const pageSize = Math.min(48, Math.max(6, Number(params.pageSize) || 18));
   const q = str(params.q).toLowerCase();
@@ -548,10 +664,16 @@ function queryVehicles(params = {}) {
   const whereClauses = [];
   const bindings = [];
 
-  if (q) {
-    whereClauses.push("(LOWER(title) LIKE ? OR LOWER(lot) LIKE ? OR LOWER(vin) LIKE ? OR LOWER(make) LIKE ? OR LOWER(model) LIKE ? OR LOWER(locationCity) LIKE ? OR LOWER(locationState) LIKE ?)");
-    const searchTerm = `%${q}%`;
-    bindings.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
+  for (const token of q.split(/\s+/).filter(Boolean).slice(0, 12)) {
+    whereClauses.push("LOWER(title || ' ' || lot || ' ' || vin || ' ' || locationCity || ' ' || locationState) LIKE ? ESCAPE '\\'");
+    bindings.push('%' + token.replace(/[\\%_]/g, '\\$&') + '%');
+  }
+  if (params.model) { whereClauses.push('model = ?'); bindings.push(str(params.model)); }
+  if (params.runAndDrive === '1') whereClauses.push("runsDrives = 'Run & Drive Verified'");
+  if (params.favorites !== undefined) {
+    const lots = str(params.favorites).split(',').filter(x => /^\d{5,12}$/.test(x)).slice(0,500);
+    whereClauses.push(lots.length ? `lot IN (${lots.map(() => '?').join(',')})` : '0');
+    bindings.push(...lots);
   }
 
   if (make) {
@@ -618,7 +740,7 @@ function queryVehicles(params = {}) {
   const total = totalRow ? totalRow.total : 0;
 
   const sortSqlMap = {
-    saleSoon: "saleDate ASC, year DESC",
+    saleSoon: "saleAt IS NULL, saleAt ASC, year DESC, lot ASC",
     newest: "year DESC",
     oldest: "year ASC",
     priceAsc: "COALESCE(NULLIF(buyNow, 0), NULLIF(currentBid, 0), retailValue) ASC",
@@ -647,6 +769,8 @@ function queryVehicles(params = {}) {
 
 function getFilterMetadata() {
   const database = initDatabase();
+  pruneExpired();
+  if (filterCache) return filterCache;
 
   const totalRow = database.prepare("SELECT COUNT(*) as total FROM vehicles").get();
   const total = totalRow ? totalRow.total : 0;
@@ -662,14 +786,17 @@ function getFilterMetadata() {
     .map(r => str(r.locationState))
     .filter(s => s && s.length <= 10 && !s.includes('*') && !/^\d+$/.test(s) && !/AUCTION|REGION|SAFETY|DEFAULT|MINIMUM/i.test(s));
 
-  return {
+  const modelsByMake = {};
+  for (const row of database.prepare("SELECT DISTINCT make, model FROM vehicles WHERE model != '' ORDER BY model").all()) (modelsByMake[row.make] ||= []).push(row.model);
+  return filterCache = {
     total,
+    modelsByMake,
     makes: makesRows.map(r => r.make),
     states: cleanStates,
     damages: damageRows.map(r => r.primaryDamage),
     runStates: runRows.map(r => r.runsDrives),
-    minYear: statsRow.minYear || 1990,
-    maxYear: statsRow.maxYear || new Date().getFullYear(),
+    minYear: 1950,
+    maxYear: Math.max(statsRow.maxYear || 0, new Date().getFullYear()+1),
     maxOdometer: Math.min(1000000, statsRow.maxOdometer || 1000000),
     maxPrice: statsRow.maxPrice || 100000,
     updatedAt: lastUpdatedAt
@@ -678,6 +805,7 @@ function getFilterMetadata() {
 
 function findVehicleByLotOrId(id) {
   const database = initDatabase();
+  pruneExpired();
   const row = database.prepare("SELECT * FROM vehicles WHERE lot = ? OR id = ? LIMIT 1").get(String(id), String(id));
   return rowToVehicle(row);
 }
@@ -831,11 +959,19 @@ function clearVehicles() {
   database.exec("DELETE FROM vehicles;");
   database.exec("DELETE FROM catalog_meta WHERE key = 'updatedAt';");
   lastUpdatedAt = null;
+  filterCache = null;
+  database.exec("DELETE FROM catalog_meta WHERE key = 'sourceHash'");
   console.log("[CATALOG DB] All vehicles cleared from SQLite database.");
 }
 
 module.exports = {
   initDatabase,
+  repairCatalogFromCsv,
+  getFavorites,
+  setFavorite,
+  pruneExpired,
+  parseCsv,
+  saleTimestamp,
   upsertCatalogFromCsv,
   clearVehicles,
   queryVehicles,

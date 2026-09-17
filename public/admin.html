@@ -14,16 +14,18 @@
   <main class="admin-card">
     <span class="eyebrow">ADMINISTRACIÓN · APV MOTORS</span>
     <h1>Cargar catálogo CSV</h1>
-    <p>Selecciona el export de Copart (hasta 15,000+ filas). La carga es <strong>incremental e indexada</strong> en SQLite: únicamente los vehículos nuevos o modificados se procesan por su número de lote sin duplicar información existente.</p>
+    <p>Selecciona el export completo y actualizado de Copart. Cada carga reemplaza el catálogo anterior, evita duplicados por lote y excluye las subastas vencidas. Los vehículos sin fecha se mantienen disponibles.</p>
     <div class="drop"><strong>Archivo CSV de Copart</strong><input id="file" type="file" accept=".csv,text/csv"></div>
     <div class="admin-form">
       <input id="key" type="password" placeholder="ADMIN_KEY (si está configurada)">
       <button id="upload" class="btn btn-dark">Cargar catálogo</button>
-      <button id="sync-btn" class="btn btn-ghost" style="border:1px solid #cbd5e1;">Re-sincronizar incremental</button>
+      <button id="sync-btn" class="btn btn-ghost" style="border:1px solid #cbd5e1;">Re-sincronizar catálogo</button>
     </div>
+    <button id="repair-btn" type="button" class="btn btn-dark" style="margin-top:16px">Reparar base de datos</button>
+    <p>La reparación guarda un respaldo y reconstruye los vehículos desde el último CSV cargado. Conserva las cuentas, favoritos y pujas.</p>
     <div class="progress"><div id="progress-bar"></div></div><div class="upload-meta"><span id="progress-text">0%</span><span id="file-meta">Sin archivo</span></div>
     <div class="status" id="status">Esperando archivo…</div>
-    <div class="note">✨ Optimización SQLite activa: Inserción deduplicada por lote. El servidor también realiza una sincronización automática diaria cada 24 horas.</div>
+    <div class="note">Las subastas vencidas se retiran automáticamente cada minuto. Carga un nuevo CSV para incorporar cambios de disponibilidad y precios.</div>
     <a class="back" href="/">← Volver al catálogo</a>
   </main>
   <script>
@@ -32,13 +34,25 @@
     file.addEventListener('change',()=>{const f=file.files[0];fileMeta.textContent=f?`${f.name} · ${fmt(f.size)}`:'Sin archivo';bar.style.width='0%';progressText.textContent='0%';});
     async function jsonFetch(url,options){const r=await fetch(url,options);const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'No se pudo completar la operación');return d;}
     
+    const repairBtn=document.querySelector('#repair-btn');
+    repairBtn.addEventListener('click',async()=>{
+      repairBtn.disabled=btn.disabled=syncBtn.disabled=true;
+      status.textContent='Guardando respaldo y reparando el catálogo…';
+      try {
+        const done=await jsonFetch('/api/catalog/repair',{method:'POST',headers:{'x-admin-key':key.value}});
+        const st=done.stats;
+        status.textContent=`✅ Base de datos reparada.\nVehículos disponibles: ${st.totalInDb.toLocaleString('en-US')}\nVencidos excluidos: ${st.expired} · Filas inválidas: ${st.skipped} · Duplicados: ${st.duplicates}\nRespaldo guardado en el servidor: ${st.backup}`;
+      } catch(err) { status.textContent='No se pudo reparar: '+err.message; }
+      finally { repairBtn.disabled=btn.disabled=syncBtn.disabled=false; }
+    });
+
     syncBtn.addEventListener('click', async()=>{
-      syncBtn.disabled=true; status.textContent='Ejecutando sincronización incremental sobre el catálogo activo en disco…';
+      syncBtn.disabled=true; status.textContent='Ejecutando sincronización sobre el catálogo activo en disco…';
       try{
         const headers={'Content-Type':'application/json','x-admin-key':key.value};
         const done=await jsonFetch('/api/catalog/sync',{method:'POST',headers});
         const st=done.stats||{};
-        status.textContent=`✅ Sincronización incremental exitosa.\nNuevos agregados: ${st.added || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
+        status.textContent=`✅ Catálogo reemplazado correctamente.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
       }catch(e){status.textContent='Error al sincronizar: '+e.message;}finally{syncBtn.disabled=false;}
     });
 
@@ -57,11 +71,11 @@
           const d=await r.json().catch(()=>({})); if(!r.ok)throw new Error(d.error||'Falló un bloque de la carga');
           offset=end; index+=1; const pct=Math.min(100,Math.round(offset/f.size*100)); bar.style.width=pct+'%'; progressText.textContent=pct+'%';
         }
-        status.textContent='Carga completa. Procesando e insertando incrementalmente en SQLite…';
+        status.textContent='Carga completa. Validando y reemplazando el catálogo…';
         const done=await jsonFetch('/api/catalog/upload/finish',{method:'POST',headers,body:JSON.stringify({uploadId:start.uploadId})});
         bar.style.width='100%'; progressText.textContent='100%';
         const st=done.stats||{};
-        status.textContent=`✅ Carga finalizada.\nNuevos agregados: ${st.added || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
+        status.textContent=`✅ Carga finalizada.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
       }catch(e){status.textContent='Error: '+e.message;}finally{btn.disabled=false;}
     });
   </script>

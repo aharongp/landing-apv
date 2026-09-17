@@ -7,6 +7,8 @@
     page: 1,
     pageSize: 18,
     filters: null,
+    favoritesOnly: false,
+    accountFavorites: [],
     currentVehicle: null,
     loading: false,
     user: null,
@@ -20,7 +22,7 @@
 
   const dom = {
     list: $('#catalog-list'), count: $('#catalog-count'), pagination: $('#pagination'), empty: $('#catalog-empty'),
-    search: $('#search-input'), searchButton: $('#search-button'), make: $('#filter-make'), yearMin: $('#filter-year-min'),
+    search: $('#search-input'), searchButton: $('#search-button'), make: $('#filter-make'), model: $('#filter-model'), runDrive: $('#filter-run-drive'), yearMin: $('#filter-year-min'),
     yearMax: $('#filter-year-max'), damage: $('#filter-damage'), run: $('#filter-run'), state: $('#filter-state'), keys: $('#filter-keys'),
     buyNow: $('#filter-buy-now'), odometer: $('#filter-odometer'), odometerLabel: $('#odometer-label'), sort: $('#sort-select'), filtersPanel: $('#filters-panel'),
     vehicleOverlay: $('#vehicle-overlay'), vehicleDetail: $('#vehicle-detail-content'), bidOverlay: $('#bid-overlay'), bidModal: $('.bid-modal'), bidAmount: $('#bid-amount'),
@@ -30,7 +32,7 @@
     accountName: $('#account-name'), accountEmail: $('#account-email'), authReason: $('#auth-reason'), authStatus: $('#auth-status'),
     heroSearchForm: $('#hero-search-form'), heroSearchInput: $('#hero-search-input'), heroQuickResults: $('#hero-quick-results'), heroVehicleCard: $('#hero-vehicle-card'),
     heroFilterForm: $('#hero-filter-form'), heroFilterMake: $('#hero-filter-make'), heroFilterModel: $('#hero-filter-model'),
-    heroFilterYearMin: $('#hero-filter-year-min'), heroFilterYearMax: $('#hero-filter-year-max'), heroFilterBuyNow: $('#hero-filter-buy-now'), heroFilterState: $('#hero-filter-state'),
+    heroFilterYearMin: $('#hero-filter-year-min'), heroFilterYearMax: $('#hero-filter-year-max'), heroFilterBuyNow: $('#hero-filter-buy-now'), heroRunDrive: $('#hero-filter-run-drive'), heroFilterState: $('#hero-filter-state'),
     heroFeaturedGrid: $('#hero-featured-grid'), featuredPrevBtn: $('#featured-prev-btn'), featuredNextBtn: $('#featured-next-btn'), featuredDots: $('#featured-dots'),
     chatReopenButton: $('#chat-reopen-button'),
     termsOverlay: $('#terms-overlay'), privacyOverlay: $('#privacy-overlay'),
@@ -51,7 +53,7 @@
     const x=(v||'').toLowerCase();
     if(x.includes('run') && x.includes('drive')) return 'Runs & Drives';
     if(x.includes('start')) return t('starts','Arranca');
-    return v || t('unverified','Sin verificar');
+    return t('unverified','Sin verificar');
   }
   function icon(text){ return `<span aria-hidden="true">${text}</span>`; }
   function imageStyle(url){ return url ? `style="background-image:url('${esc(url)}')"` : ''; }
@@ -157,7 +159,7 @@
       heroEyebrow: 'SUBASTAS EN ESTADOS UNIDOS · 100% ONLINE',
       heroMainTitle: 'Compra tu carro en subastas de EE. UU. sin complicarte.',
       heroMainSub: 'Encuentra vehículos de Copart, define cuánto quieres ofertar y APV Motors te acompaña desde la puja hasta la documentación y el traslado.',
-      heroSearchPlaceholder: 'Ej. Toyota Camry, 41633106 o VIN',
+      heroSearchPlaceholder: 'Ej. Silverado 2023, número de lote o VIN',
       heroSearchButton: 'Buscar',
       statVehicles: 'vehículos cargados',
       statSteps: 'pasos claros',
@@ -187,8 +189,9 @@
       catalogEyebrow: 'CATÁLOGO DE SUBASTA',
       catalogTitle: 'Encuentra el vehículo correcto.',
       resultsAvailable: 'resultados disponibles.',
-      catalogSearchPlaceholder: 'Buscar VIN, lote, marca o modelo',
+      catalogSearchPlaceholder: 'Ej. Silverado 2023, número de lote o VIN',
       search: 'Buscar',
+      myFavorites: '♥ Mis favoritos', availableFavorites: 'Vehículos guardados que siguen disponibles',
       filtersTitle: 'Filtros',
       clearFilters: 'Limpiar',
       applyFilters: 'Aplicar filtros',
@@ -266,7 +269,7 @@
       heroEyebrow: 'UNITED STATES AUCTIONS · 100% ONLINE',
       heroMainTitle: 'Buy your car at U.S. auctions without the hassle.',
       heroMainSub: 'Find Copart vehicles, set your maximum bid, and let APV Motors guide you from bidding through documents and transportation.',
-      heroSearchPlaceholder: 'E.g. Toyota Camry, 41633106 or VIN',
+      heroSearchPlaceholder: 'E.g. Silverado 2023, lot number or VIN',
       heroSearchButton: 'Search',
       statVehicles: 'vehicles loaded',
       statSteps: 'clear steps',
@@ -288,7 +291,8 @@
       step4Title: 'Pay for the vehicle', step4Text: 'if you win the auction.',
       step5Title: 'Tow transportation', step5Text: 'Hire the service', step5Link: 'by clicking here.',
       step6Title: 'Transfer, taxes, and plates', step6Text: 'Document management.',
-      catalogEyebrow: 'AUCTION CATALOG', catalogTitle: 'Find the right vehicle.', resultsAvailable: 'results available.', catalogSearchPlaceholder: 'Search VIN, lot, make, or model', search: 'Search',
+      catalogEyebrow: 'AUCTION CATALOG', catalogTitle: 'Find the right vehicle.', resultsAvailable: 'results available.', catalogSearchPlaceholder: 'E.g. Silverado 2023, lot number or VIN', search: 'Search',
+      myFavorites: '♥ My favorites', availableFavorites: 'Saved vehicles still available',
       filtersTitle: 'Filters',
       clearFilters: 'Clear',
       applyFilters: 'Apply filters',
@@ -483,7 +487,7 @@
     const f=await api('/api/filters'); state.filters=f;
     const heroTotal = $('#hero-total');
     if(heroTotal) heroTotal.textContent = f.total.toLocaleString('en-US');
-    populate(dom.make, f.makes); populate(dom.damage, f.damages); populate(dom.run, f.runStates); populate(dom.state, f.states);
+    populate(dom.make, f.makes); populate(dom.damage, f.damages); populate(dom.run, f.runStates); for (const o of dom.run.options) if(o.value) o.textContent=conditionLabel(o.value); populate(dom.state, f.states);
     if(dom.heroFilterMake) populate(dom.heroFilterMake, f.makes);
     if(dom.heroFilterState) populate(dom.heroFilterState, f.states);
     populateYears(dom.heroFilterYearMin, f.minYear, f.maxYear);
@@ -491,6 +495,7 @@
     dom.yearMin.value=f.minYear; dom.yearMin.min=f.minYear; dom.yearMin.max=f.maxYear;
     dom.yearMax.value=f.maxYear; dom.yearMax.min=f.minYear; dom.yearMax.max=f.maxYear;
     const maxOdo=1000000; dom.odometer.max=maxOdo; dom.odometer.value=maxOdo; updateOdometerLabel();
+    updateCatalogModels();
     loadFeaturedVehicles();
   }
 
@@ -565,26 +570,19 @@
     }
   }
 
-  async function updateHeroModels(makeValue){
-    if(!dom.heroFilterModel) return;
-    const prevVal = dom.heroFilterModel.value;
-    dom.heroFilterModel.innerHTML = `<option value="">${t('allModels')}</option>`;
-    if(!makeValue) return;
-    try {
-      const data = await api(`/api/vehicles?make=${encodeURIComponent(makeValue)}&pageSize=50`);
-      const models = [...new Set((data.items || []).map(v => v.model).filter(Boolean))].sort();
-      models.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = m;
-        dom.heroFilterModel.appendChild(opt);
-      });
-      dom.heroFilterModel.value = prevVal;
-    } catch(_) {}
+  function fillModels(select, make) {
+    const previous = select.value;
+    const groups = state.filters?.modelsByMake || {};
+    const models = make ? (groups[make] || []) : [...new Set(Object.values(groups).flat())].sort();
+    select.innerHTML = `<option value="">${t('allModels')}</option>`;
+    populate(select, models);
+    select.value = models.includes(previous) ? previous : '';
   }
+  function updateHeroModels(make) { fillModels(dom.heroFilterModel, make); }
+  function updateCatalogModels() { fillModels(dom.model, dom.make.value); }
 
   function applyHeroFiltersToCatalog(){
-    const textQuery = (dom.heroSearchInput ? dom.heroSearchInput.value.trim() : '') || (dom.heroFilterModel ? dom.heroFilterModel.value : '');
+    const textQuery = dom.heroSearchInput ? dom.heroSearchInput.value.trim() : '';
     if(dom.search) dom.search.value = textQuery;
     if(dom.heroFilterMake && dom.make) dom.make.value = dom.heroFilterMake.value || '';
     if(dom.heroFilterState && dom.state) dom.state.value = dom.heroFilterState.value || '';
@@ -592,6 +590,10 @@
     if(dom.heroFilterYearMax && dom.yearMax) dom.yearMax.value = dom.heroFilterYearMax.value || '';
     if(dom.heroFilterBuyNow && dom.buyNow) dom.buyNow.checked = dom.heroFilterBuyNow.checked;
 
+    updateCatalogModels();
+    dom.model.value = dom.heroFilterModel.value;
+    dom.runDrive.checked = dom.heroRunDrive.checked;
+    dom.run.value = '';
     state.page = 1;
     loadVehicles();
     document.querySelector('#catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -602,6 +604,9 @@
 
   function params(){
     const p=new URLSearchParams({page:String(state.page),pageSize:String(state.pageSize),sort:dom.sort.value});
+    if(dom.model.value) p.set('model',dom.model.value);
+    if(dom.runDrive.checked) p.set('runAndDrive','1');
+    if(state.favoritesOnly) p.set('favorites',readFavorites().join(','));
     if(dom.search.value.trim()) p.set('q',dom.search.value.trim());
     if(dom.make.value) p.set('make',dom.make.value); if(dom.damage.value) p.set('damage',dom.damage.value); if(dom.run.value) p.set('runState',dom.run.value); if(dom.state.value) p.set('state',dom.state.value);
     if(dom.yearMin.value) p.set('yearMin',dom.yearMin.value); if(dom.yearMax.value) p.set('yearMax',dom.yearMax.value);
@@ -613,16 +618,18 @@
   function skeletons(){ dom.empty.classList.add('hidden'); dom.list.innerHTML=Array.from({length:6},()=>'<div class="skeleton"></div>').join(''); }
 
   async function loadVehicles(){
-    if(state.loading) return; state.loading=true; skeletons();
+    const requestId = (state.catalogRequestId || 0) + 1; state.catalogRequestId = requestId;
+    state.loading=true; skeletons();
     try{
       const data=await api('/api/vehicles?'+params().toString());
+      if(requestId !== state.catalogRequestId) return;
       dom.count.textContent=data.total.toLocaleString('en-US');
       renderVehicles(data.items); renderPagination(data);
       if(!data.items.length) dom.empty.classList.remove('hidden');
       const heroPhoto = $('#hero-car-photo');
       if(data.items[0] && heroPhoto && !heroPhoto.dataset.ready) setHeroVehicle(data.items[0]);
-    }catch(err){ dom.list.innerHTML=''; dom.empty.classList.remove('hidden'); showToast(err.message); }
-    finally{ state.loading=false; }
+    }catch(err){ if(requestId !== state.catalogRequestId) return; dom.list.innerHTML=''; dom.empty.classList.remove('hidden'); showToast(err.message); }
+    finally{ if(requestId === state.catalogRequestId) state.loading=false; }
   }
 
   function setHeroVehicle(v){
@@ -670,12 +677,57 @@
     }catch(_){ /* El buscador principal sigue disponible aunque fallen sugerencias. */ }
   }
 
+  function readFavorites() { return state.accountFavorites; }
+  function favoriteButton(lot) {
+    const active=readFavorites().includes(String(lot));
+    return `<button type="button" class="favorite-button" data-favorite="${esc(lot)}" aria-pressed="${active}" aria-label="${active?'Quitar de favoritos':'Guardar en mi cuenta'}">${active?'♥':'♡'}</button>`;
+  }
+  function refreshFavoriteButtons() {
+    document.querySelectorAll('[data-favorite]').forEach(b=>{ b.outerHTML=favoriteButton(b.dataset.favorite); });
+  }
+  async function loadAccountFavorites() {
+    const userId=state.user?.id;
+    if(!userId) return;
+    try {
+      const data=await api('/api/user/favorites');
+      if(state.user?.id!==userId) return;
+      state.accountFavorites=data.lots || [];
+      refreshFavoriteButtons();
+      if(state.favoritesOnly) loadVehicles();
+    } catch(err) { showToast(err.message); }
+  }
+  async function toggleFavorite(lot) {
+    if(!state.user) { openAuth('Inicia sesión para guardar tus favoritos en tu cuenta.',{type:'favorite',lot}); return; }
+    const userId=state.user.id;
+    try {
+      await state.favoritesReady;
+      if(state.user?.id!==userId) return;
+      const data=await api('/api/user/favorites/'+encodeURIComponent(lot),{method:readFavorites().includes(lot)?'DELETE':'PUT'});
+      if(state.user?.id!==userId) return;
+      state.accountFavorites=data.lots || [];
+      refreshFavoriteButtons();
+      if(state.favoritesOnly) loadVehicles();
+    } catch(err) { showToast(err.message); }
+  }
+  async function showAccountFavorites() {
+    clearFilters(false);
+    state.favoritesOnly=true;
+    $('#favorites-heading').classList.remove('hidden');
+    $('#my-favorites-button').setAttribute('aria-pressed','true');
+    await loadVehicles();
+    document.querySelector('#catalogo').scrollIntoView({behavior:'smooth'});
+  }
+  document.addEventListener('click', e => {
+    const button=e.target.closest('[data-favorite]');
+    if(button) toggleFavorite(button.dataset.favorite);
+  });
+
   function renderVehicles(items){
     dom.list.innerHTML=items.map(v=>`
       <article class="vehicle-card" data-lot="${esc(v.lot)}">
         <div class="vehicle-photo-wrap" data-action="detail"><div class="vehicle-photo" ${imageStyle(v.image)}>${v.image?'':`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
         <div class="vehicle-main">
-          <div class="vehicle-title-row"><h3 data-action="detail">${esc(v.title)}</h3><span class="source-pill">COPART</span></div>
+          <div class="vehicle-title-row"><h3 data-action="detail">${esc(v.title)}</h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
           <div class="vehicle-identifiers">⌗ ${esc(vinText(v))} &nbsp;•&nbsp; ${t('lot')} ${esc(v.lot)}</div>
           <div class="spec-chips">
             <span class="spec-chip">${icon('🔑')} ${v.hasKeys==='YES'?t('keyAvailable'):t('keyUnknown')}</span>
@@ -1175,7 +1227,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           <div class="detail-card">
             <div class="detail-card-header">
               <span class="detail-card-icon">⚖️</span>
-              <h3>Auction / Subasta</h3>
+              <h3>Auction / Subasta</h3>${favoriteButton(v.lot)}
             </div>
             <div class="detail-card-grid">
               <div class="detail-card-row"><span>VIN</span><strong>${vinQuickSpecValue(v)}</strong></div>
@@ -1261,6 +1313,23 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     setupGalleryNavigation();
   }
 
+  async function loadGallery(lot) {
+    try {
+      const data=await api('/api/vehicles/'+encodeURIComponent(lot)+'/images');
+      if(String(state.currentVehicle?.lot)!==String(lot)) return;
+      state.galleryImages=data.images || [];
+      setupGalleryNavigation();
+    } catch(err) { if(String(state.currentVehicle?.lot)===String(lot)) showToast('No se pudieron cargar las fotos. Intenta abrir el vehículo de nuevo.'); }
+  }
+  function selectGalleryPhoto(index) {
+    const buttons=$$('.gallery-thumb',dom.vehicleDetail);
+    if(!buttons.length) return;
+    state.currentPhotoIdx=(index+buttons.length)%buttons.length;
+    const img=$('#detail-main-image');
+    if(img) img.src=buttons[state.currentPhotoIdx].dataset.gallerySrc;
+    buttons.forEach((b,i)=>b.classList.toggle('active',i===state.currentPhotoIdx));
+  }
+
   function setupGalleryNavigation(){
     const thumbs = $('#detail-gallery-thumbs');
     const main = $('#detail-main-image');
@@ -1270,12 +1339,16 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
     if(!thumbs||!count) return;
     const fallbackCover = state.currentVehicle && state.currentVehicle.image ? [state.currentVehicle.image.replace(/_thb\./i, '_ful.')] : [];
-    const finalImages=state.galleryImages||fallbackCover;
+    const finalImages=state.galleryImages.length ? state.galleryImages : fallbackCover;
     const label=`${finalImages.length} ${finalImages.length===1?'foto':'fotos'}`;
     count.textContent=label;
     if(allCount) allCount.textContent=label;
     if(!finalImages.length){ thumbs.innerHTML=''; if(allGrid) allGrid.innerHTML='<div class="photo-empty">No hay fotos disponibles para este lote.</div>'; return; }
     if(main) main.src=finalImages[0];
+    else { const img=document.createElement('img'); img.id='detail-main-image'; img.alt=state.currentVehicle?.title||''; img.src=finalImages[0]; $('#detail-gallery-main .image-fallback')?.replaceWith(img); }
+    state.currentPhotoIdx=0;
+    $('#gallery-prev-btn').disabled=finalImages.length<2;
+    $('#gallery-next-btn').disabled=finalImages.length<2;
     thumbs.innerHTML=finalImages.map((src,i)=>`<button class="gallery-thumb ${i===0?'active':''}" data-gallery-src="${esc(src)}" aria-label="Ver foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle?.title||'')}" loading="lazy" /></button>`).join('');
     if(allGrid) allGrid.innerHTML=finalImages.map((src,i)=>`<button type="button" data-gallery-src="${esc(src)}" aria-label="Ampliar foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle?.title||'')}" loading="lazy" /></button>`).join('');
   }
@@ -1322,6 +1395,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   function applyUser(user){
     state.user=user||null;
+    state.accountFavorites=[];
+    state.favoritesReady=user?loadAccountFavorites():Promise.resolve();
+    refreshFavoriteButtons();
+    if(!user && state.favoritesOnly) clearFilters();
     if(user){
       dom.authButton.classList.add('hidden'); dom.accountChip.classList.remove('hidden');
       dom.accountAvatar.textContent=initials(user.name); dom.accountName.textContent=user.name; dom.accountEmail.textContent=user.email;
@@ -1337,9 +1414,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const action=state.pendingAuthAction;
     applyUser(user); closeAuth(false); state.pendingAuthAction=null;
     showToast(`Bienvenido, ${user.name.split(' ')[0]}.`);
+    await state.favoritesReady;
     await loadVehicles();
     if(action&&action.type==='bid'){
       try{ await openBid(await getVehicle(action.lot), action.amount); }catch(err){ showToast(err.message); }
+    }else if(action&&action.type==='favorite'){
+      if(!readFavorites().includes(action.lot)) await toggleFavorite(action.lot);
     }else if(action&&action.type==='calc'){
       await openDetail(action.lot,false);
     }else if(action&&action.type==='vin'){
@@ -1548,10 +1628,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     }catch(err){ showToast('No se pudo recuperar el chat: '+err.message); }
   }
 
-  function clearFilters(){
-    dom.search.value=''; dom.make.value=''; dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.keys.checked=false; dom.buyNow.checked=false; dom.sort.value='saleSoon';
+  function clearFilters(reload=true){
+    $('#favorites-heading').classList.add('hidden');
+    $('#my-favorites-button').setAttribute('aria-pressed','false');
+    dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; dom.heroFilterYearMin.value=''; dom.heroFilterYearMax.value=''; dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.keys.checked=false; dom.buyNow.checked=false; dom.sort.value='saleSoon';
     if(state.filters){ dom.yearMin.value=state.filters.minYear; dom.yearMax.value=state.filters.maxYear; dom.odometer.value=dom.odometer.max; updateOdometerLabel(); }
-    state.page=1; loadVehicles();
+    state.page=1; if(reload) loadVehicles();
   }
 
   dom.list.addEventListener('click',async e=>{
@@ -1623,8 +1705,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       return;
     }
 
+    if(e.target.closest('#gallery-prev-btn')) { selectGalleryPhoto(state.currentPhotoIdx-1); return; }
+    if(e.target.closest('#gallery-next-btn')) { selectGalleryPhoto(state.currentPhotoIdx+1); return; }
     const thumb=e.target.closest('[data-gallery-src]');
-    if(thumb){ const img=$('#detail-main-image'); if(img) img.src=thumb.dataset.gallerySrc; $$('.gallery-thumb',dom.vehicleDetail).forEach(b=>b.classList.toggle('active',b===thumb)); return; }
+    if(thumb){ selectGalleryPhoto($$('.gallery-thumb',dom.vehicleDetail).findIndex(b=>b.dataset.gallerySrc===thumb.dataset.gallerySrc)); return; }
     if(e.target.closest('[data-detail-bid]')&&state.currentVehicle){ await openBid(state.currentVehicle); return; }
     if(e.target.closest('[data-auth-vin]')&&state.currentVehicle){ openAuth('Regístrate o inicia sesión para revelar el VIN completo.',{type:'vin',lot:state.currentVehicle.lot}); return; }
     const toggle = e.target.closest('#toggle-full-tech');
@@ -1861,6 +1945,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   $('#bid-continue').addEventListener('click',continueBid); dom.bidAmount.addEventListener('keydown',e=>{if(e.key==='Enter') continueBid();});
   dom.searchButton.addEventListener('click',()=>{state.page=1;loadVehicles();}); dom.search.addEventListener('keydown',e=>{if(e.key==='Enter'){state.page=1;loadVehicles();}}); dom.sort.addEventListener('change',()=>{state.page=1;loadVehicles();});
+  dom.make.addEventListener('change', updateCatalogModels);
+  dom.runDrive.addEventListener('change',()=>{ if(dom.runDrive.checked) dom.run.value=''; });
+  dom.run.addEventListener('change',()=>{ dom.runDrive.checked=false; });
+  $('#my-favorites-button').addEventListener('click', showAccountFavorites);
+  $('#exit-favorites').addEventListener('click',()=>clearFilters());
   $('#apply-filters').addEventListener('click',()=>{state.page=1;dom.filtersPanel.classList.remove('mobile-open');loadVehicles();}); $('#clear-filters').addEventListener('click',clearFilters); $('#empty-clear').addEventListener('click',clearFilters); dom.odometer.addEventListener('input',updateOdometerLabel);
   $('#mobile-filter-button').addEventListener('click',()=>dom.filtersPanel.classList.toggle('mobile-open'));
 

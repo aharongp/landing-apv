@@ -36,7 +36,7 @@ function loadEnv() {
 }
 loadEnv();
 const PUBLIC_DIR = path.join(ROOT, 'public');
-const DATA_DIR = path.join(ROOT, 'data');
+const DATA_DIR = process.env.APV_DATA_DIR || path.join(ROOT, 'data');
 const UPLOAD_DIR = path.join(DATA_DIR, 'uploads');
 const CATALOG_FILE = path.join(DATA_DIR, 'current_catalog.csv');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
@@ -218,7 +218,7 @@ function loadCatalog() {
   if (fs.existsSync(CATALOG_FILE)) {
     try {
       const csvText = fs.readFileSync(CATALOG_FILE, 'utf8');
-      const stats = catalogDb.upsertCatalogFromCsv(csvText);
+      const stats = catalogDb.upsertCatalogFromCsv(csvText, { backupBeforeReplace: true });
       console.log(`[CATALOG] Database loaded. ${stats.totalInDb} vehicles available in catalog.db`);
     } catch (err) {
       console.error('[CATALOG] Error loading CSV into database:', err.message);
@@ -477,6 +477,8 @@ function getVehicles(url, user) {
 
   const res = catalogDb.queryVehicles({
     page, pageSize, q, make, state, damage, runState,
+    model: url.searchParams.get('model'), runAndDrive: url.searchParams.get('runAndDrive'),
+    favorites: url.searchParams.has('favorites') ? url.searchParams.get('favorites') : undefined,
     yearMin, yearMax, priceMax, odometerMax, keysOnly, buyNowOnly, sort
   });
 
@@ -635,7 +637,7 @@ async function fetchVehicleImages(vehicle) {
       const images = [...new Set([...urls, ...fallback])]
         .filter(Boolean)
         .sort((a, b) => rankImageUrl(a) - rankImageUrl(b));
-      if (images.length) {
+      if (urls.length) {
         imageCache.set(vehicle.lot, { expiresAt: Date.now() + 30 * 60 * 1000, images });
         return images;
       }
@@ -911,6 +913,18 @@ const server = http.createServer(async (req, res) => {
       }
     }
 
+    if (req.method === 'GET' && url.pathname === '/api/user/favorites') {
+      const user = requireAuth(req, res);
+      if (!user) return;
+      return json(res, 200, { lots: catalogDb.getFavorites(user.id) });
+    }
+    const favoriteMatch = url.pathname.match(/^\/api\/user\/favorites\/(\d{5,12})$/);
+    if (favoriteMatch && ['PUT', 'DELETE'].includes(req.method)) {
+      const user = requireAuth(req, res);
+      if (!user) return;
+      return json(res, 200, { lots: catalogDb.setFavorite(user.id, favoriteMatch[1], req.method === 'PUT') });
+    }
+
     if (req.method === 'GET' && url.pathname === '/api/user/bids') {
       const user = requireAuth(req, res);
       if (!user) return;
@@ -1138,8 +1152,8 @@ const server = http.createServer(async (req, res) => {
       const tmpUpload = path.join(UPLOAD_DIR, `direct-${crypto.randomUUID()}.csv`);
       fs.writeFileSync(tmpUpload, body);
       try {
-        const count = await replaceCatalogFromFile(tmpUpload);
-        return json(res, 200, { ok: true, count, updatedAt: catalogUpdatedAt });
+        const stats = await replaceCatalogFromFile(tmpUpload);
+        return json(res, 200, { ok: true, count: stats.totalInDb, stats, updatedAt: stats.updatedAt });
       } finally {
         fs.rmSync(tmpUpload, { force: true });
       }
@@ -1197,12 +1211,21 @@ const server = http.createServer(async (req, res) => {
       return json(res, 200, { ok: true, message: 'Catálogo de vehículos vaciado.' });
     }
 
+    if (req.method === 'POST' && url.pathname === '/api/catalog/repair') {
+      if (!ADMIN_KEY) return json(res, 503, { error: 'Configura ADMIN_KEY en el servidor para habilitar la reparación.' });
+      if (!adminAllowed(req)) return json(res, 401, { error: 'Clave de administración inválida.' });
+      if (!fs.existsSync(CATALOG_FILE)) return json(res, 404, { error: 'Carga primero un CSV completo para poder reconstruir el catálogo.' });
+      const stats = catalogDb.repairCatalogFromCsv(fs.readFileSync(CATALOG_FILE, 'utf8'));
+      imageCache.clear();
+      return json(res, 200, { ok: true, stats });
+    }
+
     if (req.method === 'POST' && url.pathname === '/api/catalog/sync') {
       if (!adminAllowed(req)) return json(res, 401, { error: 'Clave de administración inválida.' });
       if (!fs.existsSync(CATALOG_FILE)) return json(res, 404, { error: 'No se encontró el archivo CSV del catálogo para sincronizar.' });
       try {
         const csvText = fs.readFileSync(CATALOG_FILE, 'utf8');
-        const stats = catalogDb.upsertCatalogFromCsv(csvText);
+        const stats = catalogDb.upsertCatalogFromCsv(csvText, { backupBeforeReplace: true });
         return json(res, 200, { ok: true, stats });
       } catch (err) {
         return json(res, 500, { error: `Error en la sincronización: ${err.message}` });
@@ -1255,6 +1278,7 @@ setInterval(() => {
 }, 15 * 60 * 1000).unref();
 
 loadCatalog();
+setInterval(() => catalogDb.pruneExpired(), 60000).unref();
 
 server.listen(PORT, () => {
   console.log(`APV Motors Auction Catalog: http://localhost:${PORT}`);
