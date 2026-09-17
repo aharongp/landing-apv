@@ -4,6 +4,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { gzipSync } = require('zlib');
+const staticCache = new Map();
 const { URL } = require('url');
 const kommoService = require('./services/kommo');
 const emailService = require('./services/email');
@@ -653,9 +655,20 @@ async function fetchVehicleImages(vehicle) {
   return fallback;
 }
 
+function acceptsGzip(req) {
+  return String(req?.headers['accept-encoding'] || '').split(',').some(part => {
+    const [encoding, ...parameters] = part.trim().split(';');
+    return encoding === 'gzip' && !parameters.some(p => /^q=0(?:\.0*)?$/.test(p.trim()));
+  });
+}
+
 function json(res, status, data, headers = {}) {
-  const body = JSON.stringify(data);
+  let body = Buffer.from(JSON.stringify(data));
+  const compress = body.length > 1024 && acceptsGzip(res.req);
+  if (compress) body = gzipSync(body);
   res.writeHead(status, {
+    Vary: 'Accept-Encoding',
+    ...(compress ? { 'Content-Encoding': 'gzip' } : {}),
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store',
@@ -669,7 +682,7 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
   res.end(body);
 }
 
-function serveFile(res, filePath) {
+function serveFile(req, res, filePath) {
   const ext = path.extname(filePath).toLowerCase();
   const mime = {
     '.html': 'text/html; charset=utf-8',
@@ -683,11 +696,24 @@ function serveFile(res, filePath) {
     '.webp': 'image/webp',
     '.ico': 'image/x-icon'
   }[ext] || 'application/octet-stream';
-  fs.readFile(filePath, (err, data) => {
-    if (err) return text(res, 404, 'Not found');
-    res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': 'no-store, max-age=0', 'Pragma': 'no-cache' });
-    res.end(data);
-  });
+  const stat = fs.statSync(filePath);
+  let cached = staticCache.get(filePath);
+  if (!cached || cached.mtime !== stat.mtimeMs || cached.size !== stat.size) {
+    const body = fs.readFileSync(filePath);
+    const compressible = /\.(html|css|js|json|svg)$/.test(ext) && body.length > 1024;
+    cached = { mtime: stat.mtimeMs, size: stat.size, body, gzip: compressible ? gzipSync(body) : null,
+      etag: `W/"${crypto.createHash('sha256').update(body).digest('hex').slice(0,24)}"` };
+    staticCache.set(filePath, cached);
+  }
+  const headers = { 'Content-Type': mime, 'Cache-Control': 'public, max-age=0, must-revalidate',
+    ETag: cached.etag, Vary: 'Accept-Encoding' };
+  if (req.headers['if-none-match'] === cached.etag) {
+    res.writeHead(304, headers); return res.end();
+  }
+  const compress = cached.gzip && acceptsGzip(req);
+  const body = compress ? cached.gzip : cached.body;
+  res.writeHead(200, { ...headers, 'Content-Length': body.length, ...(compress ? { 'Content-Encoding': 'gzip' } : {}) });
+  res.end(body);
 }
 
 function readRequestBody(req, maxBytes = MAX_UPLOAD_BYTES) {
@@ -1119,6 +1145,10 @@ const server = http.createServer(async (req, res) => {
       return json(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie(req, '', 0) });
     }
 
+    if (req.method === 'GET' && url.pathname === '/api/featured') {
+      return json(res, 200, catalogDb.getFeaturedVehicles());
+    }
+
     if (req.method === 'GET' && url.pathname === '/api/filters') {
       return json(res, 200, buildFilters());
     }
@@ -1256,8 +1286,8 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET') {
       const filePath = safePublicPath(url.pathname);
       if (!filePath) return text(res, 403, 'Forbidden');
-      if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) return serveFile(res, filePath);
-      return serveFile(res, path.join(PUBLIC_DIR, 'index.html'));
+      if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) return serveFile(req, res, filePath);
+      return serveFile(req, res, path.join(PUBLIC_DIR, 'index.html'));
     }
 
     return text(res, 405, 'Method not allowed');
@@ -1278,7 +1308,13 @@ setInterval(() => {
 }, 15 * 60 * 1000).unref();
 
 loadCatalog();
-setInterval(() => catalogDb.pruneExpired(), 60000).unref();
+// Build reusable public metadata before accepting the first visitor.
+catalogDb.getFilterMetadata();
+catalogDb.getFeaturedVehicles();
+setInterval(() => {
+  catalogDb.pruneExpired();
+  catalogDb.getFeaturedVehicles();
+}, 60000).unref();
 
 server.listen(PORT, () => {
   console.log(`APV Motors Auction Catalog: http://localhost:${PORT}`);

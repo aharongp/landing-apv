@@ -492,11 +492,10 @@
     if(dom.heroFilterState) populate(dom.heroFilterState, f.states);
     populateYears(dom.heroFilterYearMin, f.minYear, f.maxYear);
     populateYears(dom.heroFilterYearMax, f.minYear, f.maxYear);
-    dom.yearMin.value=f.minYear; dom.yearMin.min=f.minYear; dom.yearMin.max=f.maxYear;
-    dom.yearMax.value=f.maxYear; dom.yearMax.min=f.minYear; dom.yearMax.max=f.maxYear;
+    dom.yearMin.placeholder=f.minYear; dom.yearMin.min=f.minYear; dom.yearMin.max=f.maxYear;
+    dom.yearMax.placeholder=f.maxYear; dom.yearMax.min=f.minYear; dom.yearMax.max=f.maxYear;
     const maxOdo=1000000; dom.odometer.max=maxOdo; dom.odometer.value=maxOdo; updateOdometerLabel();
     updateCatalogModels();
-    loadFeaturedVehicles();
   }
 
   function populateYears(select, minYear, maxYear) {
@@ -516,13 +515,16 @@
     select.value = currentVal;
   }
 
+  document.addEventListener('click', e=>{ if(e.target.closest('[data-retry-featured]')) loadFeaturedVehicles(); });
+
   async function loadFeaturedVehicles(){
     try {
-      const data = await api('/api/vehicles?page=1&pageSize=6&sort=randomClean');
+      const data = await api('/api/featured');
       state.featuredVehicles = data.items || [];
       renderFeaturedVehicles();
     } catch(err) {
       console.warn('[APV] Error loading featured vehicles:', err);
+      dom.heroFeaturedGrid.innerHTML = `<div class="hero-quick-empty">${t('emptyText')} <button type="button" class="link-button" data-retry-featured>${currentLang==='en'?'Retry':'Reintentar'}</button></div>`;
     }
   }
 
@@ -531,12 +533,13 @@
     const startIndex = (state.featuredPage - 1) * 3;
     const items = state.featuredVehicles.slice(startIndex, startIndex + 3);
     if(!items.length){
-      dom.heroFeaturedGrid.innerHTML = `<div class="hero-quick-empty">${t('loading')}</div>`;
+      dom.heroFeaturedGrid.innerHTML = `<div class="hero-quick-empty">${t('emptyTitle')}</div>`;
       return;
     }
     dom.heroFeaturedGrid.innerHTML = items.map(v => `
       <article class="featured-vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="featured-card-photo" ${imageStyle(v.image)} data-action="detail">
+        <div class="featured-card-photo" data-action="detail">
+          ${v.image ? `<img src="${esc(v.image)}" alt="${esc(v.title)}" width="640" height="400" loading="eager" fetchpriority="high" decoding="async" />` : ''}
           <span class="featured-card-badge">● SUBASTA COPART</span>
         </div>
         <div class="featured-card-body">
@@ -725,7 +728,7 @@
   function renderVehicles(items){
     dom.list.innerHTML=items.map(v=>`
       <article class="vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="vehicle-photo-wrap" data-action="detail"><div class="vehicle-photo" ${imageStyle(v.image)}>${v.image?'':`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
+        <div class="vehicle-photo-wrap" data-action="detail"><div class="vehicle-photo">${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="320" height="220" loading="lazy" decoding="async" />`:`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
         <div class="vehicle-main">
           <div class="vehicle-title-row"><h3 data-action="detail">${esc(v.title)}</h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
           <div class="vehicle-identifiers">⌗ ${esc(vinText(v))} &nbsp;•&nbsp; ${t('lot')} ${esc(v.lot)}</div>
@@ -1474,7 +1477,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   async function initAuth(){
     try{
-      const cfg = await api('/api/config').catch(() => ({}));
+      const [cfg, me] = await Promise.all([api('/api/config').catch(() => ({})), api('/api/auth/me')]);
       state.config = cfg;
       const debugPanel = document.querySelector('.kommo-debug-panel');
       if (debugPanel) {
@@ -1484,7 +1487,6 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           debugPanel.classList.add('hidden');
         }
       }
-      const me=await api('/api/auth/me');
       applyUser(me.authenticated?me.user:null);
     }catch(err){ showToast('No se pudo inicializar la cuenta: '+err.message); }
   }
@@ -1632,7 +1634,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     $('#favorites-heading').classList.add('hidden');
     $('#my-favorites-button').setAttribute('aria-pressed','false');
     dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; dom.heroFilterYearMin.value=''; dom.heroFilterYearMax.value=''; dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.keys.checked=false; dom.buyNow.checked=false; dom.sort.value='saleSoon';
-    if(state.filters){ dom.yearMin.value=state.filters.minYear; dom.yearMax.value=state.filters.maxYear; dom.odometer.value=dom.odometer.max; updateOdometerLabel(); }
+    if(state.filters){ dom.yearMin.value=''; dom.yearMax.value=''; dom.odometer.value=dom.odometer.max; updateOdometerLabel(); }
     state.page=1; if(reload) loadVehicles();
   }
 
@@ -2083,9 +2085,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     });
     setLanguage(currentLang);
 
-    try { await initAuth(); } catch(e) { console.warn('[APV] Auth init note:', e); }
-    try { await initFilters(); } catch(e) { console.warn('[APV] Filters init note:', e); }
-    try { await loadVehicles(); } catch(e) { showToast('Error al cargar el catálogo: ' + e.message); }
+    // Render inventory without waiting for account/configuration or filter metadata.
+    const featuredReady = loadFeaturedVehicles();
+    const inventoryReady = loadVehicles();
+    const authReady = initAuth();
+    const filtersReady = initFilters().catch(e=>console.warn('[APV] Filters init note:',e));
+    await Promise.allSettled([featuredReady, inventoryReady, authReady, filtersReady]);
     try {
       const m=location.pathname.match(/^\/vehiculo\/([^/]+)/);
       if(m) await openDetail(decodeURIComponent(m[1]),false);

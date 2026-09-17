@@ -184,3 +184,10 @@ La galería consulta las fotos bajo demanda y permite navegar con flechas y mini
 ### Reparar el catálogo del servidor
 
 En `/admin`, introduce la clave de administración y pulsa **Reparar base de datos**. La operación crea un respaldo privado en `data/backups/`, fuerza la lectura del último CSV aunque no haya cambiado, reconstruye los vehículos y muestra el resultado. Conserva cuentas, favoritos y pujas. Requiere `ADMIN_KEY` configurada; sin el CSV original no se puede reconstruir el inventario. También se respalda el catálogo antes de reemplazarlo automáticamente al arrancar con un CSV nuevo o una nueva versión del importador. La reparación corrige registros del catálogo; no sustituye una restauración de SQLite si el archivo está físicamente dañado.
+
+
+### Carga de la página principal
+
+La portada solicita destacados, catálogo, sesión y filtros en paralelo. `/api/featured` devuelve únicamente los campos de las tarjetas y selecciona seis lotes distintos de una lista de candidatos preparada al iniciar. La lista se invalida cuando se importa, repara o vacía el catálogo, o cuando se eliminan subastas vencidas; cada visita sigue recibiendo una selección aleatoria.
+
+El catálogo inicial no aplica un rango de años implícito: usa directamente el índice de próximas subastas. Las fotos del catálogo usan carga diferida del navegador, y las tres fotos visibles de destacados tienen prioridad. JSON y archivos de texto se comprimen con gzip; CSS, JavaScript y HTML se revalidan con ETag. Las respuestas de vehículos y cuentas mantienen `Cache-Control: no-store`.

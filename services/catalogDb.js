@@ -5,7 +5,19 @@ const { DatabaseSync } = require('node:sqlite');
 const DATA_DIR = process.env.APV_DATA_DIR || path.join(__dirname, '..', 'data');
 const crypto = require('crypto');
 let filterCache = null;
+let featuredPool = null;
 let lastPruned = 0;
+const FEATURED_CLAUSES = [
+  "imageUrl IS NOT NULL AND imageUrl != ''",
+  "year >= 2016",
+  "runsDrives = 'Run & Drive Verified'",
+  "primaryDamage IN ('MINOR DENT/SCRATCHES', 'NORMAL WEAR', 'NO DAMAGE', 'HAIL', 'VANDALISM', 'CLEAN TITLE')",
+  "make NOT IN ('OTHERS', 'OTHER', 'CLUB CAR', 'CUSHMAN', 'EZGO', 'YAMAHA', 'POLARIS', 'KAWASAKI', 'SEA-DOO', 'CAN-AM', 'KUBOTA', 'HINO', 'FREIGHTLINER', 'INTERNATIONAL', 'PETERBILT', 'KENWORTH')",
+  "title NOT LIKE '%BOAT%' AND title NOT LIKE '%TRAILER%' AND title NOT LIKE '%VESSEL%' AND title NOT LIKE '%MOTORCYCLE%' AND title NOT LIKE '%BUS%' AND title NOT LIKE '%TRANSIT%' AND title NOT LIKE '%UNKNOWN%' AND title NOT LIKE '%MINI%' AND title NOT LIKE '%TRACTOR%' AND title NOT LIKE '%COMMERCIAL%' AND title NOT LIKE '%VAN%' AND title NOT LIKE '%BOX%' AND title NOT LIKE '%PROMASTER%' AND title NOT LIKE '%EXPRESS%' AND title NOT LIKE '%CUTAWAY%'"
+];
+
+function invalidateCatalogCaches() { filterCache = null; featuredPool = null; }
+
 const DB_FILE = path.join(DATA_DIR, 'catalog.db');
 
 if (!fs.existsSync(DATA_DIR)) {
@@ -129,6 +141,7 @@ function initDatabase() {
   try { db.exec('ALTER TABLE vehicles ADD COLUMN saleAt INTEGER'); } catch (_) {}
   db.exec(`CREATE INDEX IF NOT EXISTS idx_v_sale ON vehicles(saleAt);
     CREATE INDEX IF NOT EXISTS idx_v_model ON vehicles(make, model);
+    CREATE INDEX IF NOT EXISTS idx_v_featured_candidate ON vehicles(runsDrives, primaryDamage, year, lot);
     CREATE INDEX IF NOT EXISTS idx_v_upcoming ON vehicles(saleAt IS NULL, saleAt, year DESC, lot);
     CREATE INDEX IF NOT EXISTS idx_v_date ON vehicles(saleDate, year DESC);`);
   const metaRow = db.prepare("SELECT value FROM catalog_meta WHERE key = 'updatedAt'").get();
@@ -397,7 +410,7 @@ function pruneExpired() {
   if (Date.now() - lastPruned < 60000) return;
   const result = database.prepare('DELETE FROM vehicles WHERE saleAt <= ?').run(Date.now());
   lastPruned = Date.now();
-  if (result.changes) filterCache = null;
+  if (result.changes) invalidateCatalogCaches();
 }
 
 function upsertCatalogFromCsv(csvText, options = {}) {
@@ -515,7 +528,7 @@ function upsertCatalogFromCsv(csvText, options = {}) {
     database.prepare("INSERT OR REPLACE INTO catalog_meta (key, value) VALUES ('sourceHash', ?)").run(digest);
     database.prepare("INSERT OR REPLACE INTO catalog_meta (key, value) VALUES ('updatedAt', ?)").run(nowIso);
     database.exec('COMMIT');
-    filterCache = null;
+    invalidateCatalogCaches();
   } catch (err) {
     database.exec('ROLLBACK');
     throw err;
@@ -642,6 +655,25 @@ function rowToVehicle(row) {
   };
 }
 
+// Cache only public candidate data, not a randomized response or user details.
+// Rebuild after imports, clears or expiry; each request still gets a new sample.
+function getFeaturedVehicles(limit = 6) {
+  const database = initDatabase();
+  pruneExpired();
+  if (!featuredPool) {
+    featuredPool = database.prepare(`SELECT lot, title, imageThumbnail, currentBid, buyNow,
+      locationCity, locationState FROM vehicles WHERE ${FEATURED_CLAUSES.join(' AND ')}`).all().map(row => ({
+        lot: row.lot, title: row.title, currentBid: row.currentBid, buyNow: row.buyNow,
+        locationCity: row.locationCity, locationState: row.locationState,
+        image: ensureHttps(row.imageThumbnail).replace(/_thb\.jpg$/i, '_ful.jpg')
+      }));
+  }
+  const count = Math.min(featuredPool.length, Math.max(1, Math.min(12, Number(limit) || 6)));
+  const selected = new Set();
+  while (selected.size < count) selected.add(Math.floor(Math.random() * featuredPool.length));
+  return { items: [...selected].map(index => featuredPool[index]) };
+}
+
 function queryVehicles(params = {}) {
   const database = initDatabase();
 
@@ -725,12 +757,7 @@ function queryVehicles(params = {}) {
   }
 
   if (sort === 'randomClean' || sort === 'featuredClean' || params.featured === '1' || params.featuredClean === '1') {
-    whereClauses.push("imageUrl IS NOT NULL AND imageUrl != ''");
-    whereClauses.push("year >= 2016");
-    whereClauses.push("runsDrives = 'Run & Drive Verified'");
-    whereClauses.push("primaryDamage IN ('MINOR DENT/SCRATCHES', 'NORMAL WEAR', 'NO DAMAGE', 'HAIL', 'VANDALISM', 'CLEAN TITLE')");
-    whereClauses.push("make NOT IN ('OTHERS', 'OTHER', 'CLUB CAR', 'CUSHMAN', 'EZGO', 'YAMAHA', 'POLARIS', 'KAWASAKI', 'SEA-DOO', 'CAN-AM', 'KUBOTA', 'HINO', 'FREIGHTLINER', 'INTERNATIONAL', 'PETERBILT', 'KENWORTH')");
-    whereClauses.push("title NOT LIKE '%BOAT%' AND title NOT LIKE '%TRAILER%' AND title NOT LIKE '%VESSEL%' AND title NOT LIKE '%MOTORCYCLE%' AND title NOT LIKE '%BUS%' AND title NOT LIKE '%TRANSIT%' AND title NOT LIKE '%UNKNOWN%' AND title NOT LIKE '%MINI%' AND title NOT LIKE '%TRACTOR%' AND title NOT LIKE '%COMMERCIAL%' AND title NOT LIKE '%VAN%' AND title NOT LIKE '%BOX%' AND title NOT LIKE '%PROMASTER%' AND title NOT LIKE '%EXPRESS%' AND title NOT LIKE '%CUTAWAY%'");
+    whereClauses.push(...FEATURED_CLAUSES);
   }
 
   const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
@@ -959,7 +986,7 @@ function clearVehicles() {
   database.exec("DELETE FROM vehicles;");
   database.exec("DELETE FROM catalog_meta WHERE key = 'updatedAt';");
   lastUpdatedAt = null;
-  filterCache = null;
+  invalidateCatalogCaches();
   database.exec("DELETE FROM catalog_meta WHERE key = 'sourceHash'");
   console.log("[CATALOG DB] All vehicles cleared from SQLite database.");
 }
@@ -975,6 +1002,7 @@ module.exports = {
   upsertCatalogFromCsv,
   clearVehicles,
   queryVehicles,
+  getFeaturedVehicles,
   getFilterMetadata,
   findVehicleByLotOrId,
   getRawRecordByLot,
