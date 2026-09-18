@@ -36,3 +36,6 @@ Thumbs.db
 # Temporary Files
 *.tmp
 *.bak
+
+# Stripe generated configuration contains webhook signing secrets
+data/stripe-setup-*.env

@@ -37,6 +37,7 @@ function loadEnv() {
   } catch (_) {}
 }
 loadEnv();
+const billing = require('./services/billing').createBillingService({ database: () => catalogDb.initDatabase() });
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const DATA_DIR = process.env.APV_DATA_DIR || path.join(ROOT, 'data');
 const UPLOAD_DIR = path.join(DATA_DIR, 'uploads');
@@ -291,6 +292,7 @@ function safeUser(user) {
     phone: user.phone || '',
     picture: user.picture || '',
     provider: user.googleSub ? 'google' : 'email',
+    membership: billing.membership(user.id),
     kommoUserId: kommoUserId(user)
   };
 }
@@ -867,6 +869,44 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 
   try {
+    if (req.method === 'POST' && url.pathname === '/api/stripe/webhook') {
+      const body = await readRequestBody(req, 1024 * 1024);
+      try { return json(res, 200, await billing.webhook(body, req.headers['stripe-signature'])); }
+      catch (err) { console.error('[BILLING WEBHOOK]', err.type || err.statusCode || 'sync_error'); return json(res, err.statusCode === 400 ? 400 : 500, { error: 'No se pudo procesar la notificación.' }); }
+    }
+    if (req.method === 'GET' && url.pathname === '/api/plans') return json(res, 200, billing.publicPlans());
+    if (url.pathname.startsWith('/api/billing/')) {
+      const user = requireAuth(req, res);
+      if (!user) return;
+      if (req.method === 'POST') {
+        const origin = req.headers.origin;
+        const localOrigin = `${String(req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()}://${req.headers.host}`;
+        if (origin && origin !== (billing.config().origin || localOrigin)) return json(res, 403, { error: 'Origen de solicitud no permitido.' });
+      }
+      if (req.method === 'GET' && url.pathname === '/api/billing/me') return json(res, 200, billing.membership(user.id));
+      if (req.method === 'POST' && url.pathname === '/api/billing/refresh') return json(res, 200, await billing.refresh(user));
+      if (req.method === 'POST' && url.pathname === '/api/billing/checkout') {
+        const body = JSON.parse((await readRequestBody(req, 16384)).toString('utf8') || '{}');
+        return json(res, 200, await billing.checkout(user, body.planId));
+      }
+      if (req.method === 'POST' && url.pathname === '/api/billing/portal') return json(res, 200, await billing.portal(user));
+      if (req.method === 'POST' && url.pathname === '/api/billing/request') {
+        const body = JSON.parse((await readRequestBody(req, 16384)).toString('utf8') || '{}');
+        const lot = str(body.lot);
+        if (body.kind === 'history' && !catalogDb.findVehicleByLotOrId(lot)) return json(res, 404, { error: 'Vehículo no disponible.' });
+        return json(res, 201, billing.requestService(user, body.kind, body.kind === 'history' ? lot : null));
+      }
+      return json(res, 404, { error: 'Ruta no encontrada.' });
+    }
+    if (url.pathname === '/api/admin/member-requests') {
+      if (!ADMIN_KEY || !adminAllowed(req)) return json(res, 401, { error: 'Clave de administración inválida.' });
+      if (req.method === 'GET') return json(res, 200, { requests: billing.requests() });
+      if (req.method === 'POST') {
+        const body = JSON.parse((await readRequestBody(req, 16384)).toString('utf8') || '{}');
+        return json(res, 200, { updated: billing.completeRequest(str(body.id)) });
+      }
+    }
+
     if (req.method === 'GET' && (url.pathname === KNOWLEDGE_BASE_PATH || url.pathname === `${KNOWLEDGE_BASE_PATH}/`)) {
       return knowledgeResponse(res, knowledgeIndexHtml());
     }
@@ -926,7 +966,7 @@ const server = http.createServer(async (req, res) => {
           vehicle,
           maxBid
         });
-        return json(res, 200, syncResult);
+        return json(res, 200, { ...syncResult, apvFee: billing.apvFeeQuote(user.id, maxBid) });
       } catch (err) {
         console.error('[KOMMO SYNC ERROR]', err);
         return json(res, err.statusCode || 500, {
@@ -1280,7 +1320,7 @@ const server = http.createServer(async (req, res) => {
         createdAt: new Date().toISOString()
       };
       catalogDb.saveBidIntent(intent);
-      return json(res, 201, intent);
+      return json(res, 201, { ...intent, apvFee: billing.recordFeeQuote(user.id, intent.id, vehicle.lot, maxBid) });
     }
 
     if (req.method === 'GET') {

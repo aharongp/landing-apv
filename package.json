@@ -5,9 +5,13 @@
   "description": "Landing + catalogo Copart APV Motors v15 con auth, galeria JSON, busqueda, Kommo y chat contenido",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "stripe:setup": "node --env-file=.env scripts/setup-stripe.js"
   },
   "engines": {
     "node": ">=22.13"
+  },
+  "dependencies": {
+    "stripe": "^22.6.2"
   }
 }

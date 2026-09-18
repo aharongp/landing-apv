@@ -191,3 +191,8 @@ En `/admin`, introduce la clave de administración y pulsa **Reparar base de dat
 La portada solicita destacados, catálogo, sesión y filtros en paralelo. `/api/featured` devuelve únicamente los campos de las tarjetas y selecciona seis lotes distintos de una lista de candidatos preparada al iniciar. La lista se invalida cuando se importa, repara o vacía el catálogo, o cuando se eliminan subastas vencidas; cada visita sigue recibiendo una selección aleatoria.
 
 El catálogo inicial no aplica un rango de años implícito: usa directamente el índice de próximas subastas. Las fotos del catálogo usan carga diferida del navegador, y las tres fotos visibles de destacados tienen prioridad. JSON y archivos de texto se comprimen con gzip; CSS, JavaScript y HTML se revalidan con ETag. Las respuestas de vehículos y cuentas mantienen `Cache-Control: no-store`.
+
+
+## Membresías y Stripe
+
+La implementación, variables necesarias, reglas de cobro, solicitudes de beneficios y configuración de Stripe se documentan en [docs/SUSCRIPCIONES.md](docs/SUSCRIPCIONES.md). Checkout permanece deshabilitado hasta configurar las condiciones comerciales y las claves.

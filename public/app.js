@@ -191,6 +191,7 @@
       resultsAvailable: 'resultados disponibles.',
       catalogSearchPlaceholder: 'Ej. Silverado 2023, número de lote o VIN',
       search: 'Buscar',
+      navPlans: 'Planes', membershipEyebrow: 'MEMBRESÍAS APV MOTORS', membershipTitle: 'Elige cómo quieres comprar tu próximo carro.', membershipIntro: 'Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.', membershipNudge: '¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.',
       myFavorites: '♥ Mis favoritos', availableFavorites: 'Vehículos guardados que siguen disponibles',
       filtersTitle: 'Filtros',
       clearFilters: 'Limpiar',
@@ -292,6 +293,7 @@
       step5Title: 'Tow transportation', step5Text: 'Hire the service', step5Link: 'by clicking here.',
       step6Title: 'Transfer, taxes, and plates', step6Text: 'Document management.',
       catalogEyebrow: 'AUCTION CATALOG', catalogTitle: 'Find the right vehicle.', resultsAvailable: 'results available.', catalogSearchPlaceholder: 'E.g. Silverado 2023, lot number or VIN', search: 'Search',
+      navPlans: 'Plans', membershipEyebrow: 'APV MOTORS MEMBERSHIPS', membershipTitle: 'Choose how to buy your next vehicle.', membershipIntro: 'Start free. When you are ready to buy, add discounts and guidance.', membershipNudge: 'Ready to buy? Explore APV fee discounts and included consultations.',
       myFavorites: '♥ My favorites', availableFavorites: 'Saved vehicles still available',
       filtersTitle: 'Filters',
       clearFilters: 'Clear',
@@ -403,6 +405,7 @@
       if (value) el.title = value;
     });
 
+    window.apvMembership?.render();
     if (state.filters) {
       loadVehicles();
     }
@@ -919,7 +922,9 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const unsecuredPaymentFee = paymentMethod === 'unsecured' ? Math.max(35, Math.round(b * 0.035)) : 0;
     const cleanTitleFee = titleType === 'clean' ? 50 : 0;
 
-    const apvFee = getApvFee(b);
+    const apvFeeBase = getApvFee(b);
+    const apvDiscount = Math.min(apvFeeBase, window.apvMembership?.getPlan().feeDiscount || 0);
+    const apvFee = apvFeeBase - apvDiscount;
     const gateFee = 79;
     const bankFee = 30;
     const titlePickupFee = 20;
@@ -935,6 +940,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       unsecuredPaymentFee,
       cleanTitleFee,
       apvFee,
+      apvFeeBase,
+      apvDiscount,
       gateFee,
       bankFee,
       titlePickupFee,
@@ -1177,10 +1184,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           <!-- APV Motors Fee -->
           <div class="calc-row highlight-apv">
             <div class="calc-label"><span class="calc-icon">🤝</span> <span>${t('apvFeeLabel')}</span></div>
-            <strong class="calc-val red-text">${money(breakdown.apvFee)}</strong>
+            <strong class="calc-val red-text">${breakdown.apvDiscount ? `<del>${money(breakdown.apvFeeBase)}</del> ` : ''}${money(breakdown.apvFee)}</strong>
           </div>
         </div>
 
+        ${breakdown.apvDiscount ? `<p class="membership-calculator-note">${currentLang==='en'?'Membership discount applied to APV fees':'Descuento de tu membresía aplicado a los fees APV'}: −${money(breakdown.apvDiscount)}</p>` : window.apvMembership?.available() ? `<div class="membership-calculator-note"><span>${currentLang==='en'?'With APV Plus, save US$100 on the APV fee for this purchase. Membership billed separately.':'Con APV Plus, descuenta US$100 del fee APV de esta compra. La membresía se paga por separado.'}</span><button type="button" class="link-button" data-member-plans>${currentLang==='en'?'Compare plans':'Comparar planes'}</button></div>` : ''}
         <div class="calc-total-box">
           <div class="calc-total-left">
             <span class="calc-total-eyebrow">${t('totalToPay')}</span>
@@ -1233,6 +1241,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <h3>Auction / Subasta</h3>${favoriteButton(v.lot)}
             </div>
             <div class="detail-card-grid">
+              <button type="button" class="btn btn-ghost btn-small" data-member-history="${esc(v.lot)}">${currentLang==='en'?'Request vehicle history':'Solicitar historial elaborado por APV'}</button>
               <div class="detail-card-row"><span>VIN</span><strong>${vinQuickSpecValue(v)}</strong></div>
               <div class="detail-card-row"><span>${t('lot')}</span><strong>${esc(v.lot)}</strong></div>
               <div class="detail-card-row"><span>Fecha de subasta</span><strong>${esc(dateLabel(v.saleDate, v.timeZone))}</strong></div>
@@ -1398,6 +1407,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   function applyUser(user){
     state.user=user||null;
+    window.apvMembership?.setUser(user);
     state.accountFavorites=[];
     state.favoritesReady=user?loadAccountFavorites():Promise.resolve();
     refreshFavoriteButtons();
@@ -1423,6 +1433,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       try{ await openBid(await getVehicle(action.lot), action.amount); }catch(err){ showToast(err.message); }
     }else if(action&&action.type==='favorite'){
       if(!readFavorites().includes(action.lot)) await toggleFavorite(action.lot);
+    }else if(action&&['subscription','member-service'].includes(action.type)){
+      try {await window.apvMembership?.resume(action);} catch(err){showToast(err.message);}
     }else if(action&&action.type==='calc'){
       await openDetail(action.lot,false);
     }else if(action&&action.type==='vin'){
@@ -2074,6 +2086,17 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       }
     });
   }
+
+  window.apvMembership?.configure({
+    notify: showToast,
+    requireAuth: action=>{openAuth('Inicia sesión o crea tu cuenta gratis para continuar.',action);if(action.type==='subscription')switchAuthTab('register');},
+    closeOverlays: ()=>{closeDetail(false);closeBid();},
+    changed: membership=>{
+      if(state.user) state.user.membership=membership;
+      if($('#calc-bid-input')) updateCalculatorResults($('#calc-bid-input').value);
+      if(!dom.bidOverlay.classList.contains('hidden')) updateBidCostPreview(dom.bidAmount.value);
+    }
+  });
 
   async function boot(){
     initMotionEffects();

@@ -94,6 +94,7 @@
       <a href="#catalogo" data-i18n="navCatalog">Catálogo</a>
       <a href="#como-funciona" data-i18n="navHow">Cómo funciona</a>
       <a href="#ayuda" data-i18n="navHelp">Ayuda</a>
+      <a href="#planes" data-i18n="navPlans">Planes</a>
     </nav>
     <div class="topbar-account">
       <div class="lang-switch-toggle" id="lang-switch">
@@ -105,6 +106,7 @@
       <div id="account-chip" class="account-chip hidden">
         <span id="account-avatar" class="account-avatar">AP</span>
         <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
+        <button id="my-membership-button" class="btn btn-ghost btn-small" type="button" data-member-plans>Mi plan</button>
         <button id="my-favorites-button" class="btn btn-ghost btn-small" type="button" data-i18n="myFavorites">♥ Mis favoritos</button>
         <button id="my-bids-button" class="btn btn-ghost btn-small" type="button" title="Ver mis pujas y conversaciones" data-i18n="myBids">💬 Mis Pujas</button>
         <button id="logout-button" class="account-logout" type="button" data-i18n="logout">Salir</button>
@@ -268,6 +270,7 @@
           <h2 data-i18n="catalogTitle">Encuentra el vehículo correcto.</h2>
           <p><span id="catalog-count">—</span> <span data-i18n="resultsAvailable">resultados disponibles.</span></p>
         </div>
+        <div class="membership-nudge hidden" data-membership-nudge><span data-i18n="membershipNudge">¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.</span><button type="button" class="link-button" data-member-plans data-i18n="navPlans">Ver planes</button><button type="button" data-member-dismiss aria-label="Cerrar aviso">×</button></div>
         <div id="favorites-heading" class="favorites-heading hidden"><strong data-i18n="myFavorites">♥ Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button id="exit-favorites" class="btn btn-ghost btn-small" type="button" data-i18n="viewVehicles">Ver vehículos</button></div>
         <div class="search-bar"><span>⌕</span><input id="search-input" type="search" placeholder="Ej. Silverado 2023, número de lote o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" /><button id="search-button" class="btn btn-dark btn-small" data-i18n="search">Buscar</button></div>
       </div>
@@ -304,6 +307,12 @@
     <section class="help-strip reveal-on-scroll" id="ayuda">
       <div><span class="eyebrow" data-i18n="helpEyebrow">¿NO SABES CUÁNTO PUJAR?</span><h2 data-i18n="helpTitle">Encuentra el carro primero. Nosotros te ayudamos con lo demás.</h2></div>
       <a class="btn btn-primary" href="#catalogo" data-i18n="findVehicle">Buscar un vehículo</a>
+    </section>
+    <section id="planes" class="membership-section" aria-labelledby="membership-title">
+      <div class="membership-heading"><span class="eyebrow" data-i18n="membershipEyebrow">MEMBRESÍAS APV MOTORS</span><h2 id="membership-title" data-i18n="membershipTitle">Elige cómo quieres comprar tu próximo carro.</h2><p data-i18n="membershipIntro">Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.</p></div>
+      <div id="membership-status" class="membership-status hidden" role="status" aria-live="polite"></div>
+      <div id="membership-account" class="membership-account hidden"></div>
+      <div id="membership-content" aria-live="polite">Cargando planes…</div>
     </section>
   </main>
 
@@ -481,6 +490,7 @@
   </div>
 
   <script src="/kommo.js?v=15.0.0" onload="if(window.__APV_KOMMO_MODULE_STATE__!=='module-ready')window.__APV_KOMMO_MODULE_STATE__='script-loaded'" onerror="window.__APV_KOMMO_LOAD_ERROR__=true;window.__APV_KOMMO_MODULE_STATE__='script-error';console.error('[APV] No se pudo cargar /kommo.js?v=15.0.0')"></script>
+  <script src="/membership.js?v=1.0.0"></script>
   <script src="/app.js?v=15.1.0" onerror="console.error('[APV] No se pudo cargar /app.js?v=15.1.0')"></script>
 </body>
 </html>

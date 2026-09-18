@@ -746,6 +746,7 @@ async function updateActiveBidsSummary(user) {
       `========================================`,
       `📊 Total de vehículos a subastar: ${activeBids.length}`,
       `💰 Suma de topes de oferta: ${totalValFormatted}`,
+      `Membresía al solicitar la puja: ${user.membership?.plan?.name || 'Gratis'}. Descuento en fee APV: $${Number(user.membership?.plan?.feeDiscount || 0)} USD por vehículo. Verificar vigencia antes de facturar.`,
       `🕒 Última actualización: ${formattedDate}`
     ].join('\n');
   }
