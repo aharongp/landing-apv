@@ -691,6 +691,20 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
   res.end(body);
 }
 
+// Give every deployment content-specific asset URLs, including behind CDN caches.
+const assetVersions = new Map();
+function frontendVersions() {
+  return ['app.js', 'styles.css', 'membership.js', 'kommo.js'].map(name => {
+    const file = path.join(PUBLIC_DIR, name), stat = fs.statSync(file);
+    let asset = assetVersions.get(name);
+    if (!asset || asset.mtime !== stat.mtimeMs || asset.size !== stat.size) {
+      asset = { mtime: stat.mtimeMs, size: stat.size, version: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0,16) };
+      assetVersions.set(name, asset);
+    }
+    return [name, asset.version];
+  });
+}
+
 function serveFile(req, res, filePath) {
   const ext = path.extname(filePath).toLowerCase();
   const mime = {
@@ -706,11 +720,18 @@ function serveFile(req, res, filePath) {
     '.ico': 'image/x-icon'
   }[ext] || 'application/octet-stream';
   const stat = fs.statSync(filePath);
+  const versions = ext === '.html' ? frontendVersions() : [];
+  const dependencyVersion = JSON.stringify(versions);
   let cached = staticCache.get(filePath);
-  if (!cached || cached.mtime !== stat.mtimeMs || cached.size !== stat.size) {
-    const body = fs.readFileSync(filePath);
+  if (!cached || cached.mtime !== stat.mtimeMs || cached.size !== stat.size || cached.dependencyVersion !== dependencyVersion) {
+    let body = fs.readFileSync(filePath);
+    if (ext === '.html') {
+      const hashes = Object.fromEntries(versions);
+      body = Buffer.from(body.toString('utf8').replace(/((?:src|href)=")\/(app\.js|styles\.css|membership\.js|kommo\.js)(?:\?[^"\s]*)?"/g,
+        (_, attr, name) => `${attr}/${name}?v=${hashes[name]}"`));
+    }
     const compressible = /\.(html|css|js|json|svg)$/.test(ext) && body.length > 1024;
-    cached = { mtime: stat.mtimeMs, size: stat.size, body, gzip: compressible ? gzipSync(body) : null,
+    cached = { dependencyVersion, mtime: stat.mtimeMs, size: stat.size, body, gzip: compressible ? gzipSync(body) : null,
       etag: `W/"${crypto.createHash('sha256').update(body).digest('hex').slice(0,24)}"` };
     staticCache.set(filePath, cached);
   }

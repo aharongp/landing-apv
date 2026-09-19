@@ -23,6 +23,15 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
  assert.equal(revalidated.status,304);assert.equal(await revalidated.text(),'');
  const plain=await fetch(base+'/app.js',{headers:{'accept-encoding':'gzip;q=0'}});
  assert.equal(plain.headers.get('content-encoding'),null);assert.equal(await plain.text(),content);
+ const html=await (await fetch(base+'/')).text();
+ const crypto=require('node:crypto');
+ for(const name of ['app.js','styles.css','membership.js','kommo.js']){
+   const bytes=fs.readFileSync(path.join(__dirname,'../public',name));
+   const version=crypto.createHash('sha256').update(bytes).digest('hex').slice(0,16);
+   assert.ok(html.includes('/'+name+'?v='+version),name+' must have a content-specific URL');
+   assert.equal(await (await fetch(base+'/'+name+'?v='+version)).text(),bytes.toString());
+ }
+ assert.equal((html.match(/app\.js\?v=[a-f0-9]{16}/g)||[]).length,2,'preload and script must match');
  const featured=await fetch(base+'/api/featured');assert.equal(featured.headers.get('cache-control'),'no-store');
  const items=(await featured.json()).items;assert.equal(items.length,6);assert.equal(new Set(items.map(x=>x.lot)).size,6);assert.ok(items.every(x=>!('vin' in x)));
  const vehicles=await fetch(base+'/api/vehicles');assert.equal(vehicles.headers.get('content-encoding'),'gzip');assert.equal(vehicles.headers.get('cache-control'),'no-store');assert.equal((await vehicles.json()).total,20);
