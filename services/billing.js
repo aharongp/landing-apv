@@ -10,7 +10,7 @@ const PLANS = Object.freeze({
 const objectId = value => typeof value === 'string' ? value : value?.id;
 const error = (message, statusCode = 400) => Object.assign(new Error(message), { statusCode });
 
-function createBillingService({ database, env = process.env, stripe: injectedStripe, now = () => Date.now() }) {
+function createBillingService({ database, env = process.env, stripe: injectedStripe, now = () => Date.now(), onMembershipUpdated = async () => {} }) {
   let initialized = false, stripeClient;
   const priceCache = new Map();
   function db() {
@@ -187,7 +187,9 @@ function createBillingService({ database, env = process.env, stripe: injectedStr
       }
       db().exec('COMMIT');
     } catch (err) { db().exec('ROLLBACK'); throw err; }
-    return membership(userId);
+    const updated = membership(userId);
+    await onMembershipUpdated(userId, updated);
+    return updated;
   }
   async function refresh(user) {
     if (!config().ready) return membership(user.id);

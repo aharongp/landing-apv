@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const { DatabaseSync } = require('node:sqlite');
 const Stripe = require('stripe');
 const { createBillingService } = require('../services/billing');
-function fixture(t, changes = {}) {
+function fixture(t, changes = {}, onMembershipUpdated) {
   const db = new DatabaseSync(':memory:');t.after(()=>db.close());
   db.exec('CREATE TABLE users (id TEXT PRIMARY KEY, name TEXT, email TEXT, phone TEXT)');
   db.prepare('INSERT INTO users VALUES (?, ?, ?, ?)').run('u1','Test','test@example.invalid','1234567');
@@ -23,7 +23,7 @@ function fixture(t, changes = {}) {
     }},
     billingPortal:{sessions:{create:async params=>({url:'https://billing.stripe.com/test',params})}}
   };
-  const service=createBillingService({database:()=>db,env,stripe,now:()=>time});
+  const service=createBillingService({database:()=>db,env,stripe,now:()=>time,onMembershipUpdated});
   const user={id:'u1',name:'Test',email:'test@example.invalid'};
   function subscription(plan='plus',status='active',id='sub_1') {
     return {id,customer:'cus_u1',status,cancel_at_period_end:false,items:{data:[{price:{id:'price_'+plan},quantity:1,current_period_start:time/1000-100,current_period_end:time/1000+1000}]},latest_invoice:{id:'in_1',status:'paid',lines:{data:[{pricing:{price_details:{price:'price_'+plan}}}]}}};
@@ -103,4 +103,17 @@ test('confirmed public terms show annual prices and the Quick Call base price',t
  const f=fixture(t);const plans=f.service.publicPlans();
  assert.equal(plans.interval,'year');assert.equal(plans.consultationCadence,'period');assert.equal(plans.consultationPrice,99);
  assert.deepEqual(plans.plans.map(p=>99-p.consultationDiscount),[99,69,59]);
+});
+
+test('subscription updates notify CRM and failed notifications retry on webhook redelivery',async t=>{
+ const updates=[];let fail=false;
+ const f=fixture(t,{},async(id,m)=>{if(fail)throw Error('CRM temporarily unavailable');updates.push([id,m.plan.id]);});
+ await f.service.checkout(f.user,'plus');const s=f.subscription();f.subscriptions.set(s.id,s);
+ await f.send('customer.subscription.updated',s,'evt_first');assert.deepEqual(updates,[['u1','plus']]);
+ s.items.data[0].price.id='price_premium';s.latest_invoice.lines.data[0].pricing.price_details.price='price_premium';
+ fail=true;await assert.rejects(f.send('customer.subscription.updated',s,'evt_upgrade'),/CRM temporarily unavailable/);
+ assert.equal(f.db.prepare('SELECT id FROM billing_events WHERE id = ?').get('evt_upgrade'),undefined);
+ fail=false;await f.send('customer.subscription.updated',s,'evt_upgrade');assert.deepEqual(updates.at(-1),['u1','premium']);
+ await f.send('customer.subscription.updated',s,'evt_upgrade');assert.equal(updates.length,2);
+ s.status='canceled';await f.send('customer.subscription.deleted',s,'evt_cancel');assert.deepEqual(updates.at(-1),['u1','free']);
 });

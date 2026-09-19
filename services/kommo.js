@@ -657,11 +657,11 @@ async function syncBid(params) {
   return task;
 }
 
-function summaryFingerprint(activeBids) {
+function summaryFingerprint(activeBids, membership) {
   const seed = activeBids
     .map((bid) => `${bid.lot}:${Number(bid.maxBid || 0)}`)
     .sort()
-    .join('|');
+    .join('|') + '|' + JSON.stringify([membership?.plan?.id || 'free', membership?.plan?.feeDiscount || 0, membership?.status || 'free', membership?.paidThrough || 0, Boolean(membership?.cancelAtPeriodEnd)]);
   let hash = 2166136261;
   for (let i = 0; i < seed.length; i += 1) {
     hash = Math.imul(hash ^ seed.charCodeAt(i), 16777619);
@@ -673,7 +673,7 @@ async function postLeadNoteOnce(leadId, text, marker) {
   try {
     const res = await kommoFetch(`/api/v4/leads/${leadId}/notes?limit=50&order[created_at]=desc`);
     const notes = res.data?._embedded?.notes || [];
-    if (notes.some((note) => String(note.params?.text || '').includes(marker))) {
+    if (String(notes.find(note => String(note.params?.text || '').includes('[APV_BIDS_SUMMARY:'))?.params?.text || '').includes(marker)) {
       console.log(`[KOMMO] Summary ${marker} already exists on leadId=${leadId}`);
       return false;
     }
@@ -689,7 +689,7 @@ async function postLeadNoteOnce(leadId, text, marker) {
   return true;
 }
 
-async function updateActiveBidsSummary(user) {
+async function updateActiveBidsSummary(user, { strict = false, noteOnly = false } = {}) {
   if (!user || !user.kommoUserId) return null;
 
   const apvUserId = user.kommoUserId;
@@ -717,7 +717,7 @@ async function updateActiveBidsSummary(user) {
   }
 
   const formattedDate = new Date().toLocaleString('es-US', { timeZone: 'America/New_York' });
-  const marker = `[APV_BIDS_SUMMARY:${summaryFingerprint(activeBids)}]`;
+  const marker = `[APV_BIDS_SUMMARY:${summaryFingerprint(activeBids, user.membership)}]`;
 
   let summaryText = '';
   if (activeBids.length === 0) {
@@ -725,6 +725,7 @@ async function updateActiveBidsSummary(user) {
       marker,
       `📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE`,
       `----------------------------------------`,
+      `Membresía vigente del cliente: ${user.membership?.plan?.name || 'Gratis'}.`,
       `El cliente no tiene vehículos activos en su lista de pujas actualmente.`,
       `----------------------------------------`,
       `🕒 Última actualización: ${formattedDate}`
@@ -746,9 +747,14 @@ async function updateActiveBidsSummary(user) {
       `========================================`,
       `📊 Total de vehículos a subastar: ${activeBids.length}`,
       `💰 Suma de topes de oferta: ${totalValFormatted}`,
-      `Membresía al solicitar la puja: ${user.membership?.plan?.name || 'Gratis'}. Descuento en fee APV: $${Number(user.membership?.plan?.feeDiscount || 0)} USD por vehículo. Verificar vigencia antes de facturar.`,
+      `Membresía vigente del cliente: ${user.membership?.plan?.name || 'Gratis'}. Descuento en fee APV: $${Number(user.membership?.plan?.feeDiscount || 0)} USD por vehículo. Verificar vigencia antes de facturar.`,
       `🕒 Última actualización: ${formattedDate}`
     ].join('\n');
+  }
+
+  if (noteOnly) {
+    await postLeadNoteOnce(leadId, summaryText, marker);
+    return { leadId, contactId, summaryText };
   }
 
   const lastBid = activeBids[activeBids.length - 1];
@@ -785,6 +791,7 @@ async function updateActiveBidsSummary(user) {
     await postLeadNoteOnce(leadId, summaryText, marker);
   } catch (noteErr) {
     console.warn(`[KOMMO WARN] Error posting lead summary note:`, noteErr.message);
+    if (strict) throw noteErr;
   }
 
   return { leadId, contactId, summaryText };

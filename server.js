@@ -37,7 +37,14 @@ function loadEnv() {
   } catch (_) {}
 }
 loadEnv();
-const billing = require('./services/billing').createBillingService({ database: () => catalogDb.initDatabase() });
+const billing = require('./services/billing').createBillingService({
+  database: () => catalogDb.initDatabase(),
+  onMembershipUpdated: async (userId, membership) => {
+    if (!kommoService.isEnabled()) return;
+    const user = catalogDb.findUserById(userId);
+    if (user) await kommoService.updateActiveBidsSummary({ ...safeUser(user), membership }, { strict: true, noteOnly: true });
+  }
+});
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const DATA_DIR = process.env.APV_DATA_DIR || path.join(ROOT, 'data');
 const UPLOAD_DIR = path.join(DATA_DIR, 'uploads');

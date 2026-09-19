@@ -143,6 +143,9 @@
     if (user?.name) lines.push(`Cliente: ${user.name}`);
     if (user?.email) lines.push(`Correo: ${user.email}`);
     if (user?.phone) lines.push(`Teléfono: ${user.phone}`);
+    const membership = window.apvMembership?.getPlan ? { plan: window.apvMembership.getPlan() } : (user || currentUser)?.membership;
+    lines.push(`Membresía actual: ${membership?.plan?.name || 'Gratis'}`);
+    lines.push(`Descuento en fee APV: $${Number(membership?.plan?.feeDiscount || 0)} USD por vehículo (sujeto a vigencia al facturar).`);
     return lines.join('\n');
   }
 
@@ -183,7 +186,7 @@
     return (hash >>> 0).toString(16).padStart(8, '0');
   }
 
-  function buildBidsSummary(activeBids, vehicle, maxBid) {
+  function buildBidsSummary(activeBids, vehicle, maxBid, user) {
     const bids = Array.isArray(activeBids) && activeBids.length
       ? activeBids
       : [{ lot: vehicle.lot, title: vehicle.title, vin: vehicle.vin, maxBid }];
@@ -200,8 +203,10 @@
     });
     const total = normalized.reduce(function (sum, bid) { return sum + bid.maxBid; }, 0);
     return [
-      `[APV_BIDS_SUMMARY:${summaryFingerprint(normalized)}]`,
+      `[APV_CHAT_BIDS_SUMMARY:${summaryFingerprint(normalized)}]`,
       '📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE',
+      `Membresía actual: ${window.apvMembership?.getPlan?.().name || user?.membership?.plan?.name || 'Gratis'}`,
+      `Descuento en fee APV: $${Number(window.apvMembership?.getPlan?.().feeDiscount || user?.membership?.plan?.feeDiscount || 0)} USD por vehículo.`,
       '========================================',
       lines.join('\n\n'),
       '========================================',
@@ -235,7 +240,7 @@
         custom_fields: leadFields
       },
       note: {
-        text: buildBidsSummary(activeBids, vehicle, maxBid),
+        text: buildBidsSummary(activeBids, vehicle, maxBid, user),
         element_type: 2,
         note_type: 'common'
       }
