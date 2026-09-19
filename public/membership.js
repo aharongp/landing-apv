@@ -23,6 +23,28 @@
     hooks.closeOverlays?.();
     document.querySelector('#planes').scrollIntoView({ behavior:'smooth', block:'start' });
   }
+  const dialog = document.createElement('dialog');
+  dialog.className = 'membership-dialog';
+  dialog.setAttribute('aria-labelledby', 'member-dialog-title');
+  document.body.append(dialog);
+  function messageDialog(title, message, promotion = false, continueLabel = '') {
+    if (dialog.open) dialog.close();
+    return new Promise(resolve => {
+      dialog.innerHTML = `<h2 id="member-dialog-title">${esc(title)}</h2><p>${esc(message)}</p>${promotion ? `<div class="membership-dialog-promo"><strong>${copy('Compra con los beneficios de APV','Buy with APV benefits')}</strong><p>${copy('Plus: US$97/año y US$100 de descuento en fees por vehículo. Premium: US$297/año y US$200 de descuento por vehículo. Ambos incluyen asesoría.','Plus: US$97/year and US$100 off fees per vehicle. Premium: US$297/year and US$200 off per vehicle. Both include a consultation.')}</p><button type="button" class="btn btn-primary" data-dialog-plans>${copy('Comparar suscripciones','Compare memberships')}</button></div>` : ''}<button type="button" class="btn btn-dark" data-dialog-continue>${esc(continueLabel || copy('Continuar gratis','Continue for free'))}</button><button type="button" class="btn btn-ghost" data-dialog-close>${copy('Cerrar','Close')}</button>`;
+      let result = false;
+      dialog.onclose = () => { dialog.onclose = null; resolve(result); };
+      dialog.querySelector('[data-dialog-continue]').onclick = () => { result = true; dialog.close(); };
+      dialog.querySelector('[data-dialog-close]').onclick = () => dialog.close();
+      const plans = dialog.querySelector('[data-dialog-plans]');
+      if (plans) plans.onclick = () => {dialog.close();openPlans();};
+      dialog.showModal();
+    });
+  }
+  async function prompt(context) {
+    if (currentPlan().id !== 'free') return true;
+    const titles = { registration: copy('Tu cuenta gratis está lista','Your free account is ready'), bid: copy('Antes de solicitar tu puja','Before requesting your bid') };
+    return messageDialog(titles[context] || copy('Conoce tus beneficios','Explore your benefits'), copy('Puedes continuar con tu cuenta gratis o elegir una membresía anual para ahorrar en los servicios de APV.','Continue with your free account or choose an annual membership to save on APV services.'), true);
+  }
   function render() {
     if (!root || !config) return;
     const current = currentPlan();
@@ -32,13 +54,21 @@
     const subtitles = { free:copy('Explora y prepara tu compra.','Explore and plan your purchase.'), plus:copy('Ahorro y orientación para tu compra.','Savings and guidance for your purchase.'), premium:copy('Mayor descuento y una asesoría completa.','A larger discount and a full consultation.') };
     root.innerHTML = `<div class="membership-grid">${config.plans.map(plan => {
       const selected = user && current.id === plan.id;
-      const features = [...common,
-        plan.feeDiscount ? `${usd(plan.feeDiscount)} ${copy('de descuento en fees APV por vehículo','off APV fees per vehicle')}` : copy('Fees APV a tarifa regular','Standard APV fees'),
-        `${copy('Quick Call de 60 min:','60-minute Quick Call:')} ${usd(config.consultationPrice - plan.consultationDiscount)}${plan.consultationDiscount ? ` (${usd(plan.consultationDiscount)} ${copy('de descuento','off')})` : ''}`,
-        plan.includedMinutes ? `${copy('Una asesoría de','One')} ${plan.includedMinutes} ${copy('min incluida','minute consultation included')} ${allowance}` : copy('Sin asesoría gratuita incluida','No free consultation included')];
+      const features = [
+        ...common.map(text => ({ included: true, text })),
+        { included: Boolean(plan.feeDiscount), text: plan.feeDiscount
+          ? `${usd(plan.feeDiscount)} ${copy('de descuento en fees APV por vehículo','off APV fees per vehicle')}`
+          : copy('Sin descuento en fees APV','No APV fee discount') },
+        { included: Boolean(plan.consultationDiscount), text: plan.consultationDiscount
+          ? `${usd(plan.consultationDiscount)} ${copy('de descuento en Quick Call de 60 min','off a 60-minute Quick Call')} · ${usd(config.consultationPrice - plan.consultationDiscount)}`
+          : `${copy('Sin descuento en Quick Call de 60 min','No discount on a 60-minute Quick Call')} · ${usd(config.consultationPrice)}` },
+        { included: Boolean(plan.includedMinutes), text: plan.includedMinutes
+          ? `${copy('Una asesoría de','One')} ${plan.includedMinutes} ${copy('min incluida','minute consultation included')} ${allowance}`
+          : copy('Sin asesoría gratuita incluida','No free consultation included') }
+      ];
       const action = selected ? 'current' : plan.id === 'free' ? (user && current.id !== 'free' ? 'portal' : 'free') : user && membership?.hasCustomer && membership.status !== 'free' && !['canceled','incomplete_expired'].includes(membership.status) ? 'portal' : 'checkout';
       const label = selected ? copy('Tu plan actual','Your current plan') : action === 'portal' ? copy('Cambiar mi plan','Change my plan') : plan.id === 'free' ? copy('Crear cuenta gratis','Create free account') : copy('Elegir ','Choose ') + plan.name;
-      return `<article class="membership-card ${plan.id === 'plus' ? 'membership-featured' : ''}"><div class="membership-card-top"><span class="membership-label">${plan.id === 'plus' ? copy('PARA TU PRÓXIMA COMPRA','FOR YOUR NEXT PURCHASE') : plan.id === 'premium' ? copy('MÁS ACOMPAÑAMIENTO','MORE GUIDANCE') : copy('EMPIEZA AQUÍ','START HERE')}</span><h3>${esc(plan.name)}</h3><p>${esc(subtitles[plan.id])}</p></div><div class="membership-price">${usd(plan.amount / 100)}<span>${plan.id === 'free' ? '' : period}</span></div><ul>${features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul><button type="button" class="btn ${plan.id === 'plus' ? 'btn-primary' : 'btn-dark'}" data-member-action="${action}" data-plan="${plan.id}" ${selected || (plan.id !== 'free' && !config.available) ? 'disabled' : ''}>${esc(label)}</button>${plan.id === 'free' ? `<small>${copy('Sin tarjeta. Sin cobros automáticos.','No card. No automatic charges.')}</small>` : `<small>${copy('Renovación anual automática. Cancela la renovación desde tu cuenta.','Automatically renews annually. Cancel renewal from your account.')}</small>`}</article>`;
+      return `<article class="membership-card ${plan.id === 'plus' ? 'membership-featured' : ''}"><div class="membership-card-top"><span class="membership-label">${plan.id === 'plus' ? copy('PARA TU PRÓXIMA COMPRA','FOR YOUR NEXT PURCHASE') : plan.id === 'premium' ? copy('MÁS ACOMPAÑAMIENTO','MORE GUIDANCE') : copy('EMPIEZA AQUÍ','START HERE')}</span><h3>${esc(plan.name)}</h3><p>${esc(subtitles[plan.id])}</p></div><div class="membership-price">${usd(plan.amount / 100)}<span>${plan.id === 'free' ? '' : period}</span></div><ul>${features.map(f=>`<li class="membership-benefit ${f.included ? 'is-included' : 'is-excluded'}"><span class="membership-benefit-icon" aria-hidden="true">${f.included ? '✓' : '×'}</span><span>${esc(f.text)}</span></li>`).join('')}</ul><button type="button" class="btn ${plan.id === 'plus' ? 'btn-primary' : 'btn-dark'}" data-member-action="${action}" data-plan="${plan.id}" ${selected || (plan.id !== 'free' && !config.available) ? 'disabled' : ''}>${esc(label)}</button>${plan.id === 'free' ? `<small>${copy('Sin tarjeta. Sin cobros automáticos.','No card. No automatic charges.')}</small>` : `<small>${copy('Renovación anual automática. Cancela la renovación desde tu cuenta.','Automatically renews annually. Cancel renewal from your account.')}</small>`}</article>`;
     }).join('')}</div><p class="membership-terms">${copy('Precios en USD. La suscripción se paga por separado de la compra del vehículo. Los descuentos aplican a los servicios de APV, no a tarifas de Copart, transporte ni impuestos.','Prices in USD. Membership is billed separately from vehicle purchases. Discounts apply to APV services, not Copart fees, shipping or taxes.')} ${config.consultationCadence ? esc(copy(`La asesoría incluida se ofrece ${allowance}; solicita la cita desde tu cuenta mientras el plan esté activo.`,`The included consultation is offered ${allowance}; request it through your account while your plan is active.`)) : ''}</p>${!config.available ? `<p class="membership-availability">${copy('Los planes de pago estarán disponibles próximamente. Puedes usar tu cuenta gratis.','Paid plans will be available soon. You can use your free account.')}</p>` : ''}`;
     const account = document.querySelector('#membership-account');
     account.classList.toggle('hidden', !user);
@@ -46,7 +76,7 @@
       const unpaid = ['past_due','unpaid','incomplete'].includes(membership?.status);
       const active = current.id !== 'free';
       const available = membership?.benefits?.filter(b=>!b.requestedAt) || [];
-      account.innerHTML = `<div><span class="membership-label">${copy('MI SUSCRIPCIÓN','MY SUBSCRIPTION')}</span><h3>${esc(current.name)}</h3><p>${active ? `${membership.cancelAtPeriodEnd ? copy('Tu renovación está cancelada. Beneficios hasta el ','Renewal canceled. Benefits until ') : copy('Período pagado hasta el ','Paid period through ')}${date(membership.paidThrough)}.` : copy('Tu cuenta gratis conserva el inventario y tus favoritos.','Your free account keeps inventory access and favorites.')}</p>${unpaid ? `<p class="membership-payment-alert" role="alert">${copy('Tu pago necesita atención. Actualiza tu método de pago para recuperar los beneficios de pago.','Your payment needs attention. Update your payment method to restore paid benefits.')}</p>` : ''}</div><div class="membership-account-actions">${membership?.hasCustomer ? `<button type="button" class="btn btn-dark" data-member-action="portal">${copy('Gestionar pago o cancelar','Manage billing or cancel')}</button>` : ''}<button type="button" class="btn btn-ghost" data-member-action="refresh">${copy('Actualizar estado','Refresh status')}</button><button type="button" class="btn btn-ghost" data-member-service="consultation">${copy('Solicitar asesoría de 60 min','Request a 60-minute consultation')} · ${usd(config.consultationPrice - current.consultationDiscount)}</button>${available.map(b=>`<button type="button" class="btn btn-primary" data-member-service="included_consultation">${copy('Solicitar mi asesoría de','Request my included')} ${b.minutes} min ${copy('incluida','consultation')}</button>`).join('')}</div>`;
+      account.innerHTML = `<div><span class="membership-label">${copy('MI SUSCRIPCIÓN','MY SUBSCRIPTION')}</span><h3>${esc(current.name)}</h3><p>${active ? `${membership.cancelAtPeriodEnd ? copy('Tu renovación está cancelada. Beneficios hasta el ','Renewal canceled. Benefits until ') : copy('Período pagado hasta el ','Paid period through ')}${date(membership.paidThrough)}.` : copy('Tu cuenta gratis conserva el inventario y tus favoritos.','Your free account keeps inventory access and favorites.')}</p>${unpaid ? `<p class="membership-payment-alert" role="alert">${copy('Tu pago necesita atención. Actualiza tu método de pago para recuperar los beneficios de pago.','Your payment needs attention. Update your payment method to restore paid benefits.')}</p>` : ''}</div><div class="membership-account-actions">${membership?.hasCustomer ? `<button type="button" class="btn btn-dark" data-member-action="portal">${copy('Cambiar plan, pago o cancelación','Change plan, billing or cancellation')}</button>` : ''}<button type="button" class="btn btn-ghost" data-member-action="refresh">${copy('Actualizar estado','Refresh status')}</button><button type="button" class="btn btn-ghost" data-member-service="consultation">${copy('Solicitar asesoría de 60 min','Request a 60-minute consultation')} · ${usd(config.consultationPrice - current.consultationDiscount)}</button>${available.map(b=>`<button type="button" class="btn btn-primary" data-member-service="included_consultation">${copy('Solicitar mi asesoría de','Request my included')} ${b.minutes} min ${copy('incluida','consultation')}</button>`).join('')}</div>`;
     }
     const chip = document.querySelector('#my-membership-button');
     if (chip) chip.textContent = copy('Mi plan: ','My plan: ') + current.name;
@@ -71,8 +101,9 @@
   }
   async function requestService(kind, lot) {
     if (!user) { hooks.requireAuth?.({type:'member-service',kind,lot}); return; }
+    if (kind === 'history' && !await messageDialog(copy('Reporte del historial APV','APV vehicle history report'), copy('El equipo de APV Motors elaborará el reporte de este vehículo y coordinará contigo su entrega. Está incluido también en la cuenta gratis.','The APV Motors team will prepare this vehicle’s report and coordinate delivery with you. It is also included with the free account.'), currentPlan().id === 'free', copy('Solicitar mi reporte','Request my report'))) return;
     await api('/api/billing/request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,lot})});
-    notify(copy('Solicitud registrada. Un asesor de APV coordinará contigo la entrega o la cita.','Request recorded. An APV advisor will coordinate delivery or your appointment.'));
+    await messageDialog(copy('Solicitud registrada','Request recorded'), copy('Un asesor de APV coordinará contigo la entrega o la cita. No necesitas enviar la solicitud de nuevo.','An APV advisor will coordinate delivery or your appointment. You do not need to submit again.'), false, copy('Entendido','Got it'));
     membership = await api('/api/billing/me'); render();
   }
   document.addEventListener('click', async e => {
@@ -109,7 +140,7 @@
   window.apvMembership = {
     configure(value){hooks=value;},
     setUser(value){user=value;membership=value?.membership || null;render();handleReturn();},
-    render, openPlans, choose, requestService,
+    render, openPlans, choose, requestService, prompt,
     getPlan: currentPlan,
     resume: async action => {openPlans();if(action.type==='member-service')await requestService(action.kind,action.lot);else if(action.planId!=='free')await choose(action.planId);},
     available: ()=>Boolean(config?.available)

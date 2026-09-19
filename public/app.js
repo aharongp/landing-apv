@@ -1423,12 +1423,13 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     syncChatReopenButton();
   }
 
-  async function completeAuth(user){
+  async function completeAuth(user, registered = false){
     const action=state.pendingAuthAction;
     applyUser(user); closeAuth(false); state.pendingAuthAction=null;
     showToast(`Bienvenido, ${user.name.split(' ')[0]}.`);
     await state.favoritesReady;
     await loadVehicles();
+    if (registered && !['subscription','member-service','bid'].includes(action?.type)) await window.apvMembership?.prompt('registration');
     if(action&&action.type==='bid'){
       try{ await openBid(await getVehicle(action.lot), action.amount); }catch(err){ showToast(err.message); }
     }else if(action&&action.type==='favorite'){
@@ -1482,7 +1483,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const button=e.currentTarget.querySelector('button[type=submit]'); button.disabled=true;
     try{
       const d=await api('/api/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email: state.pendingVerifyEmail || $('#register-email').value, code:$('#verify-code').value.trim()})});
-      await completeAuth(d.user);
+      await completeAuth(d.user, true);
     }catch(err){ setAuthStatus(err.message); }
     finally{ button.disabled=false; }
   }
@@ -1570,6 +1571,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   async function openBid(v, initialAmount){
     if(!state.user){ openAuth('Crea tu cuenta o inicia sesión para solicitar la puja. Tu cuenta mantiene el historial de Kommo entre dispositivos.',{type:'bid',lot:v.lot,amount:initialAmount}); return; }
+    if (window.apvMembership && !await window.apvMembership.prompt('bid')) return;
     try{ if(!v.vin) v=await getVehicle(v.lot); }catch(_){}
     state.currentVehicle=v; closeDetail(false); dom.bidModal?.classList.remove('chat-mode');
     const startVal = initialAmount ? Number(initialAmount) : '';
