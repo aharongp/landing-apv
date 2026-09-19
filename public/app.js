@@ -1989,8 +1989,32 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   dom.run.addEventListener('change',()=>{ dom.runDrive.checked=false; });
   $('#my-favorites-button').addEventListener('click', showAccountFavorites);
   $('#exit-favorites').addEventListener('click',()=>clearFilters());
-  $('#apply-filters').addEventListener('click',()=>{state.page=1;dom.filtersPanel.classList.remove('mobile-open');loadVehicles();}); $('#clear-filters').addEventListener('click',clearFilters); $('#empty-clear').addEventListener('click',clearFilters); dom.odometer.addEventListener('input',updateOdometerLabel);
-  $('#mobile-filter-button').addEventListener('click',()=>dom.filtersPanel.classList.toggle('mobile-open'));
+  $('#apply-filters').addEventListener('click',()=>{state.page=1;closeMobileFilters();loadVehicles();}); $('#clear-filters').addEventListener('click',clearFilters); $('#empty-clear').addEventListener('click',clearFilters); dom.odometer.addEventListener('input',updateOdometerLabel);
+  const filtersHome = document.createComment('filters-home');
+  dom.filtersPanel.before(filtersHome);
+  let filtersScroll = '';
+  function closeMobileFilters(){
+    if(!dom.filtersPanel.classList.contains('mobile-open')) return;
+    dom.filtersPanel.classList.remove('mobile-open');
+    filtersHome.after(dom.filtersPanel);
+    document.body.style.overflow = filtersScroll;
+    $('#mobile-filter-button').setAttribute('aria-expanded','false');
+    $('#mobile-filter-button').focus();
+  }
+  $('#mobile-filter-button').setAttribute('aria-controls','filters-panel');
+  $('#mobile-filter-button').setAttribute('aria-expanded','false');
+  $('#mobile-filter-button').addEventListener('click',()=>{
+    filtersScroll = document.body.style.overflow;
+    document.body.append(dom.filtersPanel);
+    dom.filtersPanel.classList.add('mobile-open');
+    dom.filtersPanel.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+    $('#mobile-filter-button').setAttribute('aria-expanded','true');
+    $('#close-mobile-filters').focus();
+  });
+  $('#close-mobile-filters').addEventListener('click',closeMobileFilters);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileFilters();});
+  window.matchMedia('(max-width: 768px)').addEventListener('change',e=>{if(!e.matches)closeMobileFilters();});
 
   if(dom.termsLinkBtn && dom.termsOverlay) {
     dom.termsLinkBtn.addEventListener('click', () => {

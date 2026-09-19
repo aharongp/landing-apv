@@ -3570,3 +3570,28 @@ footer .brand-logo-img {
 .account-menu{position:absolute;right:0;top:calc(100% + 10px);width:min(270px,calc(100vw - 24px));background:#fff;border:1px solid #dbe3ed;border-radius:16px;padding:8px;box-shadow:0 16px 44px #0f172a24;z-index:100}
 .account-menu .account-copy{display:flex!important;max-width:none;padding:12px 10px 16px;border-bottom:1px solid #e2e8f0;margin-bottom:6px;gap:5px}.account-menu .account-copy strong{font-size:14px}.account-menu .account-copy span{font-size:11px}
 .account-menu>button{display:block;width:100%;border:0;border-radius:8px;background:transparent;color:#0f172a;text-align:left;padding:12px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.account-menu>button:hover{background:#f1f5f9}.account-menu>button:focus-visible,.account-menu-toggle:focus-visible{outline:2px solid #0284c7;outline-offset:2px}.account-menu>#logout-button{color:#b91c1c;border-top:1px solid #e2e8f0;border-radius:0;margin-top:6px}
+
+/* Small-screen layout and full-height filter sheet. */
+.mobile-filter-close{display:none}
+@media(max-width:768px){
+  .filters.mobile-open{overflow-y:auto!important;overscroll-behavior:contain;padding-bottom:env(safe-area-inset-bottom,0px)!important}
+  .filters.mobile-open>*{flex-shrink:0}
+  .filters.mobile-open .filters-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px}
+  .filters.mobile-open .filters-head strong{margin-right:auto}
+  .filters.mobile-open .mobile-filter-close{display:block;order:3;border:0;background:transparent;color:#0f172a;font-size:28px;width:44px;height:44px;cursor:pointer}
+  .filters.mobile-open #apply-filters{margin-top:16px!important}
+  .membership-nudge,.membership-calculator-note{min-width:0}.membership-nudge>span,.membership-calculator-note>span{min-width:0;flex:1 1 180px}
+}
+@media(max-width:360px){
+  .topbar{padding:8px;gap:4px}.topbar .brand-logo-img{width:76px;max-width:76px;height:auto}.topbar-account{max-width:none;gap:4px;min-width:0}
+  .topbar #auth-button{padding:9px 8px;font-size:11px;min-width:0}.account-menu-toggle{font-size:11px;gap:5px;padding-right:7px}.lang-switch-toggle{padding:3px}.lang-switch-toggle .lang-btn{padding:4px 5px;font-size:10px}
+}
+.pagination{flex-wrap:wrap;max-width:100%}.pagination .page-btn{flex-shrink:0}
+.phone-input-group{min-width:0}.phone-input-group input{min-width:0;width:0;flex:1 1 0}.phone-input-group .country-code-select{max-width:48%;min-width:0}
+.calc-quick-add{flex-wrap:wrap;min-width:0}.calc-input-row>*{min-width:0}.calc-bid-input{min-width:0}.btn-quick-add{flex:1 1 auto;padding-inline:10px}
+@media(max-width:768px){
+  .calc-grid-layout{grid-template-columns:minmax(0,1fr)!important}.calc-grid-layout>*,.calc-card,.calc-breakdown-container,.calc-input-currency-wrap{min-width:0;max-width:100%}
+  .calc-section-container{padding:14px}.calc-options-card,.calc-breakdown-card,.calc-card{padding:14px}.calc-section-header,.calc-opt-label{flex-wrap:wrap}
+  .calc-radio-toggle{min-width:0}.calc-radio-btn{min-width:0;white-space:normal;overflow-wrap:anywhere;padding-inline:6px}.calc-row,.calc-subrow{gap:10px;flex-wrap:wrap}.calc-label{min-width:0;flex-wrap:wrap}.calc-val,.calc-total-amount{overflow-wrap:anywhere}.btn-red-action{white-space:normal}.calc-total-amount{font-size:clamp(24px,7vw,36px)}
+}
+.membership-account>*{min-width:0}.membership-account-actions{min-width:0;width:100%}.membership-account-actions .btn{max-width:100%;white-space:normal;overflow-wrap:anywhere}
