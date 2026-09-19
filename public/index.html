@@ -104,12 +104,18 @@
       </div>
       <button id="auth-button" class="btn btn-ghost btn-small" type="button" data-open-auth data-i18n="login" onclick="return window.openAPVAuth ? window.openAPVAuth() : false">Iniciar sesión</button>
       <div id="account-chip" class="account-chip hidden">
-        <span id="account-avatar" class="account-avatar">AP</span>
-        <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
-        <button id="my-membership-button" class="btn btn-ghost btn-small" type="button" data-member-plans>Mi plan</button>
-        <button id="my-favorites-button" class="btn btn-ghost btn-small" type="button" data-i18n="myFavorites">♥ Mis favoritos</button>
-        <button id="my-bids-button" class="btn btn-ghost btn-small" type="button" title="Ver mis pujas y conversaciones" data-i18n="myBids">💬 Mis Pujas</button>
-        <button id="logout-button" class="account-logout" type="button" data-i18n="logout">Salir</button>
+        <button id="account-menu-toggle" class="account-menu-toggle" type="button" aria-expanded="false" aria-controls="account-menu">
+          <span id="account-avatar" class="account-avatar" aria-hidden="true">AP</span>
+          <span data-i18n="myAccount">Mi cuenta</span>
+          <span class="account-chevron" aria-hidden="true">⌄</span>
+        </button>
+        <div id="account-menu" class="account-menu hidden">
+          <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
+          <button id="my-membership-button" type="button" data-member-plans>Mi plan</button>
+          <button id="my-favorites-button" type="button" data-i18n="myFavorites">♥ Mis favoritos</button>
+          <button id="my-bids-button" type="button" data-i18n="myBids">💬 Mis Pujas</button>
+          <button id="logout-button" class="account-logout" type="button" data-i18n="logout">Salir</button>
+        </div>
       </div>
       <a class="btn btn-dark btn-small topbar-catalog" href="#catalogo" data-i18n="viewVehicles">Ver vehículos</a>
     </div>

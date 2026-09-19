@@ -152,7 +152,7 @@
       login: 'Iniciar sesión',
       createAccount: 'Crear cuenta',
       myBids: '💬 Mis Pujas',
-      logout: 'Salir',
+      logout: 'Salir', myAccount: 'Mi cuenta',
       viewVehicles: 'Ver vehículos',
       exploreCatalog: 'Explorar catálogo',
       seeHow: 'Ver cómo funciona',
@@ -263,7 +263,7 @@
       login: 'Log in',
       createAccount: 'Create account',
       myBids: '💬 My Bids',
-      logout: 'Log out',
+      logout: 'Log out', myAccount: 'My account',
       viewVehicles: 'View vehicles',
       exploreCatalog: 'Explore catalog',
       seeHow: 'See how it works',
@@ -1830,6 +1830,29 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const opener=e.target.closest('[data-open-auth]');
     if(opener){ e.preventDefault(); openAuth('Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.'); return; }
   },true);
+  const accountToggle = $('#account-menu-toggle'), accountMenu = $('#account-menu');
+  function closeAccountMenu(restoreFocus = false){
+    accountMenu.classList.add('hidden');
+    accountToggle.setAttribute('aria-expanded','false');
+    if(restoreFocus) accountToggle.focus();
+  }
+  accountToggle.addEventListener('click',()=>{
+    const open = accountToggle.getAttribute('aria-expanded') !== 'true';
+    accountToggle.setAttribute('aria-expanded',String(open));
+    accountMenu.classList.toggle('hidden',!open);
+  });
+  document.addEventListener('click',e=>{
+    if(!dom.accountChip.contains(e.target)) closeAccountMenu();
+    else if(e.target.closest('#account-menu button')) closeAccountMenu();
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape' && accountToggle.getAttribute('aria-expanded')==='true'){
+      e.preventDefault(); closeAccountMenu(true);
+    }
+  });
+  dom.accountChip.addEventListener('focusout',e=>{
+    if(!dom.accountChip.contains(e.relatedTarget)) closeAccountMenu();
+  });
   $('#logout-button').addEventListener('click',logout);
   $$('[data-auth-tab]').forEach(b=>b.addEventListener('click',()=>switchAuthTab(b.dataset.authTab)));
   $('#login-form').addEventListener('submit',submitLogin);

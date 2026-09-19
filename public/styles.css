@@ -3562,3 +3562,11 @@ footer .brand-logo-img {
 @media(max-width:480px){.membership-card ul{grid-template-columns:1fr}.membership-section{padding:0 16px}}
 
 .membership-dialog{width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overflow:auto;border:1px solid #dbe3ed;border-radius:20px;padding:28px;color:#0f172a;box-shadow:0 24px 80px #0004}.membership-dialog::backdrop{background:#0f172a99}.membership-dialog h2{margin:0 0 12px;font-size:24px}.membership-dialog p{line-height:1.6;color:#475569}.membership-dialog-promo{border:1px solid #dbe3ed;background:#f8fafc;padding:18px;border-radius:12px;margin:18px 0}.membership-dialog .btn{margin:6px 6px 0 0;white-space:normal}
+
+/* Account disclosure: keep actions out of the navigation bar. */
+.account-chip{position:relative;display:block;padding:0;min-height:0;overflow:visible;flex-wrap:nowrap}
+.account-menu-toggle{display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;border:0;border-radius:12px;background:#fff;color:#0f172a;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.account-chevron{color:#64748b;transition:transform .15s}.account-menu-toggle[aria-expanded="true"] .account-chevron{transform:rotate(180deg)}
+.account-menu{position:absolute;right:0;top:calc(100% + 10px);width:min(270px,calc(100vw - 24px));background:#fff;border:1px solid #dbe3ed;border-radius:16px;padding:8px;box-shadow:0 16px 44px #0f172a24;z-index:100}
+.account-menu .account-copy{display:flex!important;max-width:none;padding:12px 10px 16px;border-bottom:1px solid #e2e8f0;margin-bottom:6px;gap:5px}.account-menu .account-copy strong{font-size:14px}.account-menu .account-copy span{font-size:11px}
+.account-menu>button{display:block;width:100%;border:0;border-radius:8px;background:transparent;color:#0f172a;text-align:left;padding:12px 10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.account-menu>button:hover{background:#f1f5f9}.account-menu>button:focus-visible,.account-menu-toggle:focus-visible{outline:2px solid #0284c7;outline-offset:2px}.account-menu>#logout-button{color:#b91c1c;border-top:1px solid #e2e8f0;border-radius:0;margin-top:6px}
