@@ -204,7 +204,7 @@
       helpEyebrow: '¿NO SABES CUÁNTO PUJAR?', helpTitle: 'Encuentra el carro primero. Nosotros te ayudamos con lo demás.', findVehicle: 'Buscar un vehículo',
       footerCatalog: 'Catálogo de vehículos de subasta · EE. UU.', footerSource: 'Datos de inventario obtenidos de listados públicos de subastas de Copart.', footerDisclaimer: 'La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.',
       cookieTitle: 'Uso de cookies y privacidad',
-      cookieText: 'Utilizamos cookies para guardar tu sesión, preferencias y ofrecerte asistencia personalizada. Al continuar navegando, aceptas nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Políticas de Privacidad</button>.',
+      cookieText: 'Utilizamos cookies esenciales para tu sesión y preferencias. Si aceptas todas, también usamos Google Analytics para medir las visitas. Consulta nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Políticas de Privacidad</button>.',
       acceptCookies: 'Aceptar todas',
       declineCookies: 'Solo esenciales',
       termsOfService: 'Términos de Servicio', privacyPolicy: 'Políticas de Privacidad', termsEyebrow: 'ASPECTOS LEGALES', termsTitle: 'Términos de Servicio',
@@ -303,7 +303,7 @@
       emptyTitle: 'No vehicles found', emptyText: 'Try another search or clear the filters.', helpEyebrow: 'NOT SURE HOW MUCH TO BID?', helpTitle: 'Find the car first. We will help you with the rest.', findVehicle: 'Find a vehicle',
       footerCatalog: 'Auction vehicle catalog · USA', footerSource: 'Inventory data sourced from public Copart auction listings.', footerDisclaimer: 'Availability, bids, and final conditions depend on the auction and may change.',
       cookieTitle: 'Cookies and Privacy',
-      cookieText: 'We use cookies to save your session, preferences, and provide personalized support. By continuing to browse, you accept our <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Terms of Service</button> and <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Privacy Policy</button>.',
+      cookieText: 'We use essential cookies for your session and preferences. If you accept all, we also use Google Analytics to measure visits. Read our <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Terms of Service</button> and <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Privacy Policy</button>.',
       acceptCookies: 'Accept all',
       declineCookies: 'Essential only',
       termsOfService: 'Terms of Service', privacyPolicy: 'Privacy Policy', termsEyebrow: 'LEGAL TERMS', termsTitle: 'Terms of Service',
@@ -2111,6 +2111,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if (acceptBtn) {
       acceptBtn.addEventListener('click', () => {
         localStorage.setItem('apv_cookie_consent', 'all');
+        window.apvStartAnalytics?.();
         banner.classList.add('hidden');
       });
     }

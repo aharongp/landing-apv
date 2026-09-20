@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Compra vehículos de subastas en Estados Unidos 100% online con APV Motors." />
   <title>APV Motors | Subastas de vehículos en EE. UU.</title>
+  <!-- Google Analytics 4: activated by the existing cookie preference. -->
+  <script>
+    window.apvStartAnalytics = function () {
+      if (window.apvAnalyticsStarted) return;
+      window.apvAnalyticsStarted = true;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', 'G-B488MP56L8');
+      var tag = document.createElement('script');
+      tag.async = true;
+      tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-B488MP56L8';
+      document.head.appendChild(tag);
+    };
+    try {
+      if (localStorage.getItem('apv_cookie_consent') === 'all') window.apvStartAnalytics();
+    } catch (_) {}
+  </script>
   <link rel="preconnect" href="https://cs.copart.com" />
   <link rel="preload" href="/app.js?v=15.1.0" as="script" />
   <link rel="stylesheet" href="/styles.css?v=15.1.0" />
@@ -485,7 +503,7 @@
         <span class="cookie-icon">🍪</span>
         <div>
           <strong data-i18n="cookieTitle">Uso de cookies y privacidad</strong>
-          <p data-i18n-html="cookieText">Utilizamos cookies para guardar tu sesión, preferencias y ofrecerte asistencia personalizada. Al continuar navegando, aceptas nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn" data-i18n="termsOfService">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn" data-i18n="privacyPolicy">Políticas de Privacidad</button>.</p>
+          <p data-i18n-html="cookieText">Utilizamos cookies esenciales para tu sesión y preferencias. Si aceptas todas, también usamos Google Analytics para medir las visitas. Consulta nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn" data-i18n="termsOfService">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn" data-i18n="privacyPolicy">Políticas de Privacidad</button>.</p>
         </div>
       </div>
       <div class="cookie-banner-actions">
