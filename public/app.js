@@ -211,7 +211,7 @@
       termsContent: '<h3>1. Aceptación de los Términos</h3><p>Al acceder y utilizar el portal de APV Motors, el usuario acepta cumplir con los presentes Términos de Servicio. Si no está de acuerdo con alguno de los términos, debe abstenerse de utilizar el sitio.</p><h3>2. Servicios de Intermediación</h3><p>APV Motors actúa como un facilitador e intermediario de servicios para la consulta de catálogo y asistencia en subastas de vehículos en Estados Unidos (como Copart e IAA). APV Motors no es el dueño directo de los vehículos de subasta listados en el catálogo público.</p><h3>3. Ofertas y Pujas</h3><p>Las ofertas o intenciones de puja registradas por los usuarios en la plataforma representan límites de puja deseados y están sujetas a verificación y confirmación por parte de un asesor de APV Motors antes de ser presentadas en la subasta oficial.</p><h3>4. Información de Vehículos</h3><p>La información, fotografías y especificaciones de los vehículos provienen de listados públicos de subastas. Los usuarios son responsables de revisar los detalles técnicos, historial y estado del vehículo antes de autorizar una oferta final.</p><h3>5. Modificaciones</h3><p>APV Motors se reserva el derecho de actualizar o modificar estos términos en cualquier momento para reflejar cambios legales o de servicio.</p>',
       privacyEyebrow: 'PROTECCIÓN DE DATOS', privacyTitle: 'Políticas de Privacidad',
       privacyContent: '<h3>1. Información que Recopilamos</h3><p>Recopilamos información personal que usted nos proporciona voluntariamente al registrarse o enviar una solicitud, como su nombre completo, dirección de correo electrónico, número de teléfono/WhatsApp e intenciones de puja.</p><h3>2. Uso de la Información</h3><p>Utilizamos sus datos personales para: brindar asistencia personalizada con asesores de APV Motors, gestionar sus solicitudes de puja, conservar el historial de su conversación y enviarle notificaciones relevantes sobre subastas de su interés.</p><h3>3. Integración con Servicios de Terceros</h3><p>Sus datos pueden ser procesados a través de nuestro sistema de gestión de relaciones con clientes (Kommo CRM) de forma segura para garantizar la continuidad del soporte técnico y comercial.</p><h3>4. Protección y Confidencialidad</h3><p>APV Motors implementa medidas de seguridad técnicas y organizativas para proteger sus datos personales contra acceso no autorizado, alteración o divulgación.</p><h3>5. Sus Derechos</h3><p>Usted puede solicitar en cualquier momento el acceso, corrección o eliminación de sus datos personales comunicándose con nuestro equipo de soporte.</p>',
-      close: 'Cerrar', accountEyebrow: 'CUENTA APV MOTORS', authTitle: 'Guarda tu conversación y continúa desde cualquier dispositivo.', authReason: 'Regístrate para ver el VIN completo y hablar con un asesor.',
+      close: 'Cerrar', accountEyebrow: 'CUENTA APV MOTORS', authTitle: 'Guarda tu conversación y continúa desde cualquier dispositivo.', authReason: 'Regístrate para ver el VIN completo y hablar con un asesor.', registerDirectTitle: 'Crea tu cuenta gratis', registerDirectReason: 'Completa tus datos para guardar vehículos, solicitar pujas y continuar desde cualquier dispositivo.', checkEmailTitle: 'Revisa tu correo', checkEmailReason: 'Te enviamos un código de 6 dígitos. Escríbelo para activar tu cuenta.',
       fullName: 'Nombre completo',
       email: 'Correo electrónico',
       phoneLabel: 'Teléfono / WhatsApp',
@@ -310,7 +310,7 @@
       termsContent: '<h3>1. Acceptance of Terms</h3><p>By accessing and using the APV Motors portal, you agree to comply with these Terms of Service. If you do not agree with any part of these terms, please do not use the website.</p><h3>2. Intermediary Services</h3><p>APV Motors acts as a service facilitator and intermediary for catalog browsing and auction assistance for vehicles in the United States (such as Copart and IAA). APV Motors does not directly own the public auction vehicles listed in the catalog.</p><h3>3. Offers and Bids</h3><p>Bids or purchase intentions submitted by users on the platform represent maximum desired limits and are subject to verification and confirmation by an APV Motors advisor before being placed in the official auction.</p><h3>4. Vehicle Information</h3><p>Vehicle details, photographs, and specifications originate from public auction listings. Users are responsible for reviewing technical specifications, history, and vehicle condition before authorizing a final bid.</p><h3>5. Modifications</h3><p>APV Motors reserves the right to update or modify these terms at any time to reflect legal or operational changes.</p>',
       privacyEyebrow: 'DATA PROTECTION', privacyTitle: 'Privacy Policy',
       privacyContent: '<h3>1. Information We Collect</h3><p>We collect personal information that you voluntarily provide when registering or submitting a request, such as your full name, email address, phone/WhatsApp number, and bidding intentions.</p><h3>2. How We Use Information</h3><p>We use your personal data to: provide personalized assistance with APV Motors advisors, manage your bid requests, save your conversation history, and send relevant notifications about auctions of interest.</p><h3>3. Integration with Third-Party Services</h3><p>Your data may be processed securely through our Customer Relationship Management system (Kommo CRM) to ensure continuous technical and commercial support.</p><h3>4. Security and Confidentiality</h3><p>APV Motors implements technical and organizational security measures to protect your personal data against unauthorized access, alteration, or disclosure.</p><h3>5. Your Rights</h3><p>You may request access to, correction, or deletion of your personal data at any time by contacting our support team.</p>',
-      close: 'Close', accountEyebrow: 'APV MOTORS ACCOUNT', authTitle: 'Save your conversation and continue from any device.', authReason: 'Sign up to view the full VIN and chat with an advisor.',
+      close: 'Close', accountEyebrow: 'APV MOTORS ACCOUNT', authTitle: 'Save your conversation and continue from any device.', authReason: 'Sign up to view the full VIN and chat with an advisor.', registerDirectTitle: 'Create your free account', registerDirectReason: 'Enter your details to save vehicles, request bids and continue from any device.', checkEmailTitle: 'Check your email', checkEmailReason: 'We sent you a 6-digit code. Enter it to activate your account.',
       fullName: 'Full name',
       email: 'Email address',
       phoneLabel: 'Phone / WhatsApp',
@@ -1376,14 +1376,19 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     dom.authStatus.textContent=message; dom.authStatus.dataset.kind=kind; dom.authStatus.classList.remove('hidden');
   }
 
-  function openAuth(reason, action){
+  function openAuth(reason, action, initialTab = 'login', directRegistration = false){
     state.pendingAuthAction=action||null;
-    dom.authReason.textContent=reason||'Regístrate para ver el VIN completo y hablar con un asesor.';
+    const modal = dom.authOverlay.querySelector('.auth-modal');
+    modal.classList.toggle('registration-direct', directRegistration);
+    modal.classList.remove('verification-pending');
+    dom.authTitle.textContent=directRegistration?t('registerDirectTitle'):t('authTitle');
+    dom.authReason.textContent=reason||t('authReason');
+    switchAuthTab(initialTab);
     setAuthStatus('');
     dom.authOverlay.classList.remove('hidden');
     dom.authOverlay.setAttribute('aria-hidden','false');
     document.body.style.overflow='hidden';
-    requestAnimationFrame(()=>dom.authOverlay.querySelector('input:not([type="hidden"])')?.focus());
+    requestAnimationFrame(()=>dom.authOverlay.querySelector('form:not(.hidden) input:not([type="hidden"])')?.focus());
   }
 
   function closeAuth(clearPending=true){
@@ -1398,6 +1403,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   window.closeAPVAuth=function(){ closeAuth(); return false; };
 
   function switchAuthTab(tab){
+    const modal=dom.authOverlay.querySelector('.auth-modal');
+    $('.auth-tabs',dom.authOverlay).classList.remove('hidden');
+    modal.classList.remove('verification-pending');
+    dom.authTitle.textContent=modal.classList.contains('registration-direct')&&tab==='register'?t('registerDirectTitle'):t('authTitle');
     $$('[data-auth-tab]').forEach(b=>b.classList.toggle('active',b.dataset.authTab===tab));
     $('#login-form').classList.toggle('hidden',tab!=='login');
     $('#register-form').classList.toggle('hidden',tab!=='register');
@@ -1467,6 +1476,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     try{
       const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('#register-name').value,email,phone,password:$('#register-password').value})});
       state.pendingVerifyEmail = email;
+      dom.authOverlay.querySelector('.auth-modal').classList.add('verification-pending');
+      dom.authTitle.textContent=t('checkEmailTitle');
+      dom.authReason.textContent=t('checkEmailReason');
+      $('.auth-tabs',dom.authOverlay).classList.add('hidden');
       $('#register-form').classList.add('hidden');
       $('#verify-form').classList.remove('hidden');
       if ($('#verify-target-email')) $('#verify-target-email').textContent = email;
@@ -1475,6 +1488,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         setAuthStatus(`Código enviado a tu correo. (Desarrollo: ${d.devCode})`, 'info');
       }
       showToast(d.message || 'Código de 6 dígitos enviado.');
+      requestAnimationFrame(()=>$('#verify-code')?.focus());
     }catch(err){ setAuthStatus(err.message); }
     finally{ button.disabled=false; }
   }
@@ -1855,8 +1869,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if(!dom.accountChip.contains(e.relatedTarget)) closeAccountMenu();
   });
   $('#hero-register-cta').addEventListener('click',()=>{
-    openAuth('Crea tu cuenta gratis para guardar favoritos y solicitar pujas.');
-    switchAuthTab('register');
+    openAuth(t('registerDirectReason'),null,'register',true);
   });
   $('#hero-filters-toggle').addEventListener('click',()=>{
     const button=$('#hero-filters-toggle');
@@ -1874,6 +1887,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   $('#register-form').addEventListener('submit',submitRegister);
   $('#verify-form')?.addEventListener('submit',submitVerify);
   $('#verify-back')?.addEventListener('click',()=>{
+    const modal=dom.authOverlay.querySelector('.auth-modal');
+    modal.classList.remove('verification-pending');
+    dom.authTitle.textContent=t('registerDirectTitle');
+    dom.authReason.textContent=t('registerDirectReason');
+    $('.auth-tabs',dom.authOverlay).classList.remove('hidden');
     $('#verify-form').classList.add('hidden');
     $('#register-form').classList.remove('hidden');
     setAuthStatus('');

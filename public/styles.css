@@ -3137,6 +3137,10 @@ img, svg, iframe, canvas {
 .verify-intro {
   text-align: center !important;
   margin-bottom: 16px !important;
+  padding: 18px !important;
+  border: 1px solid #bbf7d0 !important;
+  border-radius: 16px !important;
+  background: #f0fdf4 !important;
 }
 
 .verify-intro h3 {
@@ -3149,7 +3153,24 @@ img, svg, iframe, canvas {
 .verify-intro p {
   font-size: 13px !important;
   color: var(--muted) !important;
+  line-height: 1.55 !important;
+  margin-bottom: 0 !important;
 }
+
+.verify-email-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.registration-direct .auth-intro h2 { font-size: 30px; }
+.registration-direct .auth-intro p { max-width: 430px; }
+.verification-pending .auth-tabs { display: none !important; }
 
 #verify-code {
   letter-spacing: 6px !important;

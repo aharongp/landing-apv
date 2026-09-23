@@ -438,8 +438,11 @@
         <button class="btn btn-primary full" type="submit" data-i18n="sendVerificationCode">Enviar código de verificación</button>
         <small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
       </form>
-      <form id="verify-form" class="auth-form hidden">
+      <form id="verify-form" class="auth-form hidden" aria-live="polite">
         <div class="verify-intro">
+          <div class="verify-email-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/><path d="m16 17 2 2 4-4"/></svg>
+          </div>
           <h3 data-i18n="confirmEmail">Confirma tu correo electrónico</h3>
           <p><span data-i18n="verifyInstructions">Ingresa el código de 6 dígitos que enviamos a</span> <strong id="verify-target-email"></strong>.</p>
         </div>
