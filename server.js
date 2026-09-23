@@ -886,10 +886,11 @@ function findVehicle(id) {
 
 async function replaceCatalogFromFile(filePath) {
   const csvText = fs.readFileSync(filePath, 'utf8');
-  const result = catalogDb.upsertCatalogFromCsv(csvText);
+  const result = catalogDb.repairCatalogFromCsv(csvText);
   const tmp = `${CATALOG_FILE}.tmp`;
   fs.copyFileSync(filePath, tmp);
   fs.renameSync(tmp, CATALOG_FILE);
+  imageCache.clear();
   return result;
 }
 
@@ -1323,7 +1324,8 @@ const server = http.createServer(async (req, res) => {
       if (!fs.existsSync(CATALOG_FILE)) return json(res, 404, { error: 'No se encontró el archivo CSV del catálogo para sincronizar.' });
       try {
         const csvText = fs.readFileSync(CATALOG_FILE, 'utf8');
-        const stats = catalogDb.upsertCatalogFromCsv(csvText, { backupBeforeReplace: true });
+        const stats = catalogDb.repairCatalogFromCsv(csvText);
+        imageCache.clear();
         return json(res, 200, { ok: true, stats });
       } catch (err) {
         return json(res, 500, { error: `Error en la sincronización: ${err.message}` });

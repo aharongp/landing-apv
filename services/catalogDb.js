@@ -525,6 +525,12 @@ function upsertCatalogFromCsv(csvText, options = {}) {
       setSaleAt.run(saleAt, rec.lot);
     }
     if (!valid) throw new Error('No hay vehículos válidos; se conserva el catálogo anterior.');
+    if (options.verifyIntegrity) {
+      const check = database.prepare('PRAGMA quick_check').all();
+      if (check.length !== 1 || check[0].quick_check !== 'ok') {
+        throw new Error('La verificación de integridad falló; se conserva el catálogo anterior.');
+      }
+    }
     database.prepare("INSERT OR REPLACE INTO catalog_meta (key, value) VALUES ('sourceHash', ?)").run(digest);
     database.prepare("INSERT OR REPLACE INTO catalog_meta (key, value) VALUES ('updatedAt', ?)").run(nowIso);
     database.exec('COMMIT');
@@ -567,9 +573,9 @@ function backupDatabase() {
 function repairCatalogFromCsv(csvText) {
   const database = initDatabase();
   const backup = backupDatabase();
-  const stats = upsertCatalogFromCsv(csvText, { force: true });
+  const stats = upsertCatalogFromCsv(csvText, { force: true, verifyIntegrity: true });
   database.exec('PRAGMA optimize');
-  return { ...stats, backup };
+  return { ...stats, backup, repaired: true, integrity: 'ok' };
 }
 
 function getFavorites(userId) {

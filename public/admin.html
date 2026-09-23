@@ -14,7 +14,7 @@
   <main class="admin-card">
     <span class="eyebrow">ADMINISTRACIÓN · APV MOTORS</span>
     <h1>Cargar catálogo CSV</h1>
-    <p>Selecciona el export completo y actualizado de Copart. Cada carga reemplaza el catálogo anterior, evita duplicados por lote y excluye las subastas vencidas. Los vehículos sin fecha se mantienen disponibles.</p>
+    <p>Selecciona el export completo y actualizado de Copart. Cada carga reemplaza el catálogo anterior, evita duplicados por lote y excluye las subastas vencidas. Al terminar, repara y verifica la integridad de la base de datos automáticamente. Los vehículos sin fecha se mantienen disponibles.</p>
     <div class="drop"><strong>Archivo CSV de Copart</strong><input id="file" type="file" accept=".csv,text/csv"></div>
     <div class="admin-form">
       <input id="key" type="password" placeholder="ADMIN_KEY (si está configurada)">
@@ -67,18 +67,18 @@
     });
 
     syncBtn.addEventListener('click', async()=>{
-      syncBtn.disabled=true; status.textContent='Ejecutando sincronización sobre el catálogo activo en disco…';
+      repairBtn.disabled=btn.disabled=syncBtn.disabled=true; status.textContent='Guardando respaldo, resincronizando y reparando desde el último CSV…';
       try{
         const headers={'Content-Type':'application/json','x-admin-key':key.value};
         const done=await jsonFetch('/api/catalog/sync',{method:'POST',headers});
         const st=done.stats||{};
-        status.textContent=`✅ Catálogo reemplazado correctamente.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
-      }catch(e){status.textContent='Error al sincronizar: '+e.message;}finally{syncBtn.disabled=false;}
+        status.textContent=`✅ Catálogo resincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
+      }catch(e){status.textContent='Error al sincronizar: '+e.message;}finally{repairBtn.disabled=btn.disabled=syncBtn.disabled=false;}
     });
 
     btn.addEventListener('click',async()=>{
       const f=file.files[0]; if(!f){status.textContent='Selecciona un CSV.';return;}
-      btn.disabled=true; bar.style.width='0%'; progressText.textContent='0%'; status.textContent='Preparando carga por bloques…';
+      repairBtn.disabled=syncBtn.disabled=btn.disabled=true; bar.style.width='0%'; progressText.textContent='0%'; status.textContent='Preparando carga por bloques…';
       try{
         const headers={'Content-Type':'application/json','x-admin-key':key.value};
         const start=await jsonFetch('/api/catalog/upload/start',{method:'POST',headers,body:JSON.stringify({name:f.name,size:f.size})});
@@ -91,12 +91,12 @@
           const d=await r.json().catch(()=>({})); if(!r.ok)throw new Error(d.error||'Falló un bloque de la carga');
           offset=end; index+=1; const pct=Math.min(100,Math.round(offset/f.size*100)); bar.style.width=pct+'%'; progressText.textContent=pct+'%';
         }
-        status.textContent='Carga completa. Validando y reemplazando el catálogo…';
+        status.textContent='Carga completa. Guardando respaldo, resincronizando y reparando el catálogo…';
         const done=await jsonFetch('/api/catalog/upload/finish',{method:'POST',headers,body:JSON.stringify({uploadId:start.uploadId})});
         bar.style.width='100%'; progressText.textContent='100%';
         const st=done.stats||{};
-        status.textContent=`✅ Carga finalizada.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
-      }catch(e){status.textContent='Error: '+e.message;}finally{btn.disabled=false;}
+        status.textContent=`✅ Catálogo sincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
+      }catch(e){status.textContent='Error: '+e.message;}finally{repairBtn.disabled=syncBtn.disabled=btn.disabled=false;}
     });
   </script>
 </body>

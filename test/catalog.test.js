@@ -45,8 +45,14 @@ test('account favorites are isolated and repair bypasses hash without changing a
  assert.deepEqual(catalog.getFavorites('user-b'),[]);
  assert.throws(()=>catalog.setFavorite('user-a','99999999',true),{statusCode:404});
  db.prepare('UPDATE vehicles SET make = ? WHERE lot = ?').run('BROKEN','62345678');
+ db.prepare('INSERT INTO vehicles (lot, make) VALUES (?, ?)').run('99999999','STALE');
  assert.equal(catalog.upsertCatalogFromCsv(input).unchanged,true);
  const result=catalog.repairCatalogFromCsv(input);
+ assert.equal(result.removed,1);
+ assert.equal(result.totalInDb,1);
+ assert.equal(result.repaired,true);
+ assert.equal(result.integrity,'ok');
+ assert.equal(catalog.findVehicleByLotOrId('99999999'),null);
  assert.equal(catalog.findVehicleByLotOrId('62345678').make,'CHEVROLET');
  assert.ok(fs.existsSync(path.join(dir,'backups',result.backup)));
  const {DatabaseSync}=require('node:sqlite');
