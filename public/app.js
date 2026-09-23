@@ -1104,9 +1104,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
     const options = getSelectedCalcOptions();
     const breakdown = calculateCostBreakdown(b, options);
+    const breakdownOpen = wrap.querySelector('.calc-price-details')?.open || false;
 
     wrap.innerHTML = `
       <div class="calc-breakdown-container">
+        <details class="calc-price-details" ${breakdownOpen ? 'open' : ''}>
+          <summary>${currentLang==='en'?'Price breakdown':'Desglose de precios'} <span aria-hidden="true">⌄</span></summary>
         <div class="calc-breakdown-list">
           <div class="calc-row">
             <div class="calc-label"><span class="calc-icon">🏎️</span> <span>${t('yourBid')}</span></div>
@@ -1185,6 +1188,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <strong class="calc-val red-text">${breakdown.apvDiscount ? `<del>${money(breakdown.apvFeeBase)}</del> ` : ''}${money(breakdown.apvFee)}</strong>
           </div>
         </div>
+
+        </details>
 
         ${breakdown.apvDiscount ? `<p class="membership-calculator-note">${currentLang==='en'?'Membership discount applied to APV fees':'Descuento de tu membresía aplicado a los fees APV'}: −${money(breakdown.apvDiscount)}</p>` : window.apvMembership?.available() ? `<div class="membership-calculator-note"><span>${currentLang==='en'?'With APV Plus, save US$100 on the APV fee for this purchase. Membership billed separately.':'Con APV Plus, descuenta US$100 del fee APV de esta compra. La membresía se paga por separado.'}</span><button type="button" class="link-button" data-member-plans>${currentLang==='en'?'Compare plans':'Comparar planes'}</button></div>` : ''}
         <div class="calc-total-box">
