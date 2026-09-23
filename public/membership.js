@@ -43,7 +43,7 @@
   async function prompt(context) {
     if (currentPlan().id !== 'free') return true;
     const titles = { registration: copy('Tu cuenta gratis está lista','Your free account is ready'), bid: copy('Antes de solicitar tu puja','Before requesting your bid') };
-    return messageDialog(titles[context] || copy('Conoce tus beneficios','Explore your benefits'), copy('Puedes continuar con tu cuenta gratis o elegir una membresía anual para ahorrar en los servicios de APV.','Continue with your free account or choose an annual membership to save on APV services.'), true);
+    return messageDialog(titles[context] || copy('Conoce tus beneficios','Explore your benefits'), copy('Ahorra en tarifas APV con una membresía anual.','Save on APV fees with an annual membership.'), true);
   }
   function render() {
     if (!root || !config) return;
