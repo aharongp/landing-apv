@@ -147,7 +147,45 @@
       <div class="hero-header-center reveal-on-scroll">
         <h1 data-i18n="heroMainTitle">Compra tu vehículo en subastas de EE. UU. sin complicarte.</h1>
         <p data-i18n="heroMainSub">Busca autos usados y con título de salvamento, realiza ofertas y gana online. Sin necesidad de licencia. Bajas tarifas.</p>
-        <button id="hero-register-cta" class="btn btn-primary hero-register-cta" type="button" data-i18n="heroRegister">Crea tu cuenta gratis</button>
+<section id="hero-registration" class="hero-registration" aria-labelledby="hero-registration-title">
+<h2 id="hero-registration-title" data-i18n="registerDirectTitle">Crea tu cuenta gratis</h2>
+      <form id="hero-register-form" class="auth-form hero-registration-form">
+        <label><span data-i18n="fullName">Nombre completo</span><input id="hero-register-name" type="text" autocomplete="name" required /></label>
+        <label><span data-i18n="email">Correo electrónico</span><input id="hero-register-email" type="email" autocomplete="email" required /></label>
+        <label>
+          <span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
+          <div class="phone-input-group">
+            <select id="hero-register-country-code" class="country-code-select" aria-label="Código de país" data-i18n-aria-label="countryCode">
+              <option value="+1">🇺🇸 +1 (EE. UU.)</option>
+              <option value="+58">🇻🇪 +58 (Venezuela)</option>
+              <option value="+52">🇲🇽 +52 (México)</option>
+              <option value="+57">🇨🇴 +57 (Colombia)</option>
+              <option value="+34">🇪🇸 +34 (España)</option>
+              <option value="+54">🇦🇷 +54 (Argentina)</option>
+              <option value="+56">🇨🇱 +56 (Chile)</option>
+              <option value="+51">🇵🇪 +51 (Perú)</option>
+              <option value="+593">🇪🇨 +593 (Ecuador)</option>
+              <option value="+502">🇬🇹 +502 (Guatemala)</option>
+              <option value="+503">🇸🇻 +503 (El Salvador)</option>
+              <option value="+504">🇭🇳 +504 (Honduras)</option>
+              <option value="+505">🇳🇮 +505 (Nicaragua)</option>
+              <option value="+506">🇨🇷 +506 (Costa Rica)</option>
+              <option value="+507">🇵🇦 +507 (Panamá)</option>
+              <option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
+              <option value="+598">🇺🇾 +598 (Uruguay)</option>
+              <option value="+591">🇧🇴 +591 (Bolivia)</option>
+              <option value="+509">🇭🇹 +509 (Haití)</option>
+              <option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
+            </select>
+            <input id="hero-register-phone" type="tel" autocomplete="tel" placeholder="414 123 4567" required />
+          </div>
+        </label>
+        <label><span data-i18n="password">Contraseña</span><input id="hero-register-password" type="password" minlength="8" autocomplete="new-password" required /></label>
+        <button class="btn btn-primary full" type="submit" data-i18n="heroRegister">Crea tu cuenta gratis</button>
+        <small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
+      </form>
+<div id="hero-register-status" class="auth-status hidden" role="alert"></div>
+</section>
       </div>
 
       <div class="hero-filter-card-wrap reveal-on-scroll">

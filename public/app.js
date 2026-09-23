@@ -29,7 +29,7 @@
     bidVehicleMini: $('#bid-vehicle-mini'), bidAmountStep: $('#bid-step-amount'), bidChatStep: $('#bid-step-chat'), chatContext: $('#chat-context'),
     kommoFallback: $('#kommo-fallback'), fallbackPayload: $('#fallback-payload'), autoMessagePreview: $('#auto-message-preview'), toast: $('#toast'), chatTabsContainer: $('#chat-history-selector'),
     authOverlay: $('#auth-overlay'), authButton: $('#auth-button'), accountChip: $('#account-chip'), accountAvatar: $('#account-avatar'),
-    accountName: $('#account-name'), accountEmail: $('#account-email'), authReason: $('#auth-reason'), authStatus: $('#auth-status'),
+    accountName: $('#account-name'), accountEmail: $('#account-email'), authTitle: $('#auth-title'), authReason: $('#auth-reason'), authStatus: $('#auth-status'),
     heroSearchForm: $('#hero-search-form'), heroSearchInput: $('#hero-search-input'), heroQuickResults: $('#hero-quick-results'), heroVehicleCard: $('#hero-vehicle-card'),
     heroFilterForm: $('#hero-filter-form'), heroFilterMake: $('#hero-filter-make'), heroFilterModel: $('#hero-filter-model'),
     heroFilterYearMin: $('#hero-filter-year-min'), heroFilterYearMax: $('#hero-filter-year-max'), heroFilterBuyNow: $('#hero-filter-buy-now'), heroRunDrive: $('#hero-filter-run-drive'), heroFilterState: $('#hero-filter-state'),
@@ -1416,7 +1416,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   function applyUser(user){
     state.user=user||null;
-    $('#hero-register-cta')?.classList.toggle('hidden',Boolean(user));
+    $('#hero-registration')?.classList.toggle('hidden',Boolean(user));
     window.apvMembership?.setUser(user);
     state.accountFavorites=[];
     state.favoritesReady=user?loadAccountFavorites():Promise.resolve();
@@ -1467,21 +1467,29 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   async function submitRegister(e){
     e.preventDefault(); setAuthStatus('');
+    const inline=e.currentTarget.id==='hero-register-form';
+    const prefix=inline?'hero-register':'register';
+    const status=$('#hero-register-status');
+    if(inline){ status.classList.add('hidden'); status.textContent=''; }
     const button=e.currentTarget.querySelector('button[type=submit]'); button.disabled=true;
-    const email = $('#register-email').value.trim();
-    const countryCode = $('#register-country-code')?.value || '+1';
-    const rawPhone = $('#register-phone').value.trim();
+    const email = $(`#${prefix}-email`).value.trim();
+    const countryCode = $(`#${prefix}-country-code`)?.value || '+1';
+    const rawPhone = $(`#${prefix}-phone`).value.trim();
     const phone = rawPhone.startsWith('+') ? rawPhone : `${countryCode} ${rawPhone}`;
 
     try{
-      const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$('#register-name').value,email,phone,password:$('#register-password').value})});
+      const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$(`#${prefix}-name`).value,email,phone,password:$(`#${prefix}-password`).value})});
+      if(inline) openAuth(t('checkEmailReason'),null,'register',true);
+      state.inlineRegistration=inline;
       state.pendingVerifyEmail = email;
       dom.authOverlay.querySelector('.auth-modal').classList.add('verification-pending');
       dom.authTitle.textContent=t('checkEmailTitle');
       dom.authReason.textContent=t('checkEmailReason');
       $('.auth-tabs',dom.authOverlay).classList.add('hidden');
       $('#register-form').classList.add('hidden');
+      $('#login-form').classList.add('hidden');
       $('#verify-form').classList.remove('hidden');
+      $('#verify-code').value='';
       if ($('#verify-target-email')) $('#verify-target-email').textContent = email;
       if (d.devCode) {
         $('#verify-code').value = d.devCode;
@@ -1489,7 +1497,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       }
       showToast(d.message || 'Código de 6 dígitos enviado.');
       requestAnimationFrame(()=>$('#verify-code')?.focus());
-    }catch(err){ setAuthStatus(err.message); }
+    }catch(err){
+      if(inline){ status.textContent=err.message; status.dataset.kind='error'; status.classList.remove('hidden'); }
+      else setAuthStatus(err.message);
+    }
     finally{ button.disabled=false; }
   }
 
@@ -1868,9 +1879,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   dom.accountChip.addEventListener('focusout',e=>{
     if(!dom.accountChip.contains(e.relatedTarget)) closeAccountMenu();
   });
-  $('#hero-register-cta').addEventListener('click',()=>{
-    openAuth(t('registerDirectReason'),null,'register',true);
-  });
+  $('#hero-register-form').addEventListener('submit',submitRegister);
   $('#hero-filters-toggle').addEventListener('click',()=>{
     const button=$('#hero-filters-toggle');
     const open=button.getAttribute('aria-expanded')!=='true';
@@ -1887,6 +1896,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   $('#register-form').addEventListener('submit',submitRegister);
   $('#verify-form')?.addEventListener('submit',submitVerify);
   $('#verify-back')?.addEventListener('click',()=>{
+    if(state.inlineRegistration){
+      closeAuth();
+      $('#hero-register-email').focus();
+      return;
+    }
     const modal=dom.authOverlay.querySelector('.auth-modal');
     modal.classList.remove('verification-pending');
     dom.authTitle.textContent=t('registerDirectTitle');
