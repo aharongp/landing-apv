@@ -1193,14 +1193,19 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
         ${breakdown.apvDiscount ? `<p class="membership-calculator-note">${currentLang==='en'?'Membership discount applied to APV fees':'Descuento de tu membresía aplicado a los fees APV'}: −${money(breakdown.apvDiscount)}</p>` : window.apvMembership?.available() ? `<div class="membership-calculator-note"><span>${currentLang==='en'?'With APV Plus, save US$100 on the APV fee for this purchase. Membership billed separately.':'Con APV Plus, descuenta US$100 del fee APV de esta compra. La membresía se paga por separado.'}</span><button type="button" class="link-button" data-member-plans>${currentLang==='en'?'Compare plans':'Comparar planes'}</button></div>` : ''}
         <div class="calc-total-box">
-          <div class="calc-total-left">
-            <span class="calc-total-eyebrow">${t('totalToPay')}</span>
-            <h2 class="calc-total-amount">${money(breakdown.total)}</h2>
-            <small class="calc-total-note">* Nota: Las tarifas y honorarios son estimados y pueden variar de acuerdo con la subasta, ubicación del vehículo y regulaciones aplicables. No incluye costos de flete/transporte ni impuestos locales.</small>
+          <div class="calc-total-highlight">
+            <span class="calc-total-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8v4H8zM8 14h1m3 0h1m3 0h0M8 18h1m3 0h1m3 0h0"/></svg></span>
+            <div class="calc-total-left">
+              <span class="calc-total-eyebrow">${currentLang==='en'?'Estimated total to pay':'Total estimado a pagar'}</span>
+              <h2 class="calc-total-amount">${money(breakdown.total)}</h2>
+            </div>
           </div>
-          <button class="btn btn-red-action" id="calc-proceed-bid" data-calc-bid-val="${breakdown.bid}">
-            ${t('bidWithThisAmount')} →
-          </button>
+          <div class="calc-total-action">
+            <button class="btn btn-red-action" id="calc-proceed-bid" data-calc-bid-val="${breakdown.bid}">
+              ${t('bidWithThisAmount')} →
+            </button>
+          </div>
+          <small class="calc-total-note">${currentLang==='en'?'* Fees are estimates and may vary by auction, vehicle location and applicable regulations. Freight/transport and local taxes are not included.':'* Nota: Las tarifas y honorarios son estimados y pueden variar de acuerdo con la subasta, ubicación del vehículo y regulaciones aplicables. No incluye costos de flete/transporte ni impuestos locales.'}</small>
         </div>
       </div>
     `;
