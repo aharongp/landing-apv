@@ -1416,6 +1416,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   function applyUser(user){
     state.user=user||null;
+    syncHeroOrder();
     $('#hero-registration')?.classList.toggle('hidden',Boolean(user));
     window.apvMembership?.setUser(user);
     state.accountFavorites=[];
@@ -1879,6 +1880,18 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   dom.accountChip.addEventListener('focusout',e=>{
     if(!dom.accountChip.contains(e.relatedTarget)) closeAccountMenu();
   });
+  function syncHeroOrder(){
+    const hero=$('.hero-centered');
+    const heading=$('.hero-header-center');
+    const filters=$('.hero-filter-card-wrap');
+    if(window.matchMedia('(max-width:768px)').matches && !state.user){
+      hero.insertBefore(filters,heading);
+    }else{
+      heading.after(filters);
+    }
+  }
+  window.matchMedia('(max-width:768px)').addEventListener('change',syncHeroOrder);
+  syncHeroOrder();
   $('#hero-register-form').addEventListener('submit',submitRegister);
   $('#hero-filters-toggle').addEventListener('click',()=>{
     const button=$('#hero-filters-toggle');

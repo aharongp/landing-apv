@@ -3670,14 +3670,13 @@ footer .brand-logo-img {
 @media(max-width:540px){.membership-dialog h2{font-size:21px}.membership-promo-grid{gap:8px}.membership-promo-grid section p{font-size:13px}.membership-promo-note{line-height:1.4!important}.membership-dialog .btn{font-size:13px;padding:11px 12px}}
 
 body:has(#auth-overlay:not(.hidden)) .cookie-banner{visibility:hidden;pointer-events:none}
-.hero-registration{max-width:960px;margin:16px auto 0;padding:18px;background:#fff;border:1px solid #dce3ed;border-radius:18px;text-align:left;box-shadow:0 8px 24px #0f172a08}
-.hero-registration h2{font-size:20px;margin:0 0 12px;color:#0f172a}
-.hero-registration-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
+.hero-registration{max-width:680px;margin:20px auto 0;padding:24px;background:#fff;border:1px solid #dce3ed;border-radius:18px;text-align:left;box-shadow:0 8px 24px #0f172a08}
+.hero-registration h2{font-size:22px;margin:0 0 20px;color:#0f172a}
+.hero-registration-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px;align-items:end}
 .hero-registration-form label{min-width:0;font-size:13px}
 .hero-registration-form input,.hero-registration-form select{min-width:0;width:100%;font-size:16px}
 .hero-registration-form .phone-input-group{min-width:0;gap:6px}
-.hero-registration-form .country-code-select{width:78px;flex:0 0 78px}
-.hero-registration-form button{grid-column:1/3}
-.hero-registration-form small{grid-column:3/5;align-self:center;color:#64748b;font-size:12px;line-height:1.5}
-@media(max-width:768px){.hero-registration{padding:16px}.hero-registration-form{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-registration-form button,.hero-registration-form small{grid-column:1/-1}}
-@media(max-width:420px){.hero-registration-form{grid-template-columns:minmax(0,1fr)}}
+.hero-registration-form .country-code-select{width:96px;flex:0 0 96px;padding-inline:8px}
+.hero-registration-form button{grid-column:1/-1;margin-top:2px}
+.hero-registration-form small{grid-column:1/-1;text-align:center;color:#64748b;font-size:12px;line-height:1.5;margin-top:-8px}
+@media(max-width:768px){.hero-registration{padding:20px;margin-top:24px}.hero-registration h2{font-size:21px;margin-bottom:18px}.hero-registration-form{grid-template-columns:minmax(0,1fr);gap:16px}.hero-registration-form small{margin-top:-4px}}
