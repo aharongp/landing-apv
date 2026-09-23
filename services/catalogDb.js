@@ -783,13 +783,19 @@ function queryVehicles(params = {}) {
     featuredClean: "RANDOM()"
   };
 
-  const orderBy = sortSqlMap[sort] || sortSqlMap.saleSoon;
+  // Keep a stable shuffle across pages; searches and filters use auction order.
+  const randomOrder = sort === 'auto' && whereClauses.length === 0;
+  const rawSeed = Number(params.seed);
+  const seed = Number.isSafeInteger(rawSeed) && rawSeed > 0 && rawSeed <= 1001000000 ? rawSeed : 15485863;
+  const orderBy = randomOrder
+    ? '((CAST(lot AS INTEGER) % 2147483647) * ?) % 2147483647, lot ASC'
+    : sortSqlMap[sort] || sortSqlMap.saleSoon;
   const pages = Math.max(1, Math.ceil(total / pageSize));
   const safePage = Math.min(page, pages);
   const offset = (safePage - 1) * pageSize;
 
   const dataSql = `SELECT * FROM vehicles ${whereSql} ORDER BY ${orderBy} LIMIT ? OFFSET ?`;
-  const rows = database.prepare(dataSql).all(...bindings, pageSize, offset);
+  const rows = database.prepare(dataSql).all(...bindings, ...(randomOrder ? [seed] : []), pageSize, offset);
 
   return {
     items: rows.map(rowToVehicle),

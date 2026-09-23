@@ -484,13 +484,13 @@ function getVehicles(url, user) {
   const odometerMax = num(url.searchParams.get('odometerMax'));
   const keysOnly = url.searchParams.get('keysOnly') === '1';
   const buyNowOnly = url.searchParams.get('buyNowOnly') === '1';
-  const sort = str(url.searchParams.get('sort')) || 'saleSoon';
+  const sort = str(url.searchParams.get('sort')) || 'auto';
 
   const res = catalogDb.queryVehicles({
     page, pageSize, q, make, state, damage, runState,
     model: url.searchParams.get('model'), runAndDrive: url.searchParams.get('runAndDrive'),
     favorites: url.searchParams.has('favorites') ? url.searchParams.get('favorites') : undefined,
-    yearMin, yearMax, priceMax, odometerMax, keysOnly, buyNowOnly, sort
+    yearMin, yearMax, priceMax, odometerMax, keysOnly, buyNowOnly, sort, seed: url.searchParams.get('seed')
   });
 
   return {

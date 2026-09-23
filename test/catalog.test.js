@@ -84,3 +84,20 @@ test('featured sample is unique, public and invalidated after expiry, imports an
  assert.deepEqual(catalog.getFeaturedVehicles().items.map(v=>v.lot),['90000000']);
  catalog.clearVehicles();assert.deepEqual(catalog.getFeaturedVehicles().items,[]);
 });
+
+test('automatic catalog order shuffles consistently across pages and respects searches and sorts',()=>{
+ const vehicles=Array.from({length:30},(_,i)=>row(String(81000000+i)));
+ catalog.upsertCatalogFromCsv(csv(vehicles));
+ const lots=params=>catalog.queryVehicles(params).items.map(v=>v.lot);
+ const base={sort:'auto',seed:987654321,pageSize:6};
+ const first=lots(base),second=lots({...base,page:2});
+ assert.deepEqual(lots(base),first);
+ assert.equal(new Set([...first,...second]).size,12);
+ assert.notDeepEqual(lots({...base,seed:123456789}),first);
+ assert.notDeepEqual(first,lots({sort:'saleSoon',pageSize:6}));
+ for(const filter of [{q:'silverado 2023'},{make:'CHEVROLET'},{model:'SILVERADO'},{runAndDrive:'1'},{yearMin:2020}]){
+  assert.deepEqual(lots({...base,...filter}),lots({...base,...filter,sort:'saleSoon'}));
+ }
+ assert.deepEqual(lots({...base,sort:'newest'}),lots({sort:'newest',pageSize:6}));
+ assert.equal(lots({...base,seed:'bad input'}).length,6);
+});

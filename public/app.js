@@ -6,6 +6,7 @@
   const state = {
     page: 1,
     pageSize: 18,
+    catalogSeed: 1000001 + crypto.getRandomValues(new Uint32Array(1))[0] % 1000000000,
     filters: null,
     favoritesOnly: false,
     accountFavorites: [],
@@ -190,7 +191,7 @@
       catalogTitle: 'Encuentra el vehículo correcto.',
       resultsAvailable: 'resultados disponibles.',
       catalogSearchPlaceholder: 'Ej. Silverado 2023, número de lote o VIN',
-      search: 'Buscar',
+      search: 'Buscar', sortAuto: 'Aleatorio / búsqueda',
       navPlans: 'Planes', membershipEyebrow: 'MEMBRESÍAS APV MOTORS', membershipTitle: 'Elige cómo quieres comprar tu próximo vehículo.', membershipIntro: 'Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.', membershipNudge: '¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.',
       myFavorites: '♥ Mis favoritos', availableFavorites: 'Vehículos guardados que siguen disponibles',
       filtersTitle: 'Filtros',
@@ -292,7 +293,7 @@
       step4Title: 'Set your maximum bid', step4Text: 'Select “I want to bid” and enter your maximum offer. No automatic charge is made.',
       step5Title: 'Confirm with an advisor', step5Text: 'Continue in the APV chat to coordinate and confirm your bid request.', step5Link: 'by clicking here.',
       step6Title: 'Review your requests', step6Text: 'Open “My account → My bids” to resume conversations. Saved vehicles are under “My favorites”.',
-      catalogEyebrow: 'AUCTION CATALOG', catalogTitle: 'Find the right vehicle.', resultsAvailable: 'results available.', catalogSearchPlaceholder: 'E.g. Silverado 2023, lot number or VIN', search: 'Search',
+      catalogEyebrow: 'AUCTION CATALOG', catalogTitle: 'Find the right vehicle.', resultsAvailable: 'results available.', catalogSearchPlaceholder: 'E.g. Silverado 2023, lot number or VIN', search: 'Search', sortAuto: 'Random / search',
       navPlans: 'Plans', membershipEyebrow: 'APV MOTORS MEMBERSHIPS', membershipTitle: 'Choose how to buy your next vehicle.', membershipIntro: 'Start free. When you are ready to buy, add discounts and guidance.', membershipNudge: 'Ready to buy? Explore APV fee discounts and included consultations.',
       myFavorites: '♥ My favorites', availableFavorites: 'Saved vehicles still available',
       filtersTitle: 'Filters',
@@ -609,7 +610,7 @@
   function updateOdometerLabel(){ dom.odometerLabel.textContent=Number(dom.odometer.value||0).toLocaleString('en-US')+' mi'; }
 
   function params(){
-    const p=new URLSearchParams({page:String(state.page),pageSize:String(state.pageSize),sort:dom.sort.value});
+    const p=new URLSearchParams({page:String(state.page),pageSize:String(state.pageSize),sort:dom.sort.value,seed:String(state.catalogSeed)});
     if(dom.model.value) p.set('model',dom.model.value);
     if(dom.runDrive.checked) p.set('runAndDrive','1');
     if(state.favoritesOnly) p.set('favorites',readFavorites().join(','));
@@ -1682,7 +1683,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   function clearFilters(reload=true){
     $('#favorites-heading').classList.add('hidden');
     $('#my-favorites-button').setAttribute('aria-pressed','false');
-    dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; dom.heroFilterYearMin.value=''; dom.heroFilterYearMax.value=''; dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.keys.checked=false; dom.buyNow.checked=false; dom.sort.value='saleSoon';
+    dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; dom.heroFilterYearMin.value=''; dom.heroFilterYearMax.value=''; dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.keys.checked=false; dom.buyNow.checked=false; dom.sort.value='auto';
     if(state.filters){ dom.yearMin.value=''; dom.yearMax.value=''; dom.odometer.value=dom.odometer.max; updateOdometerLabel(); }
     state.page=1; if(reload) loadVehicles();
   }
