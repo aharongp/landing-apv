@@ -3233,22 +3233,50 @@ footer .brand-logo-img {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  height: 54px !important;
-  margin-bottom: 8px !important;
+  width: 68px !important;
+  height: 68px !important;
+  margin-bottom: 12px !important;
+  border: 1px solid rgba(220, 38, 38, .18) !important;
+  border-radius: 22px !important;
+  color: #dc2626 !important;
+  background: linear-gradient(145deg, #fff 0%, #fff1f2 100%) !important;
+  box-shadow: 0 10px 24px rgba(185, 28, 28, .10), inset 0 1px 0 #fff !important;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
 }
 
 .step-icon-wrap svg {
-  fill: #dc2626 !important;
-  width: 44px !important;
-  height: 44px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.8 !important;
+  width: 34px !important;
+  height: 34px !important;
+  overflow: visible !important;
+}
+
+.step-icon-wrap svg * {
+  fill: none !important;
+  stroke: currentColor !important;
+  vector-effect: non-scaling-stroke;
+}
+
+.step-minimal-item:hover .step-icon-wrap {
+  transform: translateY(-3px) !important;
+  border-color: rgba(220, 38, 38, .34) !important;
+  box-shadow: 0 14px 28px rgba(185, 28, 28, .16), inset 0 1px 0 #fff !important;
 }
 
 .step-minimal-num {
-  font-size: 22px !important;
+  min-width: 28px !important;
+  min-height: 22px !important;
+  padding: 4px 8px !important;
+  border-radius: 999px !important;
+  background: #dc2626 !important;
+  font-size: 11px !important;
   font-weight: 900 !important;
-  color: #111827 !important;
+  color: #fff !important;
   margin-bottom: 8px !important;
   line-height: 1 !important;
+  letter-spacing: .05em !important;
 }
 
 .step-minimal-item h3 {
