@@ -969,8 +969,9 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
         <div class="calc-grid-layout">
           <!-- LEFT SIDE: Opciones que afectan los fees -->
-          <div class="calc-options-card">
-            <h4 class="calc-options-title">⚙️ Parámetros de la Oferta</h4>
+          <details class="calc-options-card">
+            <summary class="calc-options-title">Parámetros de la oferta <span class="calc-options-chevron" aria-hidden="true">⌄</span></summary>
+            <div class="calc-options-fields">
 
             <!-- Método de Pago -->
             <div class="calc-opt-group">
@@ -1037,7 +1038,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
                 </label>
               </div>
             </div>
-          </div>
+            </div>
+          </details>
 
           <!-- RIGHT SIDE: Calculadora más pequeña -->
           <div class="calc-breakdown-card">
@@ -1064,11 +1066,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
                     <input type="number" id="calc-bid-input" class="calc-bid-input" min="100" step="50" value="" placeholder="Ingresa tu tope de puja" />
                     <span class="currency-code">USD</span>
                   </div>
-                  <div class="calc-quick-add">
-                    <button type="button" class="btn-quick-add" data-add="250">+$250</button>
-                    <button type="button" class="btn-quick-add" data-add="500">+$500</button>
-                    <button type="button" class="btn-quick-add" data-add="1000">+$1,000</button>
-                  </div>
+
                 </div>
               </div>
 
@@ -1723,18 +1721,6 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       return;
     }
 
-    const quickAdd = e.target.closest('[data-add]');
-    if (quickAdd) {
-      const input = $('#calc-bid-input');
-      if (input) {
-        const current = Number(input.value || 0);
-        const add = Number(quickAdd.dataset.add || 0);
-        input.value = current + add;
-        updateCalculatorResults(input.value);
-      }
-      return;
-    }
-
     const authCalc = e.target.closest('[data-auth-calc]');
     if (authCalc) {
       openAuth('Regístrate o inicia sesión para usar la calculadora de costos.', { type: 'calc', lot: authCalc.dataset.authCalc });
@@ -1892,6 +1878,31 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
   window.matchMedia('(max-width:768px)').addEventListener('change',syncHeroOrder);
   syncHeroOrder();
+  const stickySearch=$('#sticky-search');
+  const stickyInput=$('#sticky-search-input');
+  let stickyFrame=0;
+  function syncStickySearch(){
+    stickyFrame=0;
+    const headerBottom=$('.topbar').getBoundingClientRect().bottom;
+    const visible=dom.heroFilterForm.getBoundingClientRect().bottom<=headerBottom;
+    stickySearch.classList.toggle('is-visible',visible);
+    stickySearch.inert=!visible;
+    stickySearch.setAttribute('aria-hidden',String(!visible));
+  }
+  function scheduleStickySearch(){
+    if(!stickyFrame) stickyFrame=requestAnimationFrame(syncStickySearch);
+  }
+  window.addEventListener('scroll',scheduleStickySearch,{passive:true});
+  window.addEventListener('resize',scheduleStickySearch);
+  if(window.ResizeObserver) new ResizeObserver(scheduleStickySearch).observe($('.hero-centered'));
+  stickySearch.addEventListener('submit',e=>{
+    e.preventDefault();
+    dom.heroSearchInput.value=stickyInput.value;
+    heroSearchToCatalog(stickyInput.value);
+  });
+  dom.heroSearchInput.addEventListener('input',()=>{stickyInput.value=dom.heroSearchInput.value;});
+  dom.search.addEventListener('input',()=>{stickyInput.value=dom.search.value;});
+  scheduleStickySearch();
   $('#hero-register-form').addEventListener('submit',submitRegister);
   $('#hero-filters-toggle').addEventListener('click',()=>{
     const button=$('#hero-filters-toggle');
