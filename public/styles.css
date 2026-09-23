@@ -3680,3 +3680,7 @@ body:has(#auth-overlay:not(.hidden)) .cookie-banner{visibility:hidden;pointer-ev
 .hero-registration-form button{grid-column:1/-1;margin-top:2px}
 .hero-registration-form small{grid-column:1/-1;text-align:center;color:#64748b;font-size:12px;line-height:1.5;margin-top:-8px}
 @media(max-width:768px){.hero-registration{padding:20px;margin-top:24px}.hero-registration h2{font-size:21px;margin-bottom:18px}.hero-registration-form{grid-template-columns:minmax(0,1fr);gap:16px}.hero-registration-form small{margin-top:-4px}}
+
+.bid-modal .chat-minimize-button{display:none}
+.bid-modal.chat-mode .bid-close-button{display:none}
+.bid-modal.chat-mode .chat-minimize-button{display:grid}
