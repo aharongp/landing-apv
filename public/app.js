@@ -147,7 +147,7 @@
       pageTitle: 'APV Motors | Subastas de vehículos en EE. UU.',
       pageDescription: 'Compra vehículos de subastas en Estados Unidos 100% online con APV Motors.',
       navCatalog: 'Catálogo',
-      navHow: 'Cómo comprar', heroRegister: 'Crea tu cuenta gratis', heroFilters: 'Buscar y filtrar vehículos',
+      navHow: 'Cómo comprar', heroRegister: 'Crea tu cuenta gratis', heroFilters: 'Más filtros',
       navHelp: 'Ayuda',
       login: 'Iniciar sesión',
       createAccount: 'Crear cuenta',
@@ -258,7 +258,7 @@
       pageTitle: 'APV Motors | Vehicle auctions in the USA',
       pageDescription: 'Buy auction vehicles in the United States 100% online with APV Motors.',
       navCatalog: 'Catalog',
-      navHow: 'How to buy', heroRegister: 'Create your free account', heroFilters: 'Search and filter vehicles',
+      navHow: 'How to buy', heroRegister: 'Create your free account', heroFilters: 'More filters',
       navHelp: 'Help',
       login: 'Log in',
       createAccount: 'Create account',
@@ -1862,7 +1862,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const button=$('#hero-filters-toggle');
     const open=button.getAttribute('aria-expanded')!=='true';
     button.setAttribute('aria-expanded',String(open));
-    $('#hero-filter-form').classList.toggle('hero-filters-open',open);
+    $('#hero-filter-options').classList.toggle('hero-filters-open',open);
   });
   const header=$('.topbar');
   const syncHeaderHeight=()=>document.documentElement.style.setProperty('--header-height',header.getBoundingClientRect().height+'px');

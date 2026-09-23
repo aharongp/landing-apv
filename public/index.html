@@ -151,7 +151,6 @@
       </div>
 
       <div class="hero-filter-card-wrap reveal-on-scroll">
-        <button id="hero-filters-toggle" class="btn btn-ghost hero-filters-toggle" type="button" aria-expanded="false" aria-controls="hero-filter-form" data-i18n="heroFilters">Buscar y filtrar vehículos</button>
         <form id="hero-filter-form" class="hero-filter-card" role="search">
           <div class="hero-filter-search-row">
             <div class="hero-filter-field full-width">
@@ -159,52 +158,57 @@
               <div class="hero-search-input-wrap">
                 <span class="hero-search-icon">⌕</span>
                 <input id="hero-search-input" type="search" placeholder="Ej. Silverado 2023, número de lote o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" />
+                <button class="hero-mobile-search-submit" type="submit" aria-label="Buscar">Buscar</button>
               </div>
             </div>
           </div>
 
-          <div class="hero-filter-grid">
-            <div class="hero-filter-field">
-              <label for="hero-filter-make" data-i18n="brand">Marca</label>
-              <select id="hero-filter-make">
-                <option value="" data-i18n="allMakes">Todas las marcas</option>
-              </select>
-            </div>
-            <div class="hero-filter-field">
-              <label for="hero-filter-model" data-i18n="model">Modelo</label>
-              <select id="hero-filter-model">
-                <option value="" data-i18n="allModels">Todos los modelos</option>
-              </select>
-            </div>
-            <div class="hero-filter-field">
-              <label for="hero-filter-state" data-i18n="state">Ubicación / Estado</label>
-              <select id="hero-filter-state">
-                <option value="" data-i18n="allMasculine">Todos</option>
-              </select>
-            </div>
-            <div class="hero-filter-field">
-              <label for="hero-filter-year-min" data-i18n="yearFrom">Año desde</label>
-              <select id="hero-filter-year-min">
-                <option value="">1998</option>
-              </select>
-            </div>
-            <div class="hero-filter-field">
-              <label for="hero-filter-year-max" data-i18n="yearTo">Año hasta</label>
-              <select id="hero-filter-year-max">
-                <option value="">2027</option>
-              </select>
-            </div>
-            <div class="hero-filter-submit-wrap">
-              <button id="hero-filter-submit" class="btn btn-primary hero-submit-btn" type="submit" data-i18n="startSearch">BUSCAR</button>
-            </div>
-          </div>
+          <button id="hero-filters-toggle" class="hero-filters-toggle" type="button" aria-expanded="false" aria-controls="hero-filter-options" data-i18n="heroFilters">Más filtros</button>
 
-          <div class="hero-filter-footer">
-            <label class="toggle-line"><input id="hero-filter-run-drive" type="checkbox" /> Run &amp; Drive</label>
-            <label class="hero-toggle-buy-now">
-              <input id="hero-filter-buy-now" type="checkbox" />
-              <span data-i18n="buyItNow">Buy it now</span>
-            </label>
+          <div id="hero-filter-options" class="hero-filter-options">
+            <div class="hero-filter-grid">
+              <div class="hero-filter-field">
+                <label for="hero-filter-make" data-i18n="brand">Marca</label>
+                <select id="hero-filter-make">
+                  <option value="" data-i18n="allMakes">Todas las marcas</option>
+                </select>
+              </div>
+              <div class="hero-filter-field">
+                <label for="hero-filter-model" data-i18n="model">Modelo</label>
+                <select id="hero-filter-model">
+                  <option value="" data-i18n="allModels">Todos los modelos</option>
+                </select>
+              </div>
+              <div class="hero-filter-field">
+                <label for="hero-filter-state" data-i18n="state">Ubicación / Estado</label>
+                <select id="hero-filter-state">
+                  <option value="" data-i18n="allMasculine">Todos</option>
+                </select>
+              </div>
+              <div class="hero-filter-field">
+                <label for="hero-filter-year-min" data-i18n="yearFrom">Año desde</label>
+                <select id="hero-filter-year-min">
+                  <option value="">1998</option>
+                </select>
+              </div>
+              <div class="hero-filter-field">
+                <label for="hero-filter-year-max" data-i18n="yearTo">Año hasta</label>
+                <select id="hero-filter-year-max">
+                  <option value="">2027</option>
+                </select>
+              </div>
+              <div class="hero-filter-submit-wrap">
+                <button id="hero-filter-submit" class="btn btn-primary hero-submit-btn" type="submit" data-i18n="startSearch">BUSCAR</button>
+              </div>
+            </div>
+
+            <div class="hero-filter-footer">
+              <label class="toggle-line"><input id="hero-filter-run-drive" type="checkbox" /> Run &amp; Drive</label>
+              <label class="hero-toggle-buy-now">
+                <input id="hero-filter-buy-now" type="checkbox" />
+                <span data-i18n="buyItNow">Buy it now</span>
+              </label>
+            </div>
           </div>
         </form>
       </div>
