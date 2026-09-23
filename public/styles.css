@@ -3595,3 +3595,10 @@ footer .brand-logo-img {
   .calc-radio-toggle{min-width:0}.calc-radio-btn{min-width:0;white-space:normal;overflow-wrap:anywhere;padding-inline:6px}.calc-row,.calc-subrow{gap:10px;flex-wrap:wrap}.calc-label{min-width:0;flex-wrap:wrap}.calc-val,.calc-total-amount{overflow-wrap:anywhere}.btn-red-action{white-space:normal}.calc-total-amount{font-size:clamp(24px,7vw,36px)}
 }
 .membership-account>*{min-width:0}.membership-account-actions{min-width:0;width:100%}.membership-account-actions .btn{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+@media(min-width:769px){
+  .hero.hero-centered{padding-top:28px;padding-bottom:36px;gap:22px}
+  .hero .hero-header-center h1{font-size:clamp(32px,3vw,44px);line-height:1.12;letter-spacing:-.035em;margin:0 auto 12px;max-width:850px}
+  .hero-header-center p{font-size:16px;line-height:1.45}.hero-filter-card{padding:20px}.hero-featured-header{margin-bottom:12px}
+}
+.membership-dialog{width:min(680px,calc(100vw - 32px))}.membership-promo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.membership-promo-grid section{background:#fff;border:1px solid #dbe3ed;border-radius:12px;padding:16px;min-width:0}.membership-promo-grid h3{margin:0 0 6px;font-size:18px}.membership-promo-grid ul{padding-left:18px;margin-bottom:0;display:grid;gap:12px;font-size:14px;line-height:1.5}.membership-dialog .membership-promo-common{margin-top:0}.membership-dialog .membership-promo-note{font-size:12px}.membership-card li.membership-benefit-group{display:block;font-size:12px;font-weight:800;color:#475569;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-top:6px}.step-minimal-item p{line-height:1.6}
+@media(max-width:540px){.membership-promo-grid{grid-template-columns:minmax(0,1fr)}.membership-dialog{padding:20px}.membership-dialog-promo{padding:12px}}
