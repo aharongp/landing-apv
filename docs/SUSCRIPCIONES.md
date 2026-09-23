@@ -5,7 +5,7 @@
 | Beneficio | Gratis | APV Plus · US$97/año | APV Premium · US$297/año |
 |---|---|---|---|
 | Inventario, favoritos y atención personalizada | Sí | Sí | Sí |
-| Reporte del historial elaborado por APV Motors | Sí | Sí | Sí |
+| Reporte del historial elaborado por APV Motors | No | Sí | Sí |
 | Descuento sobre fee APV | No | US$100 | US$200 |
 | Descuento en asesoría completa de 60 minutos | No | US$30 | US$40 |
 | Precio Quick Call de 60 minutos | US$99 | US$69 | US$59 |

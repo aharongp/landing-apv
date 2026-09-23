@@ -117,3 +117,11 @@ test('subscription updates notify CRM and failed notifications retry on webhook 
  await f.send('customer.subscription.updated',s,'evt_upgrade');assert.equal(updates.length,2);
  s.status='canceled';await f.send('customer.subscription.deleted',s,'evt_cancel');assert.deepEqual(updates.at(-1),['u1','free']);
 });
+test('history requests require an active paid membership on the server',async t=>{
+ const f=fixture(t);
+ assert.throws(()=>f.service.requestService(f.user,'history','123'),{statusCode:403});
+ await f.service.checkout(f.user,'plus');const s=f.subscription();f.subscriptions.set(s.id,s);await f.service.refresh(f.user);
+ assert.ok(f.service.requestService(f.user,'history','123').id);
+ s.status='canceled';await f.service.refresh(f.user);
+ assert.throws(()=>f.service.requestService(f.user,'history','456'),{statusCode:403});
+});

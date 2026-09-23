@@ -244,6 +244,7 @@ function createBillingService({ database, env = process.env, stripe: injectedStr
   function requestService(user, kind, lot) {
     if (!['history', 'consultation', 'included_consultation'].includes(kind)) throw error('Servicio inválido.');
     const m = membership(user.id), d = db();
+    if (kind === 'history' && m.plan.id === 'free') throw error('El reporte del historial requiere una suscripción APV Plus o Premium activa.', 403);
     d.exec('BEGIN IMMEDIATE');
     try {
       let benefit = null;

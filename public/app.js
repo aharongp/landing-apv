@@ -147,7 +147,7 @@
       pageTitle: 'APV Motors | Subastas de vehículos en EE. UU.',
       pageDescription: 'Compra vehículos de subastas en Estados Unidos 100% online con APV Motors.',
       navCatalog: 'Catálogo',
-      navHow: 'Cómo comprar',
+      navHow: 'Cómo comprar', heroRegister: 'Crea tu cuenta gratis', heroFilters: 'Buscar y filtrar vehículos',
       navHelp: 'Ayuda',
       login: 'Iniciar sesión',
       createAccount: 'Crear cuenta',
@@ -258,7 +258,7 @@
       pageTitle: 'APV Motors | Vehicle auctions in the USA',
       pageDescription: 'Buy auction vehicles in the United States 100% online with APV Motors.',
       navCatalog: 'Catalog',
-      navHow: 'How to buy',
+      navHow: 'How to buy', heroRegister: 'Create your free account', heroFilters: 'Search and filter vehicles',
       navHelp: 'Help',
       login: 'Log in',
       createAccount: 'Create account',
@@ -1407,6 +1407,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   function applyUser(user){
     state.user=user||null;
+    $('#hero-register-cta')?.classList.toggle('hidden',Boolean(user));
     window.apvMembership?.setUser(user);
     state.accountFavorites=[];
     state.favoritesReady=user?loadAccountFavorites():Promise.resolve();
@@ -1853,6 +1854,20 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   dom.accountChip.addEventListener('focusout',e=>{
     if(!dom.accountChip.contains(e.relatedTarget)) closeAccountMenu();
   });
+  $('#hero-register-cta').addEventListener('click',()=>{
+    openAuth('Crea tu cuenta gratis para guardar favoritos y solicitar pujas.');
+    switchAuthTab('register');
+  });
+  $('#hero-filters-toggle').addEventListener('click',()=>{
+    const button=$('#hero-filters-toggle');
+    const open=button.getAttribute('aria-expanded')!=='true';
+    button.setAttribute('aria-expanded',String(open));
+    $('#hero-filter-form').classList.toggle('hero-filters-open',open);
+  });
+  const header=$('.topbar');
+  const syncHeaderHeight=()=>document.documentElement.style.setProperty('--header-height',header.getBoundingClientRect().height+'px');
+  syncHeaderHeight();
+  if(window.ResizeObserver)new ResizeObserver(syncHeaderHeight).observe(header);
   $('#logout-button').addEventListener('click',logout);
   $$('[data-auth-tab]').forEach(b=>b.addEventListener('click',()=>switchAuthTab(b.dataset.authTab)));
   $('#login-form').addEventListener('submit',submitLogin);
