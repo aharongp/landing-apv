@@ -1232,6 +1232,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></svg>
           <span>${currentLang==='en'?'Share':'Compartir'}</span>
         </button>
+        <span class="detail-share-status" role="status" aria-live="polite"></span>
         <input class="detail-share-link hidden" type="text" readonly aria-label="${currentLang==='en'?'Vehicle link':'Enlace del vehículo'}" />
       </div>
       <!-- TOP GRID: Gallery (Left), Auction & Pricing (Center), Bidding Sidebar (Right) -->
@@ -1727,8 +1728,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       const fallback=$('.detail-share-link',dom.vehicleDetail);
       try{
         await navigator.clipboard.writeText(link);
+        $('.detail-share-status',dom.vehicleDetail).textContent=currentLang==='en'?'✓ Link copied':'✓ Enlace copiado';
+        fallback.classList.add('hidden');
         showToast(currentLang==='en'?'Link copied. Ready to share.':'Enlace copiado. Ya puedes compartirlo.');
       }catch{
+        $('.detail-share-status',dom.vehicleDetail).textContent=currentLang==='en'?'Select and copy the link below.':'Selecciona y copia el enlace de abajo.';
         fallback.value=link;
         fallback.classList.remove('hidden');
         fallback.focus();
@@ -2268,11 +2272,15 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const inventoryReady = loadVehicles();
     const authReady = initAuth();
     const filtersReady = initFilters().catch(e=>console.warn('[APV] Filters init note:',e));
-    await Promise.allSettled([featuredReady, inventoryReady, authReady, filtersReady]);
-    try {
-      const m=location.pathname.match(/^\/vehiculo\/([^/]+)/);
-      if(m) await openDetail(decodeURIComponent(m[1]),false);
-    } catch(_){}
+    // Open shared vehicles independently of slower inventory, filters and login requests.
+    const sharedMatch=location.pathname.match(/^\/vehiculo\/([^/]+)/);
+    const detailReady=sharedMatch ? openDetail(decodeURIComponent(sharedMatch[1]),false) : Promise.resolve();
+    await Promise.allSettled([authReady,detailReady]);
+    if(sharedMatch && state.user && state.currentVehicle && !dom.vehicleOverlay.classList.contains('hidden')){
+      // Refresh authenticated fields without replacing the vehicle selected by the visitor.
+      await openDetail(state.currentVehicle.lot,false);
+    }
+    await Promise.allSettled([featuredReady,inventoryReady,filtersReady]);
   }
   boot();
 })();

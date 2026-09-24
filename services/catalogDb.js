@@ -845,7 +845,7 @@ function getFilterMetadata() {
 function findVehicleByLotOrId(id) {
   const database = initDatabase();
   pruneExpired();
-  const row = database.prepare("SELECT * FROM vehicles WHERE lot = ? OR id = ? LIMIT 1").get(String(id), String(id));
+  const row = database.prepare("SELECT * FROM vehicles WHERE lot = ? OR id = ? ORDER BY CASE WHEN lot = ? THEN 0 ELSE 1 END LIMIT 1").get(String(id), String(id), String(id));
   return rowToVehicle(row);
 }
 

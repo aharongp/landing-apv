@@ -101,3 +101,9 @@ test('automatic catalog order shuffles consistently across pages and respects se
  assert.deepEqual(lots({...base,sort:'newest'}),lots({sort:'newest',pageSize:6}));
  assert.equal(lots({...base,seed:'bad input'}).length,6);
 });
+
+test('shared lot lookup takes priority over a different vehicle internal id',()=>{
+ catalog.upsertCatalogFromCsv(csv([row('91000001'),row('91000002')]));
+ catalog.initDatabase().prepare('UPDATE vehicles SET id = ? WHERE lot = ?').run('91000002','91000001');
+ assert.equal(catalog.findVehicleByLotOrId('91000002').lot,'91000002');
+});
