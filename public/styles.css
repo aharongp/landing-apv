@@ -3723,3 +3723,9 @@ details.calc-options-card{display:block}
 .calc-total-action .btn-red-action:hover{background:#b91c1c}
 .calc-total-box .calc-total-note{grid-column:1/-1;margin:0;padding-top:14px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12px;line-height:1.6}
 @media(max-width:768px){.calc-total-box{grid-template-columns:minmax(0,1fr);padding:14px;gap:16px}.calc-total-highlight{padding:18px 14px;gap:14px}.calc-total-icon{flex-basis:52px;width:52px;height:52px}.calc-total-icon svg{width:28px;height:28px}.calc-total-box .calc-total-amount{font-size:clamp(32px,9vw,52px)}.calc-total-eyebrow{font-size:10px;letter-spacing:.08em}.calc-total-action{border-left:0;padding-left:0}.calc-total-action .btn-red-action{padding:16px}}
+
+.detail-share-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:0 48px 16px 0;min-width:0}
+.detail-share-button{display:inline-flex;align-items:center;gap:8px;border:1px solid #fecaca;border-radius:12px;background:#fff;color:#b91c1c;padding:10px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
+.detail-share-button:hover{background:#fff1f2}
+.detail-share-button:focus-visible{outline:2px solid #dc2626;outline-offset:3px}
+.detail-share-link{flex:1 1 240px;min-width:0;max-width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;color:#0f172a;background:#f8fafc}

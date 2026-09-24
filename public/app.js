@@ -1227,6 +1227,13 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     state.currentPhotoIdx = 0;
 
     dom.vehicleDetail.innerHTML = `
+      <div class="detail-share-toolbar">
+        <button type="button" class="detail-share-button" data-share-vehicle="${esc(v.lot)}" title="${currentLang==='en'?'Copy vehicle link':'Copiar enlace del vehículo'}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></svg>
+          <span>${currentLang==='en'?'Share':'Compartir'}</span>
+        </button>
+        <input class="detail-share-link hidden" type="text" readonly aria-label="${currentLang==='en'?'Vehicle link':'Enlace del vehículo'}" />
+      </div>
       <!-- TOP GRID: Gallery (Left), Auction & Pricing (Center), Bidding Sidebar (Right) -->
       <div class="detail-top-grid">
         <!-- Gallery Column -->
@@ -1714,6 +1721,22 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   });
 
   dom.vehicleDetail.addEventListener('click',async e=>{
+    const share=e.target.closest('[data-share-vehicle]');
+    if(share){
+      const link=new URL('/vehiculo/'+encodeURIComponent(share.dataset.shareVehicle),location.origin).href;
+      const fallback=$('.detail-share-link',dom.vehicleDetail);
+      try{
+        await navigator.clipboard.writeText(link);
+        showToast(currentLang==='en'?'Link copied. Ready to share.':'Enlace copiado. Ya puedes compartirlo.');
+      }catch{
+        fallback.value=link;
+        fallback.classList.remove('hidden');
+        fallback.focus();
+        fallback.select();
+        showToast(currentLang==='en'?'Copy the selected link to share it.':'Copia el enlace seleccionado para compartirlo.');
+      }
+      return;
+    }
     const toggleCopart = e.target.closest('#toggle-copart-group');
     if (toggleCopart) {
       const sub = $('#copart-subdetails', dom.vehicleDetail);
