@@ -805,6 +805,10 @@
     const bar=Math.min(100,Math.max(0,price/retail*100));
     return `<div class="price-comparison"><div class="price-comparison-values"><div><span>${t('comparisonBuyNow')}</span><strong>${esc(money(price))}</strong></div><div><span>${t('retail')}</span><strong>${esc(money(retail))}</strong></div></div><div class="price-comparison-track" aria-hidden="true"><span style="width:${bar}%"></span></div>${percent>0?`<span class="price-comparison-badge">${percent} % ${t('comparisonBelow')}</span>`:''}<small>${t('comparisonNote')}</small></div>`;
   }
+  const compactCatalogMedia=window.matchMedia('(max-width: 700px)');
+  compactCatalogMedia.addEventListener('change',()=>{
+    dom.list.querySelectorAll('.vehicle-card-details').forEach(details=>details.open=!compactCatalogMedia.matches);
+  });
   function renderVehicles(items){
     dom.list.innerHTML=items.map(v=>`
       <article class="vehicle-card" data-lot="${esc(v.lot)}">
@@ -812,6 +816,8 @@
         <div class="vehicle-main">
           <div class="vehicle-title-row"><h3><button type="button" data-action="detail" class="vehicle-title-button">${esc(v.title)}</button></h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
           <div class="vehicle-identifiers">⌗ ${esc(vinText(v))} &nbsp;•&nbsp; ${t('lot')} ${esc(v.lot)}</div>
+          ${comparison(v)}
+          <details class="vehicle-card-details" ${compactCatalogMedia.matches?'':'open'}><summary><span>${t('cardShowDetails')}</span><span>${t('cardHideDetails')}</span></summary>
           <div class="spec-chips">
             <span class="spec-chip">${icon('🔑')} ${v.hasKeys==='YES'?t('keyAvailable'):t('keyUnknown')}</span>
             <span class="spec-chip">${icon('⚙')} ${esc(v.transmission||t('noData'))}</span>
@@ -820,7 +826,7 @@
             ${v.cylinders?`<span class="spec-chip">${icon('⬡')} ${esc(v.cylinders)} cyl</span>`:''}
             ${v.fuel?`<span class="spec-chip">${icon('⛽')} ${esc(v.fuel)}</span>`:''}
           </div>
-          ${comparison(v)}<div class="info-grid">
+          <div class="info-grid">
             <div class="info-line"><span>${t('odometer')}</span><strong>${esc(miles(v.odometer))}${v.odometer?' ('+esc(km(v.odometer))+')':''}</strong></div>
             <div class="info-line"><span>${t('location')}</span><strong>${esc(locationLabel(v))}</strong></div>
             <div class="info-line"><span>${t('damage')}</span><strong>${esc([v.primaryDamage,v.secondaryDamage].filter(Boolean).join(' + ')||t('noData'))}</strong></div>
@@ -830,6 +836,7 @@
             <div class="info-line"><span>${t('color')}</span><strong>${esc(v.color||t('noData'))}</strong></div>
             <div class="info-line"><span>${t('retail')}</span><strong>${esc(money(v.retailValue))}</strong></div>
           </div>
+          </details>
         </div>
         <aside class="vehicle-side">
           <div class="auction-box">

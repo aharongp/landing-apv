@@ -355,3 +355,9 @@ Object.assign(window.APV_I18N.en,{"lpExplainLabel1": "What they are.", "lpExplai
 
 Object.assign(window.APV_I18N.es,{comparisonBuyNow:'Compra inmediata',comparisonBelow:'por debajo del valor al público',comparisonNote:'Precio del vehículo; no incluye tarifas, transporte ni reparaciones.'});
 Object.assign(window.APV_I18N.en,{comparisonBuyNow:'Buy now',comparisonBelow:'below estimated retail value',comparisonNote:'Vehicle price; excludes fees, shipping and repairs.'});
+
+Object.assign(window.APV_I18N.es,{lpFeaturedTitle:'Algunos autos en subasta'});
+Object.assign(window.APV_I18N.en,{lpFeaturedTitle:'Some cars at auction'});
+
+Object.assign(window.APV_I18N.es,{cardShowDetails:'Ver datos del vehículo',cardHideDetails:'Ocultar datos del vehículo'});
+Object.assign(window.APV_I18N.en,{cardShowDetails:'Show vehicle details',cardHideDetails:'Hide vehicle details'});

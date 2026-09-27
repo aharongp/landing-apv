@@ -39,3 +39,7 @@ Se restaura la selección previa de destacados, que admite puja o compra inmedia
 ## 2026-09-27T20:20:36+00:00 — Comparación compacta y selección propia de landing
 
 Precios ausentes vuelven a N/A y permanecen visibles. Bloque comparativo con menos espacio y barra más fina. /lp solicita campaign=1: Buy Now positivo y menor que retail, con foto y tipo de vehículo admitido; no impone año mínimo, daños menores ni condición Prende y corre. La home conserva su selección previa. Cachés independientes, invalidadas juntas con el inventario. Chrome confirma cuatro vehículos reales, incluyendo US$2.950 frente a US$9.500 (68,9 %); sin desbordamiento móvil. 44 pruebas aprobadas. No se compara puja contra retail. Sin push.
+
+## 2026-09-27T20:31:42+00:00 — Catálogo móvil compacto
+
+Datos de ubicación, daños, documento, condición, carrocería, color, odómetro y especificaciones agrupados en «Ver datos del vehículo», cerrado inicialmente hasta 700 px. Foto, nombre, precios, comparación Buy Now y acción de oferta permanecen visibles. En escritorio los datos están abiertos sin control desplegable. Cambio de tamaño sincroniza el estado. Chrome 390×844: tarjetas medidas de 430–437 px cerradas, ejemplo de 749 px abierto; apertura/cierre funcional. En 1440×900 los datos quedan abiertos y no hay desbordamiento horizontal. 44 pruebas aprobadas. Sin push.
