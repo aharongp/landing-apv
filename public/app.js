@@ -3,6 +3,7 @@
 
   const $ = (s, el=document) => el.querySelector(s);
   const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+  const isHome = document.body.classList.contains('home-page');
   const state = {
     page: 1,
     pageSize: 18,
@@ -510,6 +511,18 @@
     updateYearRangeLabels();
     const maxOdo=1000000; dom.odometer.max=maxOdo; dom.odometer.value=0; updateOdometerLabel();
     updateCatalogModels();
+    if(!isHome){
+      const query=new URLSearchParams(location.search);
+      for(const [key,input] of [['make',dom.make],['state',dom.state]]) if(query.has(key)) input.value=query.get(key);
+      updateCatalogModels();updateCities();
+      if(query.has('model')) dom.model.value=query.get('model');
+      dom.heroFilterMake.value=dom.make.value;updateHeroModels(dom.make.value);dom.heroFilterModel.value=dom.model.value;dom.heroFilterState.value=dom.state.value;
+      const low=Math.max(Number(dom.yearMin.min),Math.min(Number(dom.yearMax.max),Number(query.get('yearMin'))||Number(dom.yearMin.min)));
+      const high=Math.max(low,Math.min(Number(dom.yearMax.max),Number(query.get('yearMax'))||Number(dom.yearMax.max)));
+      setYearRange(low,high);
+      dom.runDrive.checked=dom.heroRunDrive.checked=query.get('runAndDrive')==='1';
+      dom.buyNow.checked=dom.heroFilterBuyNow.checked=query.get('buyNowOnly')==='1';
+    }
   }
 
   function populateYears(input,minYear,maxYear){
@@ -620,6 +633,15 @@
 
 
   function applyHeroFiltersToCatalog(){
+    if(isHome){
+      const query = new URLSearchParams();
+      for(const [key,value] of [['q',dom.heroSearchInput.value.trim()],['make',dom.heroFilterMake.value],['model',dom.heroFilterModel.value],['state',dom.heroFilterState.value]]) if(value) query.set(key,value);
+      if(Number(dom.heroFilterYearMin.value)>Number(dom.heroFilterYearMin.min)) query.set('yearMin',dom.heroFilterYearMin.value);
+      if(Number(dom.heroFilterYearMax.value)<Number(dom.heroFilterYearMax.max)) query.set('yearMax',dom.heroFilterYearMax.value);
+      if(dom.heroRunDrive.checked) query.set('runAndDrive','1');
+      if(dom.heroFilterBuyNow.checked) query.set('buyNowOnly','1');
+      location.assign('/catalogo'+(query.size?'?'+query.toString():''));return;
+    }
     const textQuery = dom.heroSearchInput ? dom.heroSearchInput.value.trim() : '';
     if(dom.search) dom.search.value = textQuery;
     if(dom.heroFilterMake && dom.make) dom.make.value = dom.heroFilterMake.value || '';
@@ -659,6 +681,7 @@
   function skeletons(){ dom.empty.classList.add('hidden'); dom.list.innerHTML=Array.from({length:6},()=>'<div class="skeleton"></div>').join(''); }
 
   async function loadVehicles(){
+    if(isHome) return;
     if(dom.zip.value.trim() && !/^\d{5}$/.test(dom.zip.value.trim())){showToast(currentLang==='en'?'Enter a 5-digit ZIP code.':'Escribe un código ZIP de 5 dígitos.');dom.zip.focus();return;}
     if(dom.yearMin.value && dom.yearMax.value && Number(dom.yearMin.value)>Number(dom.yearMax.value)){showToast(currentLang==='en'?'The starting year must not exceed the ending year.':'El año desde no puede ser mayor que el año hasta.');return;}
     const requestId = (state.catalogRequestId || 0) + 1; state.catalogRequestId = requestId;
@@ -690,6 +713,7 @@
 
   function heroSearchToCatalog(query){
     const q=String(query||'').trim();
+    if(isHome){location.assign('/catalogo'+(q?'?q='+encodeURIComponent(q):''));return;}
     dom.search.value=q;
     state.page=1;
     dom.heroQuickResults?.classList.add('hidden');
@@ -756,6 +780,7 @@
     } catch(err) { showToast(err.message); }
   }
   async function showAccountFavorites() {
+    if(isHome){location.assign('/catalogo?favorites=1');return;}
     clearFilters(false);
     state.favoritesOnly=true;
     $('#favorites-heading').classList.remove('hidden');
@@ -1252,6 +1277,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   async function openDetail(lot, push=true){
+    if(isHome){location.assign('/vehiculo/'+encodeURIComponent(lot));return;}
     try{
       state.galleryImages=[];
       const v=await getVehicle(lot); state.currentVehicle=v; renderDetail(v); dom.vehicleOverlay.classList.remove('hidden'); document.body.style.overflow='hidden';
@@ -2040,8 +2066,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   let stickyFrame=0;
   function syncStickySearch(){
     stickyFrame=0;
-    const headerBottom=$('.topbar').getBoundingClientRect().bottom;
-    const visible=dom.heroFilterForm.getBoundingClientRect().bottom<=headerBottom;
+    const visible=true;
     stickySearch.classList.toggle('is-visible',visible);
     stickySearch.inert=!visible;
     stickySearch.setAttribute('aria-hidden',String(!visible));
@@ -2379,6 +2404,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ') && e.target.matches('[data-action="detail"][role="button"]')){e.preventDefault();e.target.click();}});
 
   async function boot(){
+    if(isHome && location.hash==='#catalogo'){location.replace('/catalogo'+location.search);return;}
     initMotionEffects();
     initCookieBanner();
 
@@ -2392,9 +2418,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const featuredReady = document.body.classList.contains('catalog-page') ? Promise.resolve() : loadFeaturedVehicles();
     const entryQuery = new URLSearchParams(location.search);
     if(entryQuery.has('q')) { dom.search.value=entryQuery.get('q'); dom.heroSearchInput.value=dom.search.value; stickyInput.value=dom.search.value; }
-    const inventoryReady = loadVehicles();
+    const hasEntryFilters=['make','model','state','yearMin','yearMax','runAndDrive','buyNowOnly'].some(key=>entryQuery.has(key));
+    const inventoryReady = isHome || hasEntryFilters ? Promise.resolve() : loadVehicles();
     const authReady = initAuth();
-    const filtersReady = initFilters().catch(e=>console.warn('[APV] Filters init note:',e));
+    const filtersReady = initFilters().then(()=>{if(hasEntryFilters && !isHome) return loadVehicles();}).catch(e=>console.warn('[APV] Filters init note:',e));
     // Open shared vehicles independently of slower inventory, filters and login requests.
     const sharedMatch=location.pathname.match(/^\/vehiculo\/([^/]+)/);
     const detailReady=sharedMatch ? openDetail(decodeURIComponent(sharedMatch[1]),false) : Promise.resolve();
@@ -2404,6 +2431,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       await openDetail(state.currentVehicle.lot,false);
     }
     await Promise.allSettled([featuredReady,inventoryReady,filtersReady]);
+    if(entryQuery.get('favorites')==='1' && state.user) await showAccountFavorites();
     if(entryQuery.get('login')==='1' && !state.user) openAuth();
     if(location.hash==='#terminos') dom.termsOverlay.classList.remove('hidden');
     if(location.hash==='#privacidad') dom.privacyOverlay.classList.remove('hidden');

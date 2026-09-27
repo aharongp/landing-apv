@@ -3836,3 +3836,14 @@ details.calc-options-card{display:block}
 .catalog-page .hero { padding-top: 26px; padding-bottom: 12px; min-height: 0; }
 .catalog-page .hero-filter-card-wrap { margin-top: 0; }
 .catalog-page .catalog-section { padding-top: 20px; }
+
+/* Shared navigation and search stay available on both pages. */
+body.home-page,body.catalog-page{padding-top:calc(var(--header-height) + 66px)}
+.home-page #catalogo[hidden]{display:none!important}
+.home-page .sticky-search,.catalog-page .sticky-search{visibility:visible;opacity:1;transform:none;pointer-events:auto}
+.home-page main section[id],.catalog-page main section[id]{scroll-margin-top:calc(var(--header-height) + 80px)}
+@media(max-width:768px){
+  .home-page .topbar,.catalog-page .topbar{flex-wrap:wrap}
+  .home-page .nav-links,.catalog-page .nav-links{display:flex!important;order:3;flex-basis:100%;justify-content:space-around;gap:10px;margin:0;padding:8px 0 2px}
+  .home-page .nav-links a,.catalog-page .nav-links a{font-size:12px}
+}

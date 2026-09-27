@@ -8,7 +8,7 @@ test('catalog starts vehicle requests before account and filter requests resolve
  const end=source.indexOf('  boot();',start);
  const calls=[],resolvers=[];
  const wait=name=>()=>{calls.push(name);return new Promise(resolve=>resolvers.push(resolve));};
- const context=vm.createContext({initMotionEffects(){},initCookieBanner(){},$$:()=>[],setLanguage(){},currentLang:'es',
+ const context=vm.createContext({initMotionEffects(){},initCookieBanner(){},$$:()=>[],setLanguage(){},currentLang:'es',isHome:false,
   loadFeaturedVehicles:wait('featured'),loadVehicles:wait('vehicles'),initAuth:wait('auth'),initFilters:wait('filters'),location:{pathname:'/catalogo',search:'?q=Silverado',hash:''},document:{body:{classList:{contains:()=>true}}},URLSearchParams,stickyInput:{value:''},dom:{search:{value:''},heroSearchInput:{value:''}},console});
  vm.runInContext(source.slice(start,end),context);
  const done=context.boot();
