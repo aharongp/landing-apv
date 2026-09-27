@@ -1496,7 +1496,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if(photoViewer.open)photoViewer.close();
     dom.vehicleOverlay.classList.add('hidden');
     if(dom.bidOverlay.classList.contains('hidden')&&dom.authOverlay.classList.contains('hidden')) document.body.style.overflow='';
-    if(changeUrl && location.pathname.startsWith('/vehiculo/')) history.pushState({},'',location.pathname.replace(/\/vehiculo\/[^/]+/,'/')+location.search+location.hash);
+    if(changeUrl && location.pathname.startsWith('/vehiculo/')) history.pushState({},'',location.pathname.replace(/\/vehiculo\/[^/]+/,'/catalogo')+location.search+location.hash);
   }
 
   function setAuthStatus(message, kind='error'){
@@ -2389,7 +2389,9 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     setLanguage(currentLang);
 
     // Render inventory without waiting for account/configuration or filter metadata.
-    const featuredReady = loadFeaturedVehicles();
+    const featuredReady = document.body.classList.contains('catalog-page') ? Promise.resolve() : loadFeaturedVehicles();
+    const entryQuery = new URLSearchParams(location.search);
+    if(entryQuery.has('q')) { dom.search.value=entryQuery.get('q'); dom.heroSearchInput.value=dom.search.value; stickyInput.value=dom.search.value; }
     const inventoryReady = loadVehicles();
     const authReady = initAuth();
     const filtersReady = initFilters().catch(e=>console.warn('[APV] Filters init note:',e));
@@ -2402,6 +2404,9 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       await openDetail(state.currentVehicle.lot,false);
     }
     await Promise.allSettled([featuredReady,inventoryReady,filtersReady]);
+    if(entryQuery.get('login')==='1' && !state.user) openAuth();
+    if(location.hash==='#terminos') dom.termsOverlay.classList.remove('hidden');
+    if(location.hash==='#privacidad') dom.privacyOverlay.classList.remove('hidden');
   }
   boot();
 })();

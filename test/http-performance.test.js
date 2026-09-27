@@ -23,12 +23,18 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
  assert.equal(revalidated.status,304);assert.equal(await revalidated.text(),'');
  const plain=await fetch(base+'/app.js',{headers:{'accept-encoding':'gzip;q=0'}});
  assert.equal(plain.headers.get('content-encoding'),null);assert.equal(await plain.text(),content);
- const html=await (await fetch(base+'/')).text();
+ const landing=await (await fetch(base+'/')).text();
+ assert.ok(landing.includes('Tu próximo carro.'));
+ assert.ok(!landing.includes('id="vehicle-overlay"'));
+ const html=await (await fetch(base+'/catalogo')).text();
+ assert.ok(html.includes('id="vehicle-overlay"'));
+ assert.equal(await (await fetch(base+'/catalogo/')).text(),html);
+ assert.equal(await (await fetch(base+'/vehiculo/71000000')).text(),html);
  const crypto=require('node:crypto');
- for(const name of ['app.js','styles.css','membership.js','kommo.js']){
+ for(const name of ['app.js','styles.css','membership.js','kommo.js','landing.js','landing.css']){
    const bytes=fs.readFileSync(path.join(__dirname,'../public',name));
    const version=crypto.createHash('sha256').update(bytes).digest('hex').slice(0,16);
-   assert.ok(html.includes('/'+name+'?v='+version),name+' must have a content-specific URL');
+   assert.ok((name.startsWith('landing.')?landing:html).includes('/'+name+'?v='+version),name+' must have a content-specific URL');
    const versioned=await fetch(base+'/'+name+'?v='+version);
    assert.equal(versioned.headers.get('cache-control'),'public, max-age=31536000, immutable');
    assert.equal(await versioned.text(),bytes.toString());

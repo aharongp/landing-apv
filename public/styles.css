@@ -3827,3 +3827,12 @@ details.calc-options-card{display:block}
 
 .year-range-track input[id$="-max"]{z-index:2}
 #zip-filter-hint{font-size:11px;color:#64748b;line-height:1.4}
+
+/* Dedicated catalog: retain the search and account flows, move marketing to /. */
+.catalog-page .hero-header-center,
+.catalog-page .hero-featured-section,
+.catalog-page .steps-section,
+.catalog-page .hero-bg-orb { display: none; }
+.catalog-page .hero { padding-top: 26px; padding-bottom: 12px; min-height: 0; }
+.catalog-page .hero-filter-card-wrap { margin-top: 0; }
+.catalog-page .catalog-section { padding-top: 20px; }

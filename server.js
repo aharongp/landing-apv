@@ -695,7 +695,7 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
 // Give every deployment content-specific asset URLs, including behind CDN caches.
 const assetVersions = new Map();
 function frontendVersions() {
-  return ['app.js', 'styles.css', 'membership.js', 'kommo.js'].map(name => {
+  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.js', 'landing.css'].map(name => {
     const file = path.join(PUBLIC_DIR, name), stat = fs.statSync(file);
     let asset = assetVersions.get(name);
     if (!asset || asset.mtime !== stat.mtimeMs || asset.size !== stat.size) {
@@ -718,7 +718,8 @@ function serveFile(req, res, filePath) {
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
     '.webp': 'image/webp',
-    '.ico': 'image/x-icon'
+    '.ico': 'image/x-icon',
+    '.ttf': 'font/ttf'
   }[ext] || 'application/octet-stream';
   const stat = fs.statSync(filePath);
   const versions = ext === '.html' ? frontendVersions() : [];
@@ -728,7 +729,7 @@ function serveFile(req, res, filePath) {
     let body = fs.readFileSync(filePath);
     if (ext === '.html') {
       const hashes = Object.fromEntries(versions);
-      body = Buffer.from(body.toString('utf8').replace(/((?:src|href)=")\/(app\.js|styles\.css|membership\.js|kommo\.js)(?:\?[^"\s]*)?"/g,
+      body = Buffer.from(body.toString('utf8').replace(/((?:src|href)=")\/(app\.js|styles\.css|membership\.js|kommo\.js|landing\.js|landing\.css)(?:\?[^"\s]*)?"/g,
         (_, attr, name) => `${attr}/${name}?v=${hashes[name]}"`));
     }
     const compressible = /\.(html|css|js|json|svg)$/.test(ext) && body.length > 1024;
@@ -865,7 +866,7 @@ function knowledgeVinHtml(vin) {
 function safePublicPath(pathname) {
   let rel = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
   if (rel === 'admin' || rel === 'admin/') rel = 'admin.html';
-  if (rel.startsWith('vehiculo/')) rel = 'index.html';
+  if (rel === 'catalogo' || rel === 'catalogo/' || rel.startsWith('vehiculo/')) rel = 'catalog.html';
   const full = path.normalize(path.join(PUBLIC_DIR, rel));
   if (!full.startsWith(PUBLIC_DIR)) return null;
   return full;
