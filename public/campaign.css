@@ -65,3 +65,5 @@
 @media(max-width:700px){.lp-page .lp-hero h1{font-size:32px}.lp-page .lp-hero .lead{margin-bottom:18px}.lp-page .lp-hero .hero-video-card{margin-bottom:18px}}
 
 .home-page .hero-video-card{border:0;border-radius:20px;overflow:hidden;background:#101c32}
+
+.lp-page .auction-explainer p{color:#0f172a;font-size:17px;line-height:1.6;margin:0 0 18px}.lp-page .auction-explainer p:last-child{margin-bottom:0}

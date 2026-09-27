@@ -347,3 +347,7 @@ Object.assign(window.APV_I18N.en,{"lpBrowseAll": "View all available cars →", 
 
 Object.assign(window.APV_I18N.es,{marketing_32:'Compra tu vehículo en subastas de EE. UU.',marketing_33:'100\u00a0% online.',marketing_34:'Elige tu vehículo. APV Motors puja por ti y te acompaña hasta la entrega.'});
 Object.assign(window.APV_I18N.en,{marketing_32:'Buy your vehicle at US auctions.',marketing_33:'100% online.',marketing_34:'Choose your vehicle. APV Motors bids for you and guides you through delivery.'});
+
+Object.assign(window.APV_I18N.es,{"lpExplainLabel1": "Qué son.", "lpExplainLabel2": "Quién puede pujar.", "lpExplainLabel3": "Qué hacemos.", "lpExplain1": "Copart e IAA son subastas donde aseguradoras, bancos y flotas venden cada semana miles de autos por debajo del precio de venta al público.", "lpExplain2": "Solo concesionarios con licencia. APV Motors la tiene.", "lpExplain3": "Evaluamos el auto, te damos el costo total y pujamos por ti hasta el tope que tú apruebas."});
+
+Object.assign(window.APV_I18N.en,{"lpExplainLabel1": "What they are.", "lpExplainLabel2": "Who can bid.", "lpExplainLabel3": "What we do.", "lpExplain1": "Copart and IAA are auctions where insurers, banks and fleets sell thousands of cars every week below retail prices.", "lpExplain2": "Only licensed dealers. APV Motors holds a dealer license.", "lpExplain3": "We evaluate the car, give you the total cost and bid for you up to the limit you approve."});
