@@ -53,6 +53,6 @@ Los destacados aparecen antes de «Empieza por tus números». «Cómo comprar»
 
 ## Video del hero
 
-Integrado el archivo suministrado `cars-vsl.mp4` (1080p, 129.3 segundos, H.264/AAC). Video actualizado por el usuario; se conserva el archivo suministrado sin modificaciones. Portada extraída del propio video. Reproductor nativo con controles, playsinline y preload=none: sin descarga anticipada del video ni reproducción automática. Sustituye el marcador pendiente de YouTube.
+Integrado el archivo suministrado `cars-vsl.mp4` (1080p, 129.3 segundos, H.264/AAC). Video actualizado por el usuario; se conserva el archivo suministrado sin modificaciones. Portada extraída del propio video. Reproductor con portada interactiva, controles de reproducción, progreso, sonido, velocidad y pantalla completa; controles nativos como alternativa sin JavaScript. Usa playsinline y preload=none: sin descarga anticipada del video ni reproducción automática. Sustituye el marcador pendiente de YouTube.
 
 El servidor entrega MP4 por streaming, con soporte HTTP Range para adelantar/retroceder, HEAD, ETag y revalidación. No guarda el video completo en la caché en memoria. Verificación: reproducción real en Chrome, respuesta 206 para rangos, y 34 pruebas aprobadas.

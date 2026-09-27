@@ -157,7 +157,21 @@
         <div class="hero-assurances"><span>✓ Atención en español e inglés</span><span>✓ Asesor humano</span></div>
         <p class="home-hero-note">Explora sin registrarte. Crea tu cuenta cuando quieras guardar un vehículo o solicitar una puja.</p>
       </div>
-      <div class="hero-video-card"><div class="hero-video-label"><span>CONOCE APV MOTORS</span><span>SUBASTAS · USA</span></div><div class="hero-video-stage" id="hero-video-stage"><video id="hero-video" controls playsinline preload="none" poster="/assets/cars-vsl-poster.jpg?v=182466f81c4e" width="1920" height="1080" aria-label="Presentación de APV Motors"><source src="/assets/cars-vsl.mp4" type="video/mp4">Tu navegador no puede reproducir este video. <a href="/assets/cars-vsl.mp4">Abrir video de APV Motors</a></video></div><div class="hero-video-caption"><strong>Contigo antes, durante y después de la puja.</strong><span>Evaluación · Puja · Documentación · Transporte</span></div></div>
+      <div class="hero-video-card"><div class="hero-video-label"><span>CONOCE APV MOTORS</span><span>SUBASTAS · USA</span></div><div class="hero-video-stage" id="hero-video-stage"><video id="hero-video" controls playsinline preload="none" poster="/assets/cars-vsl-poster.jpg?v=182466f81c4e" width="1920" height="1080" aria-label="Presentación de APV Motors"><source src="/assets/cars-vsl.mp4" type="video/mp4">Tu navegador no puede reproducir este video. <a href="/assets/cars-vsl.mp4">Abrir video de APV Motors</a></video>
+        <button class="video-cover" id="video-cover" type="button" aria-label="Reproducir presentación de APV Motors" hidden><span class="video-cover-play" aria-hidden="true">▶</span><span class="video-cover-label">Conoce cómo comprar con APV</span><span class="video-cover-hint">Reproducir video · Con sonido</span></button>
+        <span class="video-status" id="video-status" role="status" hidden></span>
+        <div class="video-controls" id="video-controls" role="group" aria-label="Controles del video" hidden>
+          <input id="video-progress" class="video-progress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Posición del video" disabled>
+          <div class="video-controls-row">
+            <button id="video-toggle" type="button" aria-label="Reproducir video"><span aria-hidden="true">▶</span></button>
+            <span id="video-time" class="video-time">0:00 / --:--</span>
+            <div class="video-controls-spacer"></div>
+            <button id="video-mute" type="button" aria-label="Silenciar video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="video-sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button>
+            <select id="video-speed" aria-label="Velocidad de reproducción"><option value="1">1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+            <button id="video-fullscreen" type="button" aria-label="Ver video en pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/></svg></button>
+          </div>
+        </div>
+      </div><div class="hero-video-caption"><strong>Contigo antes, durante y después de la puja.</strong><span>Evaluación · Puja · Documentación · Transporte</span></div></div>
       <div class="home-legacy-hooks" hidden inert><section id="hero-registration" class="hero-registration" aria-labelledby="hero-registration-title">
 <h2 id="hero-registration-title" data-i18n="registerDirectTitle">Crea tu cuenta gratis</h2>
       <form id="hero-register-form" class="auth-form hero-registration-form">
