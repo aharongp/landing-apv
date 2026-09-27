@@ -6,6 +6,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { gzipSync } = require('zlib');
 const staticCache = new Map();
+const serveVideo = require('./services/videoFile');
 const { URL } = require('url');
 const kommoService = require('./services/kommo');
 const emailService = require('./services/email');
@@ -708,6 +709,7 @@ function frontendVersions() {
 
 function serveFile(req, res, filePath) {
   const ext = path.extname(filePath).toLowerCase();
+  if(ext === '.mp4') return serveVideo(req,res,filePath);
   const mime = {
     '.html': 'text/html; charset=utf-8',
     '.css': 'text/css; charset=utf-8',
@@ -1362,7 +1364,7 @@ const server = http.createServer(async (req, res) => {
       return json(res, 201, { ...intent, apvFee: billing.recordFeeQuote(user.id, intent.id, vehicle.lot, maxBid) });
     }
 
-    if (req.method === 'GET') {
+    if (req.method === 'GET' || (req.method === 'HEAD' && url.pathname.endsWith('.mp4'))) {
       const filePath = safePublicPath(url.pathname);
       if (!filePath) return text(res, 403, 'Forbidden');
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) return serveFile(req, res, filePath);

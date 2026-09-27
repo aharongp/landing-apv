@@ -50,3 +50,9 @@ Validación: 33 pruebas aprobadas, incluidas tarifas por tramo, reserva, presupu
 ## Ajuste de distribución solicitado
 
 Los destacados aparecen antes de «Empieza por tus números». «Cómo comprar» recupera exactamente los seis pasos y el marcado de `2a21439`. Se eliminó la sección «Quién te acompaña» y la foto de Alexander; las reseñas permanecen.
+
+## Video del hero
+
+Integrado el archivo suministrado `cars-vsl.mp4` (1080p, 118.5 segundos, H.264/AAC). Se conservan los streams originales y se mueve el índice MP4 al inicio con faststart. Portada extraída del propio video. Reproductor nativo con controles, playsinline y preload=none: sin descarga anticipada del video ni reproducción automática. Sustituye el marcador pendiente de YouTube.
+
+El servidor entrega MP4 por streaming, con soporte HTTP Range para adelantar/retroceder, HEAD, ETag y revalidación. No guarda el video completo en la caché en memoria. Verificación: reproducción real en Chrome, respuesta 206 para rangos, y 34 pruebas aprobadas.

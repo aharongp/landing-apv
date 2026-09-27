@@ -48,18 +48,4 @@
       touch=null;
     }, {passive:true});
   }
-  const stage = document.getElementById('hero-video-stage');
-  const id = stage?.dataset.videoId;
-  if (id && /^[\w-]{11}$/.test(id)) {
-    const play = document.createElement('button');
-    play.className='hero-video-launch';
-    play.type='button'; play.innerHTML='<span aria-hidden="true">▶</span><strong>Conoce APV Motors</strong><small>Reproducir video</small>';
-    play.addEventListener('click', () => {
-      const frame = document.createElement('iframe');
-      frame.src=`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-      frame.title='Conoce APV Motors'; frame.allow='autoplay; encrypted-media; picture-in-picture'; frame.allowFullscreen=true;
-      stage.replaceChildren(frame);frame.focus();
-    });
-    stage.replaceChildren(play);
-  }
 })();
