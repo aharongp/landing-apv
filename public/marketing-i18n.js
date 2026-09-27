@@ -361,3 +361,6 @@ Object.assign(window.APV_I18N.en,{lpFeaturedTitle:'Some cars at auction'});
 
 Object.assign(window.APV_I18N.es,{cardShowDetails:'Ver datos del vehículo',cardHideDetails:'Ocultar datos del vehículo'});
 Object.assign(window.APV_I18N.en,{cardShowDetails:'Show vehicle details',cardHideDetails:'Hide vehicle details'});
+
+Object.assign(window.APV_I18N.es,{reviewsHeadline:'La confianza de quienes ya compraron con APV Motors',reviewsAll:'Todas las reseñas'});
+Object.assign(window.APV_I18N.en,{reviewsHeadline:'Trusted by people who bought with APV Motors',reviewsAll:'All reviews'});

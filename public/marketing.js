@@ -29,7 +29,7 @@
     const template=container.querySelector('.review-slide').cloneNode(true);
     const ranked=[...data.reviews].sort((a,b)=>Number(/apv motors/i.test(b.text))-Number(/apv motors/i.test(a.text)));
     container.replaceChildren();dots.replaceChildren();
-    ranked.forEach((r,i)=>{const slide=template.cloneNode(true);slide.hidden=i!==0;slide.setAttribute('aria-label',`${i+1} / ${ranked.length}`);slide.querySelector('blockquote').textContent='“'+r.text+'”';const author=slide.querySelector('.review-author strong');author.textContent=r.author;
+    ranked.forEach((r,i)=>{const slide=template.cloneNode(true);slide.hidden=false;slide.setAttribute('aria-label',`${i+1} / ${ranked.length}`);slide.querySelector('blockquote').textContent='“'+r.text+'”';const author=slide.querySelector('.review-author strong');author.textContent=r.author;
       if(/^https:\/\//.test(r.authorUrl||'')){const link=document.createElement('a');link.href=r.authorUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent=r.author;author.replaceChildren(link);}
       slide.querySelector('.review-stars').textContent='★'.repeat(r.rating);slide.querySelector('.review-stars').setAttribute('aria-label',r.rating+'/5');slide.querySelector('.review-avatar').textContent=r.author.slice(0,2).toUpperCase();const caption=slide.querySelector('.review-author div>span');if(caption)caption.textContent=text('Reseña en Google','Google review');container.append(slide);
       const dot=document.createElement('button');dot.type='button';dot.dataset.review=i;dot.setAttribute('aria-label',text('Ver reseña de ','Read review by ')+r.author);dots.append(dot);

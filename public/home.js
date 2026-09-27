@@ -22,32 +22,35 @@
   }
   const carousel = document.querySelector('.review-carousel');
   if (carousel) {
-    let slides = [...carousel.querySelectorAll('.review-slide')];
-    let dots = [...carousel.querySelectorAll('[data-review]')];
-    let current = 0;
-    const show = index => {
-      current = (index + slides.length) % slides.length;
-      slides.forEach((slide, i) => { slide.hidden = i !== current; });
-      dots.forEach((dot, i) => { if(i === current) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current'); });
-      document.getElementById('review-position').textContent = `${current + 1} de ${slides.length}`;
+    const track=document.getElementById('review-slides');
+    let slides=[],dots=[],current=0;
+    const pageSize=()=>Math.max(1,Math.floor((track.clientWidth+24)/(slides[0]?.getBoundingClientRect().width+24||1)));
+    const pages=()=>Math.max(1,Math.ceil(slides.length/pageSize()));
+    const update=()=>{
+      const count=pages();current=Math.min(current,count-1);
+      dots.forEach((dot,i)=>{dot.hidden=i>=count;if(i===current)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');});
+      document.getElementById('review-position').textContent=`${current+1} / ${count}`;
+      document.getElementById('review-prev').disabled=current===0;
+      document.getElementById('review-next').disabled=current===count-1;
     };
-    document.getElementById('review-prev').addEventListener('click', () => show(current - 1));
-    document.getElementById('review-next').addEventListener('click', () => show(current + 1));
+    const show=index=>{
+      current=Math.max(0,Math.min(index,pages()-1));
+      const target=slides[current*pageSize()];
+      if(target)track.scrollTo({left:target.offsetLeft-slides[0].offsetLeft,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+      update();
+    };
+    const refresh=()=>{slides=[...track.querySelectorAll('.review-slide')];dots=[...carousel.querySelectorAll('[data-review]')];slides.forEach(s=>s.hidden=false);current=0;show(0);};
+    document.getElementById('review-prev').addEventListener('click',()=>show(current-1));
+    document.getElementById('review-next').addEventListener('click',()=>show(current+1));
     carousel.addEventListener('click',event=>{const dot=event.target.closest('[data-review]');if(dot)show(Number(dot.dataset.review));});
-    document.addEventListener('apv:reviews',()=>{slides=[...carousel.querySelectorAll('.review-slide')];dots=[...carousel.querySelectorAll('[data-review]')];show(0);});
-    carousel.addEventListener('keydown', event => {
-      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-        event.preventDefault(); show(current + (event.key === 'ArrowRight' ? 1 : -1));
-      }
-    });
-    let touch = null;
-    carousel.addEventListener('touchstart', e => { touch = e.touches.length === 1 ? {x:e.touches[0].clientX,y:e.touches[0].clientY} : null; }, {passive:true});
-    carousel.addEventListener('touchend', e => {
-      if(!touch) return;
-      const dx=e.changedTouches[0].clientX-touch.x, dy=e.changedTouches[0].clientY-touch.y;
-      if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)) show(current+(dx<0?1:-1));
-      touch=null;
-    }, {passive:true});
+    carousel.addEventListener('keydown',event=>{if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();show(current+(event.key==='ArrowRight'?1:-1));}});
+    track.addEventListener('scroll',()=>{
+      const step=(slides[0]?.getBoundingClientRect().width+24||1)*pageSize();
+      current=track.scrollLeft>=track.scrollWidth-track.clientWidth-2?pages()-1:Math.round(track.scrollLeft/step);update();
+    },{passive:true});
+    new ResizeObserver(()=>show(0)).observe(track);
+    document.addEventListener('apv:reviews',refresh);
+    refresh();
   }
 })();
 

@@ -219,3 +219,7 @@ Precios ausentes vuelven a N/A y permanecen visibles. Bloque comparativo con men
 ## 2026-09-27T20:31:42+00:00 — Catálogo móvil compacto
 
 Datos de ubicación, daños, documento, condición, carrocería, color, odómetro y especificaciones agrupados en «Ver datos del vehículo», cerrado inicialmente hasta 700 px. Foto, nombre, precios, comparación Buy Now y acción de oferta permanecen visibles. En escritorio los datos están abiertos sin control desplegable. Cambio de tamaño sincroniza el estado. Chrome 390×844: tarjetas medidas de 430–437 px cerradas, ejemplo de 749 px abierto; apertura/cierre funcional. En 1440×900 los datos quedan abiertos y no hay desbordamiento horizontal. 44 pruebas aprobadas. Sin push.
+
+## 2026-09-27T20:35:59+00:00 — Reseñas en tarjetas
+
+Home y /lp comparten nueva presentación: encabezado centrado, identificación de Google y tarjetas con autor, avatar de iniciales, estrellas y texto. Tres reseñas reales visibles en escritorio; carrusel horizontal con desplazamiento táctil nativo, flechas, teclado e indicadores en móvil. No se incorporan cifras de clientes ni reseñas de Trustpilot/Facebook sin fuente. Se conserva actualización opcional desde Places. Chrome confirma tres columnas en escritorio y avance 2/3 en móvil; sin desbordamiento horizontal ni errores de consola observados. 44 pruebas aprobadas. Sin push.
