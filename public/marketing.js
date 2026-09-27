@@ -23,6 +23,11 @@
 
   fetch('/api/reviews').then(r=>r.json()).then(data=>{
     if(!data.live)return;
+    const updateScore=()=>{
+      document.querySelectorAll('[data-review-score]').forEach(el=>el.textContent=Number(data.rating).toLocaleString(english()?'en-US':'es-US',{minimumFractionDigits:1,maximumFractionDigits:1}));
+      document.querySelectorAll('[data-review-score-date]').forEach(el=>el.hidden=true);
+    };
+    updateScore();document.addEventListener('apv:language',updateScore);
     const applyRating=()=>document.querySelectorAll('[data-live-rating]').forEach(el=>{el.hidden=false;el.classList.add('rating-badge');el.textContent=`★ ${data.rating} ${text('en Google','on Google')} · ${data.total} ${text('reseñas','reviews')}`;});applyRating();document.addEventListener('apv:language',applyRating);
     const container=document.querySelector('#review-slides'), dots=document.querySelector('.review-dots');
     if(!container||!data.reviews.length)return;

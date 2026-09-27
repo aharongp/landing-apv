@@ -364,3 +364,6 @@ Object.assign(window.APV_I18N.en,{cardShowDetails:'Show vehicle details',cardHid
 
 Object.assign(window.APV_I18N.es,{reviewsHeadline:'La confianza de quienes ya compraron con APV Motors',reviewsAll:'Todas las reseñas'});
 Object.assign(window.APV_I18N.en,{reviewsHeadline:'Trusted by people who bought with APV Motors',reviewsAll:'All reviews'});
+
+Object.assign(window.APV_I18N.es,{googleScoreTitle:'Nuestra calificación en Google',googleScoreLink:'Ver reseñas en Google ↗',googleScoreVerified:'Calificación verificada el'});
+Object.assign(window.APV_I18N.en,{googleScoreTitle:'Our rating on Google',googleScoreLink:'Read Google reviews ↗',googleScoreVerified:'Rating verified on'});

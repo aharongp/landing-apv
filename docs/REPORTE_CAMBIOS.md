@@ -229,3 +229,7 @@ Home y /lp comparten nueva presentación: encabezado centrado, identificación d
 Añadidas doce opiniones a las tres existentes tras consultar en Chrome la pestaña Reseñas de la ficha pública Apv Motor USA enlazada por el usuario. Autores, cinco estrellas y extractos conservados; recortes con elipsis cuando corresponden. No se fija manualmente la calificación global ni el total dinámico de Google. Fuente y extractos en docs/qa/review-sources.json.
 
 Carrusel de 15 tarjetas: cinco páginas de tres en escritorio, quince posiciones móviles; indicadores condensados. Las reseñas que eventualmente devuelva Places se combinan con las verificadas, sin duplicar autores, en lugar de reemplazarlas por un máximo de cinco. Chrome confirma 15 tarjetas y avance 2/15, sin desbordamiento móvil. 44 pruebas aprobadas. Sin push.
+
+## 2026-09-27T20:44:37+00:00 — Calificación Google destacada
+
+A petición del usuario, se incorpora bloque destacado 5,0/5 con cinco estrellas y enlace a Google sobre las reseñas compartidas de home/landing. Valor comprobado directamente en la ficha pública Apv Motor USA (enlace del usuario), que muestra 5,0 estrellas. La instantánea lleva fecha visible 27/09/2026; no se presenta como consulta automática. Si Places devuelve datos en vivo, reemplaza la cifra y oculta la fecha de la instantánea. Esta petición actualiza el criterio anterior de ocultar por completo la calificación sin API. Chrome móvil: sin desbordamiento. 44 pruebas aprobadas. Sin push.
