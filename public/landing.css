@@ -67,3 +67,11 @@
 .hero-video-stage:fullscreen{width:100%;height:100%;aspect-ratio:auto;background:#000}.hero-video-stage:fullscreen video{object-fit:contain}
 @media(max-width:640px){.video-cover{padding:16px;gap:5px}.video-cover-play{width:52px;height:52px;font-size:20px}.video-cover-label{font-size:13px;margin-top:7px}.video-cover-hint{font-size:11px}.video-controls{padding:22px 8px 4px}.video-controls-row{gap:2px}.video-time{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.video-cover-play{transition:none}}
+/* Keep controls below the picture so embedded captions remain readable. */
+.home-page .hero-video-stage.video-enhanced{aspect-ratio:auto}
+.hero-video-stage.video-enhanced video{height:auto;aspect-ratio:16/9}
+.video-enhanced .video-controls{position:relative;box-sizing:border-box;width:100%;padding:4px 12px 6px;background:#101c32}
+.hero-video-stage.video-enhanced:fullscreen{height:100%;justify-content:center}
+.hero-video-stage.video-enhanced:fullscreen video{flex:1;min-height:0;object-fit:contain}
+.hero-video-stage.video-enhanced:fullscreen .video-controls{flex-shrink:0}
+@media(max-width:640px){.video-enhanced .video-controls{padding:2px 8px 4px}}
