@@ -45,3 +45,8 @@ El orientador pide presupuesto total y una reserva indicada por el visitante par
 La tabla APV coincide con los tramos del código: 350/450/650/700 USD. No se publicaron las promesas «100% reembolsable» ni «solo cobramos si ganas» sin confirmación del propietario. El video concreto continúa pendiente. Foto de Alexander tomada de la página oficial: https://apvmotorusa.com/quienes-somos/ (archivo Fondo-Negro.png).
 
 Validación: 33 pruebas aprobadas, incluidas tarifas por tramo, reserva, presupuesto insuficiente y consistencia entre cuentas. Revisión de escritorio y móvil de 390 px en Chrome; cuatro pasos, tres destacados y tres planes presentes, sin desbordamiento horizontal. Cálculo y carrusel probados en navegador.
+
+
+## Ajuste de distribución solicitado
+
+Los destacados aparecen antes de «Empieza por tus números». «Cómo comprar» recupera exactamente los seis pasos y el marcado de `2a21439`. Se eliminó la sección «Quién te acompaña» y la foto de Alexander; las reseñas permanecen.
