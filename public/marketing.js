@@ -1,5 +1,12 @@
 (() => {
   const cfg=window.APV_MARKETING||{};
+  const campaignHero=document.querySelector('.lp-hero');
+  if(campaignHero && 'IntersectionObserver' in window){
+    const stickyObserver=new IntersectionObserver(([entry])=>{
+      document.body.classList.toggle('lp-hero-visible',entry.isIntersecting);
+    });
+    stickyObserver.observe(campaignHero);
+  }
   const english=()=>document.documentElement.lang==='en';
   const text=(es,en)=>english()?en:es;
   document.querySelectorAll('[data-license]').forEach(el=>el.textContent=cfg.license||'[LICENCIA_NO]');

@@ -181,3 +181,19 @@ Actualización posterior a la entrega inicial, en `feat/landing-reference-layout
 Se añaden las entradas «Es mi primera vez» y «Ya conozco las subastas», el presupuesto antes de destacados y cuatro pasos después. Respaldo de marca/evaluación y reseñas se sitúan después de costos/depósito. No se copian cifras de ejemplo, años de experiencia, calificaciones ni fotos de clientes sin verificar. Se mantiene la reserva explícita para gastos adicionales del presupuesto existente, evitando prometer un precio final garantizado. Nuevos textos con ES/EN.
 
 Validación: 43 pruebas aprobadas; HTML servido con video y scripts compartidos, orden correcto y sin IDs duplicados. Chrome no estuvo disponible en esta sesión: revisión visual y capturas nuevas pendientes. Las capturas y métricas anteriores corresponden a la versión anterior, no a esta reorganización. Esta revisión no se ha subido ni desplegado.
+
+## Validación en Chrome — 2026-09-27T19:24:18+00:00
+
+Completada la revisión pendiente de la landing local en Chrome, móvil 390×844 y escritorio 1440×900. Sin desbordamiento horizontal en ambos tamaños y sin errores de consola observados durante la revisión.
+
+- Video: reproducción y pausa verificadas, contador avanzó a 0:06 de 2:09.
+- Accesos del hero: navegación a explicación y presupuesto.
+- Presupuesto: US$10.000 total y US$2.000 de reserva devuelven US$6.637 de tope, US$8.000 de compra estimada y US$10.000 total orientativo.
+- Carrusel: siguiente cambia de 1 de 3 a 2 de 3.
+- FAQ de pago con tarjeta: abre la respuesta.
+- Destacados: botón abre ficha `/vehiculo/58573556`. No se enviaron pujas ni formularios de cuenta.
+- Corregido salto de línea entre «100» y «%».
+- Corregida duplicación/superposición del CTA fijo: queda oculto mientras el hero es visible y aparece al salir de él. Con banner móvil, CTA principal termina aproximadamente en y=741 y banner comienza en y=789 (alto 55 px).
+- 43/43 pruebas automatizadas aprobadas después de corregir. No se repitió Lighthouse; las métricas anteriores no corresponden a esta revisión.
+
+Capturas nuevas: [móvil con cookies](qa/lp-reference-mobile-cookies.jpg), [móvil completo](qa/lp-reference-mobile-full.jpg), [escritorio](qa/lp-reference-desktop.jpg).

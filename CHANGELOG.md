@@ -17,3 +17,7 @@ Metadatos SSR por vehículo, imagen social, favicon, 404, robots y sitemap por f
 ## 2026-09-27T19:19:47+00:00 — Landing según referencia móvil
 
 Hero de /lp con mensaje directo de compra online y video existente. Accesos para primera compra y visitantes que conocen las subastas. Orden: explicación, presupuesto, destacados, cuatro pasos, costos/depósito, respaldo APV/evaluación, reseñas, FAQ y CTA. Reutiliza cálculo y reproductor; conserva atribución al pasar del presupuesto al catálogo. Sin cifras de confianza inventadas.
+
+## 2026-09-27T19:24:18+00:00 — Validación Chrome de landing
+
+Corrección de separación de «100 %» y CTA fijo superpuesto al hero móvil. Verificados video, presupuesto, carrusel, FAQ y apertura de ficha. Evidencias móvil/escritorio en docs/qa/lp-reference-*.jpg; 43 pruebas aprobadas. Cambios locales, sin push.
