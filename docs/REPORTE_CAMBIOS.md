@@ -211,3 +211,7 @@ Los destacados requieren Buy Now mayor que cero y valor al público válido, con
 ## 2026-09-27T20:11:13+00:00 — Restauración de precios y destacados
 
 Se restaura la selección previa de destacados, que admite puja o compra inmediata, manteniendo la comparación gráfica exclusivamente con Buy Now y retail válidos. Se restauran ambos campos de precio en destacados y se mantienen visibles en catálogo; cuando el proveedor no aporta un precio positivo, muestran «Por confirmar», sin inventar importes. Chrome confirma seis destacados y ambos campos. 43 pruebas aprobadas. Esta corrección sustituye la restricción Buy Now obligatoria descrita anteriormente.
+
+## 2026-09-27T20:20:36+00:00 — Comparación compacta y selección propia de landing
+
+Precios ausentes vuelven a N/A y permanecen visibles. Bloque comparativo con menos espacio y barra más fina. /lp solicita campaign=1: Buy Now positivo y menor que retail, con foto y tipo de vehículo admitido; no impone año mínimo, daños menores ni condición Prende y corre. La home conserva su selección previa. Cachés independientes, invalidadas juntas con el inventario. Chrome confirma cuatro vehículos reales, incluyendo US$2.950 frente a US$9.500 (68,9 %); sin desbordamiento móvil. 44 pruebas aprobadas. No se compara puja contra retail. Sin push.

@@ -563,7 +563,9 @@
   document.addEventListener('apv:featured',loadFeaturedVehicles);
   async function loadFeaturedVehicles(){
     try {
-      const data = await api('/api/featured'+(window.apvFeaturedQuery?'?'+window.apvFeaturedQuery:''));
+      const featuredParams=new URLSearchParams(window.apvFeaturedQuery||'');
+      if(document.body.classList.contains('lp-page'))featuredParams.set('campaign','1');
+      const data = await api('/api/featured'+(featuredParams.size?'?'+featuredParams:''));
       state.featuredVehicles = data.items || [];
       state.featuredPage = 1;
       renderFeaturedVehicles();
@@ -795,7 +797,7 @@
     if(button) toggleFavorite(button.dataset.favorite);
   });
 
-  function cardPrice(value){return Number(value)>0?money(value):t('unconfirmedDate');}
+  function cardPrice(value){return Number(value)>0?money(value):'N/A';}
   function comparison(v){
     const price=Number(v.buyNow),retail=Number(v.retailValue);
     if(!Number.isFinite(price)||!Number.isFinite(retail)||price<=0||retail<=0)return '';

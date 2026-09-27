@@ -324,6 +324,7 @@ window.APVDisplay = (() => {
   function clean(root,lang){
     if(!root)return;
     root.querySelectorAll('.detail-card-row,.info-line,.featured-price-item,.bid-box>div,.bidding-current-bid,.spec-chip,.auction-line').forEach(el=>{
+      if(el.matches('.featured-price-item,.bid-box>div,.bidding-current-bid'))return;
       const strong=el.querySelector('strong,.bid-amount');const value=(strong?.textContent||el.textContent).trim();
       if(!value||/^(N\/A|N\/D|null|undefined)( USD)?$/i.test(value)||/N\/D|N\/A/.test(value))el.hidden=true;
     });

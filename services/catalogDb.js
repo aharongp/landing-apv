@@ -691,15 +691,21 @@ function rowToVehicle(row) {
 function getFeaturedVehicles(limit = 6, params = {}) {
   const database = initDatabase();
   pruneExpired();
-  if (!featuredPool) {
-    featuredPool = database.prepare(`SELECT lot, title, imageThumbnail, currentBid, buyNow, retailValue,
-      locationCity, locationState, saleAt FROM vehicles WHERE NOT (${SOLD_SQL}) AND ${FEATURED_CLAUSES.join(' AND ')} AND retailValue > 0 AND (currentBid > 0 OR buyNow > 0)`).all().map(row => ({
+  const campaign = params.campaign === '1';
+  const key = campaign ? 'campaign' : 'home';
+  const clauses = campaign
+    ? FEATURED_CLAUSES.filter((_,i)=>![1,2,3].includes(i)).concat('buyNow > 0', 'retailValue > buyNow')
+    : FEATURED_CLAUSES.concat('retailValue > 0', '(currentBid > 0 OR buyNow > 0)');
+  if (!featuredPool) featuredPool = {};
+  if (!featuredPool[key]) {
+    featuredPool[key] = database.prepare(`SELECT lot, title, imageThumbnail, currentBid, buyNow, retailValue,
+      locationCity, locationState, saleAt FROM vehicles WHERE NOT (${SOLD_SQL}) AND ${clauses.join(' AND ')}`).all().map(row => ({
         lot: row.lot, title: row.title, currentBid: row.currentBid, buyNow: row.buyNow, retailValue: row.retailValue,
         locationCity: row.locationCity, locationState: row.locationState, saleAt: row.saleAt,
         image: ensureHttps(row.imageThumbnail).replace(/_thb(?=\.[a-z]+(?:[?#]|$))/i, '_ful')
       }));
   }
-  const available = featuredPool.filter(v => {const price=v.buyNow>0?v.buyNow:v.currentBid;return (!v.saleAt||v.saleAt>Date.now()) && (!(Number(params.priceMin)>0)||price>Number(params.priceMin)) && (!(Number(params.priceMax)>0)||price<=Number(params.priceMax));});
+  const available = featuredPool[key].filter(v => {const price=v.buyNow>0?v.buyNow:v.currentBid;return (!v.saleAt||v.saleAt>Date.now()) && (!(Number(params.priceMin)>0)||price>Number(params.priceMin)) && (!(Number(params.priceMax)>0)||price<=Number(params.priceMax));});
   const count = Math.min(available.length, Math.max(1, Math.min(12, Number(limit) || 6)));
   const selected = new Set();
   while (selected.size < count) selected.add(Math.floor(Math.random() * available.length));

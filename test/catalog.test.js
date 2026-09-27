@@ -182,3 +182,14 @@ test('campaign inventory excludes unknown prices and retail, and respects exact 
  assert.deepEqual(catalog.queryVehicles({priceMin:10000,priceMax:15000}).items.map(v=>v.lot),['96000005']);
  assert.ok(!catalog.queryVehicles({priceMax:6000}).items.some(v=>v.lot==='96000003'));
 });
+
+test('campaign featured admits older damaged buy-now cars without changing home selection',()=>{
+ catalog.upsertCatalogFromCsv(csv([
+  row('97000001',{'Buy-It-Now Price':'2950',Year:'2015','Damage Description':'FRONT END','Runs/Drives':'Unverified','Est. Retail Value':'9500'}),
+  row('97000002',{'Buy-It-Now Price':'0'}),
+  row('97000003',{'Buy-It-Now Price':'19000','Est. Retail Value':'18000'})
+ ]));
+ assert.deepEqual(catalog.getFeaturedVehicles(6,{campaign:'1'}).items.map(v=>v.lot),['97000001']);
+ assert.ok(catalog.getFeaturedVehicles().items.some(v=>v.lot==='97000002'));
+ assert.ok(!catalog.getFeaturedVehicles().items.some(v=>v.lot==='97000001'));
+});
