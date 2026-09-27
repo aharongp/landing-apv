@@ -1,4 +1,4 @@
-APV Motors ayuda a clientes a comprar vehículos disponibles en subastas de Estados Unidos de forma 100% online. El catálogo de la página muestra vehículos provenientes de Copart. El cliente puede buscar un carro, revisar sus datos y fotografías, abrir la ficha del lote y solicitar una puja.
+APV Motors ayuda a clientes a comprar vehículos disponibles en subastas de Estados Unidos de forma 100% online. El catálogo de la página muestra vehículos provenientes de Copart. El cliente puede buscar un vehículo, revisar sus datos y fotografías, abrir la ficha del lote y solicitar una puja.
 
 El proceso de compra funciona en 6 pasos:
 1. Seleccionar el vehículo en el catálogo de subastas de Copart mostrado por APV Motors.
