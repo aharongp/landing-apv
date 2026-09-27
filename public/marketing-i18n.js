@@ -15,7 +15,7 @@ window.APV_I18N = {
     "damageHeading": "Daños y condición",
     "infoHeading": "Información del vehículo",
     "asIs": "Se vende tal como está. Todas las ventas son finales.",
-    "lpExplain": "Las subastas, en 3 frases",
+    "lpExplain": "Subastas en 3 fases",
     "lpExplain1": "Copart vende cada semana miles de autos de aseguradoras, bancos y flotas por debajo del precio al público.",
     "lpExplain2": "Muchos lotes solo admiten pujas de compradores con licencia. APV Motors la tiene.",
     "lpExplain3": "Evaluamos el auto, te damos el costo y pujamos por ti hasta el tope que tú apruebas.",
@@ -172,7 +172,7 @@ window.APV_I18N = {
     "damageHeading": "Damage and condition",
     "infoHeading": "Vehicle information",
     "asIs": "Sold as is, where is. All sales are final.",
-    "lpExplain": "Auctions in three sentences",
+    "lpExplain": "Auctions in 3 stages",
     "lpExplain1": "Copart sells thousands of cars from insurers, banks and fleets every week below retail prices.",
     "lpExplain2": "Many lots accept bids only from licensed buyers. APV Motors holds a dealer license.",
     "lpExplain3": "We evaluate the car, explain the cost and bid for you up to the limit you approve.",
@@ -351,3 +351,6 @@ Object.assign(window.APV_I18N.en,{marketing_32:'Buy your vehicle at US auctions.
 Object.assign(window.APV_I18N.es,{"lpExplainLabel1": "Qué son.", "lpExplainLabel2": "Quién puede pujar.", "lpExplainLabel3": "Qué hacemos.", "lpExplain1": "Copart e IAA son subastas donde aseguradoras, bancos y flotas venden cada semana miles de autos por debajo del precio de venta al público.", "lpExplain2": "Solo concesionarios con licencia. APV Motors la tiene.", "lpExplain3": "Evaluamos el auto, te damos el costo total y pujamos por ti hasta el tope que tú apruebas."});
 
 Object.assign(window.APV_I18N.en,{"lpExplainLabel1": "What they are.", "lpExplainLabel2": "Who can bid.", "lpExplainLabel3": "What we do.", "lpExplain1": "Copart and IAA are auctions where insurers, banks and fleets sell thousands of cars every week below retail prices.", "lpExplain2": "Only licensed dealers. APV Motors holds a dealer license.", "lpExplain3": "We evaluate the car, give you the total cost and bid for you up to the limit you approve."});
+
+Object.assign(window.APV_I18N.es,{comparisonBuyNow:'Compra inmediata',comparisonBelow:'por debajo del valor al público',comparisonNote:'Precio del vehículo; no incluye tarifas, transporte ni reparaciones.'});
+Object.assign(window.APV_I18N.en,{comparisonBuyNow:'Buy now',comparisonBelow:'below estimated retail value',comparisonNote:'Vehicle price; excludes fees, shipping and repairs.'});

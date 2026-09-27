@@ -591,17 +591,7 @@
         <div class="featured-card-body">
           <h3 class="featured-card-title"><button type="button" data-action="detail">${esc(v.title)}</button></h3>
           <div class="featured-card-meta">${t('lot')} ${esc(v.lot)} · ${esc(locationLabel(v))}</div>
-          <div class="featured-card-prices">
-            <div class="featured-price-item">
-              <span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span>
-              <strong>${esc(money(v.currentBid))}</strong>
-            </div>
-            <div class="featured-price-item">
-              <span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span>
-              <strong>${esc(money(v.buyNow))}</strong>
-            </div>
-          </div>
-          <p class="featured-retail">${t('retail')}: ${esc(money(v.retailValue))}</p>${comparison(v)}<div class="featured-card-actions">
+          ${comparison(v)}<div class="featured-card-actions">
             <button type="button" class="btn btn-primary featured-card-btn" data-action="detail">${t('viewCarCosts')}</button>
           </div>
         </div>
@@ -801,7 +791,13 @@
     if(button) toggleFavorite(button.dataset.favorite);
   });
 
-  function comparison(v){const price=Number(v.buyNow)||Number(v.currentBid);const retail=Number(v.retailValue);return price>0&&retail>price?`<p class="price-comparison">${t('todayPrice')} ${money(price)} · ${Math.floor((1-price/retail)*1000)/10} % ${t('belowRetail')}</p>`:'';}
+  function comparison(v){
+    const price=Number(v.buyNow),retail=Number(v.retailValue);
+    if(!Number.isFinite(price)||!Number.isFinite(retail)||price<=0||retail<=0)return '';
+    const percent=Math.floor((1-price/retail)*1000)/10;
+    const bar=Math.min(100,Math.max(0,price/retail*100));
+    return `<div class="price-comparison"><div class="price-comparison-values"><div><span>${t('comparisonBuyNow')}</span><strong>${esc(money(price))}</strong></div><div><span>${t('retail')}</span><strong>${esc(money(retail))}</strong></div></div><div class="price-comparison-track" aria-hidden="true"><span style="width:${bar}%"></span></div>${percent>0?`<span class="price-comparison-badge">${percent} % ${t('comparisonBelow')}</span>`:''}<small>${t('comparisonNote')}</small></div>`;
+  }
   function renderVehicles(items){
     dom.list.innerHTML=items.map(v=>`
       <article class="vehicle-card" data-lot="${esc(v.lot)}">
