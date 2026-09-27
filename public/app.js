@@ -596,7 +596,7 @@
             </div>
           </div>
           <div class="featured-card-actions">
-            <button type="button" class="btn btn-primary featured-card-btn" data-action="bid">${t('wantToBid')}</button>
+            <button type="button" class="btn btn-primary featured-card-btn" data-action="detail">${currentLang==='en'?'View vehicle and costs':'Ver vehículo y calcular'}</button>
           </div>
         </div>
       </article>
@@ -1016,6 +1016,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       options: { paymentMethod, offerType, titleType, vehicleType }
     };
   }
+
+  // Reuse the same base fees for the homepage's preliminary budget guide.
+  window.apvBaseCostEstimate = bid => {
+    const result=calculateCostBreakdown(bid);
+    return {...result,total:result.total+(result.apvDiscount||0)};
+  };
 
   function renderCalculatorHTML(v) {
     const isLoggedIn = Boolean(state.user);

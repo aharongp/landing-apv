@@ -1,4 +1,25 @@
 (() => {
+  const budgetForm = document.getElementById('budget-form');
+  if (budgetForm) {
+    const result = document.getElementById('budget-result');
+    const error = document.getElementById('budget-error');
+    const money = value => new Intl.NumberFormat('en-US', {style:'currency',currency:'USD',maximumFractionDigits:2}).format(value);
+    budgetForm.addEventListener('input', () => { result.hidden=true;error.hidden=true; });
+    budgetForm.addEventListener('submit', event => {
+      event.preventDefault(); result.hidden=true;error.hidden=true;
+      try {
+        if(!budgetForm.reportValidity()) return;
+        const quote = window.APVBudget.quote(document.getElementById('budget-total').value,document.getElementById('budget-reserve').value,window.apvBaseCostEstimate);
+        for(const [id,value] of [['budget-bid',quote.bid],['budget-purchase',quote.purchase],['budget-reserved',quote.reserve],['budget-sum',quote.total]]) document.getElementById(id).textContent=money(value);
+        const query=document.getElementById('budget-query').value.trim();
+        document.getElementById('budget-catalog').href='/catalogo'+(query?'?q='+encodeURIComponent(query):'');
+        result.hidden=false;
+      } catch (err) {
+        error.textContent=err instanceof RangeError ? err.message : 'No se pudo calcular ahora. Puedes usar la calculadora de la ficha del vehículo.';
+        error.hidden=false;
+      }
+    });
+  }
   const carousel = document.querySelector('.review-carousel');
   if (carousel) {
     const slides = [...carousel.querySelectorAll('.review-slide')];

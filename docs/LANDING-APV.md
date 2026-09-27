@@ -35,3 +35,13 @@ El reproductor se activa al proporcionar un ID de YouTube en `data-video-id` del
 Validación de esta revisión: 29 pruebas Node aprobadas; revisión visual en Chrome de escritorio y teléfono, sin desbordamiento horizontal; navegación del carrusel probada con botones y teclado; planes y destacados visibles. El archivo temporal de comprobaciones jsdom de sesiones anteriores ya no está disponible; esta revisión usa Chrome real.
 
 El catálogo ya no incluye las secciones de ayuda ni suscripciones. Los enlaces de navegación apuntan a `/#ayuda` y `/#planes`; «Mi plan» y «Comparar planes» también abren los planes del inicio. El módulo de membresías sigue disponible para los beneficios de cuenta y solicitudes de historial desde las fichas.
+
+## Estructura combinada con la referencia móvil
+
+La portada combina una oferta directa, video preparado, CTA al catálogo, orientador de presupuesto, destacados, compra en cuatro pasos, Evaluación APV, tabla de honorarios, explicación del depósito, Alexander Parra y reseñas, planes, FAQ y CTA final. Menú y búsqueda siguen fijos. El catálogo permanece separado.
+
+El orientador pide presupuesto total y una reserva indicada por el visitante para gastos adicionales. Usa las funciones de tarifas de la calculadora de vehículos, con tarifa base APV y supuestos explícitos. Devuelve una puja máxima orientativa en dólares enteros. No afirma que el inventario quede filtrado por costo final; el enlace conserva únicamente marca/modelo. Prueba de ejemplo: US$10,000 totales y US$2,000 de reserva permiten una puja orientativa de US$6,637 y US$8,000 de compra con tarifas estimadas.
+
+La tabla APV coincide con los tramos del código: 350/450/650/700 USD. No se publicaron las promesas «100% reembolsable» ni «solo cobramos si ganas» sin confirmación del propietario. El video concreto continúa pendiente. Foto de Alexander tomada de la página oficial: https://apvmotorusa.com/quienes-somos/ (archivo Fondo-Negro.png).
+
+Validación: 33 pruebas aprobadas, incluidas tarifas por tramo, reserva, presupuesto insuficiente y consistencia entre cuentas. Revisión de escritorio y móvil de 390 px en Chrome; cuatro pasos, tres destacados y tres planes presentes, sin desbordamiento horizontal. Cálculo y carrusel probados en navegador.
