@@ -12,7 +12,7 @@
         const quote = window.APVBudget.quote(document.getElementById('budget-total').value,document.getElementById('budget-reserve').value,window.apvBaseCostEstimate);
         for(const [id,value] of [['budget-bid',quote.bid],['budget-purchase',quote.purchase],['budget-reserved',quote.reserve],['budget-sum',quote.total]]) document.getElementById(id).textContent=money(value);
         const query=document.getElementById('budget-query').value.trim();
-        document.getElementById('budget-catalog').href='/catalogo'+(query?'?q='+encodeURIComponent(query):'');
+        document.getElementById('budget-catalog').href=window.APVTracking.campaignURL('/catalogo'+(query?'?q='+encodeURIComponent(query):''));
         result.hidden=false;
       } catch (err) {
         error.textContent=err instanceof RangeError ? err.message : 'No se pudo calcular ahora. Puedes usar la calculadora de la ficha del vehículo.';

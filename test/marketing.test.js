@@ -25,7 +25,7 @@ test('SSR metadata escapes inventory content and delivers distinct raw vehicle m
 test('campaign variants reuse sections, contain four key FAQs, and fall back for invalid variants',()=>{
  const home=fs.readFileSync('public/index.html','utf8');
  for(const v of ['ahorro','primera-vez','conocedor','invalid']){
-   const html=landing(home,v);assert.match(html,/id="autos"/);assert.equal((html.match(/data-key-faq/g)||[]).length,4);assert.match(html,/class="home-page lp-page"/);assert.ok(!html.includes('id="planes"'));assert.ok(!html.includes('id="hero-video"'));assert.ok(!html.includes('href="#planes"'));assert.match(html,/id="register-form"/);
+   const html=landing(home,v);assert.match(html,/id="autos"/);assert.equal((html.match(/data-key-faq/g)||[]).length,4);assert.match(html,/class="home-page lp-page"/);assert.ok(!html.includes('id="planes"'));assert.ok(html.includes('id="hero-video"'));assert.ok(html.indexOf('id="presupuesto"')<html.indexOf('id="autos"'));assert.ok(html.indexOf('id="como-funciona"')>html.indexOf('id="autos"'));assert.ok(!html.includes('href="#planes"'));assert.match(html,/id="register-form"/);
  }
  assert.match(landing(home,'invalid'),/data-variant="ahorro"/);
 });

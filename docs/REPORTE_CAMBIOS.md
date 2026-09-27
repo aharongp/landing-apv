@@ -173,3 +173,11 @@ Variantes: `ahorro`, `primera-vez`, `conocedor`. `/go` responde 302 con grupo ho
 Previsualización local: [home](http://localhost:3015/) · [campaña](http://localhost:3015/lp) · [primera vez](http://localhost:3015/lp?v=primera-vez) · [conocedor](http://localhost:3015/lp?v=conocedor).
 
 La entrega queda lista para revisión de código y diseño. La activación de proveedores, revisión legal y validación externa de eventos siguen pendientes antes de publicar.
+
+## Revisión de estructura móvil — 2026-09-27T19:19:47+00:00
+
+Actualización posterior a la entrega inicial, en `feat/landing-reference-layout`. La referencia nueva sustituye la restricción anterior de no incluir video en /lp. Se reutilizan el video y reproductor actuales, sin editar el archivo. Hero por defecto: «Compra tu vehículo en subastas de EE. UU. 100 % online.». Las variantes de campaña conservan sus otros mensajes.
+
+Se añaden las entradas «Es mi primera vez» y «Ya conozco las subastas», el presupuesto antes de destacados y cuatro pasos después. Respaldo de marca/evaluación y reseñas se sitúan después de costos/depósito. No se copian cifras de ejemplo, años de experiencia, calificaciones ni fotos de clientes sin verificar. Se mantiene la reserva explícita para gastos adicionales del presupuesto existente, evitando prometer un precio final garantizado. Nuevos textos con ES/EN.
+
+Validación: 43 pruebas aprobadas; HTML servido con video y scripts compartidos, orden correcto y sin IDs duplicados. Chrome no estuvo disponible en esta sesión: revisión visual y capturas nuevas pendientes. Las capturas y métricas anteriores corresponden a la versión anterior, no a esta reorganización. Esta revisión no se ha subido ni desplegado.

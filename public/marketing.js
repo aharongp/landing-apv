@@ -13,7 +13,7 @@
     document.querySelector('#lp-range-link').href=window.APVTracking.campaignURL('/catalogo?'+q);
     window.APVTracking.track('budget_select',{bucket:index,price_min:min,price_max:max});
   }));
-  if(document.body.classList.contains('lp-page'))window.apvFeaturedQuery='priceMin=0&priceMax=6000';
+
   fetch('/api/reviews').then(r=>r.json()).then(data=>{
     if(!data.live)return;
     const applyRating=()=>document.querySelectorAll('[data-live-rating]').forEach(el=>{el.hidden=false;el.classList.add('rating-badge');el.textContent=`★ ${data.rating} ${text('en Google','on Google')} · ${data.total} ${text('reseñas','reviews')}`;});applyRating();document.addEventListener('apv:language',applyRating);

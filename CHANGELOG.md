@@ -13,3 +13,7 @@ Landing compartida /lp con tres variantes, chips y CTA móvil. /go A/B persisten
 ## 2026-09-27T17:32:13+00:00 — SEO y validación
 
 Metadatos SSR por vehículo, imagen social, favicon, 404, robots y sitemap por fragmentos. 43 pruebas; Lighthouse móvil mediana de tres corridas: home 97/100, LP 99/100 (rendimiento/accesibilidad). Evidencias y pendientes en docs/REPORTE_CAMBIOS.md.
+
+## 2026-09-27T19:19:47+00:00 — Landing según referencia móvil
+
+Hero de /lp con mensaje directo de compra online y video existente. Accesos para primera compra y visitantes que conocen las subastas. Orden: explicación, presupuesto, destacados, cuatro pasos, costos/depósito, respaldo APV/evaluación, reseñas, FAQ y CTA. Reutiliza cálculo y reproductor; conserva atribución al pasar del presupuesto al catálogo. Sin cifras de confianza inventadas.
