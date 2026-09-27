@@ -197,3 +197,7 @@ Completada la revisión pendiente de la landing local en Chrome, móvil 390×844
 - 43/43 pruebas automatizadas aprobadas después de corregir. No se repitió Lighthouse; las métricas anteriores no corresponden a esta revisión.
 
 Capturas nuevas: [móvil con cookies](qa/lp-reference-mobile-cookies.jpg), [móvil completo](qa/lp-reference-mobile-full.jpg), [escritorio](qa/lp-reference-desktop.jpg).
+
+## 2026-09-27T19:33:55+00:00 — Corrección de alcance de los heroes
+
+La simplificación corresponde a la página principal: «Compra tu vehículo en subastas de EE. UU. 100 % online.» y descripción breve. /lp recupera «Compra tu auto a precio de subasta, como los concesionarios.», con hero centrado y video debajo del título y subtítulo en móvil/escritorio. «Ya conozco las subastas» apunta a /. Validado en Chrome y 43 pruebas aprobadas. Cambios locales sin push. Las capturas anteriores reflejan el diseño previo a esta corrección.

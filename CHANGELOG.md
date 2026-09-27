@@ -21,3 +21,7 @@ Hero de /lp con mensaje directo de compra online y video existente. Accesos para
 ## 2026-09-27T19:24:18+00:00 — Validación Chrome de landing
 
 Corrección de separación de «100 %» y CTA fijo superpuesto al hero móvil. Verificados video, presupuesto, carrusel, FAQ y apertura de ficha. Evidencias móvil/escritorio en docs/qa/lp-reference-*.jpg; 43 pruebas aprobadas. Cambios locales, sin push.
+
+## 2026-09-27T19:33:55+00:00 — Corrección de alcance de los heroes
+
+La simplificación corresponde a la página principal: «Compra tu vehículo en subastas de EE. UU. 100 % online.» y descripción breve. /lp recupera «Compra tu auto a precio de subasta, como los concesionarios.», con hero centrado y video debajo del título y subtítulo en móvil/escritorio. «Ya conozco las subastas» apunta a /. Validado en Chrome y 43 pruebas aprobadas. Cambios locales sin push. Las capturas anteriores reflejan el diseño previo a esta corrección.

@@ -51,3 +51,15 @@
 }
 
 .lp-page.lp-hero-visible .lp-sticky{display:none}
+
+/* The home carries the concise online message; campaign hero is centered. */
+.lp-page .lp-hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;max-width:1000px}
+.lp-page .lp-hero-copy{display:contents}
+.lp-page .lp-hero .eyebrow{order:0}
+.lp-page .lp-hero h1{order:1;max-width:820px;margin:12px auto 16px}
+.lp-page .lp-hero .lead{order:2;max-width:650px;margin:0 auto 24px}
+.lp-page .lp-hero .hero-video-card{order:3;max-width:720px;margin:0 auto 24px}
+.lp-page .lp-entry{order:4;width:100%;max-width:560px}
+.lp-page .lp-hero .hero-assurances{order:5;justify-content:center}
+.lp-page .lp-hero-copy>.btn{order:6;max-width:560px}
+@media(max-width:700px){.lp-page .lp-hero h1{font-size:32px}.lp-page .lp-hero .lead{margin-bottom:18px}.lp-page .lp-hero .hero-video-card{margin-bottom:18px}}
