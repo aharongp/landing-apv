@@ -591,6 +591,10 @@
         <div class="featured-card-body">
           <h3 class="featured-card-title"><button type="button" data-action="detail">${esc(v.title)}</button></h3>
           <div class="featured-card-meta">${t('lot')} ${esc(v.lot)} · ${esc(locationLabel(v))}</div>
+          <div class="featured-card-prices">
+            <div class="featured-price-item"><span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span><strong>${esc(cardPrice(v.currentBid))}</strong></div>
+            <div class="featured-price-item"><span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span><strong>${esc(cardPrice(v.buyNow))}</strong></div>
+          </div>
           ${comparison(v)}<div class="featured-card-actions">
             <button type="button" class="btn btn-primary featured-card-btn" data-action="detail">${t('viewCarCosts')}</button>
           </div>
@@ -791,6 +795,7 @@
     if(button) toggleFavorite(button.dataset.favorite);
   });
 
+  function cardPrice(value){return Number(value)>0?money(value):t('unconfirmedDate');}
   function comparison(v){
     const price=Number(v.buyNow),retail=Number(v.retailValue);
     if(!Number.isFinite(price)||!Number.isFinite(retail)||price<=0||retail<=0)return '';
@@ -830,7 +835,7 @@
             <div class="auction-line"><span class="dot">◉</span><span>${esc(v.saleStatus||t('auction'))}</span></div>
             <div class="auction-line">▥ <span>${t('retail')} ${esc(money(v.retailValue))}</span></div>
           </div>
-          <div class="bid-box"><div><span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span><strong>${esc(money(v.currentBid))}</strong></div><div><span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span><strong>${esc(money(v.buyNow))}</strong></div></div>
+          <div class="bid-box"><div><span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span><strong>${esc(cardPrice(v.currentBid))}</strong></div><div><span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span><strong>${esc(cardPrice(v.buyNow))}</strong></div></div>
           <div class="side-status">● ${esc(v.saleStatus||t('upcoming'))}</div>
           <div class="card-actions"><button class="btn btn-primary" data-action="bid">${t('wantToBid')}</button></div>
         </aside>
@@ -1362,7 +1367,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             </div>
             <div class="detail-card-grid">
               <div class="detail-card-row"><span>Valor Retail Estimado</span><strong>${esc(money(v.retailValue))}</strong></div>
-              ${hasBuyNow ? `<div class="detail-card-row"><span>Compra directa (Buy Now)</span><strong>${esc(money(v.buyNow))}</strong></div>` : ''}
+              ${hasBuyNow ? `<div class="detail-card-row"><span>Compra directa (Buy Now)</span><strong>${esc(cardPrice(v.buyNow))}</strong></div>` : ''}
               <div class="detail-card-row"><span>Estado de Venta</span><strong>${esc(v.saleStatus || 'Subasta activa')}</strong></div>
               <div class="detail-card-row"><span>Reserva Vendedor</span><strong>${esc(v.saleStatus || 'Pujas habilitadas')}</strong></div>
             </div>
@@ -1408,7 +1413,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
             <div class="bidding-current-bid">
               <span class="bid-label">${t('auctionCurrentBid').toUpperCase()}</span>
-              <h2 class="bid-amount">${esc(money(v.currentBid))} USD</h2>
+              <h2 class="bid-amount">${esc(cardPrice(v.currentBid))} USD</h2>
             </div>
             <button class="btn btn-primary btn-bid-now" data-detail-bid>
               🔨 ${t('wantToBid')}
@@ -1776,7 +1781,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     dom.bidAmount.value = startVal ? String(startVal) : '';
     updateBidCostPreview(startVal);
     dom.bidAmountStep.classList.remove('hidden'); dom.bidChatStep.classList.add('hidden'); dom.kommoFallback.classList.remove('hidden');
-    dom.bidVehicleMini.innerHTML=`<div class="thumb" ${imageStyle(v.image)}></div><div><h4>${esc(v.title)}</h4><p>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</p><p>Puja actual ${esc(money(v.currentBid))} · Retail ${esc(money(v.retailValue))}</p></div>`;
+    dom.bidVehicleMini.innerHTML=`<div class="thumb" ${imageStyle(v.image)}></div><div><h4>${esc(v.title)}</h4><p>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</p><p>Puja actual ${esc(cardPrice(v.currentBid))} · Retail ${esc(money(v.retailValue))}</p></div>`;
     dom.bidOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; syncChatReopenButton(); setTimeout(()=>dom.bidAmount.focus(),100);
   }
 

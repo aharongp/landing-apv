@@ -65,7 +65,7 @@ test('account favorites are isolated and repair bypasses hash without changing a
 });
 
 test('featured sample is unique, public and invalidated after expiry, imports and clear',()=>{
- const rows=Array.from({length:8},(_,i)=>row(String(70000000+i),{'Buy-It-Now Price':'5000'}));
+ const rows=Array.from({length:8},(_,i)=>row(String(70000000+i)));
  rows.push(row('80000000',{'Damage Description':'FRONT END'}),row('80000001',{'Runs/Drives':'DEFAULT'}));
  catalog.upsertCatalogFromCsv(csv(rows));
  const sample=catalog.getFeaturedVehicles();
@@ -80,7 +80,7 @@ test('featured sample is unique, public and invalidated after expiry, imports an
   assert.ok(catalog.getFeaturedVehicles(12).items.every(v=>v.lot!=='70000000'));
   assert.equal(catalog.getFeaturedVehicles(12).items.length,7);
  } finally {Date.now=originalNow;}
- catalog.upsertCatalogFromCsv(csv([row('90000000',{'Buy-It-Now Price':'5000'})]));
+ catalog.upsertCatalogFromCsv(csv([row('90000000')]));
  assert.deepEqual(catalog.getFeaturedVehicles().items.map(v=>v.lot),['90000000']);
  catalog.clearVehicles();assert.deepEqual(catalog.getFeaturedVehicles().items,[]);
 });
@@ -171,14 +171,12 @@ test('catalog query cache expires after fifteen seconds',()=>{
 
 test('campaign inventory excludes unknown prices and retail, and respects exact price bands',()=>{
  catalog.upsertCatalogFromCsv(csv([
-  row('96000001',{'Buy-It-Now Price':'6000','High Bid =non-vix,Sealed=Vix':'100'}),
-  row('96000002',{'Buy-It-Now Price':'6001','High Bid =non-vix,Sealed=Vix':'150'}),
+  row('96000001',{'High Bid =non-vix,Sealed=Vix':'6000'}),
+  row('96000002',{'High Bid =non-vix,Sealed=Vix':'6001'}),
   row('96000003',{'High Bid =non-vix,Sealed=Vix':'0'}),
-  row('96000004',{'Est. Retail Value':'0','Buy-It-Now Price':'5000'}),
-  row('96000005',{'Buy-It-Now Price':'12000'}),
-  row('96000006',{'High Bid =non-vix,Sealed=Vix':'100','Buy-It-Now Price':'0'})
+  row('96000004',{'Est. Retail Value':'0'}),
+  row('96000005',{'Buy-It-Now Price':'12000'})
  ]));
- assert.ok(catalog.getFeaturedVehicles(12).items.every(v=>v.buyNow>0 && v.lot!=='96000006'));
  assert.deepEqual(catalog.getFeaturedVehicles(6,{priceMin:0,priceMax:6000}).items.map(v=>v.lot),['96000001']);
  assert.deepEqual(catalog.getFeaturedVehicles(6,{priceMin:6000,priceMax:10000}).items.map(v=>v.lot),['96000002']);
  assert.deepEqual(catalog.queryVehicles({priceMin:10000,priceMax:15000}).items.map(v=>v.lot),['96000005']);
