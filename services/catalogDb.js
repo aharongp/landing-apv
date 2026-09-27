@@ -688,18 +688,18 @@ function rowToVehicle(row) {
 
 // Cache only public candidate data, not a randomized response or user details.
 // Rebuild after imports, clears or expiry; each request still gets a new sample.
-function getFeaturedVehicles(limit = 6) {
+function getFeaturedVehicles(limit = 6, params = {}) {
   const database = initDatabase();
   pruneExpired();
   if (!featuredPool) {
-    featuredPool = database.prepare(`SELECT lot, title, imageThumbnail, currentBid, buyNow,
-      locationCity, locationState, saleAt FROM vehicles WHERE NOT (${SOLD_SQL}) AND ${FEATURED_CLAUSES.join(' AND ')}`).all().map(row => ({
-        lot: row.lot, title: row.title, currentBid: row.currentBid, buyNow: row.buyNow,
+    featuredPool = database.prepare(`SELECT lot, title, imageThumbnail, currentBid, buyNow, retailValue,
+      locationCity, locationState, saleAt FROM vehicles WHERE NOT (${SOLD_SQL}) AND ${FEATURED_CLAUSES.join(' AND ')} AND retailValue > 0 AND (currentBid > 0 OR buyNow > 0)`).all().map(row => ({
+        lot: row.lot, title: row.title, currentBid: row.currentBid, buyNow: row.buyNow, retailValue: row.retailValue,
         locationCity: row.locationCity, locationState: row.locationState, saleAt: row.saleAt,
         image: ensureHttps(row.imageThumbnail).replace(/_thb(?=\.[a-z]+(?:[?#]|$))/i, '_ful')
       }));
   }
-  const available = featuredPool.filter(v => !v.saleAt || v.saleAt > Date.now());
+  const available = featuredPool.filter(v => {const price=v.buyNow>0?v.buyNow:v.currentBid;return (!v.saleAt||v.saleAt>Date.now()) && (!(Number(params.priceMin)>0)||price>Number(params.priceMin)) && (!(Number(params.priceMax)>0)||price<=Number(params.priceMax));});
   const count = Math.min(available.length, Math.max(1, Math.min(12, Number(limit) || 6)));
   const selected = new Set();
   while (selected.size < count) selected.add(Math.floor(Math.random() * available.length));
@@ -776,9 +776,10 @@ function queryVehicles(params = {}) {
     bindings.push(yearMax);
   }
 
+  if(Number(params.priceMin)>0){whereClauses.push("COALESCE(NULLIF(buyNow,0),NULLIF(currentBid,0)) > ?");bindings.push(Number(params.priceMin));}
   if (priceMax > 0) {
-    whereClauses.push("(buyNow <= ? OR currentBid <= ? OR retailValue <= ?)");
-    bindings.push(priceMax, priceMax, priceMax);
+    whereClauses.push("COALESCE(NULLIF(buyNow,0),NULLIF(currentBid,0)) <= ?");
+    bindings.push(priceMax);
   }
 
   if (params.odometerMax !== undefined && params.odometerMax !== null && params.odometerMax !== '' && Number.isFinite(Number(params.odometerMax)) && odometerMax >= 0) {

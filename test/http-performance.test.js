@@ -8,7 +8,7 @@ const {spawn}=require('node:child_process');
 const {once}=require('node:events');
 test('public assets revalidate and compress; vehicle data remains uncached', {timeout:15000},async(t)=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'apv-http-perf-'));
- const fixture='Lot number,Year,Make,Model Group,VIN,Image Thumbnail,Sale Date M/D/CY,Image URL,Runs/Drives,Damage Description,Location city,Location state,Location ZIP,Odometer,Sale Title Type\n'+Array.from({length:20},(_,i)=>`${71000000+i},2023,CHEVROLET,SILVERADO,1ABCDEFGHI2345678,cs.copart.com/car_thb.jpg,0,https://inventoryv2.copart.io/test,Run & Drive Verified,NORMAL WEAR,AUSTIN,TX,78701,${i===0?'0':'45000'},${i===0?'CT':'ST'}`).join('\n');
+ const fixture='Lot number,Year,Make,Model Group,VIN,Image Thumbnail,Sale Date M/D/CY,Image URL,Runs/Drives,Damage Description,Location city,Location state,Location ZIP,Odometer,Sale Title Type,Est. Retail Value,Buy-It-Now Price\n'+Array.from({length:20},(_,i)=>`${71000000+i},2023,CHEVROLET,SILVERADO,1ABCDEFGHI2345678,cs.copart.com/car_thb.jpg,0,https://inventoryv2.copart.io/test,Run & Drive Verified,NORMAL WEAR,AUSTIN,TX,78701,${i===0?'0':'45000'},${i===0?'CT':'ST'},18000,5000`).join('\n');
  fs.writeFileSync(path.join(dir,'current_catalog.csv'),fixture);
  const socket=net.createServer();await new Promise(resolve=>socket.listen(0,'127.0.0.1',resolve));
  const port=socket.address().port;await new Promise(resolve=>socket.close(resolve));
@@ -18,7 +18,7 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
  for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break;}catch{}await new Promise(resolve=>setTimeout(resolve,25));}
  const asset=await fetch(base+'/app.js',{headers:{'accept-encoding':'gzip'}});
  assert.equal(asset.status,200);assert.equal(asset.headers.get('content-encoding'),'gzip');
- const content=await asset.text();assert.ok(content.includes("api('/api/featured')"));assert.ok(Number(asset.headers.get('content-length'))<Buffer.byteLength(content));
+ const content=await asset.text();assert.ok(content.includes("api('/api/featured'"));assert.ok(Number(asset.headers.get('content-length'))<Buffer.byteLength(content));
  const revalidated=await fetch(base+'/app.js',{headers:{'if-none-match':asset.headers.get('etag')}});
  assert.equal(revalidated.status,304);assert.equal(await revalidated.text(),'');
  const plain=await fetch(base+'/app.js',{headers:{'accept-encoding':'gzip;q=0'}});
@@ -26,12 +26,12 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
  const landing=await (await fetch(base+'/')).text();
  assert.ok(landing.includes('class="home-page"'));
  assert.ok(landing.includes('id="planes"'));
- assert.ok(landing.includes('id="catalogo" hidden inert'));
+ assert.match(landing,/<section[^>]*hidden[^>]*id="catalogo"[^>]*inert/);
  assert.ok(landing.includes('id="vehicle-overlay"'));
  const html=await (await fetch(base+'/catalogo')).text();
  assert.ok(html.includes('id="vehicle-overlay"'));
- assert.equal(await (await fetch(base+'/catalogo/')).text(),html);
- assert.equal(await (await fetch(base+'/vehiculo/71000000')).text(),html);
+ assert.equal((await fetch(base+'/catalogo/')).status,200);
+ assert.match(await (await fetch(base+'/vehiculo/71000000')).text(),/<title>2023 CHEVROLET SILVERADO en subasta \| APV Motors<\/title>/);
  const crypto=require('node:crypto');
  for(const name of ['app.js','styles.css','membership.js','kommo.js','landing.css','home.js','budget.js']){
    const bytes=fs.readFileSync(path.join(__dirname,'../public',name));
@@ -42,7 +42,7 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
    assert.equal(await versioned.text(),bytes.toString());
    assert.equal((await fetch(base+'/'+name+'?v=obsolete')).headers.get('cache-control'),'public, max-age=0, must-revalidate');
  }
- assert.equal((html.match(/app\.js\?v=[a-f0-9]{16}/g)||[]).length,2,'preload and script must match');
+ assert.equal((html.match(/app\.js\?v=[a-f0-9]{16}/g)||[]).length,1,'one deferred script without competing preload');
  const filters=await fetch(base+'/api/filters');assert.equal(filters.status,200);assert.ok(filters.headers.get('etag'));
  const filtersAgain=await fetch(base+'/api/filters',{headers:{'if-none-match':filters.headers.get('etag')}});assert.equal(filtersAgain.status,304);assert.equal(await filtersAgain.text(),'');
  const featured=await fetch(base+'/api/featured');assert.equal(featured.headers.get('cache-control'),'no-store');

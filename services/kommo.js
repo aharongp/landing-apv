@@ -717,7 +717,7 @@ async function updateActiveBidsSummary(user, { strict = false, noteOnly = false 
   }
 
   const formattedDate = new Date().toLocaleString('es-US', { timeZone: 'America/New_York' });
-  const marker = `[APV_BIDS_SUMMARY:${summaryFingerprint(activeBids, user.membership)}]`;
+  const marker = `[APV_BIDS_SUMMARY:${summaryFingerprint(activeBids, user.membership)}${user.apvSource ? ":src-"+require("crypto").createHash("sha256").update(JSON.stringify(user.apvSource)).digest("hex").slice(0,8):""}]`;
 
   let summaryText = '';
   if (activeBids.length === 0) {
@@ -752,6 +752,7 @@ async function updateActiveBidsSummary(user, { strict = false, noteOnly = false 
     ].join('\n');
   }
 
+  if(user.apvSource)summaryText+='\nOrigen APV: '+JSON.stringify(user.apvSource);
   if (noteOnly) {
     await postLeadNoteOnce(leadId, summaryText, marker);
     return { leadId, contactId, summaryText };

@@ -7,8 +7,8 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'apv-test-'));
 process.env.APV_DATA_DIR=dir;
 const catalog=require('../services/catalogDb');
 after(()=>{catalog.initDatabase().close();fs.rmSync(dir,{recursive:true,force:true});});
-const headers=['Lot number','Year','Make','Model Group','VIN','Image Thumbnail','Sale Date M/D/CY','Sale time (HHMM)','Time Zone','Runs/Drives','Special Note','Damage Description','Image URL','Location city','Location state','Location ZIP','Odometer','Sale Title Type','Sale Status'];
-const row=(lot, changes={})=>Object.assign({'Lot number':lot,Year:'2023',Make:'CHEVROLET','Model Group':'SILVERADO',VIN:'1ABCDEFGHI2345678','Image Thumbnail':'https://cs.copart.com/test_thb.jpg','Sale Date M/D/CY':'20990101','Sale time (HHMM)':'1200','Time Zone':'PST','Runs/Drives':'Run & Drive Verified','Special Note':'','Damage Description':'NORMAL WEAR','Image URL':'https://inventoryv2.copart.io/v1/lotImages/test'},changes);
+const headers=['Lot number','Year','Make','Model Group','VIN','Image Thumbnail','Sale Date M/D/CY','Sale time (HHMM)','Time Zone','Runs/Drives','Special Note','Damage Description','Image URL','Location city','Location state','Location ZIP','Odometer','Sale Title Type','Sale Status','High Bid =non-vix,Sealed=Vix','Est. Retail Value','Buy-It-Now Price'];
+const row=(lot, changes={})=>Object.assign({'Lot number':lot,'High Bid =non-vix,Sealed=Vix':'5000','Est. Retail Value':'18000',Year:'2023',Make:'CHEVROLET','Model Group':'SILVERADO',VIN:'1ABCDEFGHI2345678','Image Thumbnail':'https://cs.copart.com/test_thb.jpg','Sale Date M/D/CY':'20990101','Sale time (HHMM)':'1200','Time Zone':'PST','Runs/Drives':'Run & Drive Verified','Special Note':'','Damage Description':'NORMAL WEAR','Image URL':'https://inventoryv2.copart.io/v1/lotImages/test'},changes);
 const csv=rows=>[headers,...rows.map(r=>headers.map(h=>r[h]||''))].map(r=>r.map(c=>'"'+c.replaceAll('"','""')+'"').join(',')).join('\r\n');
 test('CSV handles inch marks, commas, multiline and escaped quotes',()=>{
  assert.deepEqual(catalog.parseCsv('a,b\n22" wheel,test\n"hello, ""world""\nagain",ok'),[['a','b'],['22" wheel','test'],['hello, "world"\nagain','ok']]);
@@ -161,10 +161,24 @@ test('catalog cache reuses queries, isolates returned objects and invalidates on
 });
 
 test('catalog query cache expires after fifteen seconds',()=>{
- catalog.upsertCatalogFromCsv(csv([row('95000001')]));
+ catalog.upsertCatalogFromCsv(csv([row('95000001',{'High Bid =non-vix,Sealed=Vix':'0'})]));
  assert.equal(catalog.queryVehicles({}).items[0].currentBid,0);
  catalog.initDatabase().prepare('UPDATE vehicles SET currentBid=1234 WHERE lot=?').run('95000001');
  const originalNow=Date.now;
  try{Date.now=()=>originalNow()+16000;assert.equal(catalog.queryVehicles({}).items[0].currentBid,1234);}
  finally{Date.now=originalNow;}
+});
+
+test('campaign inventory excludes unknown prices and retail, and respects exact price bands',()=>{
+ catalog.upsertCatalogFromCsv(csv([
+  row('96000001',{'High Bid =non-vix,Sealed=Vix':'6000'}),
+  row('96000002',{'High Bid =non-vix,Sealed=Vix':'6001'}),
+  row('96000003',{'High Bid =non-vix,Sealed=Vix':'0'}),
+  row('96000004',{'Est. Retail Value':'0'}),
+  row('96000005',{'Buy-It-Now Price':'12000'})
+ ]));
+ assert.deepEqual(catalog.getFeaturedVehicles(6,{priceMin:0,priceMax:6000}).items.map(v=>v.lot),['96000001']);
+ assert.deepEqual(catalog.getFeaturedVehicles(6,{priceMin:6000,priceMax:10000}).items.map(v=>v.lot),['96000002']);
+ assert.deepEqual(catalog.queryVehicles({priceMin:10000,priceMax:15000}).items.map(v=>v.lot),['96000005']);
+ assert.ok(!catalog.queryVehicles({priceMax:6000}).items.some(v=>v.lot==='96000003'));
 });

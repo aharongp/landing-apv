@@ -12,6 +12,8 @@ const kommoService = require('./services/kommo');
 const emailService = require('./services/email');
 const catalogDb = require('./services/catalogDb');
 
+const marketing = require('./services/marketing');
+const landingPage = require('./services/landingPage');
 const ROOT = __dirname;
 
 function loadEnv() {
@@ -68,6 +70,8 @@ const KNOWLEDGE_BASE_PATH = KNOWLEDGE_TOKEN ? `/kommo-knowledge/${KNOWLEDGE_TOKE
 fs.mkdirSync(DATA_DIR, { recursive: true });
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
+let attributionService;
+function attribution(){return attributionService ||= marketing.createAttribution(catalogDb.initDatabase());}
 let catalog = [];
 let catalogRawByLot = new Map();
 let catalogUpdatedAt = null;
@@ -696,7 +700,7 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
 // Give every deployment content-specific asset URLs, including behind CDN caches.
 const assetVersions = new Map();
 function frontendVersions() {
-  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js'].map(name => {
+  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css'].map(name => {
     const file = path.join(PUBLIC_DIR, name), stat = fs.statSync(file);
     let asset = assetVersions.get(name);
     if (!asset || asset.mtime !== stat.mtimeMs || asset.size !== stat.size) {
@@ -724,20 +728,27 @@ function serveFile(req, res, filePath) {
     '.ttf': 'font/ttf'
   }[ext] || 'application/octet-stream';
   const stat = fs.statSync(filePath);
+  const route = new URL(req.url,'http://localhost');
+  const vehicle = /^\/vehiculo\/\d{5,12}$/.test(route.pathname) ? findVehicle(route.pathname.split('/')[2]) : null;
+  if (ext === '.html' && route.pathname.startsWith('/vehiculo/') && !vehicle) return branded404(req,res);
+  const cacheKey = ext === '.html' ? filePath + route.pathname + (route.pathname==='/lp' ? '?v='+route.searchParams.get('v') : '') : filePath;
   const versions = ext === '.html' ? frontendVersions() : [];
-  const dependencyVersion = JSON.stringify(versions);
-  let cached = staticCache.get(filePath);
+  const dependencyVersion = JSON.stringify([versions,vehicle]);
+  let cached = staticCache.get(cacheKey);
   if (!cached || cached.mtime !== stat.mtimeMs || cached.size !== stat.size || cached.dependencyVersion !== dependencyVersion) {
     let body = fs.readFileSync(filePath);
     if (ext === '.html') {
+      let html=body.toString('utf8');
+      if(route.pathname==='/lp')html=landingPage(html,route.searchParams.get('v'));
+      body=Buffer.from(marketing.metadata(html,route.pathname,vehicle));
       const hashes = Object.fromEntries(versions);
-      body = Buffer.from(body.toString('utf8').replace(/((?:src|href)=")\/(app\.js|styles\.css|membership\.js|kommo\.js|landing\.css|home\.js|budget\.js)(?:\?[^"\s]*)?"/g,
+      body = Buffer.from(body.toString('utf8').replace(/((?:src|href)=")\/(app\.js|styles\.css|membership\.js|kommo\.js|landing\.css|home\.js|budget\.js|tracking\.js|marketing\.js|marketing-i18n\.js|campaign\.css)(?:\?[^"\s]*)?"/g,
         (_, attr, name) => `${attr}/${name}?v=${hashes[name]}"`));
     }
     const compressible = /\.(html|css|js|json|svg)$/.test(ext) && body.length > 1024;
     cached = { dependencyVersion, mtime: stat.mtimeMs, size: stat.size, body, gzip: compressible ? gzipSync(body) : null,
       etag: `W/"${crypto.createHash('sha256').update(body).digest('hex').slice(0,24)}"` };
-    staticCache.set(filePath, cached);
+    staticCache.set(cacheKey, cached);
   }
   const requestedVersion = new URL(req.url, 'http://localhost').searchParams.get('v');
   const versionedAsset = ['.js','.css'].includes(ext) && requestedVersion &&
@@ -866,7 +877,7 @@ function knowledgeVinHtml(vin) {
 }
 
 function safePublicPath(pathname) {
-  let rel = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  let rel = pathname === '/' || pathname === '/lp' ? 'index.html' : pathname.replace(/^\/+/, '');
   if (rel === 'admin' || rel === 'admin/') rel = 'admin.html';
   if (rel === 'catalogo' || rel === 'catalogo/' || rel.startsWith('vehiculo/')) rel = 'catalog.html';
   const full = path.normalize(path.join(PUBLIC_DIR, rel));
@@ -901,10 +912,21 @@ async function replaceCatalogFromFile(filePath) {
   return result;
 }
 
+function branded404(req,res){return text(res,404,fs.readFileSync(path.join(PUBLIC_DIR,'404.html'),'utf8'),'text/html; charset=utf-8');}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 
   try {
+    marketing.capture(req,res,url);
+    if(req.method==='GET' && url.pathname==='/go')return marketing.assign(req,res,url);
+    if(req.method==='GET' && url.pathname==='/marketing-config.js')return text(res,200,'window.APV_MARKETING='+JSON.stringify(marketing.publicConfig()).replace(/</g,'\\u003c')+';','application/javascript; charset=utf-8');
+    if(req.method==='GET' && url.pathname==='/api/reviews')return json(res,200,await marketing.reviews());
+    if(req.method==='POST' && url.pathname==='/api/marketing/consent'){
+      const user=getAuthUser(req);if(user){const body=JSON.parse((await readRequestBody(req,8192)).toString('utf8'));attribution().save(user.id,req,body);}return json(res,200,{ok:true});
+    }
+    if(req.method==='GET' && url.pathname==='/robots.txt')return text(res,200,`User-agent: *\nAllow: /\nDisallow: /lp\nDisallow: /go\nSitemap: ${marketing.origin()}/sitemap.xml\n`);
+    if(req.method==='GET' && url.pathname==='/sitemap.xml')return text(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/','/catalogo'].map(p=>'<url><loc>'+marketing.esc(marketing.origin()+p)+'</loc></url>').join('')}</urlset>`,'application/xml; charset=utf-8');
     if (req.method === 'POST' && url.pathname === '/api/stripe/webhook') {
       const body = await readRequestBody(req, 1024 * 1024);
       try { return json(res, 200, await billing.webhook(body, req.headers['stripe-signature'])); }
@@ -993,7 +1015,8 @@ const server = http.createServer(async (req, res) => {
 
       const userFull = {
         ...safeUser(user),
-        phone: user.phone || ''
+        phone: user.phone || '',
+        apvSource: attribution().save(user.id,req,body).source
       };
 
       try {
@@ -1124,6 +1147,7 @@ const server = http.createServer(async (req, res) => {
         lastLoginAt: new Date().toISOString()
       };
       catalogDb.saveUser(user);
+      attribution().save(user.id,req,body);
 
       try {
         await emailService.sendVerificationEmail(email, code);
@@ -1166,8 +1190,10 @@ const server = http.createServer(async (req, res) => {
       catalogDb.saveUser(user);
       verificationFailures.delete(email);
       verificationSendWindows.delete(email);
+      const consent=attribution().save(user.id,req,body).consent;
+      void attribution().conversion('CompleteRegistration',user,'registration-'+user.id,consent);
 
-      return json(res, 200, { ok: true, user: safeUser(user) }, { 'Set-Cookie': sessionCookie(req, signSession(user.id)) });
+      return json(res, 200, { ok: true, user: safeUser(user), eventId:'registration-'+user.id }, { 'Set-Cookie': sessionCookie(req, signSession(user.id)) });
     }
 
     if (req.method === 'POST' && url.pathname === '/api/auth/register') {
@@ -1190,6 +1216,7 @@ const server = http.createServer(async (req, res) => {
       const claims = await verifyGoogleCredential(body.credential);
       const email = normalizeEmail(claims.email);
       let user = catalogDb.findUserByEmail(email);
+      const isNew=!user;
       if (!user) {
         user = {
           id: crypto.randomUUID(),
@@ -1214,7 +1241,9 @@ const server = http.createServer(async (req, res) => {
         user.lastLoginAt = new Date().toISOString();
       }
       catalogDb.saveUser(user);
-      return json(res, 200, { ok: true, user: safeUser(user) }, { 'Set-Cookie': sessionCookie(req, signSession(user.id)) });
+      const consent=attribution().save(user.id,req,body).consent;
+      if(isNew)void attribution().conversion('CompleteRegistration',user,'registration-'+user.id,consent);
+      return json(res,200,{ok:true,user:safeUser(user),eventId:isNew?'registration-'+user.id:null},{'Set-Cookie':sessionCookie(req,signSession(user.id))});
     }
 
     if (req.method === 'POST' && url.pathname === '/api/auth/logout') {
@@ -1222,7 +1251,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && url.pathname === '/api/featured') {
-      return json(res, 200, catalogDb.getFeaturedVehicles());
+      return json(res, 200, catalogDb.getFeaturedVehicles(6,Object.fromEntries(url.searchParams)));
     }
 
     if (req.method === 'GET' && url.pathname === '/api/filters') {
@@ -1361,14 +1390,16 @@ const server = http.createServer(async (req, res) => {
         createdAt: new Date().toISOString()
       };
       catalogDb.saveBidIntent(intent);
-      return json(res, 201, { ...intent, apvFee: billing.recordFeeQuote(user.id, intent.id, vehicle.lot, maxBid) });
+      const consent=attribution().save(user.id,req,body).consent;
+      void attribution().conversion('Lead',user,intent.id,consent);
+      return json(res, 201, { ...intent, eventId:intent.id, apvFee: billing.recordFeeQuote(user.id, intent.id, vehicle.lot, maxBid) });
     }
 
     if (req.method === 'GET' || (req.method === 'HEAD' && url.pathname.endsWith('.mp4'))) {
       const filePath = safePublicPath(url.pathname);
       if (!filePath) return text(res, 403, 'Forbidden');
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) return serveFile(req, res, filePath);
-      return serveFile(req, res, path.join(PUBLIC_DIR, 'index.html'));
+      return branded404(req,res);
     }
 
     return text(res, 405, 'Method not allowed');
