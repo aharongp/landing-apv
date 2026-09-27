@@ -23,3 +23,13 @@ Las reseñas se consultan directamente en la ficha oficial proporcionada por el 
 - Comprobación DOM del inicio: destacados, planes reales del módulo de membresías, búsqueda fija y ausencia de consulta al listado completo.
 - Comprobación DOM del catálogo: filtros transferidos desde el hero, galería ampliada y ubicación móvil del botón de puja.
 - HTTP local: el inicio responde 200.
+
+## Revisión: hero con video y prueba social
+
+La revisión posterior reemplaza el hero original por el diseño de dos columnas: propuesta, búsqueda y CTA a la izquierda; espacio de video a la derecha. Mantiene destacados y menú/buscador fijos. Orden: hero → confianza → destacados → reseñas → cómo comprar → evaluación → costos → planes → FAQ → CTA final. En teléfono, los destacados se recorren horizontalmente para evitar que tres tarjetas apiladas alejen el resto del contenido.
+
+El carrusel contiene fragmentos breves verificados directamente en Chrome en la ficha oficial de Google el 27/09/2026: Gabriel Correa, Wolfgang Ramirez y Ynadsuy Anolacse. Cada reseña mostraba cinco estrellas. Se identifica que son fragmentos, se mantiene la fuente enlazada y no se afirma sincronización automática. Navegación por botones, indicadores, flechas del teclado y deslizamiento táctil; sin rotación automática.
+
+El reproductor se activa al proporcionar un ID de YouTube en `data-video-id` del elemento `hero-video-stage`. Carga el iframe únicamente al pulsar reproducir. **Pendiente del propietario: elegir el video concreto.** Mientras no se configure, el espacio enlaza al canal oficial; no reproduce un video de ejemplo ajeno.
+
+Validación de esta revisión: 29 pruebas Node aprobadas; revisión visual en Chrome de escritorio y teléfono, sin desbordamiento horizontal; navegación del carrusel probada con botones y teclado; planes y destacados visibles. El archivo temporal de comprobaciones jsdom de sesiones anteriores ya no está disponible; esta revisión usa Chrome real.

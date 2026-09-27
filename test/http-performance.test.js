@@ -33,10 +33,10 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
  assert.equal(await (await fetch(base+'/catalogo/')).text(),html);
  assert.equal(await (await fetch(base+'/vehiculo/71000000')).text(),html);
  const crypto=require('node:crypto');
- for(const name of ['app.js','styles.css','membership.js','kommo.js','landing.css']){
+ for(const name of ['app.js','styles.css','membership.js','kommo.js','landing.css','home.js']){
    const bytes=fs.readFileSync(path.join(__dirname,'../public',name));
    const version=crypto.createHash('sha256').update(bytes).digest('hex').slice(0,16);
-   assert.ok((name.startsWith('landing.')?landing:html).includes('/'+name+'?v='+version),name+' must have a content-specific URL');
+   assert.ok(((name.startsWith('landing.')||name==='home.js')?landing:html).includes('/'+name+'?v='+version),name+' must have a content-specific URL');
    const versioned=await fetch(base+'/'+name+'?v='+version);
    assert.equal(versioned.headers.get('cache-control'),'public, max-age=31536000, immutable');
    assert.equal(await versioned.text(),bytes.toString());

@@ -587,11 +587,11 @@
           <div class="featured-card-meta">${t('lot')} ${esc(v.lot)} · ${esc(locationLabel(v))}</div>
           <div class="featured-card-prices">
             <div class="featured-price-item">
-              <span>${t('currentBid')}</span>
+              <span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span>
               <strong>${esc(money(v.currentBid))}</strong>
             </div>
             <div class="featured-price-item">
-              <span>${t('buyNow')}</span>
+              <span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span>
               <strong>${esc(money(v.buyNow))}</strong>
             </div>
           </div>
@@ -825,7 +825,7 @@
             <div class="auction-line"><span class="dot">◉</span><span>${esc(v.saleStatus||t('auction'))}</span></div>
             <div class="auction-line">▥ <span>${t('retail')} ${esc(money(v.retailValue))}</span></div>
           </div>
-          <div class="bid-box"><div><span>${t('currentBid')}</span><strong>${esc(money(v.currentBid))}</strong></div><div><span>${t('buyNow')}</span><strong>${esc(money(v.buyNow))}</strong></div></div>
+          <div class="bid-box"><div><span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span><strong>${esc(money(v.currentBid))}</strong></div><div><span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span><strong>${esc(money(v.buyNow))}</strong></div></div>
           <div class="side-status">● ${esc(v.saleStatus||t('upcoming'))}</div>
           <div class="card-actions"><button class="btn btn-primary" data-action="bid">${t('wantToBid')}</button></div>
         </aside>
@@ -2050,6 +2050,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if(!dom.accountChip.contains(e.relatedTarget)) closeAccountMenu();
   });
   function syncHeroOrder(){
+    if(isHome) return;
     const hero=$('.hero-centered');
     const heading=$('.hero-header-center');
     const filters=$('.hero-filter-card-wrap');
