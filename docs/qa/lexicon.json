@@ -1,0 +1,38 @@
+{
+  "lp-primera-vez-mobile": {
+    "auto": 19,
+    "vehículo": 4,
+    "carro": 0,
+    "coche": 0
+  },
+  "catalog-mobile": {
+    "auto": 1,
+    "vehículo": 1,
+    "carro": 0,
+    "coche": 0
+  },
+  "vehicle-mobile": {
+    "auto": 1,
+    "vehículo": 3,
+    "carro": 0,
+    "coche": 0
+  },
+  "lp-ahorro-mobile": {
+    "auto": 20,
+    "vehículo": 4,
+    "carro": 0,
+    "coche": 0
+  },
+  "lp-conocedor-mobile": {
+    "auto": 15,
+    "vehículo": 4,
+    "carro": 0,
+    "coche": 0
+  },
+  "home-after-mobile": {
+    "auto": 17,
+    "vehículo": 15,
+    "carro": 0,
+    "coche": 0
+  }
+}

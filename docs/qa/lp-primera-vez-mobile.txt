@@ -1,0 +1,192 @@
+- img "APV Motors"
+- main:
+  - paragraph: ¿PRIMERA VEZ EN UNA SUBASTA?
+  - heading "Te explicamos todo antes de que pujes." [level=1]
+  - paragraph: Elige el auto, conoce el costo y nosotros pujamos por ti con nuestra licencia.
+  - link "Ver autos en subasta →":
+    - /url: "#autos"
+  - generic: Depósito reembolsable
+  - generic: Asesor humano
+  - heading "Las subastas, en 3 frases" [level=2]
+  - list:
+    - listitem: Copart vende cada semana miles de autos de aseguradoras, bancos y flotas por debajo del precio al público.
+    - listitem: Muchos lotes solo admiten pujas de compradores con licencia. APV Motors la tiene.
+    - listitem: Evaluamos el auto, te damos el costo y pujamos por ti hasta el tope que tú apruebas.
+  - paragraph: Muchos de estos autos tienen daño o título de salvamento. Por eso revisamos cada uno contigo antes de pujar.
+  - region "Vehículos destacados":
+    - heading "Elige tu presupuesto y mira autos reales" [level=2]
+    - paragraph: Rangos de puja o compra inmediata; no incluyen tarifas, transporte ni reparaciones.
+    - group "Rango de precio":
+      - button "Hasta $6.000" [pressed]
+      - button "$6.000–$10.000"
+      - button "$10.000–$15.000"
+      - button "Más de $15.000"
+    - article:
+      - button "2025 TOYOTA ALL OTHER XLE · COPART":
+        - img "2025 TOYOTA ALL OTHER XLE"
+        - generic: COPART
+      - heading "2025 TOYOTA ALL OTHER XLE" [level=3]:
+        - button "2025 TOYOTA ALL OTHER XLE"
+      - generic: Lote 59238386 · CEDAR RAPIDS, IA
+      - generic: Puja actual
+      - strong: $150
+      - paragraph: "Valor al público est.: $45,282"
+      - paragraph: "Hoy: $150 · 99.6 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+    - article:
+      - button "2017 DODGE CHALLENGER GT · COPART":
+        - img "2017 DODGE CHALLENGER GT"
+        - generic: COPART
+      - heading "2017 DODGE CHALLENGER GT" [level=3]:
+        - button "2017 DODGE CHALLENGER GT"
+      - generic: Lote 57563636 · BLAINE, MN
+      - generic: Puja actual
+      - strong: $550
+      - paragraph: "Valor al público est.: $18,828"
+      - paragraph: "Hoy: $550 · 97 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+    - article:
+      - button "2024 JEEP CHEROKEE L LIMITED · COPART":
+        - img "2024 JEEP CHEROKEE L LIMITED"
+        - generic: COPART
+      - heading "2024 JEEP CHEROKEE L LIMITED" [level=3]:
+        - button "2024 JEEP CHEROKEE L LIMITED"
+      - generic: Lote 58769776 · DES MOINES, IA
+      - generic: Puja actual
+      - strong: $80
+      - paragraph: "Valor al público est.: $31,081"
+      - paragraph: "Hoy: $80 · 99.7 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+    - article:
+      - button "2021 SUBARU ASCENT TOURING · COPART":
+        - img "2021 SUBARU ASCENT TOURING"
+        - generic: COPART
+      - heading "2021 SUBARU ASCENT TOURING" [level=3]:
+        - button "2021 SUBARU ASCENT TOURING"
+      - generic: Lote 53242836 · HASLET, TX
+      - generic: Puja actual
+      - strong: $175
+      - paragraph: "Valor al público est.: $24,569"
+      - paragraph: "Hoy: $175 · 99.2 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+    - article:
+      - button "2021 JEEP COMPASS SPORT · COPART":
+        - img "2021 JEEP COMPASS SPORT"
+        - generic: COPART
+      - heading "2021 JEEP COMPASS SPORT" [level=3]:
+        - button "2021 JEEP COMPASS SPORT"
+      - generic: Lote 59951916 · NAMPA, ID
+      - generic: Puja actual
+      - strong: $225
+      - paragraph: "Valor al público est.: $12,694"
+      - paragraph: "Hoy: $225 · 98.2 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+    - article:
+      - button "2023 FORD MUSTANG SELECT · COPART":
+        - img "2023 FORD MUSTANG SELECT"
+        - generic: COPART
+      - heading "2023 FORD MUSTANG SELECT" [level=3]:
+        - button "2023 FORD MUSTANG SELECT"
+      - generic: Lote 53016606 · HASLET, TX
+      - generic: Puja actual
+      - strong: $575
+      - paragraph: "Valor al público est.: $22,647"
+      - paragraph: "Hoy: $575 · 97.4 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+  - paragraph:
+    - link "Ver todos los autos de este rango →":
+      - /url: /catalogo?priceMin=0&priceMax=6000
+  - region "La confianza se gana. Ellos te cuentan por qué.":
+    - paragraph: EXPERIENCIAS REALES EN GOOGLE
+    - heading "La confianza se gana. Ellos te cuentan por qué." [level=2]:
+      - text: La confianza se gana.
+      - text: Ellos te cuentan por qué.
+    - paragraph: Conoce la experiencia de quienes ya compraron con APV.
+    - link "Leer todas las reseñas en Google ↗":
+      - /url: https://maps.app.goo.gl/qYoCdegG9996wcyk6
+    - paragraph: Fragmentos de reseñas públicas en Google.
+    - region "Reseñas de clientes en Google":
+      - group "1 de 3":
+        - generic: G
+        - generic: Reseña en Google
+        - generic "5 de 5 estrellas": ★★★★★
+        - blockquote: “Destaco su buena comunicación y profesionalismo durante toda la puja.”
+        - generic: GC
+        - strong: Gabriel Correa
+        - generic: Fragmento de su reseña
+      - button "Reseña anterior": ←
+      - button "Reseña siguiente": →
+      - generic: 1 de 3
+      - button "Ver reseña de Gabriel Correa"
+      - button "Ver reseña de Wolfgang Ramirez"
+      - button "Ver reseña de Ynadsuy Anolacse"
+  - paragraph: LA TARIFA APV, POR DELANTE
+  - heading "Lo que pagas y lo que te devolvemos" [level=2]
+  - paragraph: Una tarifa base por tramo, según el valor de adjudicación del vehículo.
+  - paragraph: Los honorarios APV no incluyen la puja, las tarifas de subasta, el transporte ni los impuestos. Revisa el desglose de cada ficha.
+  - table "Tarifa base de servicio APV · USD":
+    - caption: Tarifa base de servicio APV · USD
+    - rowgroup:
+      - row "Valor de adjudicación Honorarios APV":
+        - columnheader "Valor de adjudicación"
+        - columnheader "Honorarios APV"
+    - rowgroup:
+      - row "Hasta US$5,999 US$350":
+        - cell "Hasta US$5,999"
+        - cell "US$350"
+      - row "US$6,000 – US$9,999 US$450":
+        - cell "US$6,000 – US$9,999"
+        - cell "US$450"
+      - row "US$10,000 – US$14,999 US$650":
+        - cell "US$10,000 – US$14,999"
+        - cell "US$650"
+      - row "US$15,000 o más US$700":
+        - cell "US$15,000 o más"
+        - cell "US$700"
+  - paragraph: Los honorarios solo se cobran si ganas, y nunca en el mismo pago que tu depósito.
+  - paragraph: DEPÓSITO Y HONORARIOS SON COSAS DISTINTAS
+  - heading "Tu depósito sigue siendo tuyo" [level=2]
+  - paragraph: Tu depósito es reembolsable y habilita tu puja.10 % de tu tope, mínimo US$600.Se confirma con tu asesor antes de pujar.
+  - link "Consultar el depósito con un asesor ↗":
+    - /url: https://wa.me/13462048308?text=Quiero+confirmar+las+condiciones+del+dep%C3%B3sito+para+pujar+%5Bref%3Alp-deposito%5D
+  - article:
+    - generic: "01"
+    - heading "Si no ganas" [level=3]
+    - paragraph: Queda activo para tu próxima puja o te lo devolvemos completo.
+  - article:
+    - generic: "02"
+    - heading "Si ganas" [level=3]
+    - paragraph: Pagas el vehículo por transferencia bancaria y aplicamos tu depósito según las condiciones.
+  - article:
+    - generic: "03"
+    - heading "Si ganas y no pagas" [level=3]
+    - paragraph: La subasta aplica penalidades según las condiciones que aceptaste.
+  - paragraph: RESOLVEMOS TUS DUDAS
+  - heading "Todo empieza con claridad." [level=2]:
+    - text: Todo empieza
+    - text: con claridad.
+  - paragraph: ¿Tu caso necesita más detalle?
+  - generic "¿El precio que veo es el precio final?"
+  - generic "¿Qué es el depósito?"
+  - generic "¿Puedo comprar sin licencia de dealer?"
+  - generic "¿Puedo pagar el vehículo con tarjeta?"
+  - heading "Encuentra tu auto hoy" [level=2]
+  - link "Ver autos en subasta →":
+    - /url: "#autos"
+  - link "¿Tienes dudas? Escríbenos ↗":
+    - /url: https://wa.me/13462048308?text=%5Bref%3Alp-final%5D
+  - text: ⌄
+- link "Ver autos en subasta →":
+  - /url: "#autos"
+- contentinfo:
+  - img "APV Motors"
+  - paragraph:
+    - text: APV Motors LLC ·Licencia de dealer [LICENCIA_NO]· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·
+    - link "+1 346 204 8308":
+      - /url: tel:+13462048308
+  - paragraph: Datos de inventario obtenidos de listados públicos de subastas de Copart.
+  - paragraph: La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.
+  - button "Cookies"
+  - button "Términos de servicio"
+  - generic: ·
+  - button "Privacidad"

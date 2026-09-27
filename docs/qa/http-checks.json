@@ -1,0 +1,80 @@
+{
+  "/": {
+    "title": "Autos de subasta en EE. UU. sin licencia | APV Motors",
+    "og": {
+      "og:title": "Autos de subasta en EE. UU. sin licencia | APV Motors",
+      "og:description": "Compra autos de Copart con APV Motors. Pujamos por ti con licencia de dealer. Honorarios desde US$350 y depósito reembolsable.",
+      "og:image": "https://cars.apvmotorusa.com/assets/og-default.jpg",
+      "og:url": "https://cars.apvmotorusa.com/",
+      "og:type": "website",
+      "og:locale": "es_US"
+    },
+    "canonical": "https://cars.apvmotorusa.com/"
+  },
+  "/lp": {
+    "title": "Elige tu auto de subasta | APV Motors",
+    "og": {
+      "og:title": "Elige tu auto de subasta | APV Motors",
+      "og:description": "Mira autos por presupuesto. APV Motors puja por ti en Copart y te acompaña durante la compra.",
+      "og:image": "https://cars.apvmotorusa.com/assets/og-default.jpg",
+      "og:url": "https://cars.apvmotorusa.com/lp",
+      "og:type": "website",
+      "og:locale": "es_US"
+    },
+    "canonical": "https://cars.apvmotorusa.com/lp"
+  },
+  "/catalogo": {
+    "title": "Autos en subasta: catálogo | APV Motors",
+    "og": {
+      "og:title": "Autos en subasta: catálogo | APV Motors",
+      "og:description": "Explora autos de Copart, revisa su estado y calcula los costos de tu puja con APV Motors.",
+      "og:image": "https://cars.apvmotorusa.com/assets/og-default.jpg",
+      "og:url": "https://cars.apvmotorusa.com/catalogo",
+      "og:type": "website",
+      "og:locale": "es_US"
+    },
+    "canonical": "https://cars.apvmotorusa.com/catalogo"
+  },
+  "/vehiculo/54847846": {
+    "title": "2017 TOYOTA HIGHLANDER LIMITED en subasta | APV Motors",
+    "og": {
+      "og:title": "2017 TOYOTA HIGHLANDER LIMITED en subasta | APV Motors",
+      "og:description": "ROGERSVILLE · MO · Granizo · Valor al público estimado: US$19,877",
+      "og:image": "https://cs.copart.com/v1/AUTH_svc.pdoc00001/lpp/0526/e43090a5bb134ebbb60d2dd58efb545f_ful.jpg",
+      "og:url": "https://cars.apvmotorusa.com/vehiculo/54847846",
+      "og:type": "website",
+      "og:locale": "es_US"
+    },
+    "canonical": "https://cars.apvmotorusa.com/vehiculo/54847846"
+  },
+  "/ruta-inexistente": {
+    "status": 404,
+    "type": "text/html; charset=utf-8"
+  },
+  "/robots.txt": {
+    "status": 200,
+    "type": "text/plain; charset=utf-8"
+  },
+  "/sitemap.xml": {
+    "status": 200,
+    "type": "application/xml; charset=utf-8"
+  },
+  "/sitemap-pages.xml": {
+    "status": 200,
+    "type": "application/xml; charset=utf-8"
+  },
+  "/sitemap-vehicles-1.xml": {
+    "status": 200,
+    "type": "application/xml; charset=utf-8"
+  },
+  "attribution": {
+    "source": {
+      "landing": "/go",
+      "timestamp": "2026-09-27T17:17:42.229Z",
+      "utm_source": "test",
+      "utm_campaign": "qa"
+    },
+    "bucket": "lp",
+    "destination": "http://127.0.0.1:3015/lp?utm_source=test&utm_campaign=qa&v=primera-vez&ab_bucket=lp"
+  }
+}

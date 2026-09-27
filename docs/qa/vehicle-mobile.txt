@@ -1,0 +1,804 @@
+- banner:
+  - link "APV Motors inicio":
+    - /url: /
+    - img "APV Motors"
+  - navigation "Navegación principal":
+    - link "Catálogo":
+      - /url: "#catalogo"
+    - link "Cómo comprar":
+      - /url: /#como-funciona
+    - link "Reseñas":
+      - /url: /#resenas
+    - link "Planes":
+      - /url: /#planes
+  - button "ES"
+  - generic: "|"
+  - button "EN"
+  - button "Iniciar sesión"
+- search "Buscar vehículos":
+  - searchbox "Ej. Silverado 2023, número de lote o VIN"
+  - button "Buscar"
+- main:
+  - search:
+    - generic: ⌕
+    - searchbox "Ej. Silverado 2023, número de lote o VIN"
+    - button "Buscar"
+    - button "Más filtros ⌄"
+  - generic: CATÁLOGO DE SUBASTA
+  - heading "Encuentra el auto correcto." [level=2]
+  - paragraph: 74,927 resultados disponibles.
+  - button "☰ Filtros"
+  - combobox:
+    - option "Aleatorio / búsqueda" [selected]
+    - option "Subasta más próxima"
+    - 'option "Año: más nuevo"'
+    - 'option "Precio: menor"'
+    - 'option "Precio: mayor"'
+    - option "Menor millaje"
+  - article:
+    - button "2021 TOYOTA HIGHLANDER XLE · COPART":
+      - img "2021 TOYOTA HIGHLANDER XLE"
+    - heading "2021 TOYOTA HIGHLANDER XLE" [level=3]:
+      - button "2021 TOYOTA HIGHLANDER XLE"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 64847326
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 3.5L 6
+    - generic: ⬡
+    - text: 6 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 88,042 mi (141,690 km)
+    - generic: Ubicación
+    - strong: CARTERSVILLE, GA
+    - generic: Daño
+    - strong: Daño lateral + Techo
+    - generic: Documento
+    - strong: GA · ST
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: SUV
+    - generic: Color
+    - strong: Plateado
+    - generic: Valor al público est.
+    - strong: $25,468
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2015 CHEVROLET CAMARO LT · COPART":
+      - img "2015 CHEVROLET CAMARO LT"
+    - heading "2015 CHEVROLET CAMARO LT" [level=3]:
+      - button "2015 CHEVROLET CAMARO LT"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 73276785
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción trasera
+    - generic: ◴
+    - text: 3.6L 6
+    - generic: ⬡
+    - text: 6 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 120,248 mi (193,520 km)
+    - generic: Ubicación
+    - strong: CAHOKIA HEIGHTS, IL
+    - generic: Daño
+    - strong: Daño frontal
+    - generic: Documento
+    - strong: IL · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Color
+    - strong: Blanco
+    - generic: Valor al público est.
+    - strong: $11,267
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2022 TOYOTA RAV4 XSE · COPART":
+      - img "2022 TOYOTA RAV4 XSE"
+    - heading "2022 TOYOTA RAV4 XSE" [level=3]:
+      - button "2022 TOYOTA RAV4 XSE"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 59766476
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción total
+    - generic: ◴
+    - text: 2.5L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Híbrido de gasolina y eléctrico
+    - generic: Odómetro
+    - strong: 41,239 mi (66,368 km)
+    - generic: Ubicación
+    - strong: EXETER, RI
+    - generic: Daño
+    - strong: Daño frontal
+    - generic: Documento
+    - strong: ID · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: SUV
+    - generic: Color
+    - strong: Blanco
+    - generic: Valor al público est.
+    - strong: $39,500
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2019 BMW 4 SERIES · COPART":
+      - img "2019 BMW 4 SERIES"
+    - heading "2019 BMW 4 SERIES" [level=3]:
+      - button "2019 BMW 4 SERIES"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 64622976
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Manual
+    - generic: ◉
+    - text: Tracción total
+    - generic: ◴
+    - text: 3.0L 6
+    - generic: ⬡
+    - text: 6 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - paragraph: "Hoy: $150 · 99.4 % por debajo del valor al público. El precio puede cambiar."
+    - generic: Odómetro
+    - strong: 54,556 mi (87,799 km)
+    - generic: Ubicación
+    - strong: LOUISVILLE, KY
+    - generic: Daño
+    - strong: Daño frontal + Daño lateral
+    - generic: Documento
+    - strong: KY · ST
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: COUPE
+    - generic: Color
+    - strong: Negro
+    - generic: Valor al público est.
+    - strong: $26,648
+    - complementary:
+      - generic: Puja actual
+      - strong: $150
+      - button "Quiero ofertar"
+  - article:
+    - button "2025 KIA SORENTO LX · COPART":
+      - img "2025 KIA SORENTO LX"
+    - heading "2025 KIA SORENTO LX" [level=3]:
+      - button "2025 KIA SORENTO LX"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 56679506
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 2.5L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 28,473 mi (45,823 km)
+    - generic: Ubicación
+    - strong: HOMESTEAD, FL
+    - generic: Daño
+    - strong: Daño lateral + Daño frontal
+    - generic: Documento
+    - strong: ID · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: SUV
+    - generic: Color
+    - strong: Negro
+    - generic: Valor al público est.
+    - strong: $21,930
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2025 BUICK ENCORE PREFERRED · COPART":
+      - img "2025 BUICK ENCORE PREFERRED"
+    - heading "2025 BUICK ENCORE PREFERRED" [level=3]:
+      - button "2025 BUICK ENCORE PREFERRED"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 57644396
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción total
+    - generic: ◴
+    - text: 1.3L 3
+    - generic: ⬡
+    - text: 3 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 15,879 mi (25,555 km)
+    - generic: Ubicación
+    - strong: WOODHAVEN, MI
+    - generic: Daño
+    - strong: Daño frontal
+    - generic: Documento
+    - strong: MI · PO
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: SUV
+    - generic: Color
+    - strong: Plateado
+    - generic: Valor al público est.
+    - strong: $20,920
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2016 BUICK VERANO · COPART":
+      - img "2016 BUICK VERANO"
+    - heading "2016 BUICK VERANO" [level=3]:
+      - button "2016 BUICK VERANO"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 64558876
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 2.4L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Combustible flexible
+    - generic: Odómetro
+    - strong: 179,523 mi (288,914 km)
+    - generic: Ubicación
+    - strong: EXETER, RI
+    - generic: Daño
+    - strong: Daño frontal + Daño lateral
+    - generic: Documento
+    - strong: RI · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán de 4 puertas
+    - generic: Color
+    - strong: Negro
+    - generic: Valor al público est.
+    - strong: $6,180
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2019 KIA OPTIMA LX · COPART":
+      - img "2019 KIA OPTIMA LX"
+    - heading "2019 KIA OPTIMA LX" [level=3]:
+      - button "2019 KIA OPTIMA LX"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 65523766
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 2.4L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 72,256 mi (116,284 km)
+    - generic: Ubicación
+    - strong: CAHOKIA HEIGHTS, IL
+    - generic: Daño
+    - strong: Daño lateral
+    - generic: Documento
+    - strong: IL · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán
+    - generic: Color
+    - strong: Blanco
+    - generic: Valor al público est.
+    - strong: $11,128
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2008 HONDA CIVIC LX · COPART":
+      - img "2008 HONDA CIVIC LX"
+    - heading "2008 HONDA CIVIC LX" [level=3]:
+      - button "2008 HONDA CIVIC LX"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 63529886
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 1.8L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 207,278 mi (333,581 km)
+    - generic: Ubicación
+    - strong: TANNER, AL
+    - generic: Daño
+    - strong: Daño trasero + Daño lateral
+    - generic: Documento
+    - strong: AL · ST
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán de 4 puertas
+    - generic: Color
+    - strong: Negro
+    - generic: Valor al público est.
+    - strong: $4,650
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2020 FORD ESCAPE S · COPART":
+      - img "2020 FORD ESCAPE S"
+    - heading "2020 FORD ESCAPE S" [level=3]:
+      - button "2020 FORD ESCAPE S"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 78873825
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 1.5L 3
+    - generic: ⬡
+    - text: 3 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 64,069 mi (103,109 km)
+    - generic: Ubicación
+    - strong: TULSA, OK
+    - generic: Daño
+    - strong: Daño frontal + Abolladuras y rayones menores
+    - generic: Documento
+    - strong: OK · ST
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: SUV
+    - generic: Color
+    - strong: Blanco
+    - generic: Valor al público est.
+    - strong: $11,713
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2019 KIA RIO S · COPART":
+      - img "2019 KIA RIO S"
+    - heading "2019 KIA RIO S" [level=3]:
+      - button "2019 KIA RIO S"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 59285726
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 1.6L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 152,833 mi (245,960 km)
+    - generic: Ubicación
+    - strong: MADISONVILLE, TN
+    - generic: Daño
+    - strong: Daño lateral + Daño frontal
+    - generic: Documento
+    - strong: TN · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán
+    - generic: Color
+    - strong: Blanco
+    - generic: Valor al público est.
+    - strong: $3,505
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2022 HYUNDAI SONATA N LINE NIGHT EDITION · COPART":
+      - img "2022 HYUNDAI SONATA N LINE NIGHT EDITION"
+    - heading "2022 HYUNDAI SONATA N LINE NIGHT EDITION" [level=3]:
+      - button "2022 HYUNDAI SONATA N LINE NIGHT EDITION"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 60250616
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 2.5L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 115,271 mi (185,510 km)
+    - generic: Ubicación
+    - strong: TANNER, AL
+    - generic: Daño
+    - strong: Daño frontal + Daño lateral
+    - generic: Documento
+    - strong: AL · ST
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán
+    - generic: Color
+    - strong: Blanco
+    - generic: Valor al público est.
+    - strong: $14,600
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2016 JAYCO ALL Models · COPART":
+      - img "2016 JAYCO ALL Models"
+    - heading "2016 JAYCO ALL Models" [level=3]:
+      - button "2016 JAYCO ALL Models"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 65203266
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: Ubicación
+    - strong: LEBANON, TN
+    - generic: Daño
+    - strong: Techo
+    - generic: Documento
+    - strong: TN · SC
+    - generic: Condición
+    - strong: Sin verificar
+    - generic: Color
+    - strong: Blanco
+    - generic: Valor al público est.
+    - strong: $11,120
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2017 HONDA CIVIC EX · COPART":
+      - img "2017 HONDA CIVIC EX"
+    - heading "2017 HONDA CIVIC EX" [level=3]:
+      - button "2017 HONDA CIVIC EX"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 49284276
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Manual
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 1.5L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - paragraph: "Hoy: $250 · 97.8 % por debajo del valor al público. El precio puede cambiar."
+    - generic: Odómetro
+    - strong: 98,753 mi (158,927 km)
+    - generic: Ubicación
+    - strong: MOCKSVILLE, NC
+    - generic: Daño
+    - strong: Daño trasero
+    - generic: Documento
+    - strong: NC · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán de 4 puertas
+    - generic: Color
+    - strong: Rojo
+    - generic: Valor al público est.
+    - strong: $11,805
+    - complementary:
+      - generic: Puja actual
+      - strong: $250
+      - button "Quiero ofertar"
+  - article:
+    - button "2012 NISSAN ALTIMA 2.5 · COPART":
+      - img "2012 NISSAN ALTIMA 2.5"
+    - heading "2012 NISSAN ALTIMA 2.5" [level=3]:
+      - button "2012 NISSAN ALTIMA 2.5"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 63145286
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 2.5L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 105,847 mi (170,344 km)
+    - generic: Ubicación
+    - strong: ELGIN, IL
+    - generic: Daño
+    - strong: Techo + Daño trasero
+    - generic: Documento
+    - strong: IL · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán
+    - generic: Color
+    - strong: Plateado
+    - generic: Valor al público est.
+    - strong: $5,055
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2006 TOYOTA All Models DOUBLE CAB PRERUNNER · COPART":
+      - img "2006 TOYOTA All Models DOUBLE CAB PRERUNNER"
+    - heading "2006 TOYOTA All Models DOUBLE CAB PRERUNNER" [level=3]:
+      - button "2006 TOYOTA All Models DOUBLE CAB PRERUNNER"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 61151406
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción trasera
+    - generic: ◴
+    - text: 4.0L 6
+    - generic: ⬡
+    - text: 6 cil.
+    - generic: ⛽
+    - text: Gasolina
+    - generic: Odómetro
+    - strong: 231,591 mi (372,709 km)
+    - generic: Ubicación
+    - strong: HOUSTON, TX
+    - generic: Daño
+    - strong: Daño frontal
+    - generic: Documento
+    - strong: TX · CT
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Camioneta doble cabina
+    - generic: Color
+    - strong: Plateado
+    - generic: Valor al público est.
+    - strong: $7,271
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2022 TOYOTA COROLLA LE · COPART":
+      - img "2022 TOYOTA COROLLA LE"
+    - heading "2022 TOYOTA COROLLA LE" [level=3]:
+      - button "2022 TOYOTA COROLLA LE"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 65107116
+    - generic: 🔑
+    - text: Llave disponible
+    - generic: ⚙
+    - text: Automática
+    - generic: ◉
+    - text: Tracción delantera
+    - generic: ◴
+    - text: 1.8L 4
+    - generic: ⬡
+    - text: 4 cil.
+    - generic: ⛽
+    - text: Híbrido de gasolina y eléctrico
+    - generic: Odómetro
+    - strong: 30,958 mi (49,822 km)
+    - generic: Ubicación
+    - strong: WINDSOR, NJ
+    - generic: Daño
+    - strong: Daño lateral + Daño frontal
+    - generic: Documento
+    - strong: NJ · SC
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: Sedán
+    - generic: Color
+    - strong: Rojo
+    - generic: Valor al público est.
+    - strong: $20,283
+    - complementary:
+      - button "Quiero ofertar"
+  - article:
+    - button "2003 HARLEY-DAVIDSON FL · COPART":
+      - img "2003 HARLEY-DAVIDSON FL"
+    - heading "2003 HARLEY-DAVIDSON FL" [level=3]:
+      - button "2003 HARLEY-DAVIDSON FL"
+    - generic: COPART
+    - button "Guardar en mi cuenta": ♡
+    - generic: ⌗ VIN protegido · inicia sesión para verlo • Lote 57163646
+    - generic: ⚙
+    - text: Manual
+    - generic: ◴
+    - text: "2"
+    - generic: ⬡
+    - text: 2 cil.
+    - generic: Odómetro
+    - strong: 2,230 mi (3,589 km)
+    - generic: Ubicación
+    - strong: AVON, MN
+    - generic: Daño
+    - strong: Daño frontal
+    - generic: Documento
+    - strong: MN · RS
+    - generic: Condición
+    - strong: Prende y corre
+    - generic: Carrocería
+    - strong: ROAD
+    - generic: Color
+    - strong: Negro
+    - generic: Valor al público est.
+    - strong: $8,506
+    - complementary:
+      - button "Quiero ofertar"
+  - button "‹" [disabled]
+  - button "1"
+  - button "2"
+  - button "3"
+  - generic: …
+  - button "4163"
+  - button "›"
+- contentinfo:
+  - img "APV Motors"
+  - paragraph:
+    - text: APV Motors LLC ·Licencia de dealer [LICENCIA_NO]· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·
+    - link "+1 346 204 8308":
+      - /url: tel:+13462048308
+  - paragraph: Datos de inventario obtenidos de listados públicos de subastas de Copart.
+  - paragraph: La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.
+  - button "Cookies"
+  - button "Términos de servicio"
+  - generic: ·
+  - button "Privacidad"
+- dialog "2017 TOYOTA HIGHLANDER LIMITED":
+  - button "Cerrar": ×
+  - heading "2017 TOYOTA HIGHLANDER LIMITED" [level=2]
+  - link "WhatsApp":
+    - /url: https://wa.me/?text=2017+TOYOTA+HIGHLANDER+LIMITED+http%3A%2F%2F127.0.0.1%3A3015%2Fvehiculo%2F54847846+%5Bref%3Avehicle-contact%5D
+  - link "SMS":
+    - /url: sms:?body=2017%20TOYOTA%20HIGHLANDER%20LIMITED%20http%3A%2F%2F127.0.0.1%3A3015%2Fvehiculo%2F54847846
+  - button "Copiar enlace":
+    - generic: Copiar enlace
+  - status
+  - button "Foto anterior" [disabled]: ‹
+  - img "2017 TOYOTA HIGHLANDER LIMITED"
+  - button "Siguiente foto" [disabled]: ›
+  - button "Ampliar foto"
+  - generic: 1 foto
+  - button "Ver foto 1":
+    - img "Foto 1 de 2017 TOYOTA HIGHLANDER LIMITED"
+  - text: PUJA ACTUAL SUBASTA
+  - heading "$150 USD" [level=2]
+  - button "🔨 Quiero ofertar"
+  - paragraph: Se vende tal como está. Todas las ventas son finales.
+  - generic: ⚖️
+  - heading "Subasta" [level=3]
+  - button "Guardar en mi cuenta": ♡
+  - button "Solicitar historial elaborado por APV"
+  - generic: VIN
+  - strong:
+    - button "🔒 Regístrate para ver el VIN"
+  - generic: Lote
+  - strong: "54847846"
+  - generic: Fecha de subasta
+  - strong: Por confirmar
+  - generic: Nombre de venta
+  - strong: MO - SPRINGFIELD
+  - generic: Ubicación
+  - strong: ROGERSVILLE, MO
+  - generic: Vendedor
+  - strong: Vendedor de Copart
+  - generic: 🧰
+  - heading "Análisis de precio" [level=3]
+  - generic: Valor al público est.
+  - strong: $19,877
+  - generic: Estado de venta
+  - strong: Venta sin reserva
+  - generic: Reserva del vendedor
+  - strong: Venta sin reserva
+  - generic: 🛠️
+  - heading "Daños y condición" [level=3]
+  - generic: Daño principal
+  - strong: Granizo
+  - generic: Daño secundario
+  - strong: Abolladuras y rayones menores
+  - generic: Condición
+  - strong: Prende y corre
+  - generic: Título / documento
+  - strong: MO · SC
+  - generic: ⚙️
+  - heading "Información del vehículo" [level=3]
+  - generic: Odómetro
+  - strong: 98,926 mi
+  - generic: Tiene llave
+  - strong: Sí
+  - generic: Cilindros
+  - strong: 6 cil.
+  - generic: Tipo de motor
+  - strong: 3.5L 6
+  - generic: Tracción
+  - strong: Tracción total
+  - generic: Transmisión
+  - strong: Automática
+  - generic: 🧮 HERRAMIENTA DE CÁLCULO DE TARIFAS
+  - heading "Calculadora de costos y opciones de puja" [level=3]
+  - generic "Parámetros de la oferta":
+    - text: Parámetros de la oferta
+    - generic: ⌄
+  - generic: 🔒
+  - text: Calculadora exclusiva
+  - heading "Calculadora de costos y total a pagar" [level=4]
+  - paragraph: Inicia sesión o regístrate para usar la Calculadora de costos y ver el desglose exacto de tarifas para este vehículo.
+  - button "🔑 Iniciar sesión para usar la calculadora"

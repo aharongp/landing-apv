@@ -89,5 +89,9 @@
   "MAROON": "Granate",
   "BURN - ENGINE": "Incendio en el motor",
   "BURN - INTERIOR": "Incendio interior",
-  "BIOHAZARD/CHEMICAL": "Riesgo biológico / químico"
+  "BIOHAZARD/CHEMICAL": "Riesgo biológico / químico",
+  "RUN & DRIVE VERIFIED": "Prende y corre",
+  "VEHICLE STARTS": "Arranca",
+  "ENGINE START PROGRAM": "Arranca",
+  "DEFAULT": "Sin confirmar"
 }

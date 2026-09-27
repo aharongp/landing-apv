@@ -1,0 +1,8 @@
+{
+  "GA4_MEASUREMENT_ID": true,
+  "META_PIXEL_ID": false,
+  "META_CAPI_TOKEN": false,
+  "GOOGLE_PLACES_API_KEY": false,
+  "GOOGLE_PLACE_ID": false,
+  "DEALER_LICENSE_NO": false
+}

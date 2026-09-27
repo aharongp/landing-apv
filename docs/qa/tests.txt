@@ -1,0 +1,298 @@
+
+> apv-auction-catalog@1.5.0 test
+> node --test
+
+TAP version 13
+# (node:135290) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: plans fail closed until business terms and Stripe settings are configured
+ok 1 - plans fail closed until business terms and Stripe settings are configured
+  ---
+  duration_ms: 9.56257
+  type: 'test'
+  ...
+# Subtest: checkout rejects client amounts, reuses sessions and prevents duplicate subscriptions
+ok 2 - checkout rejects client amounts, reuses sessions and prevents duplicate subscriptions
+  ---
+  duration_ms: 4.830662
+  type: 'test'
+  ...
+# Subtest: concurrent checkouts create only one session
+ok 3 - concurrent checkouts create only one session
+  ---
+  duration_ms: 2.093631
+  type: 'test'
+  ...
+# Subtest: configured price amount must match the advertised price
+ok 4 - configured price amount must match the advertised price
+  ---
+  duration_ms: 1.678228
+  type: 'test'
+  ...
+# Subtest: signed payments grant discounts; duplicates do not grant multiple consultations
+ok 5 - signed payments grant discounts; duplicates do not grant multiple consultations
+  ---
+  duration_ms: 5.745587
+  type: 'test'
+  ...
+# Subtest: invalid signatures cannot grant benefits
+ok 6 - invalid signatures cannot grant benefits
+  ---
+  duration_ms: 1.918024
+  type: 'test'
+  ...
+# Subtest: unpaid upgrades do not grant Premium; cancel-at-end preserves paid benefits
+ok 7 - unpaid upgrades do not grant Premium; cancel-at-end preserves paid benefits
+  ---
+  duration_ms: 3.921427
+  type: 'test'
+  ...
+# Subtest: out-of-order events retrieve current state and do not reactivate canceled plans
+ok 8 - out-of-order events retrieve current state and do not reactivate canceled plans
+  ---
+  duration_ms: 2.504737
+  type: 'test'
+  ...
+# Subtest: annual renewal grants one new consultation without restoring the used benefit
+ok 9 - annual renewal grants one new consultation without restoring the used benefit
+  ---
+  duration_ms: 3.871014
+  type: 'test'
+  ...
+# Subtest: confirmed public terms show annual prices and the Quick Call base price
+ok 10 - confirmed public terms show annual prices and the Quick Call base price
+  ---
+  duration_ms: 0.996858
+  type: 'test'
+  ...
+# Subtest: subscription updates notify CRM and failed notifications retry on webhook redelivery
+ok 11 - subscription updates notify CRM and failed notifications retry on webhook redelivery
+  ---
+  duration_ms: 4.680853
+  type: 'test'
+  ...
+# Subtest: history requests require an active paid membership on the server
+ok 12 - history requests require an active paid membership on the server
+  ---
+  duration_ms: 2.818152
+  type: 'test'
+  ...
+# Subtest: budget guide reserves additional costs and never exceeds the requested total
+ok 13 - budget guide reserves additional costs and never exceeds the requested total
+  ---
+  duration_ms: 1.528659
+  type: 'test'
+  ...
+# Subtest: base-fee guide is consistent for anonymous and paid members
+ok 14 - base-fee guide is consistent for anonymous and paid members
+  ---
+  duration_ms: 0.669357
+  type: 'test'
+  ...
+# Subtest: budget guide rejects invalid budgets and insufficient purchase funds
+ok 15 - budget guide rejects invalid budgets and insufficient purchase funds
+  ---
+  duration_ms: 1.269526
+  type: 'test'
+  ...
+# Subtest: displayed APV fee tiers match the vehicle calculator
+ok 16 - displayed APV fee tiers match the vehicle calculator
+  ---
+  duration_ms: 0.163625
+  type: 'test'
+  ...
+# (node:135292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: catalog upload replaces previous lots and repairs even an identical CSV
+ok 17 - catalog upload replaces previous lots and repairs even an identical CSV
+  ---
+  duration_ms: 644.379316
+  type: 'test'
+  ...
+# (node:135298) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [CATALOG DB] SQLite database initialized at /tmp/apv-test-HgCtOr/catalog.db
+# [CATALOG DB] Upsert complete. Added: 3, Total in DB: 3, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 0, Total in DB: 1, Updated: 1
+# [CATALOG DB] Upsert complete. Added: 10, Total in DB: 10, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] All vehicles cleared from SQLite database.
+# [CATALOG DB] Upsert complete. Added: 30, Total in DB: 30, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 2, Total in DB: 2, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 4, Total in DB: 4, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 4, Total in DB: 4, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] All vehicles cleared from SQLite database.
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 5, Total in DB: 5, Updated: 0
+# Subtest: CSV handles inch marks, commas, multiline and escaped quotes
+ok 18 - CSV handles inch marks, commas, multiline and escaped quotes
+  ---
+  duration_ms: 1.455632
+  type: 'test'
+  ...
+# Subtest: snapshot import, filters, deduplication, expiry, rollback and favorites
+ok 19 - snapshot import, filters, deduplication, expiry, rollback and favorites
+  ---
+  duration_ms: 294.079255
+  type: 'test'
+  ...
+# Subtest: sale time uses export timezone and rejects impossible dates
+ok 20 - sale time uses export timezone and rejects impossible dates
+  ---
+  duration_ms: 0.244686
+  type: 'test'
+  ...
+# Subtest: account favorites are isolated and repair bypasses hash without changing accounts or bids
+ok 21 - account favorites are isolated and repair bypasses hash without changing accounts or bids
+  ---
+  duration_ms: 146.584945
+  type: 'test'
+  ...
+# Subtest: featured sample is unique, public and invalidated after expiry, imports and clear
+ok 22 - featured sample is unique, public and invalidated after expiry, imports and clear
+  ---
+  duration_ms: 91.502682
+  type: 'test'
+  ...
+# Subtest: automatic catalog order shuffles consistently across pages and respects searches and sorts
+ok 23 - automatic catalog order shuffles consistently across pages and respects searches and sorts
+  ---
+  duration_ms: 25.605466
+  type: 'test'
+  ...
+# Subtest: shared lot lookup takes priority over a different vehicle internal id
+ok 24 - shared lot lookup takes priority over a different vehicle internal id
+  ---
+  duration_ms: 32.346837
+  type: 'test'
+  ...
+# Subtest: context search, location, title and zero-mileage filters combine without losing ZIP leading zeroes
+ok 25 - context search, location, title and zero-mileage filters combine without losing ZIP leading zeroes
+  ---
+  duration_ms: 24.285986
+  type: 'test'
+  ...
+# Subtest: make options contain manufacturers and listing images use full resolution
+ok 26 - make options contain manufacturers and listing images use full resolution
+  ---
+  duration_ms: 13.40522
+  type: 'test'
+  ...
+# Subtest: catalog cache reuses queries, isolates returned objects and invalidates on import and clear
+ok 27 - catalog cache reuses queries, isolates returned objects and invalidates on import and clear
+  ---
+  duration_ms: 43.517363
+  type: 'test'
+  ...
+# Subtest: catalog query cache expires after fifteen seconds
+ok 28 - catalog query cache expires after fifteen seconds
+  ---
+  duration_ms: 16.318459
+  type: 'test'
+  ...
+# Subtest: campaign inventory excludes unknown prices and retail, and respects exact price bands
+ok 29 - campaign inventory excludes unknown prices and retail, and respects exact price bands
+  ---
+  duration_ms: 10.618538
+  type: 'test'
+  ...
+# Subtest: public assets revalidate and compress; vehicle data remains uncached
+ok 30 - public assets revalidate and compress; vehicle data remains uncached
+  ---
+  duration_ms: 569.294378
+  type: 'test'
+  ...
+# Fotos lote 12345678: offline
+# Subtest: gallery tries next endpoint when first response contains no photos
+ok 31 - gallery tries next endpoint when first response contains no photos
+  ---
+  duration_ms: 3.005551
+  type: 'test'
+  ...
+# Subtest: gallery keeps cover if provider unavailable
+ok 32 - gallery keeps cover if provider unavailable
+  ---
+  duration_ms: 1.76058
+  type: 'test'
+  ...
+# Subtest: existing car conversation records plan changes once, including a return to a previous plan
+ok 33 - existing car conversation records plan changes once, including a return to a previous plan
+  ---
+  duration_ms: 17.748493
+  type: 'test'
+  ...
+# Subtest: catalog starts vehicle requests before account and filter requests resolve
+ok 34 - catalog starts vehicle requests before account and filter requests resolve
+  ---
+  duration_ms: 3.017643
+  type: 'test'
+  ...
+# (node:135328) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: first source wins and source cookie lasts 90 days without marketing consent
+ok 35 - first source wins and source cookie lasts 90 days without marketing consent
+  ---
+  duration_ms: 2.15205
+  type: 'test'
+  ...
+# Subtest: AB route persists group, preserves all parameters and never stores forced assignments
+ok 36 - AB route persists group, preserves all parameters and never stores forced assignments
+  ---
+  duration_ms: 0.991147
+  type: 'test'
+  ...
+# Subtest: SSR metadata escapes inventory content and delivers distinct raw vehicle metadata
+ok 37 - SSR metadata escapes inventory content and delivers distinct raw vehicle metadata
+  ---
+  duration_ms: 12.701809
+  type: 'test'
+  ...
+# Subtest: campaign variants reuse sections, contain four key FAQs, and fall back for invalid variants
+ok 38 - campaign variants reuse sections, contain four key FAQs, and fall back for invalid variants
+  ---
+  duration_ms: 4.41081
+  type: 'test'
+  ...
+# Subtest: consent stored separately from auth; CAPI gated, hashed and deduplicated
+ok 39 - consent stored separately from auth; CAPI gated, hashed and deduplicated
+  ---
+  duration_ms: 2.308151
+  type: 'test'
+  ...
+# Subtest: essential consent creates first-party attribution but no Google/Meta scripts or events
+ok 40 - essential consent creates first-party attribution but no Google/Meta scripts or events
+  ---
+  duration_ms: 3.218237
+  type: 'test'
+  ...
+# Subtest: all consent enables configured scripts and shares conversion IDs with pixel
+ok 41 - all consent enables configured scripts and shares conversion IDs with pixel
+  ---
+  duration_ms: 1.529279
+  type: 'test'
+  ...
+# Subtest: missing integrations stay inactive even after consent
+ok 42 - missing integrations stay inactive even after consent
+  ---
+  duration_ms: 0.880661
+  type: 'test'
+  ...
+# Subtest: video delivery supports playback, seeking, revalidation and invalid ranges
+ok 43 - video delivery supports playback, seeking, revalidation and invalid ranges
+  ---
+  duration_ms: 96.650755
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 786.93834

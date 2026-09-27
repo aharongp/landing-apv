@@ -1,0 +1,316 @@
+- banner:
+  - link "APV Motors inicio":
+    - /url: /
+    - img "APV Motors"
+  - navigation "Navegación principal":
+    - link "Catálogo":
+      - /url: /catalogo
+    - link "Cómo comprar":
+      - /url: "#como-funciona"
+    - link "Reseñas":
+      - /url: "#resenas"
+    - link "Planes":
+      - /url: "#planes"
+  - button "ES"
+  - generic: "|"
+  - button "EN"
+  - button "Iniciar sesión"
+- search "Buscar vehículos":
+  - searchbox "Ej. Silverado 2023, número de lote o VIN"
+  - button "Buscar"
+- main:
+  - generic: AUTOS A PRECIO DE SUBASTA · COPART
+  - heading "Tú eliges el auto. Nosotros gestionamos la puja." [level=1]:
+    - text: Tú eliges el auto.
+    - text: Nosotros gestionamos la puja.
+  - paragraph: Muchos lotes de Copart solo admiten pujas de compradores con licencia. APV Motors la tiene y puja por ti. Conoce el costo antes de ofertar y te acompañamos hasta el título y el transporte.
+  - strong: Honorarios base desde US$350
+  - link "Ver tarifas por tramo →":
+    - /url: "#costos"
+  - link "Ver autos en subasta →":
+    - /url: /catalogo
+  - link "Calcular mi presupuesto":
+    - /url: "#presupuesto"
+  - generic: ✓ Español e inglés
+  - generic: ✓ Asesor humano
+  - paragraph: Explora sin registrarte. Crea tu cuenta cuando quieras guardar un auto o solicitar una puja.
+  - generic: CONOCE APV MOTORS
+  - generic: SUBASTAS · EE. UU.
+  - generic "Presentación de APV Motors"
+  - button "Reproducir presentación de APV Motors":
+    - generic: ▶
+    - generic: Conoce cómo comprar con APV
+    - generic: Reproducir video · Con sonido
+  - strong: Contigo antes, durante y después de la puja.
+  - generic: Evaluación · Puja · Documentación · Transporte
+  - text: ⌄
+  - list "Pasos de compra resumidos":
+    - generic: Elige tu auto
+    - generic: Calcula el costo
+    - generic: Deja tu depósito y pujamos
+    - generic: Recibe tu auto
+  - region "Vehículos destacados":
+    - link "Ver catálogo completo →":
+      - /url: /catalogo
+    - heading "Autos en subasta esta semana" [level=2]
+    - button "Página anterior" [disabled]: ‹
+    - button "Página 1"
+    - button "Página 2"
+    - button "Página siguiente": ›
+    - article:
+      - button "2024 MITSUBISHI OUTLANDER SEL · COPART":
+        - img "2024 MITSUBISHI OUTLANDER SEL"
+        - generic: COPART
+      - heading "2024 MITSUBISHI OUTLANDER SEL" [level=3]:
+        - button "2024 MITSUBISHI OUTLANDER SEL"
+      - generic: Lote 46457856 · PRAIRIE GROVE, AR
+      - generic: Puja actual
+      - strong: $1,100
+      - paragraph: "Valor al público est.: $24,054"
+      - paragraph: "Hoy: $1,100 · 95.4 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+    - article:
+      - button "2022 RAM 1500 TRX · COPART":
+        - img "2022 RAM 1500 TRX"
+        - generic: COPART
+      - heading "2022 RAM 1500 TRX" [level=3]:
+        - button "2022 RAM 1500 TRX"
+      - generic: Lote 96547955 · LAS VEGAS, NV
+      - generic: Puja actual
+      - strong: $200
+      - paragraph: "Valor al público est.: $67,989"
+      - paragraph: "Hoy: $200 · 99.7 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+    - article:
+      - button "2023 TOYOTA RAV4 XLE · COPART":
+        - img "2023 TOYOTA RAV4 XLE"
+        - generic: COPART
+      - heading "2023 TOYOTA RAV4 XLE" [level=3]:
+        - button "2023 TOYOTA RAV4 XLE"
+      - generic: Lote 69695835 · TAYLOR, TX
+      - generic: Puja actual
+      - strong: $6,200
+      - paragraph: "Valor al público est.: $33,621"
+      - paragraph: "Hoy: $6,200 · 81.5 % por debajo del valor al público. El precio puede cambiar."
+      - button "Ver auto y costos"
+  - region "La confianza se gana. Ellos te cuentan por qué.":
+    - paragraph: EXPERIENCIAS REALES EN GOOGLE
+    - heading "La confianza se gana. Ellos te cuentan por qué." [level=2]:
+      - text: La confianza se gana.
+      - text: Ellos te cuentan por qué.
+    - paragraph: Conoce la experiencia de quienes ya compraron con APV.
+    - link "Leer todas las reseñas en Google ↗":
+      - /url: https://maps.app.goo.gl/qYoCdegG9996wcyk6
+    - paragraph: Fragmentos de reseñas públicas en Google.
+    - region "Reseñas de clientes en Google":
+      - group "1 de 3":
+        - generic: G
+        - generic: Reseña en Google
+        - generic "5 de 5 estrellas": ★★★★★
+        - blockquote: “Destaco su buena comunicación y profesionalismo durante toda la puja.”
+        - generic: GC
+        - strong: Gabriel Correa
+        - generic: Fragmento de su reseña
+      - button "Reseña anterior": ←
+      - button "Reseña siguiente": →
+      - generic: 1 de 3
+      - button "Ver reseña de Gabriel Correa"
+      - button "Ver reseña de Wolfgang Ramirez"
+      - button "Ver reseña de Ynadsuy Anolacse"
+  - region "Tu presupuesto es el punto de partida.":
+    - paragraph: EMPIEZA POR TUS NÚMEROS
+    - heading "Tu presupuesto es el punto de partida." [level=2]
+    - paragraph: Separa lo que puedes ofertar de lo que necesitarás para completar la compra.
+    - paragraph: Una orientación inicial para autos estándar de Copart. Confirma los importes y condiciones de cada lote antes de pujar.
+    - generic: Marca o modelo
+    - searchbox "Marca o modelo"
+    - generic: Presupuesto total (USD)
+    - spinbutton "Presupuesto total (USD)"
+    - generic: Tu reserva para gastos adicionales (USD)
+    - spinbutton "Tu reserva para gastos adicionales (USD) Transporte, impuestos, trámites y reparación que no cubra la calculadora."
+    - generic: Transporte, impuestos, trámites y reparación que no cubra la calculadora.
+    - button "Calcular mi tope orientativo"
+  - img "APV Motors"
+  - generic: ANTES DE PUJAR
+  - heading "Una buena foto no cuenta toda la historia." [level=3]:
+    - text: Una buena foto
+    - text: no cuenta toda la historia.
+  - generic: 01 / Daños y condición
+  - generic: Revisar →
+  - generic: 02 / Historial y título
+  - generic: Verificar →
+  - generic: 03 / Comparables y costos
+  - generic: Evaluar →
+  - paragraph: Más información. Mejor criterio.
+  - paragraph: EVALUACIÓN APV
+  - heading "Una foto no basta. Evalúa antes de pujar." [level=2]:
+    - text: Una foto no basta.
+    - text: Evalúa antes de pujar.
+  - paragraph: El precio de la subasta es solo el comienzo. Antes de comprometer tu dinero, entiende qué estás comprando.
+  - list:
+    - listitem: Analiza los daños visibles y la información disponible.
+    - listitem: Revisa historial, documentación y posibles riesgos.
+    - listitem: Compara el costo estimado con tu presupuesto.
+  - link "Elegir un auto para evaluar →":
+    - /url: /catalogo
+  - paragraph: Solicita «Solicitar historial elaborado por APV» desde la ficha. Consulta su alcance y condiciones; no sustituye una inspección física.
+  - paragraph: LA TARIFA APV, POR DELANTE
+  - heading "Lo que pagas y lo que te devolvemos" [level=2]
+  - paragraph: Una tarifa base por tramo, según el valor de adjudicación del vehículo.
+  - link "Calcular mi presupuesto →":
+    - /url: "#presupuesto"
+  - paragraph: Los honorarios APV no incluyen la puja, las tarifas de subasta, el transporte ni los impuestos. Revisa el desglose de cada ficha.
+  - table "Tarifa base de servicio APV · USD":
+    - caption: Tarifa base de servicio APV · USD
+    - rowgroup:
+      - row "Valor de adjudicación Honorarios APV":
+        - columnheader "Valor de adjudicación"
+        - columnheader "Honorarios APV"
+    - rowgroup:
+      - row "Hasta US$5,999 US$350":
+        - cell "Hasta US$5,999"
+        - cell "US$350"
+      - row "US$6,000 – US$9,999 US$450":
+        - cell "US$6,000 – US$9,999"
+        - cell "US$450"
+      - row "US$10,000 – US$14,999 US$650":
+        - cell "US$10,000 – US$14,999"
+        - cell "US$650"
+      - row "US$15,000 o más US$700":
+        - cell "US$15,000 o más"
+        - cell "US$700"
+  - paragraph:
+    - text: ¿Compras con frecuencia?
+    - link "Compara los descuentos de los planes APV.":
+      - /url: "#planes"
+  - paragraph: Los honorarios solo se cobran si ganas, y nunca en el mismo pago que tu depósito.
+  - paragraph: DEPÓSITO Y HONORARIOS SON COSAS DISTINTAS
+  - heading "Tu depósito sigue siendo tuyo" [level=2]
+  - paragraph: Tu depósito es reembolsable y habilita tu puja.10 % de tu tope, mínimo US$600.Se confirma con tu asesor antes de pujar.
+  - link "Consultar el depósito con un asesor ↗":
+    - /url: https://wa.me/13462048308?text=Quiero+confirmar+las+condiciones+del+dep%C3%B3sito+para+pujar+%5Bref%3Ahome-deposito%5D
+  - article:
+    - generic: "01"
+    - heading "Si no ganas" [level=3]
+    - paragraph: Queda activo para tu próxima puja o te lo devolvemos completo.
+  - article:
+    - generic: "02"
+    - heading "Si ganas" [level=3]
+    - paragraph: Pagas el vehículo por transferencia bancaria y aplicamos tu depósito según las condiciones.
+  - article:
+    - generic: "03"
+    - heading "Si ganas y no pagas" [level=3]
+    - paragraph: La subasta aplica penalidades según las condiciones que aceptaste.
+  - region "Elige cómo quieres comprar tu próximo vehículo.":
+    - generic: MEMBRESÍAS APV MOTORS
+    - heading "Elige cómo quieres comprar tu próximo vehículo." [level=2]
+    - paragraph: Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.
+    - article:
+      - text: EMPIEZA AQUÍ
+      - heading "Gratis" [level=3]
+      - paragraph: Explora y prepara tu compra.
+      - generic: US$0
+      - list:
+        - listitem: Incluido en todos los planes
+        - generic: ✓
+        - generic: Inventario de vehículos
+        - generic: ✓
+        - generic: Favoritos en tu cuenta
+        - generic: ✓
+        - generic: Chat con un asesor
+        - listitem: Beneficios del plan
+        - generic: ×
+        - generic: Reporte del historial APV no incluido
+        - generic: ×
+        - generic: Tarifas de APV sin descuento
+        - generic: ×
+        - generic: "Asesoría de 60 min: US$99 (sin descuento)"
+        - generic: ×
+        - generic: Sin asesoría de 60 min incluida
+      - button "Crear cuenta gratis"
+      - generic: Sin tarjeta. Sin cobros automáticos.
+    - article:
+      - text: PARA TU PRÓXIMA COMPRA
+      - heading "APV Plus" [level=3]
+      - paragraph: Ahorro y orientación para tu compra.
+      - generic: US$97/año
+      - list:
+        - listitem: Incluido en todos los planes
+        - generic: ✓
+        - generic: Inventario de vehículos
+        - generic: ✓
+        - generic: Favoritos en tu cuenta
+        - generic: ✓
+        - generic: Chat con un asesor
+        - listitem: Beneficios del plan
+        - generic: ✓
+        - generic: Reporte del historial elaborado por APV Motors
+        - generic: ✓
+        - generic: US$100 menos en tarifas de APV por cada vehículo comprado
+        - generic: ✓
+        - generic: "Asesorías adicionales de 60 min: US$69 en lugar de US$99 (US$30 de descuento)"
+        - generic: ✓
+        - generic: Una asesoría de 20 min incluida cada año pagado
+      - button "Elegir APV Plus"
+      - generic: Renovación anual automática. Cancela la renovación desde tu cuenta.
+    - article:
+      - text: MÁS ACOMPAÑAMIENTO
+      - heading "APV Premium" [level=3]
+      - paragraph: Mayor descuento y una asesoría completa.
+      - generic: US$297/año
+      - list:
+        - listitem: Incluido en todos los planes
+        - generic: ✓
+        - generic: Inventario de vehículos
+        - generic: ✓
+        - generic: Favoritos en tu cuenta
+        - generic: ✓
+        - generic: Chat con un asesor
+        - listitem: Beneficios del plan
+        - generic: ✓
+        - generic: Reporte del historial elaborado por APV Motors
+        - generic: ✓
+        - generic: US$200 menos en tarifas de APV por cada vehículo comprado
+        - generic: ✓
+        - generic: "Asesorías adicionales de 60 min: US$59 en lugar de US$99 (US$40 de descuento)"
+        - generic: ✓
+        - generic: Una asesoría de 60 min incluida cada año pagado
+      - button "Elegir APV Premium"
+      - generic: Renovación anual automática. Cancela la renovación desde tu cuenta.
+    - paragraph: Precios en USD. La suscripción se paga por separado de la compra del vehículo. Los descuentos aplican a los servicios de APV, no a tarifas de Copart, transporte ni impuestos. La asesoría incluida se ofrece cada año pagado; solicita la cita desde tu cuenta mientras el plan esté activo.
+  - paragraph: RESOLVEMOS TUS DUDAS
+  - heading "Todo empieza con claridad." [level=2]:
+    - text: Todo empieza
+    - text: con claridad.
+  - paragraph: ¿Tu caso necesita más detalle?
+  - link "Hablar con un asesor ↗":
+    - /url: https://wa.me/13462048308?text=%5Bref%3Ahome-ayuda%5D
+  - generic "¿Necesito registrarme para ver los vehículos?"
+  - generic "¿El precio que veo es el precio final?"
+  - generic "¿Qué es el depósito?"
+  - generic "¿Puedo comprar sin licencia de dealer?"
+  - generic "¿Cómo sé en qué estado está el vehículo?"
+  - generic "¿Qué pasa si gano la subasta?"
+  - generic "¿Qué pasa si no gano la subasta?"
+  - generic "¿Puedo pagar el vehículo con tarjeta?"
+  - generic "¿Cuánto tarda el título?"
+  - generic "¿Cómo se calcula el transporte?"
+  - paragraph: TU PRÓXIMO AUTO ESTÁ MÁS CERCA
+  - heading "Encuentra tu auto hoy." [level=2]
+  - paragraph: Explora los autos o habla con un asesor si es tu primera compra.
+  - link "Ver autos en subasta →":
+    - /url: /catalogo
+  - link "¿Es tu primera compra? Escríbenos":
+    - /url: https://wa.me/13462048308?text=%5Bref%3Ahome-final%5D
+- contentinfo:
+  - img "APV Motors"
+  - paragraph:
+    - text: APV Motors LLC ·Licencia de dealer [LICENCIA_NO]· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·
+    - link "+1 346 204 8308":
+      - /url: tel:+13462048308
+  - paragraph: Datos de inventario obtenidos de listados públicos de subastas de Copart.
+  - paragraph: La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.
+  - button "Cookies"
+  - button "Términos de servicio"
+  - generic: ·
+  - button "Privacidad"

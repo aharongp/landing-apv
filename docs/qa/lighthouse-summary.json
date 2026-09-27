@@ -1,0 +1,23 @@
+{
+  "before-home": {
+    "runs": 3,
+    "lcpMs": 2364.184,
+    "cls": 0.06998186621740807,
+    "performance": 97.0,
+    "accessibility": 94.0
+  },
+  "final-home": {
+    "runs": 3,
+    "lcpMs": 2364.2275,
+    "cls": 0.06888759237751603,
+    "performance": 97.0,
+    "accessibility": 100
+  },
+  "final-lp": {
+    "runs": 3,
+    "lcpMs": 1971.5639999999999,
+    "cls": 0.03668349468217571,
+    "performance": 99.0,
+    "accessibility": 100
+  }
+}

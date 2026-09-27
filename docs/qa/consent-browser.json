@@ -1,0 +1,7 @@
+{
+  "accepted": [
+    "https://www.googletagmanager.com/gtag/js?id=[configured]"
+  ],
+  "essential": [],
+  "scope": "DOM scripts only; network ingestion not verified"
+}
