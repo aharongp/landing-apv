@@ -1,6 +1,7 @@
 'use strict';
 const crypto = require('crypto');
 const campaign = require('./campaignConfig');
+const labels = require('../public/vehicle-labels.json');
 const keys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid'];
 const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const origin = () => (process.env.PUBLIC_SITE_URL || 'https://cars.apvmotorusa.com').replace(/\/$/,'');
@@ -29,14 +30,14 @@ function assign(req,res,url) {
   const params=new URLSearchParams(url.searchParams);params.set('ab_bucket',bucket);
   res.writeHead(302,{'Location':(bucket==='home'?'/':'/lp')+'?'+params,'X-Robots-Tag':'noindex, follow','Cache-Control':'no-store'});res.end();
 }
-function publicConfig() { return {...campaign,license:process.env.DEALER_LICENSE_NO||'[LICENCIA_NO]',ga4Id:process.env.GA4_MEASUREMENT_ID||'',pixelId:process.env.META_PIXEL_ID||''}; }
+function publicConfig() { return {...campaign,labels,license:process.env.DEALER_LICENSE_NO||'[LICENCIA_NO]',ga4Id:process.env.GA4_MEASUREMENT_ID||'',pixelId:process.env.META_PIXEL_ID||''}; }
 function metadata(html,pathname,vehicle) {
   let title='Autos de subasta en EE. UU. sin licencia | APV Motors';
   let description='Compra autos de Copart con APV Motors. Pujamos por ti con licencia de dealer. Honorarios desde US$350 y depósito reembolsable.';
   let image=origin()+'/assets/og-default.jpg';
   if(pathname==='/catalogo'){title='Autos en subasta: catálogo | APV Motors';description='Explora autos de Copart, revisa su estado y calcula los costos de tu puja con APV Motors.';}
   if(pathname==='/lp'){title='Elige tu auto de subasta | APV Motors';description='Mira autos por presupuesto. APV Motors puja por ti en Copart y te acompaña durante la compra.';}
-  if(vehicle){title=`${vehicle.title} en subasta | APV Motors`;description=[vehicle.locationCity,vehicle.locationState,vehicle.primaryDamage,vehicle.retailValue>0?`Valor al público estimado: US$${Number(vehicle.retailValue).toLocaleString('en-US')}`:''].filter(Boolean).join(' · ');if(/^https?:\/\//.test(vehicle.image||''))image=vehicle.image;}
+  if(vehicle){title=`${vehicle.title} en subasta | APV Motors`;description=[vehicle.locationCity,vehicle.locationState,(labels[String(vehicle.primaryDamage).toUpperCase()]||vehicle.primaryDamage),vehicle.retailValue>0?`Valor al público estimado: US$${Number(vehicle.retailValue).toLocaleString('en-US')}`:''].filter(Boolean).join(' · ');if(/^https?:\/\//.test(vehicle.image||''))image=vehicle.image;}
   html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(title)}</title>`).replace(/<meta[^>]+name="description"[^>]*>/i,`<meta name="description" content="${esc(description)}">`);
   return html.replace('</head>',`<link rel="canonical" href="${esc(origin()+pathname)}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:image" content="${esc(image)}"><meta property="og:url" content="${esc(origin()+pathname)}"><meta property="og:type" content="website"><meta property="og:locale" content="es_US"><meta name="twitter:card" content="summary_large_image">${pathname==='/lp'?'<meta name="robots" content="noindex, follow">':''}</head>`);
 }

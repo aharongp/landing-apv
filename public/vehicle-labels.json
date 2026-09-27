@@ -78,5 +78,16 @@
   "EXTENDED CAB PICKUP": "Camioneta cabina extendida",
   "SPORT UTILITY VEHICLE": "SUV",
   "SEDAN 4DR": "Sedán de 4 puertas",
-  "ELECTRIC AND GAS HYBRID": "Híbrido de gasolina y eléctrico"
+  "ELECTRIC AND GAS HYBRID": "Híbrido de gasolina y eléctrico",
+  "FLEXIBLE FUEL": "Combustible flexible",
+  "HYBRID ENGINE": "Motor híbrido",
+  "COMPRESSED NATURAL GAS": "Gas natural comprimido",
+  "HYDROGEN FUEL CELL": "Hidrógeno",
+  "CHARCOAL": "Gris oscuro",
+  "BURGUNDY": "Borgoña",
+  "TAN": "Beige",
+  "MAROON": "Granate",
+  "BURN - ENGINE": "Incendio en el motor",
+  "BURN - INTERIOR": "Incendio interior",
+  "BIOHAZARD/CHEMICAL": "Riesgo biológico / químico"
 }

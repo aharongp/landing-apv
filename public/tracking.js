@@ -36,7 +36,16 @@
       const url=new URL(el.href);const text=(url.searchParams.get('text')||'').replace(/\s*\[ref:[^\]]+\]/g,'');url.searchParams.set('text',`${text} [ref:${ref}]`.trim());el.href=url.href;track('whatsapp_click',{cta_id:ref});
     }
     if(el.matches('a')&&el.origin===location.origin&&/^\/(catalogo|vehiculo\/)/.test(el.pathname))el.href=campaignURL(el.href);
-    if(el.id==='cookie-accept-btn'||el.id==='cookie-decline-btn')setTimeout(()=>fetch('/api/marketing/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload())}).catch(()=>{}),0);
+    if(el.id==='cookie-accept-btn'||el.id==='cookie-decline-btn')fetch('/api/marketing/consent',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload(),cookieConsent:el.id==='cookie-accept-btn'?'all':'essential'})}).catch(()=>{});
   },true);
+  const decorateWhatsApp=()=>document.querySelectorAll('a[href^="https://wa.me/"]').forEach(el=>{
+    if(el.closest('[hidden],[inert]'))return;
+    const context=location.pathname==='/lp'?'lp':location.pathname.startsWith('/vehiculo/')?'vehicle':'home';
+    const area=el.closest('.final-cta')?'final':el.closest('section')?.id||'contact';
+    const ref=el.dataset.cta||context+'-'+area;el.dataset.cta=ref;
+    const url=new URL(el.href);if(!/\[ref:/.test(url.searchParams.get('text')||''))url.searchParams.set('text',((url.searchParams.get('text')||'')+' [ref:'+ref+']').trim());el.href=url.href;
+  });
+  decorateWhatsApp();
+  document.addEventListener('apv:detail',decorateWhatsApp);
   window.apvStartAnalytics();
 })();

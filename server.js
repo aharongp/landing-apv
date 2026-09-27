@@ -749,6 +749,7 @@ function serveFile(req, res, filePath) {
     cached = { dependencyVersion, mtime: stat.mtimeMs, size: stat.size, body, gzip: compressible ? gzipSync(body) : null,
       etag: `W/"${crypto.createHash('sha256').update(body).digest('hex').slice(0,24)}"` };
     staticCache.set(cacheKey, cached);
+    if(staticCache.size>200)staticCache.delete(staticCache.keys().next().value);
   }
   const requestedVersion = new URL(req.url, 'http://localhost').searchParams.get('v');
   const versionedAsset = ['.js','.css'].includes(ext) && requestedVersion &&
@@ -918,6 +919,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 
   try {
+    if(req.method==='GET' && ['/catalogo/','/lp/','/go/'].includes(url.pathname)){res.writeHead(301,{Location:url.pathname.slice(0,-1)+url.search});return res.end();}
     marketing.capture(req,res,url);
     if(req.method==='GET' && url.pathname==='/go')return marketing.assign(req,res,url);
     if(req.method==='GET' && url.pathname==='/marketing-config.js')return text(res,200,'window.APV_MARKETING='+JSON.stringify(marketing.publicConfig()).replace(/</g,'\\u003c')+';','application/javascript; charset=utf-8');
@@ -926,7 +928,16 @@ const server = http.createServer(async (req, res) => {
       const user=getAuthUser(req);if(user){const body=JSON.parse((await readRequestBody(req,8192)).toString('utf8'));attribution().save(user.id,req,body);}return json(res,200,{ok:true});
     }
     if(req.method==='GET' && url.pathname==='/robots.txt')return text(res,200,`User-agent: *\nAllow: /\nDisallow: /lp\nDisallow: /go\nSitemap: ${marketing.origin()}/sitemap.xml\n`);
-    if(req.method==='GET' && url.pathname==='/sitemap.xml')return text(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/','/catalogo'].map(p=>'<url><loc>'+marketing.esc(marketing.origin()+p)+'</loc></url>').join('')}</urlset>`,'application/xml; charset=utf-8');
+    if(req.method==='GET' && /^\/sitemap(?:-vehicles-\d+)?\.xml$/.test(url.pathname)){
+      const lots=catalogDb.initDatabase().prepare('SELECT lot FROM vehicles ORDER BY lot').all();
+      const pages=Math.ceil(lots.length/45000);
+      const match=url.pathname.match(/^\/sitemap-vehicles-(\d+)\.xml$/);
+      const loc=p=>marketing.esc(marketing.origin()+p);
+      if(match){const page=Number(match[1]);if(page<1||page>pages)return branded404(req,res);return text(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${lots.slice((page-1)*45000,page*45000).map(v=>'<url><loc>'+loc('/vehiculo/'+v.lot)+'</loc></url>').join('')}</urlset>`,'application/xml; charset=utf-8');}
+      // Primary canonical URLs and lot shards are listed in a sitemap index.
+      return text(res,200,`<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><sitemap><loc>${loc('/sitemap-pages.xml')}</loc></sitemap>${Array.from({length:pages},(_,i)=>'<sitemap><loc>'+loc('/sitemap-vehicles-'+(i+1)+'.xml')+'</loc></sitemap>').join('')}</sitemapindex>`,'application/xml; charset=utf-8');
+    }
+    if(req.method==='GET' && url.pathname==='/sitemap-pages.xml')return text(res,200,`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/','/catalogo'].map(p=>'<url><loc>'+marketing.esc(marketing.origin()+p)+'</loc></url>').join('')}</urlset>`,'application/xml; charset=utf-8');
     if (req.method === 'POST' && url.pathname === '/api/stripe/webhook') {
       const body = await readRequestBody(req, 1024 * 1024);
       try { return json(res, 200, await billing.webhook(body, req.headers['stripe-signature'])); }
@@ -1208,6 +1219,7 @@ const server = http.createServer(async (req, res) => {
       if (!user.emailVerified && user.verificationCode) return json(res, 403, { error: 'Debes verificar tu correo antes de iniciar sesión.' });
       user.lastLoginAt = new Date().toISOString();
       catalogDb.saveUser(user);
+      attribution().save(user.id,req,body);
       return json(res, 200, { ok: true, user: safeUser(user) }, { 'Set-Cookie': sessionCookie(req, signSession(user.id)) });
     }
 

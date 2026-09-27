@@ -1429,6 +1429,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       updateCalculatorResults($('#calc-bid-input')?.value || 0);
     }
     window.APVDisplay?.clean(dom.vehicleDetail,currentLang);
+    document.dispatchEvent(new Event('apv:detail'));
     setupGalleryNavigation();
     positionMobileBidCard();
   }
@@ -1498,6 +1499,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       if(String(state.currentVehicle?.lot)!==String(lot)) return;
       state.galleryImages=data.images || [];
       window.APVDisplay?.clean(dom.vehicleDetail,currentLang);
+    document.dispatchEvent(new Event('apv:detail'));
     setupGalleryNavigation();
     } catch(err) { if(String(state.currentVehicle?.lot)===String(lot)) showToast('No se pudieron cargar las fotos. Intenta abrir el vehículo de nuevo.'); }
   }

@@ -154,16 +154,7 @@ window.APV_I18N = {
     "marketing_152": "Run & Drive",
     "marketing_153": "No encontramos esta página",
     "marketing_154": "Tu próximo auto puede estar en el catálogo.",
-    "marketing_155": "Busca por modelo, lote o VIN",
-    "variant_ahorro_eyebrow": "AUTOS A PRECIO DE SUBASTA",
-    "variant_ahorro_title": "Compra tu auto a precio de subasta, como los concesionarios.",
-    "variant_ahorro_subtitle": "APV Motors puja por ti en Copart. Honorarios desde US$350, solo si ganas.",
-    "variant_primera-vez_eyebrow": "¿PRIMERA VEZ EN UNA SUBASTA?",
-    "variant_primera-vez_title": "Te explicamos todo antes de que pujes.",
-    "variant_primera-vez_subtitle": "Elige el auto, conoce el costo y nosotros pujamos por ti con nuestra licencia.",
-    "variant_conocedor_eyebrow": "COPART SIN LICENCIA",
-    "variant_conocedor_title": "Honorarios fijos desde US$350. Sin sorpresas.",
-    "variant_conocedor_subtitle": "Busca por lote o VIN, revisa el costo y pujamos por ti."
+    "marketing_155": "Busca por modelo, lote o VIN"
   },
   "en": {
     "cookieCompact": "We use essential cookies. Accept all to measure visits with Google and Meta.",
@@ -320,20 +311,11 @@ window.APV_I18N = {
     "marketing_152": "Run & Drive",
     "marketing_153": "No encontramos esta página",
     "marketing_154": "Tu próximo auto puede estar en el catálogo.",
-    "marketing_155": "Busca por modelo, lote o VIN",
-    "variant_ahorro_eyebrow": "AUTOS A PRECIO DE SUBASTA",
-    "variant_ahorro_title": "Compra tu auto a precio de subasta, como los concesionarios.",
-    "variant_ahorro_subtitle": "APV Motors puja por ti en Copart. Honorarios desde US$350, solo si ganas.",
-    "variant_primera-vez_eyebrow": "¿PRIMERA VEZ EN UNA SUBASTA?",
-    "variant_primera-vez_title": "Te explicamos todo antes de que pujes.",
-    "variant_primera-vez_subtitle": "Elige el auto, conoce el costo y nosotros pujamos por ti con nuestra licencia.",
-    "variant_conocedor_eyebrow": "COPART SIN LICENCIA",
-    "variant_conocedor_title": "Honorarios fijos desde US$350. Sin sorpresas.",
-    "variant_conocedor_subtitle": "Busca por lote o VIN, revisa el costo y pujamos por ti."
+    "marketing_155": "Busca por modelo, lote o VIN"
   }
 };
 // TODO_EN: Spanish fallback keys awaiting editorial translation.
-window.APV_TODO_EN = ["marketing_31", "marketing_32", "marketing_33", "marketing_34", "marketing_35", "marketing_36", "marketing_37", "marketing_38", "marketing_39", "marketing_40", "marketing_41", "marketing_42", "marketing_43", "marketing_44", "marketing_45", "marketing_46", "marketing_47", "marketing_48", "marketing_49", "marketing_50", "marketing_51", "marketing_52", "marketing_53", "marketing_54", "marketing_55", "marketing_56", "marketing_57", "marketing_58", "marketing_59", "marketing_60", "marketing_61", "marketing_62", "marketing_63", "marketing_64", "marketing_65", "marketing_66", "marketing_67", "marketing_68", "marketing_69", "marketing_70", "marketing_71", "marketing_72", "marketing_73", "marketing_74", "marketing_75", "marketing_76", "marketing_77", "marketing_78", "marketing_79", "marketing_80", "marketing_81", "marketing_82", "marketing_83", "marketing_84", "marketing_85", "marketing_86", "marketing_87", "marketing_88", "marketing_89", "marketing_90", "marketing_91", "marketing_92", "marketing_93", "marketing_94", "marketing_95", "marketing_96", "marketing_97", "marketing_98", "marketing_99", "marketing_100", "marketing_101", "marketing_102", "marketing_103", "marketing_104", "marketing_105", "marketing_106", "marketing_107", "marketing_108", "marketing_109", "marketing_110", "marketing_111", "marketing_112", "marketing_113", "marketing_114", "marketing_115", "marketing_116", "marketing_117", "marketing_118", "marketing_119", "marketing_120", "marketing_121", "marketing_122", "marketing_123", "marketing_124", "marketing_125", "marketing_126", "marketing_127", "marketing_128", "marketing_129", "marketing_130", "marketing_131", "marketing_132", "marketing_133", "marketing_134", "marketing_135", "marketing_136", "marketing_137", "marketing_138", "marketing_139", "marketing_140", "marketing_141", "marketing_142", "marketing_143", "marketing_144", "marketing_145", "marketing_146", "marketing_147", "marketing_148", "marketing_149", "marketing_150", "marketing_151", "marketing_152", "marketing_153", "marketing_154", "marketing_155", "variant_ahorro_eyebrow", "variant_ahorro_title", "variant_ahorro_subtitle", "variant_primera-vez_eyebrow", "variant_primera-vez_title", "variant_primera-vez_subtitle", "variant_conocedor_eyebrow", "variant_conocedor_title", "variant_conocedor_subtitle"];
+window.APV_TODO_EN = ["marketing_31", "marketing_32", "marketing_33", "marketing_34", "marketing_35", "marketing_36", "marketing_37", "marketing_38", "marketing_39", "marketing_40", "marketing_41", "marketing_42", "marketing_43", "marketing_44", "marketing_45", "marketing_46", "marketing_47", "marketing_48", "marketing_49", "marketing_50", "marketing_51", "marketing_52", "marketing_53", "marketing_54", "marketing_55", "marketing_56", "marketing_57", "marketing_58", "marketing_59", "marketing_60", "marketing_61", "marketing_62", "marketing_63", "marketing_64", "marketing_65", "marketing_66", "marketing_67", "marketing_68", "marketing_69", "marketing_70", "marketing_71", "marketing_72", "marketing_73", "marketing_74", "marketing_75", "marketing_76", "marketing_77", "marketing_78", "marketing_79", "marketing_80", "marketing_81", "marketing_82", "marketing_83", "marketing_84", "marketing_85", "marketing_86", "marketing_87", "marketing_88", "marketing_89", "marketing_90", "marketing_91", "marketing_92", "marketing_93", "marketing_94", "marketing_95", "marketing_96", "marketing_97", "marketing_98", "marketing_99", "marketing_100", "marketing_101", "marketing_102", "marketing_103", "marketing_104", "marketing_105", "marketing_106", "marketing_107", "marketing_108", "marketing_109", "marketing_110", "marketing_111", "marketing_112", "marketing_113", "marketing_114", "marketing_115", "marketing_116", "marketing_117", "marketing_118", "marketing_119", "marketing_120", "marketing_121", "marketing_122", "marketing_123", "marketing_124", "marketing_125", "marketing_126", "marketing_127", "marketing_128", "marketing_129", "marketing_130", "marketing_131", "marketing_132", "marketing_133", "marketing_134", "marketing_135", "marketing_136", "marketing_137", "marketing_138", "marketing_139", "marketing_140", "marketing_141", "marketing_142", "marketing_143", "marketing_144", "marketing_145", "marketing_146", "marketing_147", "marketing_148", "marketing_149", "marketing_150", "marketing_151", "marketing_152", "marketing_153", "marketing_154", "marketing_155"];
 window.APV_LEGAL_ADDITION = {"es": "<h3>6. Medición y atribución</h3><p>Con su consentimiento para todas las cookies, usamos Google Analytics y Meta (píxel y Conversions API) para medir visitas, registros y solicitudes de puja. Los identificadores enviados por el servidor a Meta se transforman mediante SHA-256. Kommo gestiona las conversaciones y solicitudes. La cookie propia apv_src conserva el origen inicial durante 90 días para atribución interna; apv_ab conserva su grupo de prueba durante 30 días. Su elección de cookies se guarda en este navegador y, si inicia sesión, con su cuenta.</p>", "en": "<h3>6. Measurement and attribution</h3><p>With consent to all cookies, we use Google Analytics and Meta (Pixel and Conversions API) to measure visits, registrations and bid requests. Identifiers sent by the server to Meta are SHA-256 hashed. Kommo manages conversations and requests. The first-party apv_src cookie retains the initial source for 90 days; apv_ab retains the test group for 30 days. Consent is stored in your browser and, when signed in, with your account.</p>"};
 // Display labels only. API values, filter values and uploaded records stay unchanged.
 window.APVDisplay = (() => {
@@ -356,3 +338,5 @@ window.APV_I18N.es.cookieSettings='Cookies';window.APV_I18N.en.cookieSettings='C
 
 Object.assign(window.APV_I18N.es,{salvageLabel:'Título de salvamento (salvage)',calculatorHeading:'Calculadora de costos y opciones de puja',paymentMethod:'Método de pago:',offerType:'Tipo de oferta:'});
 Object.assign(window.APV_I18N.en,{salvageLabel:'Salvage title',calculatorHeading:'Cost calculator and bid options',paymentMethod:'Payment method:',offerType:'Offer type:'});
+
+for(const [variant,copy] of Object.entries(window.APV_MARKETING?.variants||{}))for(const field of ['eyebrow','title','subtitle']){window.APV_I18N.es[`variant_${variant}_${field}`]=copy[field];window.APV_I18N.en[`variant_${variant}_${field}`]=copy.en[field];}
