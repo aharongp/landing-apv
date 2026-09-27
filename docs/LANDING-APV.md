@@ -33,3 +33,5 @@ El carrusel contiene fragmentos breves verificados directamente en Chrome en la 
 El reproductor se activa al proporcionar un ID de YouTube en `data-video-id` del elemento `hero-video-stage`. Carga el iframe únicamente al pulsar reproducir. **Pendiente del propietario: elegir el video concreto.** Mientras no se configure, el espacio enlaza al canal oficial; no reproduce un video de ejemplo ajeno.
 
 Validación de esta revisión: 29 pruebas Node aprobadas; revisión visual en Chrome de escritorio y teléfono, sin desbordamiento horizontal; navegación del carrusel probada con botones y teclado; planes y destacados visibles. El archivo temporal de comprobaciones jsdom de sesiones anteriores ya no está disponible; esta revisión usa Chrome real.
+
+El catálogo ya no incluye las secciones de ayuda ni suscripciones. Los enlaces de navegación apuntan a `/#ayuda` y `/#planes`; «Mi plan» y «Comparar planes» también abren los planes del inicio. El módulo de membresías sigue disponible para los beneficios de cuenta y solicitudes de historial desde las fichas.

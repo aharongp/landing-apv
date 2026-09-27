@@ -15,13 +15,16 @@
   }
   function status(message, kind = '') {
     const el = document.querySelector('#membership-status');
+    if (!el) { if(message) hooks.notify?.(message); return; }
     el.textContent = message; el.classList.toggle('hidden', !message); el.dataset.kind = kind;
   }
   function notify(message) { if (hooks.notify) hooks.notify(message); else status(message); }
   function currentPlan() { return membership?.plan || { id:'free', name:'Gratis', feeDiscount:0, consultationDiscount:0 }; }
   function openPlans() {
+    const plans = document.querySelector('#planes');
+    if (!plans) { location.assign('/#planes'); return; }
     hooks.closeOverlays?.();
-    document.querySelector('#planes').scrollIntoView({ behavior:'smooth', block:'start' });
+    plans.scrollIntoView({ behavior:'smooth', block:'start' });
   }
   const dialog = document.createElement('dialog');
   dialog.className = 'membership-dialog';
@@ -150,7 +153,7 @@
     setUser(value){user=value;membership=value?.membership || null;render();handleReturn();},
     render, openPlans, choose, requestService, prompt,
     getPlan: currentPlan,
-    resume: async action => {openPlans();if(action.type==='member-service')await requestService(action.kind,action.lot);else if(action.planId!=='free')await choose(action.planId);},
+    resume: async action => {if(action.type==='member-service')await requestService(action.kind,action.lot);else if(action.planId!=='free')await choose(action.planId);else openPlans();},
     available: ()=>Boolean(config?.available)
   };
   api('/api/plans').then(data=>{config=data;render();}).catch(()=>{if(root)root.textContent=copy('No se pudieron cargar los planes. Recarga la página para intentarlo de nuevo.','Could not load plans. Reload the page to try again.');});
