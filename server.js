@@ -481,13 +481,14 @@ function getVehicles(url, user) {
   const yearMin = num(url.searchParams.get('yearMin'));
   const yearMax = num(url.searchParams.get('yearMax'));
   const priceMax = num(url.searchParams.get('priceMax'));
-  const odometerMax = num(url.searchParams.get('odometerMax'));
+  const odometerMax = url.searchParams.get('odometerMax');
   const keysOnly = url.searchParams.get('keysOnly') === '1';
   const buyNowOnly = url.searchParams.get('buyNowOnly') === '1';
   const sort = str(url.searchParams.get('sort')) || 'auto';
 
   const res = catalogDb.queryVehicles({
     page, pageSize, q, make, state, damage, runState,
+    city: url.searchParams.get('city'), zip: url.searchParams.get('zip'), cleanTitle: url.searchParams.get('cleanTitle'),
     model: url.searchParams.get('model'), runAndDrive: url.searchParams.get('runAndDrive'),
     favorites: url.searchParams.has('favorites') ? url.searchParams.get('favorites') : undefined,
     yearMin, yearMax, priceMax, odometerMax, keysOnly, buyNowOnly, sort, seed: url.searchParams.get('seed')
@@ -735,7 +736,10 @@ function serveFile(req, res, filePath) {
       etag: `W/"${crypto.createHash('sha256').update(body).digest('hex').slice(0,24)}"` };
     staticCache.set(filePath, cached);
   }
-  const headers = { 'Content-Type': mime, 'Cache-Control': 'public, max-age=0, must-revalidate',
+  const requestedVersion = new URL(req.url, 'http://localhost').searchParams.get('v');
+  const versionedAsset = ['.js','.css'].includes(ext) && requestedVersion &&
+    requestedVersion === crypto.createHash('sha256').update(cached.body).digest('hex').slice(0,16);
+  const headers = { 'Content-Type': mime, 'Cache-Control': versionedAsset ? 'public, max-age=31536000, immutable' : 'public, max-age=0, must-revalidate',
     ETag: cached.etag, Vary: 'Accept-Encoding' };
   if (req.headers['if-none-match'] === cached.etag) {
     res.writeHead(304, headers); return res.end();
@@ -1219,7 +1223,11 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && url.pathname === '/api/filters') {
-      return json(res, 200, buildFilters());
+      const filters = buildFilters();
+      const etag = `W/"${crypto.createHash('sha256').update(JSON.stringify(filters)).digest('hex').slice(0,24)}"`;
+      const headers = {'Cache-Control':'public, max-age=0, must-revalidate', ETag:etag, Vary:'Accept-Encoding'};
+      if(req.headers['if-none-match'] === etag){res.writeHead(304,headers);return res.end();}
+      return json(res, 200, filters, headers);
     }
 
     if (req.method === 'GET' && url.pathname === '/api/vehicles') {

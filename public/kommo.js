@@ -157,6 +157,7 @@
       lot: String(vehicle.lot || ''),
       max_bid: Math.max(0, Math.round(Number(maxBid || 0))),
       vehicle_model: vehicle.title || [vehicle.year, vehicle.make, vehicle.model, vehicle.trim].filter(Boolean).join(' '),
+      welcome_message: currentLocale === 'en' ? 'How much would you like to bid, or how can I help?' : '¿Cuánto te gustaría ofertar o cómo te puedo ayudar?',
       vehicle_message: vehicleMessage
     };
   }

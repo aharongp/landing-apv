@@ -7,7 +7,7 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'apv-test-'));
 process.env.APV_DATA_DIR=dir;
 const catalog=require('../services/catalogDb');
 after(()=>{catalog.initDatabase().close();fs.rmSync(dir,{recursive:true,force:true});});
-const headers=['Lot number','Year','Make','Model Group','VIN','Image Thumbnail','Sale Date M/D/CY','Sale time (HHMM)','Time Zone','Runs/Drives','Special Note','Damage Description','Image URL'];
+const headers=['Lot number','Year','Make','Model Group','VIN','Image Thumbnail','Sale Date M/D/CY','Sale time (HHMM)','Time Zone','Runs/Drives','Special Note','Damage Description','Image URL','Location city','Location state','Location ZIP','Odometer','Sale Title Type','Sale Status'];
 const row=(lot, changes={})=>Object.assign({'Lot number':lot,Year:'2023',Make:'CHEVROLET','Model Group':'SILVERADO',VIN:'1ABCDEFGHI2345678','Image Thumbnail':'https://cs.copart.com/test_thb.jpg','Sale Date M/D/CY':'20990101','Sale time (HHMM)':'1200','Time Zone':'PST','Runs/Drives':'Run & Drive Verified','Special Note':'','Damage Description':'NORMAL WEAR','Image URL':'https://inventoryv2.copart.io/v1/lotImages/test'},changes);
 const csv=rows=>[headers,...rows.map(r=>headers.map(h=>r[h]||''))].map(r=>r.map(c=>'"'+c.replaceAll('"','""')+'"').join(',')).join('\r\n');
 test('CSV handles inch marks, commas, multiline and escaped quotes',()=>{
@@ -106,4 +106,65 @@ test('shared lot lookup takes priority over a different vehicle internal id',()=
  catalog.upsertCatalogFromCsv(csv([row('91000001'),row('91000002')]));
  catalog.initDatabase().prepare('UPDATE vehicles SET id = ? WHERE lot = ?').run('91000002','91000001');
  assert.equal(catalog.findVehicleByLotOrId('91000002').lot,'91000002');
+});
+
+
+test('context search, location, title and zero-mileage filters combine without losing ZIP leading zeroes',()=>{
+ catalog.upsertCatalogFromCsv(csv([
+  row('92000001',{'Location city':'AUSTIN','Location state':'TX','Location ZIP':'78701-1234','Odometer':'0','Sale Title Type':'CT'}),
+  row('92000002',{'Location city':'AUSTIN','Location state':'TX','Location ZIP':'78702','Odometer':'45000','Sale Title Type':'SALVAGE TITLE'}),
+  row('92000003',{'Location city':'BOSTON','Location state':'MA','Location ZIP':'02108','Odometer':'25000','Sale Title Type':'CLEAN TITLE'}),
+  row('92000004',{'Location city':'AUSTIN','Location state':'TX','Location ZIP':'78701','Odometer':'7000','Sale Title Type':'REBUILT CLEAN TITLE'}),
+  row('92000005',{'Location city':'AUSTIN','Location state':'TX','Location ZIP':'78701','Odometer':'12000','Sale Title Type':'CT','Sale Status':'Sold'})
+ ]));
+ assert.equal(catalog.queryVehicles({q:'silverado austin'}).total,3);
+ assert.equal(catalog.queryVehicles({q:'austin silverado'}).total,3);
+ assert.deepEqual(catalog.queryVehicles({city:'austin',state:'TX',zip:'78701',cleanTitle:'1',odometerMax:'0'}).items.map(v=>v.lot),['92000001']);
+ assert.equal(catalog.queryVehicles({zip:'02108'}).items[0].lot,'92000003');
+ assert.equal(catalog.queryVehicles({cleanTitle:'1'}).total,2);
+ assert.equal(catalog.queryVehicles({}).total,4);
+ assert.equal(catalog.queryVehicles({odometerMax:null}).total,4);
+ assert.equal(catalog.queryVehicles({odometerMax:''}).total,4);
+ assert.ok(catalog.getFeaturedVehicles().items.every(v=>v.lot!=='92000005'));
+ assert.equal(catalog.findVehicleByLotOrId('92000005'),null);
+ assert.ok(catalog.getFilterMetadata().cities.some(v=>v.city==='AUSTIN'&&v.state==='TX'));
+});
+
+test('make options contain manufacturers and listing images use full resolution',()=>{
+ catalog.upsertCatalogFromCsv(csv([
+  row('93000001',{Make:'FORD F150','Model Group':'F150'}),
+  row('93000002',{Make:'MERCEDES BENZ C300','Model Group':'C300'}),
+  row('93000003',{Make:'CHEVY'}),
+  row('93000004',{Make:'SILVERADO'})
+ ]));
+ assert.deepEqual(catalog.getFilterMetadata().makes,['CHEVROLET','FORD','MERCEDES-BENZ']);
+ assert.equal(catalog.queryVehicles({make:'FORD',model:'F150'}).total,1);
+ assert.equal(catalog.queryVehicles({q:'SILVERADO'}).total,2);
+ assert.ok(catalog.queryVehicles({}).items.every(v=>v.image.endsWith('_ful.jpg')));
+ assert.ok(catalog.getFeaturedVehicles().items.every(v=>v.image.endsWith('_ful.jpg')));
+});
+
+test('catalog cache reuses queries, isolates returned objects and invalidates on import and clear',()=>{
+ catalog.upsertCatalogFromCsv(csv([row('94000001')]));
+ const db=catalog.initDatabase(), originalPrepare=db.prepare;
+ let reads=0;
+ db.prepare=function(sql){if(sql.startsWith('SELECT COUNT(*) as total FROM vehicles'))reads++;return originalPrepare.call(this,sql);};
+ try{
+  const a=catalog.queryVehicles({q:'silverado'});a.items[0].title='changed by caller';
+  const b=catalog.queryVehicles({q:'silverado'});
+  assert.equal(reads,1);assert.notEqual(b.items[0].title,'changed by caller');
+  catalog.upsertCatalogFromCsv(csv([row('94000002')]));
+  assert.equal(catalog.queryVehicles({q:'silverado'}).items[0].lot,'94000002');
+  assert.equal(reads,2);
+  catalog.clearVehicles();assert.equal(catalog.queryVehicles({q:'silverado'}).total,0);
+ }finally{db.prepare=originalPrepare;}
+});
+
+test('catalog query cache expires after fifteen seconds',()=>{
+ catalog.upsertCatalogFromCsv(csv([row('95000001')]));
+ assert.equal(catalog.queryVehicles({}).items[0].currentBid,0);
+ catalog.initDatabase().prepare('UPDATE vehicles SET currentBid=1234 WHERE lot=?').run('95000001');
+ const originalNow=Date.now;
+ try{Date.now=()=>originalNow()+16000;assert.equal(catalog.queryVehicles({}).items[0].currentBid,1234);}
+ finally{Date.now=originalNow;}
 });

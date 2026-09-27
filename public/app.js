@@ -6,7 +6,7 @@
   const state = {
     page: 1,
     pageSize: 18,
-    catalogSeed: 1000001 + crypto.getRandomValues(new Uint32Array(1))[0] % 1000000000,
+    catalogSeed: 1000001 + Math.floor(Date.now() / 300000) % 1000000000,
     filters: null,
     favoritesOnly: false,
     accountFavorites: [],
@@ -23,8 +23,8 @@
 
   const dom = {
     list: $('#catalog-list'), count: $('#catalog-count'), pagination: $('#pagination'), empty: $('#catalog-empty'),
-    search: $('#search-input'), searchButton: $('#search-button'), make: $('#filter-make'), model: $('#filter-model'), runDrive: $('#filter-run-drive'), yearMin: $('#filter-year-min'),
-    yearMax: $('#filter-year-max'), damage: $('#filter-damage'), run: $('#filter-run'), state: $('#filter-state'), keys: $('#filter-keys'),
+    search: $('#search-input'), make: $('#filter-make'), model: $('#filter-model'), runDrive: $('#filter-run-drive'), yearMin: $('#filter-year-min'),
+    yearMax: $('#filter-year-max'), damage: $('#filter-damage'), run: $('#filter-run'), state: $('#filter-state'), city: $('#filter-city'), zip: $('#filter-zip'), cleanTitle: $('#filter-clean-title'), limitOdometer: $('#filter-limit-odometer'),
     buyNow: $('#filter-buy-now'), odometer: $('#filter-odometer'), odometerLabel: $('#odometer-label'), sort: $('#sort-select'), filtersPanel: $('#filters-panel'),
     vehicleOverlay: $('#vehicle-overlay'), vehicleDetail: $('#vehicle-detail-content'), bidOverlay: $('#bid-overlay'), bidModal: $('.bid-modal'), bidAmount: $('#bid-amount'),
     bidVehicleMini: $('#bid-vehicle-mini'), bidAmountStep: $('#bid-step-amount'), bidChatStep: $('#bid-step-chat'), chatContext: $('#chat-context'),
@@ -198,6 +198,7 @@
       clearFilters: 'Limpiar',
       applyFilters: 'Aplicar filtros',
       brand: 'Marca', allFeminine: 'Todas', allMasculine: 'Todos', yearFrom: 'Año desde', yearTo: 'Año hasta',
+      city: 'Ciudad', zipCode: 'Código postal (ZIP)', zipHint: 'ZIP de la ubicación del vehículo.', cleanTitle: 'Solo Clean Title', limitOdometer: 'Limitar odómetro',
       primaryDamage: 'Daño principal', condition: 'Condición', state: 'Estado', keysOnly: 'Solo con llaves', buyNowOnly: 'Solo Buy It Now', maxOdometer: 'Odómetro máximo',
       mobileFilters: '☰ Filtros', viewNote: 'Precios en USD · el VIN completo se muestra a usuarios registrados', sortBy: 'Ordenar por',
       sortSaleSoon: 'Subasta más próxima', sortNewest: 'Año: más nuevo', sortPriceAsc: 'Precio: menor', sortPriceDesc: 'Precio: mayor', sortMileage: 'Menor millaje',
@@ -223,7 +224,7 @@
       sendCodeNote: 'Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.',
       confirmEmail: 'Confirma tu correo electrónico', verifyInstructions: 'Ingresa el código de 6 dígitos que enviamos a', sixDigitCode: 'Código de 6 dígitos', verifyCodePlaceholder: 'Ej. 482910', verifyActivate: 'Verificar y activar cuenta', modifyRegistration: '← Modificar datos de registro',
       bidStep: 'PASO 2 DE TU COMPRA', bidTitle: 'Establece tu tope de oferta', bidExplain: 'Indica el máximo que deseas ofertar por este vehículo. Esto no realiza ningún cargo automático.', myMaxBid: 'Mi tope de oferta', writeMaxBid: 'Escribe tu tope', cancel: 'Cancelar',
-      bidAssistance: 'ASISTENCIA DE PUJA', continueAdvisor: 'Continúa con un asesor', protectedSession: '● Sesión protegida', requestReady: 'Tu solicitud está lista.', connectingChat: 'Conectando con el chat de APV Motors…', stableConversation: 'Tu cuenta mantiene un identificador estable para conservar la conversación.', returnChat: 'Volver al chat', reopenConversation: 'Volver a abrir tu conversación con APV Motors',
+      bidAssistance: 'ASISTENCIA DE PUJA', continueAdvisor: 'Continúa con un asesor', protectedSession: '● Sesión protegida', requestReady: '¿Cuánto te gustaría ofertar o cómo te puedo ayudar?', connectingChat: 'Conectando con el chat de APV Motors…', stableConversation: 'Tu cuenta mantiene un identificador estable para conservar la conversación.', returnChat: 'Volver al chat', reopenConversation: 'Volver a abrir tu conversación con APV Motors',
       yourActiveBids: 'Tus Pujas Activas',
       clearAllBids: '🗑 Borrar todas',
       wantToBid: 'Quiero ofertar',
@@ -299,7 +300,7 @@
       filtersTitle: 'Filters',
       clearFilters: 'Clear',
       applyFilters: 'Apply filters',
-      brand: 'Make', allFeminine: 'All', allMasculine: 'All', yearFrom: 'Year from', yearTo: 'Year to', primaryDamage: 'Primary damage', condition: 'Condition', state: 'State', keysOnly: 'Keys only', buyNowOnly: 'Buy It Now only', maxOdometer: 'Maximum odometer',
+      brand: 'Make', allFeminine: 'All', allMasculine: 'All', yearFrom: 'Year from', yearTo: 'Year to', primaryDamage: 'Primary damage', condition: 'Condition', state: 'State', city: 'City', zipCode: 'ZIP code', zipHint: 'ZIP code of the vehicle location.', cleanTitle: 'Clean Title only', limitOdometer: 'Limit odometer', keysOnly: 'Keys only', buyNowOnly: 'Buy It Now only', maxOdometer: 'Maximum odometer',
       mobileFilters: '☰ Filters', viewNote: 'Prices in USD · the full VIN is shown to registered users', sortBy: 'Sort by', sortSaleSoon: 'Soonest auction', sortNewest: 'Year: newest', sortPriceAsc: 'Price: lowest', sortPriceDesc: 'Price: highest', sortMileage: 'Lowest mileage',
       emptyTitle: 'No vehicles found', emptyText: 'Try another search or clear the filters.', helpEyebrow: 'NOT SURE HOW MUCH TO BID?', helpTitle: 'Find the car first. We will help you with the rest.', findVehicle: 'Find a vehicle',
       footerCatalog: 'Auction vehicle catalog · USA', footerSource: 'Inventory data sourced from public Copart auction listings.', footerDisclaimer: 'Availability, bids, and final conditions depend on the auction and may change.',
@@ -322,7 +323,7 @@
       sendCodeNote: 'We will send a 6-digit verification code to your email to safely activate your account.',
       confirmEmail: 'Confirm your email address', verifyInstructions: 'Enter the 6-digit code we sent to', sixDigitCode: '6-digit code', verifyCodePlaceholder: 'E.g. 482910', verifyActivate: 'Verify and activate account', modifyRegistration: '← Edit registration details',
       bidStep: 'STEP 2 OF YOUR PURCHASE', bidTitle: 'Set your maximum bid', bidExplain: 'Enter the most you want to bid on this vehicle. This will not make an automatic charge.', myMaxBid: 'My maximum bid', writeMaxBid: 'Enter your maximum', cancel: 'Cancel',
-      bidAssistance: 'BID ASSISTANCE', continueAdvisor: 'Continue with an advisor', protectedSession: '● Protected session', requestReady: 'Your request is ready.', connectingChat: 'Connecting to APV Motors chat…', stableConversation: 'Your account uses a stable identifier to preserve the conversation.', returnChat: 'Return to chat', reopenConversation: 'Reopen your conversation with APV Motors',
+      bidAssistance: 'BID ASSISTANCE', continueAdvisor: 'Continue with an advisor', protectedSession: '● Protected session', requestReady: 'How much would you like to bid, or how can I help?', connectingChat: 'Connecting to APV Motors chat…', stableConversation: 'Your account uses a stable identifier to preserve the conversation.', returnChat: 'Return to chat', reopenConversation: 'Reopen your conversation with APV Motors',
       yourActiveBids: 'Your Active Bids',
       clearAllBids: '🗑 Clear all',
       wantToBid: 'I want to bid',
@@ -408,6 +409,11 @@
 
     window.apvMembership?.render();
     if (state.filters) {
+      updateCities();
+      populateYears(dom.heroFilterYearMin,state.filters.minYear,state.filters.maxYear);
+      populateYears(dom.heroFilterYearMax,state.filters.minYear,state.filters.maxYear);
+      updateYearRangeLabels();
+      renderFeaturedVehicles();
       loadVehicles();
     }
     if (state.currentVehicle && !dom.vehicleOverlay.classList.contains('hidden')) {
@@ -487,6 +493,7 @@
     return data;
   }
 
+  const STATE_NAMES = {"AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland", "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming", "DC": "District of Columbia", "PR": "Puerto Rico"};
   async function initFilters(){
     const f=await api('/api/filters'); state.filters=f;
     const heroTotal = $('#hero-total');
@@ -494,29 +501,44 @@
     populate(dom.make, f.makes); populate(dom.damage, f.damages); populate(dom.run, f.runStates); for (const o of dom.run.options) if(o.value) o.textContent=conditionLabel(o.value); populate(dom.state, f.states);
     if(dom.heroFilterMake) populate(dom.heroFilterMake, f.makes);
     if(dom.heroFilterState) populate(dom.heroFilterState, f.states);
+    for(const select of [dom.state, dom.heroFilterState]) for(const option of select.options) if(option.value) option.textContent=STATE_NAMES[option.value.toUpperCase()] || option.value;
+    updateCities();
     populateYears(dom.heroFilterYearMin, f.minYear, f.maxYear);
     populateYears(dom.heroFilterYearMax, f.minYear, f.maxYear);
-    dom.yearMin.placeholder=f.minYear; dom.yearMin.min=f.minYear; dom.yearMin.max=f.maxYear;
-    dom.yearMax.placeholder=f.maxYear; dom.yearMax.min=f.minYear; dom.yearMax.max=f.maxYear;
-    const maxOdo=1000000; dom.odometer.max=maxOdo; dom.odometer.value=maxOdo; updateOdometerLabel();
+    populateYears(dom.yearMin,f.minYear,f.maxYear);
+    populateYears(dom.yearMax,f.minYear,f.maxYear);
+    updateYearRangeLabels();
+    const maxOdo=1000000; dom.odometer.max=maxOdo; dom.odometer.value=0; updateOdometerLabel();
     updateCatalogModels();
   }
 
-  function populateYears(select, minYear, maxYear) {
-    if(!select) return;
-    const currentVal = select.value;
-    select.innerHTML = '';
-    const defaultOpt = document.createElement('option');
-    defaultOpt.value = '';
-    defaultOpt.textContent = select === dom.heroFilterYearMin ? (currentLang === 'en' ? 'Min year' : 'Año desde') : (currentLang === 'en' ? 'Max year' : 'Año hasta');
-    select.appendChild(defaultOpt);
-    for(let y = maxYear; y >= minYear; y--) {
-      const o = document.createElement('option');
-      o.value = y;
-      o.textContent = y;
-      select.appendChild(o);
+  function populateYears(input,minYear,maxYear){
+    const previous=input.dataset.ready?Number(input.value):null;
+    input.min=minYear; input.max=maxYear;
+    input.value=previous===null?(input.id.endsWith('-min')?minYear:maxYear):Math.max(minYear,Math.min(maxYear,previous));
+    input.dataset.ready='1';
+  }
+  function updateYearRangeLabels(){
+    for(const [low,high] of [[dom.yearMin,dom.yearMax],[dom.heroFilterYearMin,dom.heroFilterYearMax]]){
+      $('#'+low.id+'-value').textContent=low.value;
+      $('#'+high.id+'-value').textContent=high.value;
+      const span=Number(low.max)-Number(low.min)||1;
+      const track=low.parentElement;
+      track.style.setProperty('--year-start',((Number(low.value)-Number(low.min))/span*100)+'%');
+      track.style.setProperty('--year-end',((Number(high.value)-Number(low.min))/span*100)+'%');
+      low.style.zIndex=Number(low.value)===Number(low.max)?'3':'1';
     }
-    select.value = currentVal;
+  }
+  function setYearRange(low,high){
+    for(const input of [dom.yearMin,dom.heroFilterYearMin])input.value=low;
+    for(const input of [dom.yearMax,dom.heroFilterYearMax])input.value=high;
+    updateYearRangeLabels();
+  }
+  for(const [low,high] of [[dom.yearMin,dom.yearMax],[dom.heroFilterYearMin,dom.heroFilterYearMax]]){
+    for(const input of [low,high])input.addEventListener('input',()=>{
+      if(Number(low.value)>Number(high.value))input.value=input===low?high.value:low.value;
+      setYearRange(low.value,high.value);
+    });
   }
 
   document.addEventListener('click', e=>{ if(e.target.closest('[data-retry-featured]')) loadFeaturedVehicles(); });
@@ -525,6 +547,7 @@
     try {
       const data = await api('/api/featured');
       state.featuredVehicles = data.items || [];
+      state.featuredPage = 1;
       renderFeaturedVehicles();
     } catch(err) {
       console.warn('[APV] Error loading featured vehicles:', err);
@@ -542,12 +565,12 @@
     }
     dom.heroFeaturedGrid.innerHTML = items.map(v => `
       <article class="featured-vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="featured-card-photo" data-action="detail">
+        <div class="featured-card-photo" role="button" tabindex="0" aria-label="${esc(v.title)}" data-action="detail">
           ${v.image ? `<img src="${esc(v.image)}" alt="${esc(v.title)}" width="640" height="400" loading="eager" fetchpriority="high" decoding="async" />` : ''}
-          <span class="featured-card-badge">● SUBASTA COPART</span>
+          <span class="featured-card-badge">COPART</span>
         </div>
         <div class="featured-card-body">
-          <h3 class="featured-card-title" data-action="detail">${esc(v.title)}</h3>
+          <h3 class="featured-card-title" role="button" tabindex="0" data-action="detail">${esc(v.title)}</h3>
           <div class="featured-card-meta">${t('lot')} ${esc(v.lot)} · ${esc(locationLabel(v))}</div>
           <div class="featured-card-prices">
             <div class="featured-price-item">
@@ -560,7 +583,6 @@
             </div>
           </div>
           <div class="featured-card-actions">
-            <button type="button" class="btn btn-ghost featured-card-btn" data-action="detail">${t('viewVehicle')}</button>
             <button type="button" class="btn btn-primary featured-card-btn" data-action="bid">${t('wantToBid')}</button>
           </div>
         </div>
@@ -587,12 +609,22 @@
   }
   function updateHeroModels(make) { fillModels(dom.heroFilterModel, make); }
   function updateCatalogModels() { fillModels(dom.model, dom.make.value); }
+  function updateCities() {
+    const previous=dom.city.value;
+    const cities=[...new Set((state.filters?.cities || []).filter(row=>!dom.state.value || row.state===dom.state.value).map(row=>row.city))];
+    dom.city.innerHTML=`<option value="">${t('allFeminine')}</option>`;
+    populate(dom.city,cities);
+    dom.city.value=cities.includes(previous)?previous:'';
+  }
+  dom.state.addEventListener('change',updateCities);
+
 
   function applyHeroFiltersToCatalog(){
     const textQuery = dom.heroSearchInput ? dom.heroSearchInput.value.trim() : '';
     if(dom.search) dom.search.value = textQuery;
     if(dom.heroFilterMake && dom.make) dom.make.value = dom.heroFilterMake.value || '';
     if(dom.heroFilterState && dom.state) dom.state.value = dom.heroFilterState.value || '';
+    updateCities();
     if(dom.heroFilterYearMin && dom.yearMin) dom.yearMin.value = dom.heroFilterYearMin.value || '';
     if(dom.heroFilterYearMax && dom.yearMax) dom.yearMax.value = dom.heroFilterYearMax.value || '';
     if(dom.heroFilterBuyNow && dom.buyNow) dom.buyNow.checked = dom.heroFilterBuyNow.checked;
@@ -616,27 +648,34 @@
     if(state.favoritesOnly) p.set('favorites',readFavorites().join(','));
     if(dom.search.value.trim()) p.set('q',dom.search.value.trim());
     if(dom.make.value) p.set('make',dom.make.value); if(dom.damage.value) p.set('damage',dom.damage.value); if(dom.run.value) p.set('runState',dom.run.value); if(dom.state.value) p.set('state',dom.state.value);
-    if(dom.yearMin.value) p.set('yearMin',dom.yearMin.value); if(dom.yearMax.value) p.set('yearMax',dom.yearMax.value);
-    if(dom.odometer.value && state.filters && Number(dom.odometer.value)<Number(dom.odometer.max)) p.set('odometerMax',dom.odometer.value);
-    if(dom.keys.checked) p.set('keysOnly','1'); if(dom.buyNow.checked) p.set('buyNowOnly','1');
+    if(Number(dom.yearMin.value)>Number(dom.yearMin.min)) p.set('yearMin',dom.yearMin.value); if(Number(dom.yearMax.value)<Number(dom.yearMax.max)) p.set('yearMax',dom.yearMax.value);
+    if(dom.limitOdometer.checked) p.set('odometerMax',dom.odometer.value);
+    if(dom.city.value) p.set('city',dom.city.value);
+    if(dom.zip.value.trim()) p.set('zip',dom.zip.value.trim());
+    if(dom.cleanTitle.checked) p.set('cleanTitle','1'); if(dom.buyNow.checked) p.set('buyNowOnly','1');
     return p;
   }
 
   function skeletons(){ dom.empty.classList.add('hidden'); dom.list.innerHTML=Array.from({length:6},()=>'<div class="skeleton"></div>').join(''); }
 
   async function loadVehicles(){
+    if(dom.zip.value.trim() && !/^\d{5}$/.test(dom.zip.value.trim())){showToast(currentLang==='en'?'Enter a 5-digit ZIP code.':'Escribe un código ZIP de 5 dígitos.');dom.zip.focus();return;}
+    if(dom.yearMin.value && dom.yearMax.value && Number(dom.yearMin.value)>Number(dom.yearMax.value)){showToast(currentLang==='en'?'The starting year must not exceed the ending year.':'El año desde no puede ser mayor que el año hasta.');return;}
     const requestId = (state.catalogRequestId || 0) + 1; state.catalogRequestId = requestId;
+    state.catalogController?.abort();
+    const controller=new AbortController(); state.catalogController=controller;
+    const timeout=setTimeout(()=>controller.abort('timeout'),15000);
     state.loading=true; skeletons();
     try{
-      const data=await api('/api/vehicles?'+params().toString());
+      const data=await api('/api/vehicles?'+params().toString(),{signal:controller.signal});
       if(requestId !== state.catalogRequestId) return;
       dom.count.textContent=data.total.toLocaleString('en-US');
       renderVehicles(data.items); renderPagination(data);
       if(!data.items.length) dom.empty.classList.remove('hidden');
       const heroPhoto = $('#hero-car-photo');
       if(data.items[0] && heroPhoto && !heroPhoto.dataset.ready) setHeroVehicle(data.items[0]);
-    }catch(err){ if(requestId !== state.catalogRequestId) return; dom.list.innerHTML=''; dom.empty.classList.remove('hidden'); showToast(err.message); }
-    finally{ if(requestId === state.catalogRequestId) state.loading=false; }
+    }catch(err){ if(requestId !== state.catalogRequestId) return; dom.list.innerHTML=''; dom.empty.classList.remove('hidden'); showToast(controller.signal.reason==='timeout' ? (currentLang==='en'?'Loading took too long. Please try again.':'La carga tardó demasiado. Intenta de nuevo.') : err.message); }
+    finally{ clearTimeout(timeout); if(requestId === state.catalogRequestId) state.loading=false; }
   }
 
   function setHeroVehicle(v){
@@ -732,9 +771,9 @@
   function renderVehicles(items){
     dom.list.innerHTML=items.map(v=>`
       <article class="vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="vehicle-photo-wrap" data-action="detail"><div class="vehicle-photo">${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="320" height="220" loading="lazy" decoding="async" />`:`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
+        <div class="vehicle-photo-wrap" role="button" tabindex="0" aria-label="${esc(v.title)}" data-action="detail"><div class="vehicle-photo">${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="320" height="220" loading="lazy" decoding="async" />`:`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
         <div class="vehicle-main">
-          <div class="vehicle-title-row"><h3 data-action="detail">${esc(v.title)}</h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
+          <div class="vehicle-title-row"><h3 role="button" tabindex="0" data-action="detail">${esc(v.title)}</h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
           <div class="vehicle-identifiers">⌗ ${esc(vinText(v))} &nbsp;•&nbsp; ${t('lot')} ${esc(v.lot)}</div>
           <div class="spec-chips">
             <span class="spec-chip">${icon('🔑')} ${v.hasKeys==='YES'?t('keyAvailable'):t('keyUnknown')}</span>
@@ -763,7 +802,7 @@
           </div>
           <div class="bid-box"><div><span>${t('currentBid')}</span><strong>${esc(money(v.currentBid))}</strong></div><div><span>${t('buyNow')}</span><strong>${esc(money(v.buyNow))}</strong></div></div>
           <div class="side-status">● ${esc(v.saleStatus||t('upcoming'))}</div>
-          <div class="card-actions"><button class="btn btn-ghost" data-action="detail">${t('viewVehicle')}</button><button class="btn btn-primary" data-action="bid">${t('wantToBid')}</button></div>
+          <div class="card-actions"><button class="btn btn-primary" data-action="bid">${t('wantToBid')}</button></div>
         </aside>
       </article>`).join('');
   }
@@ -787,7 +826,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   function vinQuickSpecValue(v){
-    if(v.vin) return esc(v.vin);
+    if(v.vin) return `<span class="vin-value">${esc(v.vin)}</span> <button type="button" class="copy-vin" data-copy-vin="${esc(v.vin)}">${currentLang==='en'?'Copy':'Copiar'}</button>`;
     if(state.user) return esc(v.vin||t('unverified'));
     return `<button type="button" class="btn-auth-vin-inline" data-auth-vin>🔒 ${t('registerForVin')}</button>`;
   }
@@ -1064,7 +1103,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
                 <div class="calc-input-row">
                   <div class="calc-input-currency-wrap">
                     <span class="currency-symbol">$</span>
-                    <input type="number" id="calc-bid-input" class="calc-bid-input" min="100" step="50" value="" placeholder="Ingresa tu tope de puja" />
+                    <input type="number" id="calc-bid-input" class="calc-bid-input" min="100" step="50" value="" placeholder="Ej. 5000" />
                     <span class="currency-code">USD</span>
                   </div>
 
@@ -1226,15 +1265,22 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const coverImage = v.image ? v.image.replace(/_thb\./i,'_ful.') : '';
     state.currentPhotoIdx = 0;
 
+    const shareLink=new URL('/vehiculo/'+encodeURIComponent(v.lot),location.origin).href;
+    const shareText=encodeURIComponent(v.title+' '+shareLink);
     dom.vehicleDetail.innerHTML = `
+      <h2 class="detail-vehicle-title">${esc([v.model,v.make,v.year].filter(Boolean).join(' ') || v.title)}</h2>
       <div class="detail-share-toolbar">
+        <a class="detail-share-button" href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a class="detail-share-button" href="sms:?body=${shareText}">SMS</a>
         <button type="button" class="detail-share-button" data-share-vehicle="${esc(v.lot)}" title="${currentLang==='en'?'Copy vehicle link':'Copiar enlace del vehículo'}">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></svg>
-          <span>${currentLang==='en'?'Share':'Compartir'}</span>
+          <span>${currentLang==='en'?'Copy link':'Copiar enlace'}</span>
         </button>
         <span class="detail-share-status" role="status" aria-live="polite"></span>
         <input class="detail-share-link hidden" type="text" readonly aria-label="${currentLang==='en'?'Vehicle link':'Enlace del vehículo'}" />
       </div>
+      <div class="detail-layout">
+        <div class="detail-main-column">
       <!-- TOP GRID: Gallery (Left), Auction & Pricing (Center), Bidding Sidebar (Right) -->
       <div class="detail-top-grid">
         <!-- Gallery Column -->
@@ -1244,6 +1290,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <button class="gallery-arrow prev" id="gallery-prev-btn" type="button" aria-label="${t('previousPhoto')}">‹</button>
               ${coverImage ? `<img id="detail-main-image" src="${esc(coverImage)}" alt="${esc(v.title)}" />` : `<div class="image-fallback">${t('noPhoto')}</div>`}
               <button class="gallery-arrow next" id="gallery-next-btn" type="button" aria-label="${t('nextPhoto')}">›</button>
+              <button type="button" class="gallery-enlarge" data-enlarge-photo>${currentLang==='en'?'Enlarge photo':'Ampliar foto'}</button>
               <span id="detail-photo-count" class="photo-count">1 ${t('photo')}</span>
             </div>
             <div id="detail-gallery-thumbs" class="detail-gallery-thumbs">${coverImage ? `<button class="gallery-thumb active" data-gallery-src="${esc(coverImage)}"><img src="${esc(coverImage)}" alt="Foto 1" /></button>` : ''}</div>
@@ -1282,23 +1329,6 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           </div>
         </div>
 
-        <!-- Right Bidding Sidebar Column -->
-        <div class="detail-right-col">
-          <div class="bidding-action-card">
-            <div class="bidding-card-header">
-              <span class="bidding-timer-icon">⏱️</span>
-              <span>Tiempo para puja preliminar</span>
-            </div>
-            <div class="bidding-current-bid">
-              <span class="bid-label">${t('auctionCurrentBid').toUpperCase()}</span>
-              <h2 class="bid-amount">${esc(money(v.currentBid))} USD</h2>
-            </div>
-            <button class="btn btn-primary btn-bid-now" data-detail-bid>
-              🔨 ${t('wantToBid').toUpperCase()} / OFERTAR
-            </button>
-            <p class="bidding-disclaimer">Vehículos vendidos en su estado actual "as is - where is", todas las ventas son finales.</p>
-          </div>
-        </div>
       </div>
 
       <!-- MIDDLE GRID: Damage Card (Left) & Vehicle Info Card (Right) -->
@@ -1331,16 +1361,94 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           </div>
         </div>
       </div>
+        </div>
+        <!-- Right Bidding Sidebar Column -->
+        <div class="detail-right-col">
+          <div class="bidding-action-card">
+            <div class="bidding-card-header">
+              <span class="bidding-timer-icon">⏱️</span>
+              <span>Tiempo para puja preliminar</span>
+            </div>
+            <div class="bidding-current-bid">
+              <span class="bid-label">${t('auctionCurrentBid').toUpperCase()}</span>
+              <h2 class="bid-amount">${esc(money(v.currentBid))} USD</h2>
+            </div>
+            <button class="btn btn-primary btn-bid-now" data-detail-bid>
+              🔨 ${t('wantToBid').toUpperCase()} / OFERTAR
+            </button>
+            <p class="bidding-disclaimer">Vehículos vendidos en su estado actual "as is - where is", todas las ventas son finales.</p>
+          </div>
+          ${renderCalculatorHTML(v)}
+        </div>
+      </div>
 
-      <!-- BOTTOM SECTION: Price Calculator -->
-      ${renderCalculatorHTML(v)}
     `;
 
     if (state.user) {
       updateCalculatorResults($('#calc-bid-input')?.value || 0);
     }
     setupGalleryNavigation();
+    positionMobileBidCard();
   }
+
+  const mobileDetailQuery=window.matchMedia('(max-width: 640px)');
+  function positionMobileBidCard(){
+    const card=$('.bidding-action-card',dom.vehicleDetail);
+    const parent=$(mobileDetailQuery.matches?'.detail-gallery-col':'.detail-right-col',dom.vehicleDetail);
+    if(!card||!parent)return;
+    if(mobileDetailQuery.matches)parent.append(card);
+    else parent.prepend(card);
+  }
+  mobileDetailQuery.addEventListener('change',positionMobileBidCard);
+
+  const photoViewer=document.createElement('dialog');
+  photoViewer.className='photo-viewer';
+  photoViewer.innerHTML='<button type="button" class="photo-viewer-close">×</button><button type="button" class="photo-viewer-zoom">+</button><span class="photo-viewer-count" aria-live="polite"></span><button type="button" class="photo-viewer-prev">‹</button><div class="photo-viewer-stage"><img alt="" /></div><button type="button" class="photo-viewer-next">›</button>';
+  document.body.append(photoViewer);
+  function syncPhotoViewer(){
+    const source=$('#detail-main-image');
+    const image=$('img',photoViewer);
+    const changed=image.getAttribute('src')!==(source?.src||'');
+    image.src=source?.src||''; image.alt=state.currentVehicle?.title||'';
+    if(changed || !photoViewer.open)setPhotoZoom(false);
+    const count=$$('.gallery-thumb',dom.vehicleDetail).length;
+    $('.photo-viewer-count',photoViewer).textContent=`${(state.currentPhotoIdx||0)+1} / ${count||1}`;
+    for(const button of $$('.photo-viewer-prev,.photo-viewer-next',photoViewer))button.disabled=count<2;
+    photoViewer.setAttribute('aria-label',state.currentVehicle?.title||t('photo'));
+    $('.photo-viewer-close',photoViewer).ariaLabel=t('close');
+    $('.photo-viewer-prev',photoViewer).ariaLabel=t('previousPhoto');
+    $('.photo-viewer-next',photoViewer).ariaLabel=t('nextPhoto');
+  }
+  function setPhotoZoom(zoomed){
+    photoViewer.classList.toggle('is-zoomed',zoomed);
+    const button=$('.photo-viewer-zoom',photoViewer);
+    button.textContent=zoomed?'−':'+';
+    button.setAttribute('aria-label',currentLang==='en'?(zoomed?'Zoom out':'Zoom in'):(zoomed?'Reducir foto':'Acercar foto'));
+    button.setAttribute('aria-pressed',String(zoomed));
+    const stage=$('.photo-viewer-stage',photoViewer);stage.scrollTop=0;stage.scrollLeft=0;
+  }
+  function openPhotoViewer(){if(!$('#detail-main-image'))return;syncPhotoViewer();photoViewer.showModal();}
+  photoViewer.addEventListener('click',e=>{
+    if(e.target.closest('.photo-viewer-zoom'))setPhotoZoom(!photoViewer.classList.contains('is-zoomed'));
+    if(e.target===photoViewer || e.target.closest('.photo-viewer-close'))photoViewer.close();
+    if(e.target.closest('.photo-viewer-prev'))selectGalleryPhoto(state.currentPhotoIdx-1);
+    if(e.target.closest('.photo-viewer-next'))selectGalleryPhoto(state.currentPhotoIdx+1);
+  });
+  $('.photo-viewer-stage',photoViewer).addEventListener('dblclick',()=>setPhotoZoom(!photoViewer.classList.contains('is-zoomed')));
+  let photoTouch=null;
+  photoViewer.addEventListener('touchstart',e=>{photoTouch=e.touches.length===1?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null;},{passive:true});
+  photoViewer.addEventListener('touchend',e=>{
+    if(photoTouch && !photoViewer.classList.contains('is-zoomed') && e.changedTouches.length===1){
+      const dx=e.changedTouches[0].clientX-photoTouch.x,dy=e.changedTouches[0].clientY-photoTouch.y;
+      if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.5)selectGalleryPhoto(state.currentPhotoIdx+(dx<0?1:-1));
+    }
+    photoTouch=null;
+  },{passive:true});
+  photoViewer.addEventListener('keydown',e=>{
+    e.stopPropagation();
+    if(e.key==='ArrowLeft'){e.preventDefault();selectGalleryPhoto(state.currentPhotoIdx-1);}
+    if(e.key==='ArrowRight'){e.preventDefault();selectGalleryPhoto(state.currentPhotoIdx+1);}
+  });
 
   async function loadGallery(lot) {
     try {
@@ -1356,6 +1464,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     state.currentPhotoIdx=(index+buttons.length)%buttons.length;
     const img=$('#detail-main-image');
     if(img) img.src=buttons[state.currentPhotoIdx].dataset.gallerySrc;
+    if(photoViewer.open)syncPhotoViewer();
     buttons.forEach((b,i)=>b.classList.toggle('active',i===state.currentPhotoIdx));
   }
 
@@ -1373,16 +1482,18 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     count.textContent=label;
     if(allCount) allCount.textContent=label;
     if(!finalImages.length){ thumbs.innerHTML=''; if(allGrid) allGrid.innerHTML='<div class="photo-empty">No hay fotos disponibles para este lote.</div>'; return; }
-    if(main) main.src=finalImages[0];
+    state.currentPhotoIdx=Math.max(0,finalImages.indexOf(main?.src));
+    if(main) main.src=finalImages[state.currentPhotoIdx];
     else { const img=document.createElement('img'); img.id='detail-main-image'; img.alt=state.currentVehicle?.title||''; img.src=finalImages[0]; $('#detail-gallery-main .image-fallback')?.replaceWith(img); }
-    state.currentPhotoIdx=0;
     $('#gallery-prev-btn').disabled=finalImages.length<2;
     $('#gallery-next-btn').disabled=finalImages.length<2;
-    thumbs.innerHTML=finalImages.map((src,i)=>`<button class="gallery-thumb ${i===0?'active':''}" data-gallery-src="${esc(src)}" aria-label="Ver foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle?.title||'')}" loading="lazy" /></button>`).join('');
+    thumbs.innerHTML=finalImages.map((src,i)=>`<button class="gallery-thumb ${i===state.currentPhotoIdx?'active':''}" data-gallery-src="${esc(src)}" aria-label="Ver foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle?.title||'')}" loading="lazy" /></button>`).join('');
+    if(photoViewer.open)syncPhotoViewer();
     if(allGrid) allGrid.innerHTML=finalImages.map((src,i)=>`<button type="button" data-gallery-src="${esc(src)}" aria-label="Ampliar foto ${i+1}"><img src="${esc(src)}" alt="Foto ${i+1} de ${esc(state.currentVehicle?.title||'')}" loading="lazy" /></button>`).join('');
   }
 
   function closeDetail(changeUrl=true){
+    if(photoViewer.open)photoViewer.close();
     dom.vehicleOverlay.classList.add('hidden');
     if(dom.bidOverlay.classList.contains('hidden')&&dom.authOverlay.classList.contains('hidden')) document.body.style.overflow='';
     if(changeUrl && location.pathname.startsWith('/vehiculo/')) history.pushState({},'',location.pathname.replace(/\/vehiculo\/[^/]+/,'/')+location.search+location.hash);
@@ -1691,8 +1802,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   function clearFilters(reload=true){
     $('#favorites-heading').classList.add('hidden');
     $('#my-favorites-button').setAttribute('aria-pressed','false');
-    dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; dom.heroFilterYearMin.value=''; dom.heroFilterYearMax.value=''; dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.keys.checked=false; dom.buyNow.checked=false; dom.sort.value='auto';
-    if(state.filters){ dom.yearMin.value=''; dom.yearMax.value=''; dom.odometer.value=dom.odometer.max; updateOdometerLabel(); }
+    dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; setYearRange(dom.yearMin.min,dom.yearMax.max); dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.city.value=''; dom.zip.value=''; dom.cleanTitle.checked=false; dom.limitOdometer.checked=false; updateCities(); stickyInput.value=''; dom.buyNow.checked=false; dom.sort.value='auto';
+    if(state.filters){ setYearRange(dom.yearMin.min,dom.yearMax.max); dom.odometer.value=0; updateOdometerLabel(); }
     state.page=1; if(reload) loadVehicles();
   }
 
@@ -1722,6 +1833,14 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   });
 
   dom.vehicleDetail.addEventListener('click',async e=>{
+    const copyVin=e.target.closest('[data-copy-vin]');
+    if(copyVin){
+      try{await navigator.clipboard.writeText(copyVin.dataset.copyVin);showToast(currentLang==='en'?'VIN copied':'VIN copiado');}
+      catch{const range=document.createRange();range.selectNodeContents(copyVin.previousElementSibling);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);showToast(currentLang==='en'?'Select and copy the VIN':'Selecciona y copia el VIN');}
+      return;
+    }
+    if(e.target.closest('#detail-main-image, [data-enlarge-photo]')){openPhotoViewer();return;}
+
     const share=e.target.closest('[data-share-vehicle]');
     if(share){
       const link=new URL('/vehiculo/'+encodeURIComponent(share.dataset.shareVehicle),location.origin).href;
@@ -2092,13 +2211,13 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   $('#bid-continue').addEventListener('click',continueBid); dom.bidAmount.addEventListener('keydown',e=>{if(e.key==='Enter') continueBid();});
-  dom.searchButton.addEventListener('click',()=>{state.page=1;loadVehicles();}); dom.search.addEventListener('keydown',e=>{if(e.key==='Enter'){state.page=1;loadVehicles();}}); dom.sort.addEventListener('change',()=>{state.page=1;loadVehicles();});
+  dom.search.addEventListener('keydown',e=>{if(e.key==='Enter'){state.page=1;loadVehicles();}}); dom.sort.addEventListener('change',()=>{state.page=1;loadVehicles();});
   dom.make.addEventListener('change', updateCatalogModels);
   dom.runDrive.addEventListener('change',()=>{ if(dom.runDrive.checked) dom.run.value=''; });
   dom.run.addEventListener('change',()=>{ dom.runDrive.checked=false; });
   $('#my-favorites-button').addEventListener('click', showAccountFavorites);
   $('#exit-favorites').addEventListener('click',()=>clearFilters());
-  $('#apply-filters').addEventListener('click',()=>{state.page=1;closeMobileFilters();loadVehicles();}); $('#clear-filters').addEventListener('click',clearFilters); $('#empty-clear').addEventListener('click',clearFilters); dom.odometer.addEventListener('input',updateOdometerLabel);
+  $('#apply-filters').addEventListener('click',()=>{state.page=1;closeMobileFilters();loadVehicles();}); $('#clear-filters').addEventListener('click',clearFilters); $('#empty-clear').addEventListener('click',clearFilters); dom.odometer.addEventListener('input',()=>{dom.limitOdometer.checked=true;updateOdometerLabel();});
   const filtersHome = document.createComment('filters-home');
   dom.filtersPanel.before(filtersHome);
   let filtersScroll = '';
@@ -2256,6 +2375,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       if(!dom.bidOverlay.classList.contains('hidden')) updateBidCostPreview(dom.bidAmount.value);
     }
   });
+
+  document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ') && e.target.matches('[data-action="detail"][role="button"]')){e.preventDefault();e.target.click();}});
 
   async function boot(){
     initMotionEffects();

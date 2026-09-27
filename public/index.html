@@ -229,18 +229,13 @@
                   <option value="" data-i18n="allMasculine">Todos</option>
                 </select>
               </div>
-              <div class="hero-filter-field">
-                <label for="hero-filter-year-min" data-i18n="yearFrom">Año desde</label>
-                <select id="hero-filter-year-min">
-                  <option value="">1998</option>
-                </select>
-              </div>
-              <div class="hero-filter-field">
-                <label for="hero-filter-year-max" data-i18n="yearTo">Año hasta</label>
-                <select id="hero-filter-year-max">
-                  <option value="">2027</option>
-                </select>
-              </div>
+              <div class="hero-filter-field year-range-group">
+            <div class="year-range-labels"><label for="hero-filter-year-min"><span data-i18n="yearFrom">Año desde</span> <output id="hero-filter-year-min-value">1950</output></label><label for="hero-filter-year-max"><span data-i18n="yearTo">Año hasta</span> <output id="hero-filter-year-max-value">2027</output></label></div>
+            <div class="year-range-track">
+              <input id="hero-filter-year-min" type="range" min="1950" max="2027" value="1950" step="1" aria-label="Año desde" data-i18n-aria-label="yearFrom" />
+              <input id="hero-filter-year-max" type="range" min="1950" max="2027" value="2027" step="1" aria-label="Año hasta" data-i18n-aria-label="yearTo" />
+            </div>
+          </div>
               <div class="hero-filter-submit-wrap">
                 <button id="hero-filter-submit" class="btn btn-primary hero-submit-btn" type="submit" data-i18n="startSearch">BUSCAR</button>
               </div>
@@ -340,7 +335,7 @@
         </div>
         <div class="membership-nudge hidden" data-membership-nudge><span data-i18n="membershipNudge">¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.</span><button type="button" class="link-button" data-member-plans data-i18n="navPlans">Ver planes</button><button type="button" data-member-dismiss aria-label="Cerrar aviso">×</button></div>
         <div id="favorites-heading" class="favorites-heading hidden"><strong data-i18n="myFavorites">♥ Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button id="exit-favorites" class="btn btn-ghost btn-small" type="button" data-i18n="viewVehicles">Ver vehículos</button></div>
-        <div class="search-bar"><span>⌕</span><input id="search-input" type="search" placeholder="Ej. Silverado 2023, número de lote o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" /><button id="search-button" class="btn btn-dark btn-small" data-i18n="search">Buscar</button></div>
+        <input id="search-input" type="hidden" />
       </div>
 
       <div class="catalog-shell">
@@ -348,14 +343,23 @@
           <div class="filters-head"><strong data-i18n="filtersTitle">Filtros</strong><button id="close-mobile-filters" class="mobile-filter-close" type="button" aria-label="Cerrar filtros">×</button><button id="clear-filters" class="link-button" data-i18n="clearFilters">Limpiar</button></div>
           <label class="filter-group"><span data-i18n="brand">Marca</span><select id="filter-make"><option value="" data-i18n="allFeminine">Todas</option></select></label>
           <label class="filter-group"><span data-i18n="model">Modelo</span><select id="filter-model"><option value="">Todos</option></select></label>
-          <div class="filter-group two-cols"><label><span data-i18n="yearFrom">Año desde</span><input id="filter-year-min" type="number" inputmode="numeric" /></label><label><span data-i18n="yearTo">Año hasta</span><input id="filter-year-max" type="number" inputmode="numeric" /></label></div>
+          <div class="filter-group year-range-group">
+            <div class="year-range-labels"><label for="filter-year-min"><span data-i18n="yearFrom">Año desde</span> <output id="filter-year-min-value">1950</output></label><label for="filter-year-max"><span data-i18n="yearTo">Año hasta</span> <output id="filter-year-max-value">2027</output></label></div>
+            <div class="year-range-track">
+              <input id="filter-year-min" type="range" min="1950" max="2027" value="1950" step="1" aria-label="Año desde" data-i18n-aria-label="yearFrom" />
+              <input id="filter-year-max" type="range" min="1950" max="2027" value="2027" step="1" aria-label="Año hasta" data-i18n-aria-label="yearTo" />
+            </div>
+          </div>
           <label class="filter-group"><span data-i18n="primaryDamage">Daño principal</span><select id="filter-damage"><option value="" data-i18n="allMasculine">Todos</option></select></label>
           <label class="filter-group"><span data-i18n="condition">Condición</span><select id="filter-run"><option value="" data-i18n="allFeminine">Todas</option></select></label>
           <label class="filter-group"><span data-i18n="state">Estado</span><select id="filter-state"><option value="" data-i18n="allMasculine">Todos</option></select></label>
-          <label class="toggle-line"><span data-i18n="keysOnly">Solo con llaves</span><input id="filter-keys" type="checkbox" /></label>
+          <label class="filter-group"><span data-i18n="city">Ciudad</span><select id="filter-city"><option value="">Todas</option></select></label>
+          <label class="filter-group"><span data-i18n="zipCode">Código postal (ZIP)</span><input id="filter-zip" aria-describedby="zip-filter-hint" type="text" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" placeholder="Ej. 78701" /><small id="zip-filter-hint" data-i18n="zipHint">ZIP de la ubicación del vehículo.</small></label>
+          <label class="toggle-line"><span data-i18n="cleanTitle">Solo Clean Title</span><input id="filter-clean-title" type="checkbox" /></label>
           <label class="toggle-line"><span>Run &amp; Drive</span><input id="filter-run-drive" type="checkbox" /></label>
           <label class="toggle-line"><span data-i18n="buyNowOnly">Solo Buy It Now</span><input id="filter-buy-now" type="checkbox" /></label>
-          <label class="filter-group range-line"><span><span data-i18n="maxOdometer">Odómetro máximo</span> <strong id="odometer-label"></strong></span><input id="filter-odometer" type="range" min="0" max="1000000" value="1000000" step="10000" /></label>
+          <label class="filter-group range-line"><span><span data-i18n="maxOdometer">Odómetro máximo</span> <strong id="odometer-label"></strong></span><input id="filter-odometer" type="range" min="0" max="1000000" value="0" step="10000" /></label>
+          <label class="toggle-line"><span data-i18n="limitOdometer">Limitar odómetro</span><input id="filter-limit-odometer" type="checkbox" /></label>
           <button id="apply-filters" class="btn btn-dark full" data-i18n="applyFilters">Aplicar filtros</button>
         </aside>
 
@@ -524,12 +528,13 @@
           </div>
           <span class="secure-pill" data-i18n="protectedSession">● Sesión protegida</span>
         </div>
+        <p class="chat-welcome" data-i18n="requestReady">¿Cuánto te gustaría ofertar o cómo te puedo ayudar?</p>
         <div id="chat-history-selector" class="chat-history-selector hidden"></div>
         <pre id="auto-message-preview" class="hidden" aria-hidden="true"></pre>
         <div class="kommo-chat-shell">
           <div id="kommo-chat-frame"></div>
           <div id="kommo-fallback" class="kommo-fallback">
-            <div class="fallback-message"><span class="avatar">APV</span><div><strong data-i18n="requestReady">Tu solicitud está lista.</strong><p id="fallback-copy" data-i18n="connectingChat">Conectando con el chat de APV Motors…</p></div></div>
+            <div class="fallback-message"><span class="avatar">APV</span><div><strong data-i18n="requestReady">¿Cuánto te gustaría ofertar o cómo te puedo ayudar?</strong><p id="fallback-copy" data-i18n="connectingChat">Conectando con el chat de APV Motors…</p></div></div>
             <div class="fallback-payload" id="fallback-payload"></div>
             <div class="fallback-footer"><span data-i18n="stableConversation">Tu cuenta mantiene un identificador estable para conservar la conversación.</span></div>
           </div>

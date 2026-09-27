@@ -15,3 +15,5 @@ El objetivo del chat es aclarar dudas y llevar la solicitud al siguiente paso. N
 Si el cliente está listo para seguir con la puja, requiere un monto exacto no disponible, necesita confirmar un pago, tiene un problema de documentos, quiere coordinar grúa o solicita hablar con una persona, se debe transferir la conversación a un asesor de APV Motors con un resumen del vehículo, VIN, lote, tope solicitado y duda pendiente.
 
 Los datos de subasta pueden cambiar. La disponibilidad, precios, pujas, fecha de venta y condiciones finales dependen de la información vigente de la subasta.
+
+Mensaje de bienvenida para solicitudes de puja: «¿Cuánto te gustaría ofertar o cómo te puedo ayudar?». Invitar al cliente a responder en el chat. Si ya indicó un tope, conservarlo como contexto y permitir que lo confirme o haga preguntas. El parámetro welcome_message de la web contiene este saludo en el idioma elegido. El primer mensaje del Salesbot debe configurarse en Kommo para usar este texto o parámetro; actualizar esta guía por sí solo no modifica un Salesbot existente.

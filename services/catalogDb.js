@@ -7,6 +7,18 @@ const crypto = require('crypto');
 let filterCache = null;
 let featuredPool = null;
 let lastPruned = 0;
+const queryCache = new Map();
+const QUERY_CACHE_TTL = 15000;
+const QUERY_CACHE_LIMIT = 64;
+const MAKES = ['MERCEDES-BENZ', 'LAND ROVER', 'ALFA ROMEO', 'ASTON MARTIN', 'ROLLS-ROYCE', 'HARLEY-DAVIDSON', 'CHEVROLET', 'VOLKSWAGEN', 'MITSUBISHI', 'FREIGHTLINER', 'INTERNATIONAL', 'PETERBILT', 'KENWORTH', 'CHRYSLER', 'CADILLAC', 'INFINITI', 'LINCOLN', 'HYUNDAI', 'PORSCHE', 'TOYOTA', 'NISSAN', 'SUBARU', 'SUZUKI', 'ACURA', 'AUDI', 'BMW', 'BUICK', 'DODGE', 'FORD', 'GMC', 'HONDA', 'HUMMER', 'ISUZU', 'JAGUAR', 'JEEP', 'KIA', 'LEXUS', 'MAZDA', 'MINI', 'PONTIAC', 'RAM', 'SAAB', 'SATURN', 'SCION', 'TESLA', 'VOLVO', 'FIAT', 'GENESIS', 'RIVIAN', 'LUCID', 'BENTLEY', 'FERRARI', 'MASERATI', 'LAMBORGHINI', 'MERCURY', 'OLDSMOBILE', 'PLYMOUTH', 'SMART', 'POLESTAR', 'FISKER', 'KAWASAKI', 'POLARIS', 'YAMAHA', 'CAN-AM', 'SEA-DOO', 'KUBOTA', 'HINO', 'MACK', 'DUCATI', 'KTM', 'AIRSTREAM', 'FOREST RIVER', 'KEYSTONE', 'JAYCO', 'HEARTLAND', 'DUTCHMEN', 'FLEETWOOD', 'STARCRAFT', 'GULF STREAM', 'GRAND DESIGN', 'HYUNDAI TRANSLEAD'].sort((a,b)=>b.length-a.length);
+function normalizeMake(value) {
+  const cleaned = str(value).toUpperCase().replace(/\s+/g, ' ').replace(/^MERCEDES BENZ\b/, 'MERCEDES-BENZ').replace(/^HARLEY DAVIDSON\b/, 'HARLEY-DAVIDSON');
+  const make = ({CHEVY:'CHEVROLET', CHEV:'CHEVROLET', TOYO:'TOYOTA', VOLKS:'VOLKSWAGEN', 'FRHT - FREIGHTLINER':'FREIGHTLINER', 'YAMA - YAMAHA':'YAMAHA'})[cleaned] || cleaned;
+  return MAKES.find(brand => make === brand || make.startsWith(brand + ' ') || make.startsWith(brand + '-')) || make;
+}
+const ZIP_SQL = `COALESCE(json_extract(rawJson, '$."Location ZIP"'), json_extract(rawJson, '$."Location zip"'), json_extract(rawJson, '$."Location Zip"'), json_extract(rawJson, '$."Location zip code"'), json_extract(rawJson, '$."Zip Code"'), '')`;
+const SOLD_SQL = "UPPER(TRIM(COALESCE(saleStatus, ''))) IN ('SOLD', 'VENDIDO', 'SALE ENDED', 'CLOSED', 'CANCELLED', 'CANCELED', 'WITHDRAWN')";
+
 const FEATURED_CLAUSES = [
   "imageUrl IS NOT NULL AND imageUrl != ''",
   "year >= 2016",
@@ -16,7 +28,7 @@ const FEATURED_CLAUSES = [
   "title NOT LIKE '%BOAT%' AND title NOT LIKE '%TRAILER%' AND title NOT LIKE '%VESSEL%' AND title NOT LIKE '%MOTORCYCLE%' AND title NOT LIKE '%BUS%' AND title NOT LIKE '%TRANSIT%' AND title NOT LIKE '%UNKNOWN%' AND title NOT LIKE '%MINI%' AND title NOT LIKE '%TRACTOR%' AND title NOT LIKE '%COMMERCIAL%' AND title NOT LIKE '%VAN%' AND title NOT LIKE '%BOX%' AND title NOT LIKE '%PROMASTER%' AND title NOT LIKE '%EXPRESS%' AND title NOT LIKE '%CUTAWAY%'"
 ];
 
-function invalidateCatalogCaches() { filterCache = null; featuredPool = null; }
+function invalidateCatalogCaches() { filterCache = null; featuredPool = null; queryCache.clear(); }
 
 const DB_FILE = path.join(DATA_DIR, 'catalog.db');
 
@@ -147,6 +159,19 @@ function initDatabase() {
   const metaRow = db.prepare("SELECT value FROM catalog_meta WHERE key = 'updatedAt'").get();
   if (metaRow && metaRow.value) {
     lastUpdatedAt = metaRow.value;
+  }
+
+  if (!db.prepare("SELECT value FROM catalog_meta WHERE key = 'makeNormalizationV1'").get()) {
+    db.exec('BEGIN');
+    try {
+      const update = db.prepare('UPDATE vehicles SET make = ?, title = ? WHERE lot = ?');
+      for (const row of db.prepare('SELECT lot, make, year, model, trim FROM vehicles').all()) {
+        const make = normalizeMake(row.make);
+        if (make !== row.make) update.run(make, [row.year, make, row.model, row.trim].filter(Boolean).join(' '), row.lot);
+      }
+      db.prepare("INSERT INTO catalog_meta (key,value) VALUES ('makeNormalizationV1','1')").run();
+      db.exec('COMMIT');
+    } catch (err) { db.exec('ROLLBACK'); throw err; }
   }
 
   // Legacy files must never overwrite newer accounts or chats on restart.
@@ -334,7 +359,7 @@ function num(val) {
 function normalizeRecord(raw) {
   const lot = str(raw['Lot number']);
   const year = num(raw['Year']);
-  const make = str(raw['Make']).toUpperCase().replace(/\s+/g, ' ').replace(/ TRUCK(?:\/VAN)?$/, '').replace(/^FORD - FORD$/, 'FORD');
+  const make = normalizeMake(raw['Make']);
   const model = str(raw['Model Group'] || raw['Model Detail'] || raw['Model']);
   const trim = str(raw['Trim']);
   const title = [year, make, model, trim].filter(Boolean).join(' ') || str(raw['Title']);
@@ -408,14 +433,14 @@ function saleTimestamp(date, time, zone) {
 function pruneExpired() {
   const database = initDatabase();
   if (Date.now() - lastPruned < 60000) return;
-  const result = database.prepare('DELETE FROM vehicles WHERE saleAt <= ?').run(Date.now());
+  const result = database.prepare(`DELETE FROM vehicles WHERE saleAt <= ? OR ${SOLD_SQL}`).run(Date.now());
   lastPruned = Date.now();
   if (result.changes) invalidateCatalogCaches();
 }
 
 function upsertCatalogFromCsv(csvText, options = {}) {
   const database = initDatabase();
-  const digest = crypto.createHash('sha256').update('catalog-v3:').update(csvText).digest('hex');
+  const digest = crypto.createHash('sha256').update('catalog-v4:').update(csvText).digest('hex');
   if (!options.force && database.prepare("SELECT value FROM catalog_meta WHERE key = 'sourceHash'").get()?.value === digest) {
     pruneExpired();
     return { totalInDb: getVehicleCount(), unchanged: true, updatedAt: lastUpdatedAt };
@@ -510,7 +535,7 @@ function upsertCatalogFromCsv(csvText, options = {}) {
       const saleAt = saleTimestamp(rec.saleDate, rec.saleTime, rec.timeZone);
       if (rec.saleDate && !saleAt) { skipped++; continue; }
       valid++;
-      if (saleAt && saleAt <= Date.now()) { expired++; continue; }
+      if ((saleAt && saleAt <= Date.now()) || /^(SOLD|VENDIDO|SALE ENDED|CLOSED|CANCELLED|CANCELED|WITHDRAWN)$/i.test(rec.saleStatus)) { expired++; continue; }
       if (seen.has(rec.lot)) duplicates++;
       seen.add(rec.lot);
 
@@ -606,7 +631,7 @@ function rowToVehicle(row) {
   if (!row) return null;
   const raw = row.rawJson ? JSON.parse(row.rawJson) : {};
   const rawImg = ensureHttps(row.imageThumbnail);
-  const image = rawImg ? rawImg.trim().replace(/_thb\.jpg$/i, '_ful.jpg') : '';
+  const image = rawImg.trim().replace(/_thb(?=\.[a-z]+(?:[?#]|$))/i, '_ful');
 
   return {
     lot: str(row.lot),
@@ -668,16 +693,17 @@ function getFeaturedVehicles(limit = 6) {
   pruneExpired();
   if (!featuredPool) {
     featuredPool = database.prepare(`SELECT lot, title, imageThumbnail, currentBid, buyNow,
-      locationCity, locationState FROM vehicles WHERE ${FEATURED_CLAUSES.join(' AND ')}`).all().map(row => ({
+      locationCity, locationState, saleAt FROM vehicles WHERE NOT (${SOLD_SQL}) AND ${FEATURED_CLAUSES.join(' AND ')}`).all().map(row => ({
         lot: row.lot, title: row.title, currentBid: row.currentBid, buyNow: row.buyNow,
-        locationCity: row.locationCity, locationState: row.locationState,
-        image: ensureHttps(row.imageThumbnail).replace(/_thb\.jpg$/i, '_ful.jpg')
+        locationCity: row.locationCity, locationState: row.locationState, saleAt: row.saleAt,
+        image: ensureHttps(row.imageThumbnail).replace(/_thb(?=\.[a-z]+(?:[?#]|$))/i, '_ful')
       }));
   }
-  const count = Math.min(featuredPool.length, Math.max(1, Math.min(12, Number(limit) || 6)));
+  const available = featuredPool.filter(v => !v.saleAt || v.saleAt > Date.now());
+  const count = Math.min(available.length, Math.max(1, Math.min(12, Number(limit) || 6)));
   const selected = new Set();
-  while (selected.size < count) selected.add(Math.floor(Math.random() * featuredPool.length));
-  return { items: [...selected].map(index => featuredPool[index]) };
+  while (selected.size < count) selected.add(Math.floor(Math.random() * available.length));
+  return { items: [...selected].map(index => available[index]) };
 }
 
 function queryVehicles(params = {}) {
@@ -724,6 +750,12 @@ function queryVehicles(params = {}) {
     bindings.push(state);
   }
 
+  if (params.city) { whereClauses.push('locationCity = ? COLLATE NOCASE'); bindings.push(str(params.city)); }
+  if (params.zip) { whereClauses.push(`SUBSTR(${ZIP_SQL}, 1, 5) = ?`); bindings.push(str(params.zip).slice(0, 5)); }
+  if (params.cleanTitle === '1' || params.cleanTitle === true) {
+    whereClauses.push("(UPPER(saleTitleType) LIKE '%CLEAN%' OR UPPER(saleTitleType) LIKE '%CLEAR%' OR UPPER(TRIM(saleTitleType)) IN ('CERTIFICATE OF TITLE', 'CERT OF TITLE', 'CT')) AND UPPER(saleTitleType) NOT LIKE '%SALVAGE%' AND UPPER(saleTitleType) NOT LIKE '%REBUILT%' AND UPPER(saleTitleType) NOT LIKE '%RECONSTRUCT%' AND UPPER(saleTitleType) NOT LIKE '%FLOOD%' AND UPPER(saleTitleType) NOT LIKE '%JUNK%'");
+  }
+
   if (damage) {
     whereClauses.push("primaryDamage = ?");
     bindings.push(damage);
@@ -749,7 +781,7 @@ function queryVehicles(params = {}) {
     bindings.push(priceMax, priceMax, priceMax);
   }
 
-  if (odometerMax > 0) {
+  if (params.odometerMax !== undefined && params.odometerMax !== null && params.odometerMax !== '' && Number.isFinite(Number(params.odometerMax)) && odometerMax >= 0) {
     whereClauses.push("odometer <= ?");
     bindings.push(odometerMax);
   }
@@ -768,6 +800,14 @@ function queryVehicles(params = {}) {
 
   const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
+  // Cache normalized query results, never user-specific HTTP responses.
+  const cacheKey = JSON.stringify([page, pageSize, sort, str(params.seed), whereSql, bindings]);
+  const cached = queryCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    queryCache.delete(cacheKey); queryCache.set(cacheKey, cached);
+    return structuredClone(cached.result);
+  }
+  queryCache.delete(cacheKey);
   const countSql = `SELECT COUNT(*) as total FROM vehicles ${whereSql}`;
   const totalRow = database.prepare(countSql).get(...bindings);
   const total = totalRow ? totalRow.total : 0;
@@ -797,13 +837,19 @@ function queryVehicles(params = {}) {
   const dataSql = `SELECT * FROM vehicles ${whereSql} ORDER BY ${orderBy} LIMIT ? OFFSET ?`;
   const rows = database.prepare(dataSql).all(...bindings, ...(randomOrder ? [seed] : []), pageSize, offset);
 
-  return {
+  const result = {
     items: rows.map(rowToVehicle),
     total,
     page: safePage,
     pages,
     pageSize
   };
+  if (!['randomClean','featuredClean'].includes(sort)) {
+    const expiresAt = Math.min(Date.now() + QUERY_CACHE_TTL, ...rows.map(row=>row.saleAt || Infinity));
+    queryCache.set(cacheKey, { result, expiresAt });
+    while(queryCache.size > QUERY_CACHE_LIMIT) queryCache.delete(queryCache.keys().next().value);
+  }
+  return structuredClone(result);
 }
 
 function getFilterMetadata() {
@@ -830,7 +876,9 @@ function getFilterMetadata() {
   return filterCache = {
     total,
     modelsByMake,
-    makes: makesRows.map(r => r.make),
+    cities: database.prepare("SELECT DISTINCT locationCity AS city, locationState AS state FROM vehicles WHERE locationCity != '' ORDER BY locationCity").all(),
+    // Only recognized manufacturers appear as makes; unknown CSV labels remain searchable.
+    makes: makesRows.map(r => r.make).filter(make => MAKES.includes(make)),
     states: cleanStates,
     damages: damageRows.map(r => r.primaryDamage),
     runStates: runRows.map(r => r.runsDrives),
