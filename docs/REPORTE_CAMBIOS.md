@@ -223,3 +223,9 @@ Datos de ubicación, daños, documento, condición, carrocería, color, odómetr
 ## 2026-09-27T20:35:59+00:00 — Reseñas en tarjetas
 
 Home y /lp comparten nueva presentación: encabezado centrado, identificación de Google y tarjetas con autor, avatar de iniciales, estrellas y texto. Tres reseñas reales visibles en escritorio; carrusel horizontal con desplazamiento táctil nativo, flechas, teclado e indicadores en móvil. No se incorporan cifras de clientes ni reseñas de Trustpilot/Facebook sin fuente. Se conserva actualización opcional desde Places. Chrome confirma tres columnas en escritorio y avance 2/3 en móvil; sin desbordamiento horizontal ni errores de consola observados. 44 pruebas aprobadas. Sin push.
+
+## 2026-09-27T20:43:10+00:00 — Quince reseñas verificadas
+
+Añadidas doce opiniones a las tres existentes tras consultar en Chrome la pestaña Reseñas de la ficha pública Apv Motor USA enlazada por el usuario. Autores, cinco estrellas y extractos conservados; recortes con elipsis cuando corresponden. No se fija manualmente la calificación global ni el total dinámico de Google. Fuente y extractos en docs/qa/review-sources.json.
+
+Carrusel de 15 tarjetas: cinco páginas de tres en escritorio, quince posiciones móviles; indicadores condensados. Las reseñas que eventualmente devuelva Places se combinan con las verificadas, sin duplicar autores, en lugar de reemplazarlas por un máximo de cinco. Chrome confirma 15 tarjetas y avance 2/15, sin desbordamiento móvil. 44 pruebas aprobadas. Sin push.

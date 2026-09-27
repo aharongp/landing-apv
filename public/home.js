@@ -28,7 +28,7 @@
     const pages=()=>Math.max(1,Math.ceil(slides.length/pageSize()));
     const update=()=>{
       const count=pages();current=Math.min(current,count-1);
-      dots.forEach((dot,i)=>{dot.hidden=i>=count;if(i===current)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');});
+      dots.forEach((dot,i)=>{dot.hidden=i>=count || (i!==0 && i!==count-1 && Math.abs(i-current)>1);if(i===current)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');});
       document.getElementById('review-position').textContent=`${current+1} / ${count}`;
       document.getElementById('review-prev').disabled=current===0;
       document.getElementById('review-next').disabled=current===count-1;
