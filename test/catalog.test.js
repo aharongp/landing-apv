@@ -7,7 +7,7 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'apv-test-'));
 process.env.APV_DATA_DIR=dir;
 const catalog=require('../services/catalogDb');
 after(()=>{catalog.initDatabase().close();fs.rmSync(dir,{recursive:true,force:true});});
-const headers=['Lot number','Year','Make','Model Group','VIN','Image Thumbnail','Sale Date M/D/CY','Sale time (HHMM)','Time Zone','Runs/Drives','Special Note','Damage Description','Image URL','Location city','Location state','Location ZIP','Odometer','Sale Title Type','Sale Status','High Bid =non-vix,Sealed=Vix','Est. Retail Value','Buy-It-Now Price'];
+const headers=['Lot number','Year','Make','Model Group','VIN','Image Thumbnail','Sale Date M/D/CY','Sale time (HHMM)','Time Zone','Runs/Drives','Special Note','Damage Description','Image URL','Location city','Location state','Location ZIP','Odometer','Sale Title Type','Sale Status','High Bid =non-vix,Sealed=Vix','Est. Retail Value','Buy-It-Now Price','Secondary Damage'];
 const row=(lot, changes={})=>Object.assign({'Lot number':lot,'High Bid =non-vix,Sealed=Vix':'5000','Est. Retail Value':'18000',Year:'2023',Make:'CHEVROLET','Model Group':'SILVERADO',VIN:'1ABCDEFGHI2345678','Image Thumbnail':'https://cs.copart.com/test_thb.jpg','Sale Date M/D/CY':'20990101','Sale time (HHMM)':'1200','Time Zone':'PST','Runs/Drives':'Run & Drive Verified','Special Note':'','Damage Description':'NORMAL WEAR','Image URL':'https://inventoryv2.copart.io/v1/lotImages/test'},changes);
 const csv=rows=>[headers,...rows.map(r=>headers.map(h=>r[h]||''))].map(r=>r.map(c=>'"'+c.replaceAll('"','""')+'"').join(',')).join('\r\n');
 test('CSV handles inch marks, commas, multiline and escaped quotes',()=>{
@@ -183,11 +183,14 @@ test('campaign inventory excludes unknown prices and retail, and respects exact 
  assert.ok(!catalog.queryVehicles({priceMax:6000}).items.some(v=>v.lot==='96000003'));
 });
 
-test('campaign featured admits older damaged buy-now cars without changing home selection',()=>{
+test('campaign featured requires minor primary and secondary damage and buy-now pricing',()=>{
  catalog.upsertCatalogFromCsv(csv([
-  row('97000001',{'Buy-It-Now Price':'2950',Year:'2015','Damage Description':'FRONT END','Runs/Drives':'Unverified','Est. Retail Value':'9500'}),
+  row('97000001',{'Buy-It-Now Price':'2950',Year:'2015','Damage Description':'MINOR DENT/SCRATCHES','Runs/Drives':'Unverified','Est. Retail Value':'9500'}),
   row('97000002',{'Buy-It-Now Price':'0'}),
-  row('97000003',{'Buy-It-Now Price':'19000','Est. Retail Value':'18000'})
+  row('97000003',{'Buy-It-Now Price':'19000','Est. Retail Value':'18000'}),
+  row('97000004',{'Buy-It-Now Price':'2950','Damage Description':'FRONT END'}),
+  row('97000005',{'Buy-It-Now Price':'2950','Damage Description':'MINOR DENT/SCRATCHES','Secondary Damage':'STRUCTURAL DAMAGE'}),
+  row('97000006',{'Buy-It-Now Price':'2950','Damage Description':'HAIL'})
  ]));
  assert.deepEqual(catalog.getFeaturedVehicles(6,{campaign:'1'}).items.map(v=>v.lot),['97000001']);
  assert.ok(catalog.getFeaturedVehicles().items.some(v=>v.lot==='97000002'));

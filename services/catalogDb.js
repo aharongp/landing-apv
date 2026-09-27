@@ -694,7 +694,9 @@ function getFeaturedVehicles(limit = 6, params = {}) {
   const campaign = params.campaign === '1';
   const key = campaign ? 'campaign' : 'home';
   const clauses = campaign
-    ? FEATURED_CLAUSES.filter((_,i)=>![1,2,3].includes(i)).concat('buyNow > 0', 'retailValue > buyNow')
+    ? FEATURED_CLAUSES.filter((_,i)=>![1,2,3].includes(i)).concat('buyNow > 0', 'retailValue > buyNow',
+      "primaryDamage IN ('MINOR DENT/SCRATCHES', 'NORMAL WEAR', 'NO DAMAGE')",
+      "COALESCE(TRIM(secondaryDamage), '') IN ('', 'MINOR DENT/SCRATCHES', 'NORMAL WEAR', 'NO DAMAGE')")
     : FEATURED_CLAUSES.concat('retailValue > 0', '(currentBid > 0 OR buyNow > 0)');
   if (!featuredPool) featuredPool = {};
   if (!featuredPool[key]) {

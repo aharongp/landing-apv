@@ -57,3 +57,7 @@ Carrusel de 15 tarjetas: cinco páginas de tres en escritorio, quince posiciones
 ## 2026-09-27T20:44:37+00:00 — Calificación Google destacada
 
 A petición del usuario, se incorpora bloque destacado 5,0/5 con cinco estrellas y enlace a Google sobre las reseñas compartidas de home/landing. Valor comprobado directamente en la ficha pública Apv Motor USA (enlace del usuario), que muestra 5,0 estrellas. La instantánea lleva fecha visible 27/09/2026; no se presenta como consulta automática. Si Places devuelve datos en vivo, reemplaza la cifra y oculta la fecha de la instantánea. Esta petición actualiza el criterio anterior de ocultar por completo la calificación sin API. Chrome móvil: sin desbordamiento. 44 pruebas aprobadas. Sin push.
+
+## 2026-09-27T20:55:01+00:00 — Landing solo con daños menores
+
+La selección de /lp admite daño principal MINOR DENT/SCRATCHES, NORMAL WEAR o NO DAMAGE, y daño secundario vacío o de esos mismos tipos. Conserva Buy Now positivo e inferior al valor al público, sin límite semanal, de precio o año. Excluye golpes frontales/laterales, daño estructural y granizo no clasificado como menor. La home y el catálogo general conservan sus filtros.
