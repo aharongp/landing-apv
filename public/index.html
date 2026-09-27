@@ -1,33 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Compra vehículos de subastas en Estados Unidos 100% online con APV Motors." />
-  <title>APV Motors | Subastas de vehículos en EE. UU.</title>
-  <!-- Google Analytics 4: activated by the existing cookie preference. -->
-  <script>
-    window.apvStartAnalytics = function () {
-      if (window.apvAnalyticsStarted) return;
-      window.apvAnalyticsStarted = true;
-      window.dataLayer = window.dataLayer || [];
-      window.gtag = function () { window.dataLayer.push(arguments); };
-      window.gtag('js', new Date());
-      window.gtag('config', 'G-B488MP56L8');
-      var tag = document.createElement('script');
-      tag.async = true;
-      tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-B488MP56L8';
-      document.head.appendChild(tag);
-    };
-    try {
-      if (localStorage.getItem('apv_cookie_consent') === 'all') window.apvStartAnalytics();
-    } catch (_) {}
-  </script>
-  <link rel="preconnect" href="https://cs.copart.com" />
-  <link rel="preload" href="/app.js?v=15.1.0" as="script" />
-  <link rel="stylesheet" href="/styles.css?v=15.1.0" />
-  <link rel="stylesheet" href="/landing.css" />
-  <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Compra vehículos de subastas en Estados Unidos 100% online con APV Motors." name="description"/>
+<title>APV Motors | Subastas de vehículos en EE. UU.</title>
+<!-- Google Analytics 4: activated by the existing cookie preference. -->
+<link href="https://cs.copart.com" rel="preconnect"/>
+<link href="/styles.css?v=15.1.0" rel="stylesheet"/>
+<link href="/landing.css" rel="stylesheet"/>
+<script>
     // Configuracion del Website Chat Button de Kommo.
     // Debe existir ANTES de cargar https://gso.kommo.com/js/button.js.
     window.crmPluginConfig = {
@@ -102,515 +85,418 @@
       }
     };
   </script>
-</head>
+<link href="/favicon.ico" rel="icon"/><script defer="" src="/marketing-config.js"></script><script defer="" src="/marketing-i18n.js"></script><script defer="" src="/tracking.js"></script><script defer="" src="/marketing.js"></script><link href="/campaign.css" rel="stylesheet"/><style id="critical-hero">body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#0f172a}.home-page .home-video-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;max-width:1320px;margin:auto;padding:48px 24px}.home-video-hero h1{font-size:58px;line-height:1.08;letter-spacing:-1.8px}.home-video-hero h1 span{color:#dc2626}.home-page .hero-video-stage{aspect-ratio:16/9}.hero-video-stage video{width:100%;height:auto}.home-page .reveal-on-scroll{opacity:1;transform:none}@media(max-width:640px){.home-page .home-video-hero{grid-template-columns:1fr;padding:24px 18px;gap:28px}.home-video-hero h1{font-size:38px}}</style></head>
 <body class="home-page">
-  <div id="scroll-progress-bar" class="scroll-progress-bar"></div>
-  <header class="topbar">
-    <a class="brand" href="/" aria-label="APV Motors inicio">
-      <img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" />
-    </a>
-    <nav class="nav-links" aria-label="Navegación principal">
-      <a href="/catalogo" data-i18n="navCatalog">Catálogo</a>
-      <a href="#como-funciona" data-i18n="navHow">Cómo comprar</a>
-      <a href="#resenas" data-i18n="navReviews">Reseñas</a>
-      <a href="#planes" data-i18n="navPlans">Planes</a>
-    </nav>
-    <div class="topbar-account">
-      <div class="lang-switch-toggle" id="lang-switch">
-        <button type="button" class="lang-btn active" data-lang="es">ES</button>
-        <span class="lang-divider">|</span>
-        <button type="button" class="lang-btn" data-lang="en">EN</button>
-      </div>
-      <button id="auth-button" class="btn btn-ghost btn-small" type="button" data-open-auth data-i18n="login" onclick="return window.openAPVAuth ? window.openAPVAuth() : false">Iniciar sesión</button>
-      <div id="account-chip" class="account-chip hidden">
-        <button id="account-menu-toggle" class="account-menu-toggle" type="button" aria-expanded="false" aria-controls="account-menu">
-          <span id="account-avatar" class="account-avatar" aria-hidden="true">AP</span>
-          <span data-i18n="myAccount">Mi cuenta</span>
-          <span class="account-chevron" aria-hidden="true">⌄</span>
-        </button>
-        <div id="account-menu" class="account-menu hidden">
-          <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
-          <button id="my-membership-button" type="button" data-member-plans>Mi plan</button>
-          <button id="my-favorites-button" type="button" data-i18n="myFavorites">♥ Mis favoritos</button>
-          <button id="my-bids-button" type="button" data-i18n="myBids">💬 Mis Pujas</button>
-          <button id="logout-button" class="account-logout" type="button" data-i18n="logout">Salir</button>
-        </div>
-      </div>
-      <a class="btn btn-dark btn-small topbar-catalog" href="/catalogo" data-i18n="viewVehicles">Ver vehículos</a>
-    </div>
-  </header>
-
-  <form id="sticky-search" class="sticky-search" role="search" aria-label="Buscar vehículos" aria-hidden="true" inert>
-    <div class="sticky-search-inner">
-      <input id="sticky-search-input" type="search" aria-label="Buscar vehículos" data-i18n-aria-label="catalogSearchPlaceholder" placeholder="Ej. Silverado 2023, número de lote o VIN" data-i18n-placeholder="catalogSearchPlaceholder" />
-      <button class="btn btn-primary" type="submit" data-i18n="search">Buscar</button>
-    </div>
-  </form>
-  <main>
-    <section class="hero hero-centered home-video-hero">
-      <div class="hero-header-center">
-        <span class="eyebrow">SUBASTAS DE EE. UU.</span>
-        <h1>Tú eliges el vehículo.<br><span>Nosotros gestionamos la puja.</span></h1>
-        <p>Compra en subastas de Copart con APV. Conoce los costos antes de ofertar y recibe acompañamiento hasta la documentación y el transporte.</p>
-        <div class="hero-fee-line"><strong>Honorarios base desde US$350</strong><a href="#costos">Ver tarifas por tramo ↗</a></div>
-        <div class="hero-primary-actions"><a class="btn btn-primary" href="/catalogo">Ver vehículos en subasta ↗</a><a class="hero-secondary-link" href="#presupuesto">Calcular mi presupuesto</a></div>
-        <div class="hero-assurances"><span>✓ Atención en español e inglés</span><span>✓ Asesor humano</span></div>
-        <p class="home-hero-note">Explora sin registrarte. Crea tu cuenta cuando quieras guardar un vehículo o solicitar una puja.</p>
-      </div>
-      <div class="hero-video-card"><div class="hero-video-label"><span>CONOCE APV MOTORS</span><span>SUBASTAS · USA</span></div><div class="hero-video-stage" id="hero-video-stage"><video id="hero-video" controls playsinline preload="none" poster="/assets/cars-vsl-poster.jpg?v=182466f81c4e" width="1920" height="1080" aria-label="Presentación de APV Motors"><source src="/assets/cars-vsl.mp4" type="video/mp4">Tu navegador no puede reproducir este video. <a href="/assets/cars-vsl.mp4">Abrir video de APV Motors</a></video>
-        <button class="video-cover" id="video-cover" type="button" aria-label="Reproducir presentación de APV Motors" hidden><span class="video-cover-play" aria-hidden="true">▶</span><span class="video-cover-label">Conoce cómo comprar con APV</span><span class="video-cover-hint">Reproducir video · Con sonido</span></button>
-        <span class="video-status" id="video-status" role="status" hidden></span>
-        <div class="video-controls" id="video-controls" role="group" aria-label="Controles del video" hidden>
-          <input id="video-progress" class="video-progress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Posición del video" disabled>
-          <div class="video-controls-row">
-            <button id="video-toggle" type="button" aria-label="Reproducir video"><span aria-hidden="true">▶</span></button>
-            <span id="video-time" class="video-time">0:00 / --:--</span>
-            <div class="video-controls-spacer"></div>
-            <button id="video-mute" type="button" aria-label="Silenciar video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="video-sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button>
-            <select id="video-speed" aria-label="Velocidad de reproducción"><option value="1">1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
-            <button id="video-fullscreen" type="button" aria-label="Ver video en pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/></svg></button>
-          </div>
-        </div>
-      </div><div class="hero-video-caption"><strong>Contigo antes, durante y después de la puja.</strong><span>Evaluación · Puja · Documentación · Transporte</span></div></div>
-      <div class="home-legacy-hooks" hidden inert><section id="hero-registration" class="hero-registration" aria-labelledby="hero-registration-title">
-<h2 id="hero-registration-title" data-i18n="registerDirectTitle">Crea tu cuenta gratis</h2>
-      <form id="hero-register-form" class="auth-form hero-registration-form">
-        <label><span data-i18n="fullName">Nombre completo</span><input id="hero-register-name" type="text" autocomplete="name" required /></label>
-        <label><span data-i18n="email">Correo electrónico</span><input id="hero-register-email" type="email" autocomplete="email" required /></label>
-        <label>
-          <span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
-          <div class="phone-input-group">
-            <select id="hero-register-country-code" class="country-code-select" aria-label="Código de país" data-i18n-aria-label="countryCode">
-              <option value="+1">🇺🇸 +1 (EE. UU.)</option>
-              <option value="+58">🇻🇪 +58 (Venezuela)</option>
-              <option value="+52">🇲🇽 +52 (México)</option>
-              <option value="+57">🇨🇴 +57 (Colombia)</option>
-              <option value="+34">🇪🇸 +34 (España)</option>
-              <option value="+54">🇦🇷 +54 (Argentina)</option>
-              <option value="+56">🇨🇱 +56 (Chile)</option>
-              <option value="+51">🇵🇪 +51 (Perú)</option>
-              <option value="+593">🇪🇨 +593 (Ecuador)</option>
-              <option value="+502">🇬🇹 +502 (Guatemala)</option>
-              <option value="+503">🇸🇻 +503 (El Salvador)</option>
-              <option value="+504">🇭🇳 +504 (Honduras)</option>
-              <option value="+505">🇳🇮 +505 (Nicaragua)</option>
-              <option value="+506">🇨🇷 +506 (Costa Rica)</option>
-              <option value="+507">🇵🇦 +507 (Panamá)</option>
-              <option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
-              <option value="+598">🇺🇾 +598 (Uruguay)</option>
-              <option value="+591">🇧🇴 +591 (Bolivia)</option>
-              <option value="+509">🇭🇹 +509 (Haití)</option>
-              <option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
-            </select>
-            <input id="hero-register-phone" type="tel" autocomplete="tel" placeholder="414 123 4567" required />
-          </div>
-        </label>
-        <label><span data-i18n="password">Contraseña</span><input id="hero-register-password" type="password" minlength="8" autocomplete="new-password" required /></label>
-        <button class="btn btn-primary full" type="submit" data-i18n="heroRegister">Crea tu cuenta gratis</button>
-        <small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
-      </form>
-<div id="hero-register-status" class="auth-status hidden" role="alert"></div>
-</section>      <div class="hero-filter-card-wrap reveal-on-scroll">
-        <form id="hero-filter-form" class="hero-filter-card" role="search">
-          <div class="hero-filter-search-row">
-            <div class="hero-filter-field full-width">
-              <label for="hero-search-input" data-i18n="catalogSearchPlaceholder">Buscar por VIN, lote, marca o modelo</label>
-              <div class="hero-search-input-wrap">
-                <span class="hero-search-icon">⌕</span>
-                <input id="hero-search-input" type="search" placeholder="Ej. Silverado 2023, número de lote o VIN" data-i18n-placeholder="catalogSearchPlaceholder" autocomplete="off" />
-                <button class="hero-mobile-search-submit" type="submit" aria-label="Buscar">Buscar</button>
-              </div>
-            </div>
-          </div>
-
-          <button id="hero-filters-toggle" class="hero-filters-toggle" type="button" aria-expanded="false" aria-controls="hero-filter-options" data-i18n="heroFilters">Más filtros</button>
-
-          <div id="hero-filter-options" class="hero-filter-options">
-            <div class="hero-filter-grid">
-              <div class="hero-filter-field">
-                <label for="hero-filter-make" data-i18n="brand">Marca</label>
-                <select id="hero-filter-make">
-                  <option value="" data-i18n="allMakes">Todas las marcas</option>
-                </select>
-              </div>
-              <div class="hero-filter-field">
-                <label for="hero-filter-model" data-i18n="model">Modelo</label>
-                <select id="hero-filter-model">
-                  <option value="" data-i18n="allModels">Todos los modelos</option>
-                </select>
-              </div>
-              <div class="hero-filter-field">
-                <label for="hero-filter-state" data-i18n="state">Ubicación / Estado</label>
-                <select id="hero-filter-state">
-                  <option value="" data-i18n="allMasculine">Todos</option>
-                </select>
-              </div>
-              <div class="hero-filter-field year-range-group">
-            <div class="year-range-labels"><label for="hero-filter-year-min"><span data-i18n="yearFrom">Año desde</span> <output id="hero-filter-year-min-value">1950</output></label><label for="hero-filter-year-max"><span data-i18n="yearTo">Año hasta</span> <output id="hero-filter-year-max-value">2027</output></label></div>
-            <div class="year-range-track">
-              <input id="hero-filter-year-min" type="range" min="1950" max="2027" value="1950" step="1" aria-label="Año desde" data-i18n-aria-label="yearFrom" />
-              <input id="hero-filter-year-max" type="range" min="1950" max="2027" value="2027" step="1" aria-label="Año hasta" data-i18n-aria-label="yearTo" />
-            </div>
-          </div>
-              <div class="hero-filter-submit-wrap">
-                <button id="hero-filter-submit" class="btn btn-primary hero-submit-btn" type="submit" data-i18n="startSearch">BUSCAR</button>
-              </div>
-            </div>
-
-            <div class="hero-filter-footer">
-              <label class="toggle-line"><input id="hero-filter-run-drive" type="checkbox" /> Run &amp; Drive</label>
-              <label class="hero-toggle-buy-now">
-                <input id="hero-filter-buy-now" type="checkbox" />
-                <span data-i18n="buyItNow">Buy it now</span>
-              </label>
-            </div>
-          </div>
-        </form>
-      </div>
-
+<div class="scroll-progress-bar" id="scroll-progress-bar"></div>
+<header class="topbar">
+<a aria-label="APV Motors inicio" class="brand" href="/">
+<img alt="APV Motors" class="brand-logo-img" src="/assets/apv-logo-red.png"/>
+</a>
+<nav aria-label="Navegación principal" class="nav-links">
+<a data-i18n="navCatalog" href="/catalogo">Catálogo</a>
+<a data-i18n="navHow" href="#como-funciona">Cómo comprar</a>
+<a data-i18n="navReviews" href="#resenas">Reseñas</a>
+<a data-i18n="navPlans" href="#planes">Planes</a>
+</nav>
+<div class="topbar-account">
+<div class="lang-switch-toggle" id="lang-switch">
+<button class="lang-btn active" data-lang="es" type="button">ES</button>
+<span class="lang-divider">|</span>
+<button class="lang-btn" data-lang="en" type="button">EN</button>
 </div>
-    </section>
-    <div class="home-trust-strip" role="list" aria-label="Pasos de compra resumidos"><span role="listitem"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg>Elige tu vehículo</span><span role="listitem"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 11h1m3 0h1m3 0h.01M8 15h1m3 0h1m3 0h.01M8 19h1m3 0h5"/></svg>Calcula los costos</span><span role="listitem"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 3 7 7-3 3-7-7zM12 11l-8 8-2-2 8-8M13 21h9"/></svg>Puja con APV</span><span role="listitem"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h12v12H2zM14 9h4l4 5v3h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Recibe tu vehículo</span></div>
-
-    <section class="home-featured" aria-label="Vehículos destacados">      <div class="hero-featured-section reveal-on-scroll">
-        <div class="hero-featured-header"><a class="home-catalog-link" href="/catalogo">Ver catálogo completo ↗</a>
-          <h2 data-i18n="featuredVehiclesTitle">Vehículos más destacados</h2>
-          <div class="featured-pagination-controls">
-            <button type="button" id="featured-prev-btn" class="featured-nav-btn" aria-label="Página anterior">‹</button>
-            <div class="featured-dots" id="featured-dots">
-              <button type="button" class="featured-dot active" data-page="1" aria-label="Página 1"></button>
-              <button type="button" class="featured-dot" data-page="2" aria-label="Página 2"></button>
-            </div>
-            <button type="button" id="featured-next-btn" class="featured-nav-btn" aria-label="Página siguiente">›</button>
-          </div>
-        </div>
-
-        <div id="hero-featured-grid" class="hero-featured-grid" aria-live="polite">
-          <!-- Se puebla dinámicamente desde app.js (máx 3 tarjetas por página) -->
-        </div>
-      </div>
+<button class="btn btn-ghost btn-small" data-i18n="login" data-open-auth="" id="auth-button" onclick="return window.openAPVAuth ? window.openAPVAuth() : false" type="button">Iniciar sesión</button>
+<div class="account-chip hidden" id="account-chip">
+<button aria-controls="account-menu" aria-expanded="false" class="account-menu-toggle" id="account-menu-toggle" type="button">
+<span aria-hidden="true" class="account-avatar" id="account-avatar">AP</span>
+<span data-i18n="myAccount">Mi cuenta</span>
+<span aria-hidden="true" class="account-chevron">⌄</span>
+</button>
+<div class="account-menu hidden" id="account-menu">
+<div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
+<button data-member-plans="" id="my-membership-button" type="button">Mi plan</button>
+<button data-i18n="myFavorites" id="my-favorites-button" type="button">♥ Mis favoritos</button>
+<button data-i18n="myBids" id="my-bids-button" type="button">💬 Mis Pujas</button>
+<button class="account-logout" data-i18n="logout" id="logout-button" type="button">Salir</button>
+</div>
+</div>
+<a class="btn btn-dark btn-small topbar-catalog" data-i18n="viewVehicles" href="/catalogo">Ver vehículos</a>
+</div>
+</header>
+<form aria-hidden="true" aria-label="Buscar vehículos" class="sticky-search" id="sticky-search" inert="" role="search">
+<div class="sticky-search-inner">
+<input aria-label="Buscar vehículos" data-i18n-aria-label="catalogSearchPlaceholder" data-i18n-placeholder="catalogSearchPlaceholder" id="sticky-search-input" placeholder="Ej. Silverado 2023, número de lote o VIN" type="search"/>
+<button class="btn btn-primary" data-i18n="search" type="submit">Buscar</button>
+</div>
+</form>
+<main>
+<section class="hero hero-centered home-video-hero">
+<div class="hero-header-center">
+<span class="eyebrow" data-i18n="marketing_31">AUTOS A PRECIO DE SUBASTA · COPART</span>
+<h1><span data-i18n="marketing_32">Tú eliges el auto.</span><br/><span data-i18n="marketing_33">Nosotros gestionamos la puja.</span></h1>
+<p data-i18n="marketing_34">Muchos lotes de Copart solo admiten pujas de compradores con licencia. APV Motors la tiene y puja por ti. Conoce el costo antes de ofertar y te acompañamos hasta el título y el transporte.</p>
+<div class="hero-fee-line"><strong data-i18n="marketing_35">Honorarios base desde US$350</strong><a data-i18n="marketing_36" href="#costos">Ver tarifas por tramo →</a></div>
+<div class="hero-primary-actions"><a class="btn btn-primary" data-i18n="lpCta" href="/catalogo">Ver autos en subasta →</a><a class="hero-secondary-link" data-i18n="marketing_37" href="#presupuesto">Calcular mi presupuesto</a></div>
+<div class="hero-assurances"><span data-live-rating="" hidden=""></span><span data-i18n="marketing_38">✓ Español e inglés</span><span data-i18n="marketing_39">✓ Asesor humano</span></div>
+<p class="home-hero-note" data-i18n="marketing_40">Explora sin registrarte. Crea tu cuenta cuando quieras guardar un auto o solicitar una puja.</p>
+</div>
+<div class="hero-video-card"><div class="hero-video-label"><span data-i18n="marketing_41">CONOCE APV MOTORS</span><span data-i18n="marketing_42">SUBASTAS · USA</span></div><div class="hero-video-stage" id="hero-video-stage"><video aria-label="Presentación de APV Motors" controls="" height="1080" id="hero-video" playsinline="" poster="/assets/cars-vsl-poster.jpg?v=182466f81c4e" preload="none" width="1920"><source src="/assets/cars-vsl.mp4" type="video/mp4"/><span data-i18n="marketing_43">Tu navegador no puede reproducir este video.</span><a data-i18n="marketing_44" href="/assets/cars-vsl.mp4">Abrir video de APV Motors</a><!-- TODO: añadir pista ES cuando se entregue VTT/transcripción; no alterar el video. --></video>
+<button aria-label="Reproducir presentación de APV Motors" class="video-cover" hidden="" id="video-cover" type="button"><span aria-hidden="true" class="video-cover-play">▶</span><span class="video-cover-label">Conoce cómo comprar con APV</span><span class="video-cover-hint">Reproducir video · Con sonido</span></button>
+<span class="video-status" hidden="" id="video-status" role="status"></span>
+<div aria-label="Controles del video" class="video-controls" hidden="" id="video-controls" role="group">
+<input aria-label="Posición del video" class="video-progress" disabled="" id="video-progress" max="100" min="0" step="0.1" type="range" value="0"/>
+<div class="video-controls-row">
+<button aria-label="Reproducir video" id="video-toggle" type="button"><span aria-hidden="true">▶</span></button>
+<span class="video-time" id="video-time">0:00 / --:--</span>
+<div class="video-controls-spacer"></div>
+<button aria-label="Silenciar video" id="video-mute" type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"></path><path class="video-sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"></path></svg></button>
+<select aria-label="Velocidad de reproducción" id="video-speed"><option value="1">1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+<button aria-label="Ver video en pantalla completa" id="video-fullscreen" type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"></path></svg></button>
+</div>
+</div>
+</div><div class="hero-video-caption"><strong data-i18n="marketing_45">Contigo antes, durante y después de la puja.</strong><span data-i18n="marketing_46">Evaluación · Puja · Documentación · Transporte</span></div></div>
+<!-- shared:hooks:start --><div class="home-legacy-hooks" hidden="" inert=""><section aria-labelledby="hero-registration-title" class="hero-registration" id="hero-registration">
+<h2 data-i18n="registerDirectTitle" id="hero-registration-title">Crea tu cuenta gratis</h2>
+<form class="auth-form hero-registration-form" id="hero-register-form">
+<label><span data-i18n="fullName">Nombre completo</span><input autocomplete="name" id="hero-register-name" required="" type="text"/></label>
+<label><span data-i18n="email">Correo electrónico</span><input autocomplete="email" id="hero-register-email" required="" type="email"/></label>
+<label>
+<span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
+<div class="phone-input-group">
+<select aria-label="Código de país" class="country-code-select" data-i18n-aria-label="countryCode" id="hero-register-country-code">
+<option value="+1">🇺🇸 +1 (EE. UU.)</option>
+<option value="+58">🇻🇪 +58 (Venezuela)</option>
+<option value="+52">🇲🇽 +52 (México)</option>
+<option value="+57">🇨🇴 +57 (Colombia)</option>
+<option value="+34">🇪🇸 +34 (España)</option>
+<option value="+54">🇦🇷 +54 (Argentina)</option>
+<option value="+56">🇨🇱 +56 (Chile)</option>
+<option value="+51">🇵🇪 +51 (Perú)</option>
+<option value="+593">🇪🇨 +593 (Ecuador)</option>
+<option value="+502">🇬🇹 +502 (Guatemala)</option>
+<option value="+503">🇸🇻 +503 (El Salvador)</option>
+<option value="+504">🇭🇳 +504 (Honduras)</option>
+<option value="+505">🇳🇮 +505 (Nicaragua)</option>
+<option value="+506">🇨🇷 +506 (Costa Rica)</option>
+<option value="+507">🇵🇦 +507 (Panamá)</option>
+<option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
+<option value="+598">🇺🇾 +598 (Uruguay)</option>
+<option value="+591">🇧🇴 +591 (Bolivia)</option>
+<option value="+509">🇭🇹 +509 (Haití)</option>
+<option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
+</select>
+<input autocomplete="tel" id="hero-register-phone" placeholder="414 123 4567" required="" type="tel"/>
+</div>
+</label>
+<label><span data-i18n="password">Contraseña</span><input autocomplete="new-password" id="hero-register-password" minlength="8" required="" type="password"/></label>
+<button class="btn btn-primary full" data-i18n="heroRegister" type="submit">Crea tu cuenta gratis</button>
+<small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
+</form>
+<div class="auth-status hidden" id="hero-register-status" role="alert"></div>
+</section> <div class="hero-filter-card-wrap reveal-on-scroll">
+<form class="hero-filter-card" id="hero-filter-form" role="search">
+<div class="hero-filter-search-row">
+<div class="hero-filter-field full-width">
+<label data-i18n="catalogSearchPlaceholder" for="hero-search-input">Buscar por VIN, lote, marca o modelo</label>
+<div class="hero-search-input-wrap">
+<span class="hero-search-icon">⌕</span>
+<input autocomplete="off" data-i18n-placeholder="catalogSearchPlaceholder" id="hero-search-input" placeholder="Ej. Silverado 2023, número de lote o VIN" type="search"/>
+<button aria-label="Buscar" class="hero-mobile-search-submit" type="submit">Buscar</button>
+</div>
+</div>
+</div>
+<button aria-controls="hero-filter-options" aria-expanded="false" class="hero-filters-toggle" data-i18n="heroFilters" id="hero-filters-toggle" type="button">Más filtros</button>
+<div class="hero-filter-options" id="hero-filter-options">
+<div class="hero-filter-grid">
+<div class="hero-filter-field">
+<label data-i18n="brand" for="hero-filter-make">Marca</label>
+<select id="hero-filter-make">
+<option data-i18n="allMakes" value="">Todas las marcas</option>
+</select>
+</div>
+<div class="hero-filter-field">
+<label data-i18n="model" for="hero-filter-model">Modelo</label>
+<select id="hero-filter-model">
+<option data-i18n="allModels" value="">Todos los modelos</option>
+</select>
+</div>
+<div class="hero-filter-field">
+<label data-i18n="state" for="hero-filter-state">Ubicación / Estado</label>
+<select id="hero-filter-state">
+<option data-i18n="allMasculine" value="">Todos</option>
+</select>
+</div>
+<div class="hero-filter-field year-range-group">
+<div class="year-range-labels"><label for="hero-filter-year-min"><span data-i18n="yearFrom">Año desde</span> <output id="hero-filter-year-min-value">1950</output></label><label for="hero-filter-year-max"><span data-i18n="yearTo">Año hasta</span> <output id="hero-filter-year-max-value">2027</output></label></div>
+<div class="year-range-track">
+<input aria-label="Año desde" data-i18n-aria-label="yearFrom" id="hero-filter-year-min" max="2027" min="1950" step="1" type="range" value="1950"/>
+<input aria-label="Año hasta" data-i18n-aria-label="yearTo" id="hero-filter-year-max" max="2027" min="1950" step="1" type="range" value="2027"/>
+</div>
+</div>
+<div class="hero-filter-submit-wrap">
+<button class="btn btn-primary hero-submit-btn" data-i18n="startSearch" id="hero-filter-submit" type="submit">BUSCAR</button>
+</div>
+</div>
+<div class="hero-filter-footer">
+<label class="toggle-line"><input id="hero-filter-run-drive" type="checkbox"/> Run &amp; Drive</label>
+<label class="hero-toggle-buy-now">
+<input id="hero-filter-buy-now" type="checkbox"/>
+<span data-i18n="buyItNow">Buy it now</span>
+</label>
+</div>
+</div>
+</form>
+</div>
+</div><!-- shared:hooks:end -->
 </section>
-<section class="budget-section home-content" id="presupuesto" aria-labelledby="budget-title"><div class="budget-intro"><p class="eyebrow">EMPIEZA POR TUS NÚMEROS</p><h2 id="budget-title">Tu presupuesto es el punto de partida.</h2><p>Separa lo que puedes ofertar de lo que necesitarás para completar la compra.</p><p class="micro">Una orientación inicial para autos estándar de Copart. Confirma los importes y condiciones de cada lote antes de pujar.</p></div><form id="budget-form" class="budget-form"><div class="budget-fields"><label>Marca o modelo<input id="budget-query" name="q" type="search" placeholder="Ej. Toyota Corolla" maxlength="100"></label><label>Presupuesto total (USD)<input id="budget-total" type="number" min="1" max="1000000" step="1" inputmode="numeric" placeholder="Ej. 10000" required></label><label class="budget-reserve-label">Tu reserva para gastos adicionales (USD)<input id="budget-reserve" type="number" min="0" max="1000000" step="1" inputmode="numeric" placeholder="Ingresa tu estimación" required><small>Transporte, impuestos, trámites y reparación que no cubra la calculadora.</small></label></div><button class="btn btn-dark full" type="submit">Calcular mi tope orientativo</button><p class="budget-error" id="budget-error" role="alert" hidden></p><div class="budget-result" id="budget-result" hidden aria-live="polite"><p>Tope de puja orientativo <strong id="budget-bid"></strong></p><dl><div><dt>Puja + tarifas estimadas</dt><dd id="budget-purchase"></dd></div><div><dt>Reserva indicada por ti</dt><dd id="budget-reserved"></dd></div><div class="budget-result-total"><dt>Total orientativo</dt><dd id="budget-sum"></dd></div></dl><p class="micro">Pago seguro, puja en vivo, título limpio y tarifa base APV. La puja puede subir. Esta estimación no filtra el catálogo ni garantiza el precio final.</p><a class="btn btn-primary full" id="budget-catalog" href="/catalogo">Explorar vehículos y revisar cada ficha ↗</a></div></form></section>
-    <section class="steps-section reveal-on-scroll" id="como-funciona">
-      <div class="steps-heading-wrap">
-        <h2 class="red-section-title" data-i18n="howTitle">Cómo comprar desde esta página</h2>
-      </div>
-      <div class="steps-minimal-grid">
-        <article class="step-minimal-item">
-
-          <div class="step-icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M2 21v-3a7 7 0 0 1 14 0v3M19 7v6m-3-3h6"/></svg></div>
-          <div class="step-minimal-num">1</div>
-          <h3 data-i18n="step1Title">Crea tu cuenta gratis</h3>
-          <p data-i18n="step1Text">Regístrate y verifica tu correo para guardar favoritos y solicitar pujas.</p>
-        </article>
-
-        <article class="step-minimal-item">
-
-          <div class="step-icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 12 2-6h14l2 6v7H3zM3 12h18M6 19v3m12-3v3M6 15h2m8 0h2"/></svg></div>
-          <div class="step-minimal-num">2</div>
-          <h3 data-i18n="step2Title">Selecciona un vehículo</h3>
-          <p data-i18n="step2Text">Busca por modelo, año, lote o VIN. Revisa las fotos, daños y detalles.</p>
-        </article>
-
-        <article class="step-minimal-item">
-
-          <div class="step-icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8M8 11h1m3 0h1m3 0h1M8 15h1m3 0h1m3 0h1M8 19h1m3 0h5"/></svg></div>
-          <div class="step-minimal-num">3</div>
-          <h3 data-i18n="step3Title">Calcula tu presupuesto</h3>
-          <p data-i18n="step3Text">Ingresa tu oferta en la calculadora para ver un total estimado con tarifas.</p>
-        </article>
-
-        <article class="step-minimal-item">
-
-          <div class="step-icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7 4 5-2 8 8-2 5zM8 10 2 16l4 4 6-6M13 21h9"/></svg></div>
-          <div class="step-minimal-num">4</div>
-          <h3 data-i18n="step4Title">Coloca tu puja máxima</h3>
-          <p data-i18n="step4Text">Pulsa «Quiero ofertar» e indica cuánto estás dispuesto a ofrecer. No se realiza ningún cobro automático.</p>
-        </article>
-
-        <article class="step-minimal-item">
-
-          <div class="step-icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11a9 9 0 0 1-9 9H4l-3 2 1-7a9 9 0 1 1 19-4zM6 10h12M6 14h8"/></svg></div>
-          <div class="step-minimal-num">5</div>
-          <h3 data-i18n="step5Title">Confirma con un asesor</h3>
-          <p data-i18n="step5Text">Continúa en el chat de APV para coordinar y confirmar la solicitud de puja.</p>
-        </article>
-
-        <article class="step-minimal-item">
-
-          <div class="step-icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="19" rx="2"/><path d="M9 3V1h6v2M7 10l2 2 4-4M7 17l2 2 4-4M15 11h2m-2 7h2"/></svg></div>
-          <div class="step-minimal-num">6</div>
-          <h3 data-i18n="step6Title">Consulta tus solicitudes</h3>
-          <p data-i18n="step6Text">En «Mi cuenta → Mis pujas» puedes retomar tus conversaciones. Tus vehículos guardados están en «Mis favoritos».</p>
-        </article>
-      </div>
-    </section>
-    <section class="catalog-section" id="catalogo" hidden inert aria-hidden="true">
-      <div class="section-heading catalog-heading">
-        <div>
-          <span class="eyebrow" data-i18n="catalogEyebrow">CATÁLOGO DE SUBASTA</span>
-          <h2 data-i18n="catalogTitle">Encuentra el vehículo correcto.</h2>
-          <p><span id="catalog-count">—</span> <span data-i18n="resultsAvailable">resultados disponibles.</span></p>
-        </div>
-        <div class="membership-nudge hidden" data-membership-nudge><span data-i18n="membershipNudge">¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.</span><button type="button" class="link-button" data-member-plans data-i18n="navPlans">Ver planes</button><button type="button" data-member-dismiss aria-label="Cerrar aviso">×</button></div>
-        <div id="favorites-heading" class="favorites-heading hidden"><strong data-i18n="myFavorites">♥ Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button id="exit-favorites" class="btn btn-ghost btn-small" type="button" data-i18n="viewVehicles">Ver vehículos</button></div>
-        <input id="search-input" type="hidden" />
-      </div>
-
-      <div class="catalog-shell">
-        <aside class="filters" id="filters-panel">
-          <div class="filters-head"><strong data-i18n="filtersTitle">Filtros</strong><button id="close-mobile-filters" class="mobile-filter-close" type="button" aria-label="Cerrar filtros">×</button><button id="clear-filters" class="link-button" data-i18n="clearFilters">Limpiar</button></div>
-          <label class="filter-group"><span data-i18n="brand">Marca</span><select id="filter-make"><option value="" data-i18n="allFeminine">Todas</option></select></label>
-          <label class="filter-group"><span data-i18n="model">Modelo</span><select id="filter-model"><option value="">Todos</option></select></label>
-          <div class="filter-group year-range-group">
-            <div class="year-range-labels"><label for="filter-year-min"><span data-i18n="yearFrom">Año desde</span> <output id="filter-year-min-value">1950</output></label><label for="filter-year-max"><span data-i18n="yearTo">Año hasta</span> <output id="filter-year-max-value">2027</output></label></div>
-            <div class="year-range-track">
-              <input id="filter-year-min" type="range" min="1950" max="2027" value="1950" step="1" aria-label="Año desde" data-i18n-aria-label="yearFrom" />
-              <input id="filter-year-max" type="range" min="1950" max="2027" value="2027" step="1" aria-label="Año hasta" data-i18n-aria-label="yearTo" />
-            </div>
-          </div>
-          <label class="filter-group"><span data-i18n="primaryDamage">Daño principal</span><select id="filter-damage"><option value="" data-i18n="allMasculine">Todos</option></select></label>
-          <label class="filter-group"><span data-i18n="condition">Condición</span><select id="filter-run"><option value="" data-i18n="allFeminine">Todas</option></select></label>
-          <label class="filter-group"><span data-i18n="state">Estado</span><select id="filter-state"><option value="" data-i18n="allMasculine">Todos</option></select></label>
-          <label class="filter-group"><span data-i18n="city">Ciudad</span><select id="filter-city"><option value="">Todas</option></select></label>
-          <label class="filter-group"><span data-i18n="zipCode">Código postal (ZIP)</span><input id="filter-zip" aria-describedby="zip-filter-hint" type="text" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" placeholder="Ej. 78701" /><small id="zip-filter-hint" data-i18n="zipHint">ZIP de la ubicación del vehículo.</small></label>
-          <label class="toggle-line"><span data-i18n="cleanTitle">Solo Clean Title</span><input id="filter-clean-title" type="checkbox" /></label>
-          <label class="toggle-line"><span>Run &amp; Drive</span><input id="filter-run-drive" type="checkbox" /></label>
-          <label class="toggle-line"><span data-i18n="buyNowOnly">Solo Buy It Now</span><input id="filter-buy-now" type="checkbox" /></label>
-          <label class="filter-group range-line"><span><span data-i18n="maxOdometer">Odómetro máximo</span> <strong id="odometer-label"></strong></span><input id="filter-odometer" type="range" min="0" max="1000000" value="0" step="10000" /></label>
-          <label class="toggle-line"><span data-i18n="limitOdometer">Limitar odómetro</span><input id="filter-limit-odometer" type="checkbox" /></label>
-          <button id="apply-filters" class="btn btn-dark full" data-i18n="applyFilters">Aplicar filtros</button>
-        </aside>
-
-        <div class="catalog-content">
-          <div class="catalog-toolbar">
-            <button class="mobile-filter-button" id="mobile-filter-button" data-i18n="mobileFilters">☰ Filtros</button>
-            <div class="view-note" data-i18n="viewNote">Precios en USD · el VIN completo se muestra a usuarios registrados</div>
-            <label class="sort-select"><span data-i18n="sortBy">Ordenar por</span> <select id="sort-select"><option value="auto" data-i18n="sortAuto">Aleatorio / búsqueda</option><option value="saleSoon" data-i18n="sortSaleSoon">Subasta más próxima</option><option value="newest" data-i18n="sortNewest">Año: más nuevo</option><option value="priceAsc" data-i18n="sortPriceAsc">Precio: menor</option><option value="priceDesc" data-i18n="sortPriceDesc">Precio: mayor</option><option value="odometerAsc" data-i18n="sortMileage">Menor millaje</option></select></label>
-          </div>
-          <div id="catalog-list" class="vehicle-list" aria-live="polite"></div>
-          <div id="catalog-empty" class="empty-state hidden"><h3 data-i18n="emptyTitle">No encontramos vehículos</h3><p data-i18n="emptyText">Prueba otra búsqueda o limpia los filtros.</p><button class="btn btn-ghost" id="empty-clear" data-i18n="clearFilters">Limpiar filtros</button></div>
-          <div id="pagination" class="pagination"></div>
-        </div>
-      </div>
-    </section>
-
-    <div class="home-content">
-<section class="section wrap evaluation" id="evaluacion"><div class="evaluation-art"><div class="report-top"><img src="/assets/apv-logo-red.png" alt="APV Motors" width="90" height="44"><span>ANTES DE PUJAR</span></div><h3>Una buena foto<br>no cuenta toda la historia.</h3><div class="report-row"><span>01 / Daños y condición</span><b>Revisar ↗</b></div><div class="report-row"><span>02 / Historial y título</span><b>Verificar ↗</b></div><div class="report-row"><span>03 / Comparables y costos</span><b>Evaluar ↗</b></div><p>Más información. Mejor criterio.</p></div><div><p class="eyebrow">EVALUACIÓN APV</p><h2>Una foto no basta.<br>Evalúa antes de pujar.</h2><p class="lead">El precio de la subasta es solo el comienzo. Antes de comprometer tu dinero, entiende qué estás comprando.</p><ul class="check-list"><li>Analiza los daños visibles y la información disponible.</li><li>Revisa historial, documentación y posibles riesgos.</li><li>Compara el costo estimado con tu presupuesto.</li></ul><a class="text-link" href="/catalogo">Elegir un vehículo para evaluar ↗</a><p class="micro">Solicita la Evaluación APV desde la ficha. Consulta su alcance y condiciones; no sustituye una inspección física.</p></div></section>
-<section class="cost-section" id="costos"><div class="wrap section cost-grid"><div><p class="eyebrow">LA TARIFA APV, POR DELANTE</p><h2>Honorarios claros.<br><em>Antes de pujar.</em></h2><p class="lead">Una tarifa base por tramo, según el valor de adjudicación del vehículo.</p><a class="button" href="#presupuesto">Calcular mi presupuesto ↗</a><p class="cost-footnote">Los honorarios APV no incluyen la puja, las tarifas de subasta, el transporte ni los impuestos. Revisa el desglose de cada ficha.</p></div><div class="fee-table-card"><table class="apv-fee-table"><caption>Tarifa base de servicio APV · USD</caption><thead><tr><th scope="col">Valor de adjudicación</th><th scope="col">Honorarios APV</th></tr></thead><tbody><tr><td>Hasta US$5,999</td><td>US$350</td></tr><tr><td>US$6,000 – US$9,999</td><td>US$450</td></tr><tr><td>US$10,000 – US$14,999</td><td>US$650</td></tr><tr><td>US$15,000 o más</td><td>US$700</td></tr></tbody></table><p>¿Compras con frecuencia? <a href="#planes">Compara los descuentos de los planes APV.</a></p></div></div></section>
-<section class="section wrap deposit-section" id="deposito"><div><p class="eyebrow">DEPÓSITO Y HONORARIOS SON COSAS DISTINTAS</p><h2>Entiende tu depósito<br>antes de participar.</h2><p class="lead">El depósito respalda tu capacidad de puja. Antes de realizarlo, confirma su importe, cómo se aplica y las condiciones de devolución.</p><a class="text-link" href="https://wa.me/13462048308?text=Quiero%20confirmar%20las%20condiciones%20del%20dep%C3%B3sito%20para%20pujar" target="_blank" rel="noopener noreferrer">Consultar el depósito con un asesor ↗</a></div><div class="deposit-cases"><article><span>01</span><div><h3>Si no ganas</h3><p>Confirma con tu asesor si mantienes el saldo para otra puja o solicitas su devolución.</p></div></article><article><span>02</span><div><h3>Si ganas</h3><p>Recibe las instrucciones de pago y confirma cómo se aplica el depósito a tu compra.</p></div></article><article><span>03</span><div><h3>Si ganas y no pagas</h3><p>Pueden aplicarse penalidades según las condiciones aceptadas. Revísalas antes de autorizar la puja.</p></div></article></div></section>
-
-<section class="home-reviews home-content" id="resenas" aria-labelledby="reviews-title"><div class="home-reviews-intro"><p class="eyebrow">EXPERIENCIAS REALES EN GOOGLE</p><h2 id="reviews-title">La confianza se gana.<br>Ellos te cuentan por qué.</h2><p>Conoce la experiencia de quienes ya compraron con APV.</p><a class="text-link" href="https://maps.app.goo.gl/qYoCdegG9996wcyk6" target="_blank" rel="noopener noreferrer">Leer todas las reseñas en Google ↗</a><p class="micro">Fragmentos de reseñas públicas, consultadas el 27/09/2026.</p></div><div class="review-carousel" role="region" aria-roledescription="carrusel" aria-label="Reseñas de clientes en Google" tabindex="0"><div id="review-slides"><article class="review-slide" role="group" aria-roledescription="diapositiva" aria-label="1 de 3" ><div class="review-source"><span class="review-google" aria-hidden="true">G</span><span>Reseña en Google</span><span class="review-stars" aria-label="5 de 5 estrellas">★★★★★</span></div><blockquote>“Destaco su buena comunicación y profesionalismo durante toda la puja.”</blockquote><div class="review-author"><span class="review-avatar" aria-hidden="true">GC</span><div><strong>Gabriel Correa</strong><span>Fragmento de su reseña</span></div></div></article><article class="review-slide" role="group" aria-roledescription="diapositiva" aria-label="2 de 3" hidden><div class="review-source"><span class="review-google" aria-hidden="true">G</span><span>Reseña en Google</span><span class="review-stars" aria-label="5 de 5 estrellas">★★★★★</span></div><blockquote>“Excelente servicio y apoyo de Apv”</blockquote><div class="review-author"><span class="review-avatar" aria-hidden="true">WR</span><div><strong>Wolfgang Ramirez</strong><span>Fragmento de su reseña</span></div></div></article><article class="review-slide" role="group" aria-roledescription="diapositiva" aria-label="3 de 3" hidden><div class="review-source"><span class="review-google" aria-hidden="true">G</span><span>Reseña en Google</span><span class="review-stars" aria-label="5 de 5 estrellas">★★★★★</span></div><blockquote>“siempre muy amables”</blockquote><div class="review-author"><span class="review-avatar" aria-hidden="true">YA</span><div><strong>Ynadsuy Anolacse</strong><span>Fragmento de su reseña</span></div></div></article></div><div class="review-controls"><div><button type="button" id="review-prev" aria-label="Reseña anterior" aria-controls="review-slides">←</button><button type="button" id="review-next" aria-label="Reseña siguiente" aria-controls="review-slides">→</button></div><span id="review-position" aria-live="polite" aria-atomic="true">1 de 3</span><div class="review-dots"><button type="button" data-review="0" aria-label="Ver reseña de Gabriel Correa" aria-current="true"></button><button type="button" data-review="1" aria-label="Ver reseña de Wolfgang Ramirez"></button><button type="button" data-review="2" aria-label="Ver reseña de Ynadsuy Anolacse"></button></div></div></div></section>
-
-
-
+<div aria-label="Pasos de compra resumidos" class="home-trust-strip" id="como-funciona" role="list"><span role="listitem"><svg aria-hidden="true" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="24"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 5 5"></path></svg><span data-i18n="marketing_47">Elige tu auto</span></span><span role="listitem"><svg aria-hidden="true" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="24"><rect height="20" rx="2" width="14" x="5" y="2"></rect><path d="M8 6h8M8 11h1m3 0h1m3 0h.01M8 15h1m3 0h1m3 0h.01M8 19h1m3 0h5"></path></svg><span data-i18n="marketing_48">Calcula el costo</span></span><span role="listitem"><svg aria-hidden="true" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="24"><path d="m14 3 7 7-3 3-7-7zM12 11l-8 8-2-2 8-8M13 21h9"></path></svg><span data-i18n="marketing_49">Deja tu depósito y pujamos</span></span><span role="listitem"><svg aria-hidden="true" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="24"><path d="M2 5h12v12H2zM14 9h4l4 5v3h-8"></path><circle cx="6" cy="18" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg><span data-i18n="marketing_50">Recibe tu auto</span></span></div>
+<!-- shared:featured:start --><section aria-label="Vehículos destacados" class="home-featured"> <div class="hero-featured-section reveal-on-scroll">
+<div class="hero-featured-header"><a class="home-catalog-link" data-i18n="marketing_51" href="/catalogo">Ver catálogo completo →</a>
+<h2 data-i18n="marketing_52">Autos en subasta esta semana</h2>
+<div class="featured-pagination-controls">
+<button aria-label="Página anterior" class="featured-nav-btn" id="featured-prev-btn" type="button">‹</button>
+<div class="featured-dots" id="featured-dots">
+<button aria-label="Página 1" class="featured-dot active" data-page="1" type="button"></button>
+<button aria-label="Página 2" class="featured-dot" data-page="2" type="button"></button>
 </div>
-    <section id="planes" class="membership-section" aria-labelledby="membership-title">
-      <div class="membership-heading"><span class="eyebrow" data-i18n="membershipEyebrow">MEMBRESÍAS APV MOTORS</span><h2 id="membership-title" data-i18n="membershipTitle">Elige cómo quieres comprar tu próximo vehículo.</h2><p data-i18n="membershipIntro">Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.</p></div>
-      <div id="membership-status" class="membership-status hidden" role="status" aria-live="polite"></div>
-      <div id="membership-account" class="membership-account hidden"></div>
-      <div id="membership-content" aria-live="polite">Cargando planes…</div>
-    </section>
-<div class="home-content"><section class="section wrap faq" id="ayuda"><div><p class="eyebrow">RESOLVEMOS TUS DUDAS</p><h2>Todo empieza<br>con claridad.</h2><p>¿Tu caso necesita más detalle?</p><a class="text-link" href="https://wa.me/13462048308" target="_blank" rel="noopener noreferrer">Hablar con un asesor ↗</a></div><div class="faq-list">
-<details><summary>¿Necesito registrarme para ver los vehículos?</summary><p>No. Puedes explorar el catálogo y las fichas sin registrarte. Te pedimos una cuenta cuando quieres guardar vehículos, usar la calculadora o solicitar una puja.</p></details>
-<details><summary>¿El precio que veo es el precio final?</summary><p>No. La puja o el precio de compra no incluyen necesariamente comisiones, servicio APV, transporte, documentación, impuestos o reparaciones. Revisa la calculadora de la ficha y confirma el presupuesto con tu asesor.</p></details>
-<details><summary>¿Qué es el depósito o buyer power?</summary><p>Es el respaldo que permite habilitar tu capacidad de puja. Antes de participar, el equipo confirma el importe, el límite autorizado y las condiciones de aplicación o devolución. Solicitar una puja no equivale a haber ganado el vehículo.</p></details>
-<details><summary>¿Puedo comprar sin licencia de dealer?</summary><p>APV te orienta sobre el acceso a las subastas y los vehículos en los que puedes participar mediante su servicio. Los requisitos dependen del lote, el título y la jurisdicción; confírmalos antes de pujar.</p></details>
-<details><summary>¿Cómo sé en qué estado está el vehículo?</summary><p>Revisa las fotos, la descripción de daños, la condición y el tipo de título en la ficha. Puedes solicitar la Evaluación APV para analizar la información disponible. Las fotos y etiquetas de la subasta no garantizan el estado mecánico ni sustituyen una inspección.</p></details>
-<details><summary>¿Qué pasa si gano la subasta?</summary><p>El equipo te indica los pasos y plazos de pago, y coordina contigo la documentación y el transporte. Antes de pujar debes conocer tus obligaciones si ganas y las condiciones aplicables a ese lote.</p></details>
-<details><summary>¿Qué pasa si no gano la subasta?</summary><p>No se adjudica el vehículo. Confirma con tu asesor si deseas participar por otro lote y cómo se gestiona el depósito según las condiciones aceptadas.</p></details>
-<details><summary>¿Puedo pagar el vehículo con tarjeta?</summary><p>Consulta los medios de pago admitidos y sus comisiones antes de participar. La forma de pago de una membresía no determina cómo se paga el vehículo.</p></details>
-<details><summary>¿Cuánto tarda el título?</summary><p>El plazo depende del lote, el tipo de documento y su emisión por la subasta. Revisa su estado con tu asesor; no todos los títulos están disponibles de inmediato.</p></details>
-<details><summary>¿Cómo se calcula el transporte?</summary><p>Depende del origen, destino, tipo de vehículo y condición para cargarlo. Comparte esos datos con tu asesor para confirmar disponibilidad, precio y plazo estimado.</p></details>
-</div></section>
-<section class="final-cta wrap"><div><p class="eyebrow">TU PRÓXIMO VEHÍCULO ESTÁ MÁS CERCA</p><h2>Encuentra tu vehículo hoy.<br>Da el siguiente paso con APV.</h2><p>Explora los vehículos o habla con un asesor si es tu primera compra.</p></div><div class="final-actions"><a class="button white" href="/catalogo">Ver vehículos en subasta ↗</a><a class="final-whatsapp" href="https://wa.me/13462048308" target="_blank" rel="noopener noreferrer">¿Es tu primera compra? Escríbenos</a></div></section>
+<button aria-label="Página siguiente" class="featured-nav-btn" id="featured-next-btn" type="button">›</button>
 </div>
-
-
-  </main>
-
-  <footer>
-    <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
-    <p data-i18n="footerCatalog">Catálogo de vehículos de subasta · EE. UU.</p>
-    <p data-i18n="footerSource">Inventory data sourced from public Copart auction listings.</p>
-    <p data-i18n="footerDisclaimer">La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.</p>
-    <div class="footer-legal-links">
-      <button type="button" class="legal-link-btn" id="terms-link-btn" data-i18n="termsOfService">Términos de Servicio</button>
-      <span class="legal-sep">·</span>
-      <button type="button" class="legal-link-btn" id="privacy-link-btn" data-i18n="privacyPolicy">Políticas de Privacidad</button>
-    </div>
-  </footer>
-
-  <div class="overlay hidden" id="vehicle-overlay" role="dialog" aria-modal="true" aria-labelledby="vehicle-detail-title">
-    <div class="detail-modal"><button class="modal-close" data-close="vehicle" aria-label="Cerrar" data-i18n-aria-label="close">×</button><div id="vehicle-detail-content"></div></div>
-  </div>
-
-  <div class="overlay hidden legal-overlay" id="terms-overlay" role="dialog" aria-modal="true" aria-labelledby="terms-title">
-    <div class="legal-modal">
-      <button class="modal-close" data-close="terms" aria-label="Cerrar" data-i18n-aria-label="close">×</button>
-      <div class="legal-modal-header">
-        <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
-        <span class="eyebrow" data-i18n="termsEyebrow">ASPECTOS LEGALES</span>
-        <h2 id="terms-title" data-i18n="termsTitle">Términos de Servicio</h2>
-      </div>
-      <div class="legal-modal-body" data-i18n-html="termsContent"></div>
-      <div class="legal-modal-footer">
-        <button class="btn btn-dark" data-close="terms" data-i18n="close">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay hidden legal-overlay" id="privacy-overlay" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
-    <div class="legal-modal">
-      <button class="modal-close" data-close="privacy" aria-label="Cerrar" data-i18n-aria-label="close">×</button>
-      <div class="legal-modal-header">
-        <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
-        <span class="eyebrow" data-i18n="privacyEyebrow">PROTECCIÓN DE DATOS</span>
-        <h2 id="privacy-title" data-i18n="privacyTitle">Políticas de Privacidad</h2>
-      </div>
-      <div class="legal-modal-body" data-i18n-html="privacyContent"></div>
-      <div class="legal-modal-footer">
-        <button class="btn btn-dark" data-close="privacy" data-i18n="close">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay hidden auth-overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-    <div class="auth-modal">
-      <button class="modal-close" data-close="auth" aria-label="Cerrar" data-i18n-aria-label="close" onclick="return window.closeAPVAuth ? window.closeAPVAuth() : false">×</button>
-      <div class="modal-brand-header">
-        <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
-      </div>
-      <div class="auth-intro">
-        <span class="eyebrow" data-i18n="accountEyebrow">CUENTA APV MOTORS</span>
-        <h2 id="auth-title" data-i18n="authTitle">Guarda tu conversación y continúa desde cualquier dispositivo.</h2>
-        <p id="auth-reason" data-i18n="authReason">Regístrate para ver el VIN completo y hablar con un asesor.</p>
-      </div>
-      <div class="auth-tabs" role="tablist"><button class="auth-tab active" data-auth-tab="login" type="button" data-i18n="login">Iniciar sesión</button><button class="auth-tab" data-auth-tab="register" type="button" data-i18n="createAccount">Crear cuenta</button></div>
-      <form id="login-form" class="auth-form">
-        <label><span data-i18n="email">Correo electrónico</span><input id="login-email" type="email" autocomplete="email" required /></label>
-        <label><span data-i18n="password">Contraseña</span><input id="login-password" type="password" autocomplete="current-password" required /></label>
-        <button class="btn btn-dark full" type="submit" data-i18n="loginContinue">Entrar y continuar</button>
-      </form>
-      <form id="register-form" class="auth-form hidden">
-        <label><span data-i18n="fullName">Nombre completo</span><input id="register-name" type="text" autocomplete="name" required /></label>
-        <label><span data-i18n="email">Correo electrónico</span><input id="register-email" type="email" autocomplete="email" required /></label>
-        <label>
-          <span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
-          <div class="phone-input-group">
-            <select id="register-country-code" class="country-code-select" aria-label="Código de país" data-i18n-aria-label="countryCode">
-              <option value="+1">🇺🇸 +1 (EE. UU.)</option>
-              <option value="+58">🇻🇪 +58 (Venezuela)</option>
-              <option value="+52">🇲🇽 +52 (México)</option>
-              <option value="+57">🇨🇴 +57 (Colombia)</option>
-              <option value="+34">🇪🇸 +34 (España)</option>
-              <option value="+54">🇦🇷 +54 (Argentina)</option>
-              <option value="+56">🇨🇱 +56 (Chile)</option>
-              <option value="+51">🇵🇪 +51 (Perú)</option>
-              <option value="+593">🇪🇨 +593 (Ecuador)</option>
-              <option value="+502">🇬🇹 +502 (Guatemala)</option>
-              <option value="+503">🇸🇻 +503 (El Salvador)</option>
-              <option value="+504">🇭🇳 +504 (Honduras)</option>
-              <option value="+505">🇳🇮 +505 (Nicaragua)</option>
-              <option value="+506">🇨🇷 +506 (Costa Rica)</option>
-              <option value="+507">🇵🇦 +507 (Panamá)</option>
-              <option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
-              <option value="+598">🇺🇾 +598 (Uruguay)</option>
-              <option value="+591">🇧🇴 +591 (Bolivia)</option>
-              <option value="+509">🇭🇹 +509 (Haití)</option>
-              <option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
-            </select>
-            <input id="register-phone" type="tel" autocomplete="tel" placeholder="414 123 4567" required />
-          </div>
-        </label>
-        <label><span data-i18n="password">Contraseña</span><input id="register-password" type="password" minlength="8" autocomplete="new-password" required /></label>
-        <button class="btn btn-primary full" type="submit" data-i18n="sendVerificationCode">Enviar código de verificación</button>
-        <small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
-      </form>
-      <form id="verify-form" class="auth-form hidden" aria-live="polite">
-        <div class="verify-intro">
-          <div class="verify-email-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/><path d="m16 17 2 2 4-4"/></svg>
-          </div>
-          <h3 data-i18n="confirmEmail">Confirma tu correo electrónico</h3>
-          <p><span data-i18n="verifyInstructions">Ingresa el código de 6 dígitos que enviamos a</span> <strong id="verify-target-email"></strong>.</p>
-        </div>
-        <label><span data-i18n="sixDigitCode">Código de 6 dígitos</span><input id="verify-code" type="text" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="Ej. 482910" data-i18n-placeholder="verifyCodePlaceholder" autocomplete="one-time-code" required /></label>
-        <button class="btn btn-primary full" type="submit" data-i18n="verifyActivate">Verificar y activar cuenta</button>
-        <button id="verify-back" class="link-button" type="button" data-i18n="modifyRegistration">← Modificar datos de registro</button>
-      </form>
-      <div id="auth-status" class="auth-status hidden"></div>
-    </div>
-  </div>
-
-  <div class="overlay hidden" id="bid-overlay" role="dialog" aria-modal="true" aria-labelledby="bid-title">
-    <div class="bid-modal">
-      <button class="modal-close bid-close-button" data-close="bid" aria-label="Cerrar" data-i18n-aria-label="close">×</button>
-      <button class="modal-close chat-minimize-button" data-close="bid" aria-label="Minimizar chat" data-i18n-aria-label="minimizeChat" title="Minimizar chat" data-i18n-title="minimizeChat"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 17h14"/></svg></button>
-      <div class="modal-brand-header">
-        <div class="brand"><img src="/assets/apv-logo-red.png" alt="APV Motors" class="brand-logo-img" /></div>
-      </div>
-      <div id="bid-step-amount" class="bid-step">
-        <span class="eyebrow" data-i18n="bidStep">PASO 2 DE TU COMPRA</span>
-        <h2 id="bid-title" data-i18n="bidTitle">Establece tu tope de oferta</h2>
-        <p class="muted" data-i18n="bidExplain">Indica el máximo que deseas ofertar por este vehículo. Esto no realiza ningún cargo automático.</p>
-        <div id="bid-vehicle-mini" class="bid-vehicle-mini"></div>
-        <label class="bid-input-wrap"><span data-i18n="myMaxBid">Mi tope de oferta</span><div><b>$</b><input id="bid-amount" type="number" min="1" step="50" placeholder="Escribe tu tope" data-i18n-placeholder="writeMaxBid" inputmode="decimal" /><em>USD</em></div></label>
-        <div id="bid-cost-preview" class="bid-cost-preview"></div>
-        <div class="bid-actions"><button id="bid-continue" class="btn btn-primary full" data-i18n="wantToBid">Quiero ofertar</button><button class="btn btn-ghost full" data-close="bid" data-i18n="cancel">Cancelar</button></div>
-      </div>
-
-      <div id="bid-step-chat" class="bid-chat-step hidden">
-        <div class="chat-topline">
-          <div>
-            <div class="brand-mark-inline"><span class="brand-mark">APV</span><span class="brand-name">MOTORS</span></div>
-            <span class="eyebrow" data-i18n="bidAssistance">ASISTENCIA DE PUJA</span>
-            <h2 data-i18n="continueAdvisor">Continúa con un asesor</h2>
-          </div>
-          <span class="secure-pill" data-i18n="protectedSession">● Sesión protegida</span>
-        </div>
-        <p class="chat-welcome" data-i18n="requestReady">¿Cuánto te gustaría ofertar o cómo te puedo ayudar?</p>
-        <div id="chat-history-selector" class="chat-history-selector hidden"></div>
-        <pre id="auto-message-preview" class="hidden" aria-hidden="true"></pre>
-        <div class="kommo-chat-shell">
-          <div id="kommo-chat-frame"></div>
-          <div id="kommo-fallback" class="kommo-fallback">
-            <div class="fallback-message"><span class="avatar">APV</span><div><strong data-i18n="requestReady">¿Cuánto te gustaría ofertar o cómo te puedo ayudar?</strong><p id="fallback-copy" data-i18n="connectingChat">Conectando con el chat de APV Motors…</p></div></div>
-            <div class="fallback-payload" id="fallback-payload"></div>
-            <div class="fallback-footer"><span data-i18n="stableConversation">Tu cuenta mantiene un identificador estable para conservar la conversación.</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button id="chat-reopen-button" class="chat-reopen-button hidden" type="button" title="Volver al chat" data-i18n-title="returnChat" aria-label="Volver a abrir tu conversación con APV Motors" data-i18n-aria-label="reopenConversation">
-    <span class="chat-reopen-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 6a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 7 10Zm5 0a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 12 10Zm5 0a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 17 10Z"/></svg></span>
-  </button>
-
-  <div class="toast hidden" id="toast"></div>
-
-  <!-- Cookie Acceptance Banner -->
-  <div class="cookie-banner hidden" id="cookie-banner" role="region" aria-label="Aviso de cookies">
-    <div class="cookie-banner-content">
-      <div class="cookie-banner-text">
-        <span class="cookie-icon">🍪</span>
-        <div>
-          <strong data-i18n="cookieTitle">Uso de cookies y privacidad</strong>
-          <p data-i18n-html="cookieText">Utilizamos cookies esenciales para tu sesión y preferencias. Si aceptas todas, también usamos Google Analytics para medir las visitas. Consulta nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn" data-i18n="termsOfService">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn" data-i18n="privacyPolicy">Políticas de Privacidad</button>.</p>
-        </div>
-      </div>
-      <div class="cookie-banner-actions">
-        <button type="button" id="cookie-accept-btn" class="btn btn-primary btn-sm" data-i18n="acceptCookies">Aceptar todas</button>
-        <button type="button" id="cookie-decline-btn" class="btn btn-ghost btn-sm" data-i18n="declineCookies">Solo esenciales</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="/kommo.js?v=15.0.0" onload="if(window.__APV_KOMMO_MODULE_STATE__!=='module-ready')window.__APV_KOMMO_MODULE_STATE__='script-loaded'" onerror="window.__APV_KOMMO_LOAD_ERROR__=true;window.__APV_KOMMO_MODULE_STATE__='script-error';console.error('[APV] No se pudo cargar /kommo.js?v=15.0.0')"></script>
-  <script src="/membership.js?v=1.0.0"></script>
-  <script src="/app.js?v=15.1.0" onerror="console.error('[APV] No se pudo cargar /app.js?v=15.1.0')"></script>
-<script src="/budget.js"></script>
-<script src="/home.js" defer></script>
+</div>
+<div aria-live="polite" class="hero-featured-grid" id="hero-featured-grid">
+<!-- Se puebla dinámicamente desde app.js (máx 3 tarjetas por página) -->
+</div>
+</div>
+</section><!-- shared:featured:end -->
+<!-- shared:reviews:start --><section aria-labelledby="reviews-title" class="home-reviews home-content" id="resenas"><div class="home-reviews-intro"><p class="eyebrow" data-i18n="marketing_53">EXPERIENCIAS REALES EN GOOGLE</p><h2 id="reviews-title"><span data-i18n="marketing_54">La confianza se gana.</span><br/><span data-i18n="marketing_55">Ellos te cuentan por qué.</span></h2><p data-i18n="marketing_56">Conoce la experiencia de quienes ya compraron con APV.</p><a class="text-link" data-i18n="marketing_57" href="https://maps.app.goo.gl/qYoCdegG9996wcyk6" rel="noopener noreferrer" target="_blank">Leer todas las reseñas en Google ↗</a><p class="micro" data-i18n="marketing_58">Fragmentos de reseñas públicas en Google.</p></div><div aria-label="Reseñas de clientes en Google" aria-roledescription="carrusel" class="review-carousel" role="region" tabindex="0"><div id="review-slides"><div aria-label="1 de 3" aria-roledescription="diapositiva" class="review-slide" role="group"><div class="review-source"><span aria-hidden="true" class="review-google">G</span><span>Reseña en Google</span><span aria-label="5 de 5 estrellas" class="review-stars">★★★★★</span></div><blockquote>“Destaco su buena comunicación y profesionalismo durante toda la puja.”</blockquote><div class="review-author"><span aria-hidden="true" class="review-avatar">GC</span><div><strong>Gabriel Correa</strong><span>Fragmento de su reseña</span></div></div></div><div aria-label="2 de 3" aria-roledescription="diapositiva" class="review-slide" hidden="" role="group"><div class="review-source"><span aria-hidden="true" class="review-google">G</span><span>Reseña en Google</span><span aria-label="5 de 5 estrellas" class="review-stars">★★★★★</span></div><blockquote>“Excelente servicio y apoyo de Apv”</blockquote><div class="review-author"><span aria-hidden="true" class="review-avatar">WR</span><div><strong>Wolfgang Ramirez</strong><span>Fragmento de su reseña</span></div></div></div><div aria-label="3 de 3" aria-roledescription="diapositiva" class="review-slide" hidden="" role="group"><div class="review-source"><span aria-hidden="true" class="review-google">G</span><span>Reseña en Google</span><span aria-label="5 de 5 estrellas" class="review-stars">★★★★★</span></div><blockquote>“siempre muy amables”</blockquote><div class="review-author"><span aria-hidden="true" class="review-avatar">YA</span><div><strong>Ynadsuy Anolacse</strong><span>Fragmento de su reseña</span></div></div></div></div><div class="review-controls"><div><button aria-controls="review-slides" aria-label="Reseña anterior" id="review-prev" type="button">←</button><button aria-controls="review-slides" aria-label="Reseña siguiente" id="review-next" type="button">→</button></div><span aria-atomic="true" aria-live="polite" data-i18n="marketing_59" id="review-position">1 de 3</span><div class="review-dots"><button aria-current="true" aria-label="Ver reseña de Gabriel Correa" data-review="0" type="button"></button><button aria-label="Ver reseña de Wolfgang Ramirez" data-review="1" type="button"></button><button aria-label="Ver reseña de Ynadsuy Anolacse" data-review="2" type="button"></button></div></div></div></section><!-- shared:reviews:end --><section aria-labelledby="budget-title" class="budget-section home-content" id="presupuesto"><div class="budget-intro"><p class="eyebrow" data-i18n="marketing_60">EMPIEZA POR TUS NÚMEROS</p><h2 data-i18n="marketing_61" id="budget-title">Tu presupuesto es el punto de partida.</h2><p data-i18n="marketing_62">Separa lo que puedes ofertar de lo que necesitarás para completar la compra.</p><p class="micro" data-i18n="marketing_63">Una orientación inicial para autos estándar de Copart. Confirma los importes y condiciones de cada lote antes de pujar.</p></div><form class="budget-form" id="budget-form"><div class="budget-fields"><label><span data-i18n="marketing_64">Marca o modelo</span><input id="budget-query" maxlength="100" name="q" placeholder="Ej. Toyota Corolla" type="search"/></label><label><span data-i18n="marketing_65">Presupuesto total (USD)</span><input id="budget-total" inputmode="numeric" max="1000000" min="1" placeholder="Ej. 10000" required="" step="1" type="number"/></label><label class="budget-reserve-label"><span data-i18n="marketing_66">Tu reserva para gastos adicionales (USD)</span><input id="budget-reserve" inputmode="numeric" max="1000000" min="0" placeholder="Ingresa tu estimación" required="" step="1" type="number"/><small data-i18n="marketing_67">Transporte, impuestos, trámites y reparación que no cubra la calculadora.</small></label></div><button class="btn btn-dark full" data-i18n="marketing_68" type="submit">Calcular mi tope orientativo</button><p class="budget-error" hidden="" id="budget-error" role="alert"></p><div aria-live="polite" class="budget-result" hidden="" id="budget-result"><p>Tope de puja orientativo <strong id="budget-bid"></strong></p><dl><div><dt>Puja + tarifas estimadas</dt><dd id="budget-purchase"></dd></div><div><dt>Reserva indicada por ti</dt><dd id="budget-reserved"></dd></div><div class="budget-result-total"><dt>Total orientativo</dt><dd id="budget-sum"></dd></div></dl><p class="micro">Pago seguro, puja en vivo, título limpio y tarifa base APV. La puja puede subir. Esta estimación no filtra el catálogo ni garantiza el precio final.</p><a class="btn btn-primary full" href="/catalogo" id="budget-catalog">Explorar vehículos y revisar cada ficha →</a></div></form></section>
+<!-- shared:catalog:start --><section aria-hidden="true" class="catalog-section" hidden="" id="catalogo" inert="">
+<div class="section-heading catalog-heading">
+<div>
+<span class="eyebrow" data-i18n="catalogEyebrow">CATÁLOGO DE SUBASTA</span>
+<h2 data-i18n="catalogTitle">Encuentra el vehículo correcto.</h2>
+<p><span id="catalog-count">—</span> <span data-i18n="resultsAvailable">resultados disponibles.</span></p>
+</div>
+<div class="membership-nudge hidden" data-membership-nudge=""><span data-i18n="membershipNudge">¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.</span><button class="link-button" data-i18n="navPlans" data-member-plans="" type="button">Ver planes</button><button aria-label="Cerrar aviso" data-member-dismiss="" type="button">×</button></div>
+<div class="favorites-heading hidden" id="favorites-heading"><strong data-i18n="myFavorites">♥ Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button class="btn btn-ghost btn-small" data-i18n="viewVehicles" id="exit-favorites" type="button">Ver vehículos</button></div>
+<input id="search-input" type="hidden"/>
+</div>
+<div class="catalog-shell">
+<aside class="filters" id="filters-panel">
+<div class="filters-head"><strong data-i18n="filtersTitle">Filtros</strong><button aria-label="Cerrar filtros" class="mobile-filter-close" id="close-mobile-filters" type="button">×</button><button class="link-button" data-i18n="clearFilters" id="clear-filters">Limpiar</button></div>
+<label class="filter-group"><span data-i18n="brand">Marca</span><select id="filter-make"><option data-i18n="allFeminine" value="">Todas</option></select></label>
+<label class="filter-group"><span data-i18n="model">Modelo</span><select id="filter-model"><option value="">Todos</option></select></label>
+<div class="filter-group year-range-group">
+<div class="year-range-labels"><label for="filter-year-min"><span data-i18n="yearFrom">Año desde</span> <output id="filter-year-min-value">1950</output></label><label for="filter-year-max"><span data-i18n="yearTo">Año hasta</span> <output id="filter-year-max-value">2027</output></label></div>
+<div class="year-range-track">
+<input aria-label="Año desde" data-i18n-aria-label="yearFrom" id="filter-year-min" max="2027" min="1950" step="1" type="range" value="1950"/>
+<input aria-label="Año hasta" data-i18n-aria-label="yearTo" id="filter-year-max" max="2027" min="1950" step="1" type="range" value="2027"/>
+</div>
+</div>
+<label class="filter-group"><span data-i18n="primaryDamage">Daño principal</span><select id="filter-damage"><option data-i18n="allMasculine" value="">Todos</option></select></label>
+<label class="filter-group"><span data-i18n="condition">Condición</span><select id="filter-run"><option data-i18n="allFeminine" value="">Todas</option></select></label>
+<label class="filter-group"><span data-i18n="state">Estado</span><select id="filter-state"><option data-i18n="allMasculine" value="">Todos</option></select></label>
+<label class="filter-group"><span data-i18n="city">Ciudad</span><select id="filter-city"><option value="">Todas</option></select></label>
+<label class="filter-group"><span data-i18n="zipCode">Código postal (ZIP)</span><input aria-describedby="zip-filter-hint" id="filter-zip" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" placeholder="Ej. 78701" type="text"/><small data-i18n="zipHint" id="zip-filter-hint">ZIP de la ubicación del vehículo.</small></label>
+<label class="toggle-line"><span data-i18n="cleanTitle">Solo Clean Title</span><input id="filter-clean-title" type="checkbox"/></label>
+<label class="toggle-line"><span>Run &amp; Drive</span><input id="filter-run-drive" type="checkbox"/></label>
+<label class="toggle-line"><span data-i18n="buyNowOnly">Solo Buy It Now</span><input id="filter-buy-now" type="checkbox"/></label>
+<label class="filter-group range-line"><span><span data-i18n="maxOdometer">Odómetro máximo</span> <strong id="odometer-label"></strong></span><input id="filter-odometer" max="1000000" min="0" step="10000" type="range" value="0"/></label>
+<label class="toggle-line"><span data-i18n="limitOdometer">Limitar odómetro</span><input id="filter-limit-odometer" type="checkbox"/></label>
+<button class="btn btn-dark full" data-i18n="applyFilters" id="apply-filters">Aplicar filtros</button>
+</aside>
+<div class="catalog-content">
+<div class="catalog-toolbar">
+<button class="mobile-filter-button" data-i18n="mobileFilters" id="mobile-filter-button">☰ Filtros</button>
+<div class="view-note" data-i18n="viewNote">Precios en USD · el VIN completo se muestra a usuarios registrados</div>
+<label class="sort-select"><span data-i18n="sortBy">Ordenar por</span> <select id="sort-select"><option data-i18n="sortAuto" value="auto">Aleatorio / búsqueda</option><option data-i18n="sortSaleSoon" value="saleSoon">Subasta más próxima</option><option data-i18n="sortNewest" value="newest">Año: más nuevo</option><option data-i18n="sortPriceAsc" value="priceAsc">Precio: menor</option><option data-i18n="sortPriceDesc" value="priceDesc">Precio: mayor</option><option data-i18n="sortMileage" value="odometerAsc">Menor millaje</option></select></label>
+</div>
+<div aria-live="polite" class="vehicle-list" id="catalog-list"></div>
+<div class="empty-state hidden" id="catalog-empty"><h3 data-i18n="emptyTitle">No encontramos vehículos</h3><p data-i18n="emptyText">Prueba otra búsqueda o limpia los filtros.</p><button class="btn btn-ghost" data-i18n="clearFilters" id="empty-clear">Limpiar filtros</button></div>
+<div class="pagination" id="pagination"></div>
+</div>
+</div>
+</section><!-- shared:catalog:end -->
+<div class="home-content">
+<section class="section wrap evaluation" id="evaluacion"><div class="evaluation-art"><div class="report-top"><img alt="APV Motors" height="44" src="/assets/apv-logo-red.png" width="90"/><span data-i18n="marketing_69">ANTES DE PUJAR</span></div><h3><span data-i18n="marketing_70">Una buena foto</span><br/><span data-i18n="marketing_71">no cuenta toda la historia.</span></h3><div class="report-row"><span data-i18n="marketing_72">01 / Daños y condición</span><b data-i18n="marketing_73">Revisar →</b></div><div class="report-row"><span data-i18n="marketing_74">02 / Historial y título</span><b data-i18n="marketing_75">Verificar →</b></div><div class="report-row"><span data-i18n="marketing_76">03 / Comparables y costos</span><b data-i18n="marketing_77">Evaluar →</b></div><p data-i18n="marketing_78">Más información. Mejor criterio.</p></div><div><p class="eyebrow" data-i18n="marketing_79">EVALUACIÓN APV</p><h2><span data-i18n="marketing_80">Una foto no basta.</span><br/><span data-i18n="marketing_81">Evalúa antes de pujar.</span></h2><p class="lead" data-i18n="marketing_82">El precio de la subasta es solo el comienzo. Antes de comprometer tu dinero, entiende qué estás comprando.</p><ul class="check-list"><li data-i18n="marketing_83">Analiza los daños visibles y la información disponible.</li><li data-i18n="marketing_84">Revisa historial, documentación y posibles riesgos.</li><li data-i18n="marketing_85">Compara el costo estimado con tu presupuesto.</li></ul><a class="text-link" data-i18n="marketing_86" href="/catalogo">Elegir un auto para evaluar →</a><p class="micro" data-i18n="marketing_87">Solicita «Solicitar historial elaborado por APV» desde la ficha. Consulta su alcance y condiciones; no sustituye una inspección física.</p></div></section>
+<!-- shared:costs:start --><section class="cost-section" id="costos"><div class="wrap section cost-grid"><div><p class="eyebrow" data-i18n="marketing_88">LA TARIFA APV, POR DELANTE</p><h2 data-i18n="marketing_89">Lo que pagas y lo que te devolvemos</h2><p class="lead" data-i18n="marketing_90">Una tarifa base por tramo, según el valor de adjudicación del vehículo.</p><a class="button" data-i18n="marketing_91" href="#presupuesto">Calcular mi presupuesto →</a><p class="cost-footnote" data-i18n="marketing_92">Los honorarios APV no incluyen la puja, las tarifas de subasta, el transporte ni los impuestos. Revisa el desglose de cada ficha.</p></div><div class="fee-table-card"><table class="apv-fee-table"><caption data-i18n="marketing_93">Tarifa base de servicio APV · USD</caption><thead><tr><th data-i18n="marketing_94" scope="col">Valor de adjudicación</th><th data-i18n="marketing_95" scope="col">Honorarios APV</th></tr></thead><tbody><tr><td data-i18n="marketing_96">Hasta US$5,999</td><td data-i18n="marketing_97">US$350</td></tr><tr><td data-i18n="marketing_98">US$6,000 – US$9,999</td><td data-i18n="marketing_99">US$450</td></tr><tr><td data-i18n="marketing_100">US$10,000 – US$14,999</td><td data-i18n="marketing_101">US$650</td></tr><tr><td data-i18n="marketing_102">US$15,000 o más</td><td data-i18n="marketing_103">US$700</td></tr></tbody></table><p><span data-i18n="marketing_104">¿Compras con frecuencia?</span><a data-i18n="marketing_105" href="#planes">Compara los descuentos de los planes APV.</a></p><p class="cost-footnote" data-i18n="marketing_106">Los honorarios solo se cobran si ganas, y nunca en el mismo pago que tu depósito.</p></div></div><section class="section wrap deposit-section" id="deposito"><div><p class="eyebrow" data-i18n="marketing_107">DEPÓSITO Y HONORARIOS SON COSAS DISTINTAS</p><h2 data-i18n="marketing_108">Tu depósito sigue siendo tuyo</h2><p class="lead"><span data-i18n="marketing_109">Tu depósito es reembolsable y habilita tu puja.</span><span data-deposit-terms="">10 % de tu tope, mínimo US$600.</span><span data-i18n="marketing_110">Se confirma con tu asesor antes de pujar.</span></p><a class="text-link" data-i18n="marketing_111" href="https://wa.me/13462048308?text=Quiero%20confirmar%20las%20condiciones%20del%20dep%C3%B3sito%20para%20pujar" rel="noopener noreferrer" target="_blank">Consultar el depósito con un asesor ↗</a></div><div class="deposit-cases"><article><span>01</span><div><h3 data-i18n="marketing_112">Si no ganas</h3><p data-i18n="marketing_113">Queda activo para tu próxima puja o te lo devolvemos completo.</p></div></article><article><span>02</span><div><h3 data-i18n="marketing_114">Si ganas</h3><p data-i18n="marketing_115">Pagas el vehículo por transferencia bancaria y aplicamos tu depósito según las condiciones.</p></div></article><article><span>03</span><div><h3 data-i18n="marketing_116">Si ganas y no pagas</h3><p data-i18n="marketing_117">La subasta aplica penalidades según las condiciones que aceptaste.</p></div></article></div></section></section><!-- shared:costs:end -->
+</div>
+<section aria-labelledby="membership-title" class="membership-section" id="planes">
+<div class="membership-heading"><span class="eyebrow" data-i18n="membershipEyebrow">MEMBRESÍAS APV MOTORS</span><h2 data-i18n="membershipTitle" id="membership-title">Elige cómo quieres comprar tu próximo vehículo.</h2><p data-i18n="membershipIntro">Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.</p></div>
+<div aria-live="polite" class="membership-status hidden" id="membership-status" role="status"></div>
+<div class="membership-account hidden" id="membership-account"></div>
+<div aria-live="polite" data-i18n="marketing_118" id="membership-content">Cargando planes…</div>
+</section>
+<div class="home-content"><!-- shared:faq:start --><section class="section wrap faq" id="ayuda"><div><p class="eyebrow" data-i18n="marketing_119">RESOLVEMOS TUS DUDAS</p><h2><span data-i18n="marketing_120">Todo empieza</span><br/><span data-i18n="marketing_121">con claridad.</span></h2><p data-i18n="marketing_122">¿Tu caso necesita más detalle?</p><a class="text-link" data-i18n="marketing_123" href="https://wa.me/13462048308" rel="noopener noreferrer" target="_blank">Hablar con un asesor ↗</a></div><div class="faq-list">
+<details><summary data-i18n="marketing_124">¿Necesito registrarme para ver los vehículos?</summary><p data-i18n="marketing_125">No. Puedes explorar el catálogo y las fichas sin registrarte. Te pedimos una cuenta cuando quieres guardar vehículos, usar la calculadora o solicitar una puja.</p></details>
+<details data-key-faq=""><summary data-i18n="marketing_126">¿El precio que veo es el precio final?</summary><p data-i18n="marketing_127">No. La puja o el precio de compra no incluyen necesariamente comisiones, servicio APV, transporte, documentación, impuestos o reparaciones. Revisa la calculadora de la ficha y confirma el presupuesto con tu asesor.</p></details>
+<details data-key-faq=""><summary data-i18n="marketing_128">¿Qué es el depósito?</summary><p><span data-i18n="marketing_129">Es un monto reembolsable que habilita tu puja:</span><span data-deposit-terms="">10 % de tu tope, mínimo US$600.</span><span data-i18n="marketing_130">Si no ganas, queda activo para otra puja o te lo devolvemos. Tu asesor confirma el monto antes de pujar.</span></p></details>
+<details data-key-faq=""><summary data-i18n="marketing_131">¿Puedo comprar sin licencia de dealer?</summary><p data-i18n="marketing_132">Sí. Pujamos en tu nombre con la licencia de dealer de APV Motors. Algunos lotes tienen restricciones según el estado o el tipo de título; te lo confirmamos antes de pujar.</p></details>
+<details><summary data-i18n="marketing_133">¿Cómo sé en qué estado está el vehículo?</summary><p data-i18n="marketing_134">Revisa las fotos, la descripción de daños, la condición y el tipo de título en la ficha. Puedes solicitar la Evaluación APV para analizar la información disponible. Las fotos y etiquetas de la subasta no garantizan el estado mecánico ni sustituyen una inspección.</p></details>
+<details><summary data-i18n="marketing_135">¿Qué pasa si gano la subasta?</summary><p data-i18n="marketing_136">El equipo te indica los pasos y plazos de pago, y coordina contigo la documentación y el transporte. Antes de pujar debes conocer tus obligaciones si ganas y las condiciones aplicables a ese lote.</p></details>
+<details><summary data-i18n="marketing_137">¿Qué pasa si no gano la subasta?</summary><p data-i18n="marketing_138">No se adjudica el vehículo. Confirma con tu asesor si deseas participar por otro lote y cómo se gestiona el depósito según las condiciones aceptadas.</p></details>
+<details data-key-faq=""><summary data-i18n="marketing_139">¿Puedo pagar el vehículo con tarjeta?</summary><p data-i18n="marketing_140">No. El vehículo se paga por transferencia bancaria. La tarjeta solo puede usarse para el depósito.</p></details>
+<details><summary data-i18n="marketing_141">¿Cuánto tarda el título?</summary><p data-i18n="marketing_142">El plazo depende del lote, el tipo de documento y su emisión por la subasta. Revisa su estado con tu asesor; no todos los títulos están disponibles de inmediato.</p></details>
+<details><summary data-i18n="marketing_143">¿Cómo se calcula el transporte?</summary><p data-i18n="marketing_144">Depende del origen, destino, tipo de vehículo y condición para cargarlo. Comparte esos datos con tu asesor para confirmar disponibilidad, precio y plazo estimado.</p></details>
+</div></section><!-- shared:faq:end -->
+<section class="final-cta wrap"><div><p class="eyebrow" data-i18n="marketing_145">TU PRÓXIMO AUTO ESTÁ MÁS CERCA</p><h2 data-i18n="marketing_146">Encuentra tu auto hoy.</h2><p data-i18n="marketing_147">Explora los autos o habla con un asesor si es tu primera compra.</p></div><div class="final-actions"><a class="button white" data-i18n="lpCta" href="/catalogo">Ver autos en subasta →</a><a class="final-whatsapp" data-i18n="marketing_148" href="https://wa.me/13462048308" rel="noopener noreferrer" target="_blank">¿Es tu primera compra? Escríbenos</a></div></section>
+</div>
+</main>
+<footer>
+<div class="brand"><img alt="APV Motors" class="brand-logo-img" src="/assets/apv-logo-red.png"/></div>
+<p><span data-i18n="marketing_149">APV Motors LLC ·</span><span data-i18n="dealerLicense">Licencia de dealer</span> <span data-license="">[LICENCIA_NO]</span><span data-i18n="marketing_150">· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·</span><a href="tel:+13462048308">+1 346 204 8308</a></p>
+<p data-i18n="footerSource">Datos de inventario obtenidos de listados públicos de subastas de Copart.</p>
+<p data-i18n="footerDisclaimer">La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.</p>
+<div class="footer-legal-links"><button type="button" id="cookie-settings-btn" class="legal-link-btn" data-i18n="cookieSettings">Cookies</button>
+<button class="legal-link-btn" data-i18n="termsOfService" id="terms-link-btn" type="button">Términos de Servicio</button>
+<span class="legal-sep">·</span>
+<button class="legal-link-btn" data-i18n="privacyPolicy" id="privacy-link-btn" type="button">Políticas de Privacidad</button>
+</div>
+</footer>
+<div aria-labelledby="vehicle-detail-title" aria-modal="true" class="overlay hidden" id="vehicle-overlay" role="dialog">
+<div class="detail-modal"><button aria-label="Cerrar" class="modal-close" data-close="vehicle" data-i18n-aria-label="close">×</button><div id="vehicle-detail-content"></div></div>
+</div>
+<div aria-labelledby="terms-title" aria-modal="true" class="overlay hidden legal-overlay" id="terms-overlay" role="dialog">
+<div class="legal-modal">
+<button aria-label="Cerrar" class="modal-close" data-close="terms" data-i18n-aria-label="close">×</button>
+<div class="legal-modal-header">
+<div class="brand"><img alt="APV Motors" class="brand-logo-img" src="/assets/apv-logo-red.png"/></div>
+<span class="eyebrow" data-i18n="termsEyebrow">ASPECTOS LEGALES</span>
+<h2 data-i18n="termsTitle" id="terms-title">Términos de Servicio</h2>
+</div>
+<div class="legal-modal-body" data-i18n-html="termsContent"></div>
+<div class="legal-modal-footer">
+<button class="btn btn-dark" data-close="terms" data-i18n="close">Cerrar</button>
+</div>
+</div>
+</div>
+<div aria-labelledby="privacy-title" aria-modal="true" class="overlay hidden legal-overlay" id="privacy-overlay" role="dialog">
+<div class="legal-modal">
+<button aria-label="Cerrar" class="modal-close" data-close="privacy" data-i18n-aria-label="close">×</button>
+<div class="legal-modal-header">
+<div class="brand"><img alt="APV Motors" class="brand-logo-img" src="/assets/apv-logo-red.png"/></div>
+<span class="eyebrow" data-i18n="privacyEyebrow">PROTECCIÓN DE DATOS</span>
+<h2 data-i18n="privacyTitle" id="privacy-title">Políticas de Privacidad</h2>
+</div>
+<div class="legal-modal-body" data-i18n-html="privacyContent"></div>
+<div class="legal-modal-footer">
+<button class="btn btn-dark" data-close="privacy" data-i18n="close">Cerrar</button>
+</div>
+</div>
+</div>
+<div aria-labelledby="auth-title" aria-modal="true" class="overlay hidden auth-overlay" id="auth-overlay" role="dialog">
+<div class="auth-modal">
+<button aria-label="Cerrar" class="modal-close" data-close="auth" data-i18n-aria-label="close" onclick="return window.closeAPVAuth ? window.closeAPVAuth() : false">×</button>
+<div class="modal-brand-header">
+<div class="brand"><img alt="APV Motors" class="brand-logo-img" src="/assets/apv-logo-red.png"/></div>
+</div>
+<div class="auth-intro">
+<span class="eyebrow" data-i18n="accountEyebrow">CUENTA APV MOTORS</span>
+<h2 data-i18n="authTitle" id="auth-title">Guarda tu conversación y continúa desde cualquier dispositivo.</h2>
+<p data-i18n="authReason" id="auth-reason">Regístrate para ver el VIN completo y hablar con un asesor.</p>
+</div>
+<div class="auth-tabs" role="tablist"><button class="auth-tab active" data-auth-tab="login" data-i18n="login" type="button">Iniciar sesión</button><button class="auth-tab" data-auth-tab="register" data-i18n="createAccount" type="button">Crear cuenta</button></div>
+<form class="auth-form" id="login-form">
+<label><span data-i18n="email">Correo electrónico</span><input autocomplete="email" id="login-email" required="" type="email"/></label>
+<label><span data-i18n="password">Contraseña</span><input autocomplete="current-password" id="login-password" required="" type="password"/></label>
+<button class="btn btn-dark full" data-i18n="loginContinue" type="submit">Entrar y continuar</button>
+</form>
+<form class="auth-form hidden" id="register-form">
+<label><span data-i18n="fullName">Nombre completo</span><input autocomplete="name" id="register-name" required="" type="text"/></label>
+<label><span data-i18n="email">Correo electrónico</span><input autocomplete="email" id="register-email" required="" type="email"/></label>
+<label>
+<span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
+<div class="phone-input-group">
+<select aria-label="Código de país" class="country-code-select" data-i18n-aria-label="countryCode" id="register-country-code">
+<option value="+1">🇺🇸 +1 (EE. UU.)</option>
+<option value="+58">🇻🇪 +58 (Venezuela)</option>
+<option value="+52">🇲🇽 +52 (México)</option>
+<option value="+57">🇨🇴 +57 (Colombia)</option>
+<option value="+34">🇪🇸 +34 (España)</option>
+<option value="+54">🇦🇷 +54 (Argentina)</option>
+<option value="+56">🇨🇱 +56 (Chile)</option>
+<option value="+51">🇵🇪 +51 (Perú)</option>
+<option value="+593">🇪🇨 +593 (Ecuador)</option>
+<option value="+502">🇬🇹 +502 (Guatemala)</option>
+<option value="+503">🇸🇻 +503 (El Salvador)</option>
+<option value="+504">🇭🇳 +504 (Honduras)</option>
+<option value="+505">🇳🇮 +505 (Nicaragua)</option>
+<option value="+506">🇨🇷 +506 (Costa Rica)</option>
+<option value="+507">🇵🇦 +507 (Panamá)</option>
+<option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
+<option value="+598">🇺🇾 +598 (Uruguay)</option>
+<option value="+591">🇧🇴 +591 (Bolivia)</option>
+<option value="+509">🇭🇹 +509 (Haití)</option>
+<option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
+</select>
+<input autocomplete="tel" id="register-phone" placeholder="414 123 4567" required="" type="tel"/>
+</div>
+</label>
+<label><span data-i18n="password">Contraseña</span><input autocomplete="new-password" id="register-password" minlength="8" required="" type="password"/></label>
+<button class="btn btn-primary full" data-i18n="sendVerificationCode" type="submit">Enviar código de verificación</button>
+<small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
+</form>
+<form aria-live="polite" class="auth-form hidden" id="verify-form">
+<div class="verify-intro">
+<div aria-hidden="true" class="verify-email-icon">
+<svg fill="none" height="30" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="30"><rect height="14" rx="2" width="18" x="3" y="5"></rect><path d="m4 7 8 6 8-6"></path><path d="m16 17 2 2 4-4"></path></svg>
+</div>
+<h3 data-i18n="confirmEmail">Confirma tu correo electrónico</h3>
+<p><span data-i18n="verifyInstructions">Ingresa el código de 6 dígitos que enviamos a</span> <strong id="verify-target-email"></strong>.</p>
+</div>
+<label><span data-i18n="sixDigitCode">Código de 6 dígitos</span><input autocomplete="one-time-code" data-i18n-placeholder="verifyCodePlaceholder" id="verify-code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Ej. 482910" required="" type="text"/></label>
+<button class="btn btn-primary full" data-i18n="verifyActivate" type="submit">Verificar y activar cuenta</button>
+<button class="link-button" data-i18n="modifyRegistration" id="verify-back" type="button">← Modificar datos de registro</button>
+</form>
+<div class="auth-status hidden" id="auth-status"></div>
+</div>
+</div>
+<div aria-labelledby="bid-title" aria-modal="true" class="overlay hidden" id="bid-overlay" role="dialog">
+<div class="bid-modal">
+<button aria-label="Cerrar" class="modal-close bid-close-button" data-close="bid" data-i18n-aria-label="close">×</button>
+<button aria-label="Minimizar chat" class="modal-close chat-minimize-button" data-close="bid" data-i18n-aria-label="minimizeChat" data-i18n-title="minimizeChat" title="Minimizar chat"><svg aria-hidden="true" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-width="2" viewbox="0 0 24 24" width="20"><path d="M5 17h14"></path></svg></button>
+<div class="modal-brand-header">
+<div class="brand"><img alt="APV Motors" class="brand-logo-img" src="/assets/apv-logo-red.png"/></div>
+</div>
+<div class="bid-step" id="bid-step-amount">
+<span class="eyebrow" data-i18n="bidStep">PASO 2 DE TU COMPRA</span>
+<h2 data-i18n="bidTitle" id="bid-title">Establece tu tope de oferta</h2>
+<p class="muted" data-i18n="bidExplain">Indica el máximo que deseas ofertar por este vehículo. Esto no realiza ningún cargo automático.</p>
+<div class="bid-vehicle-mini" id="bid-vehicle-mini"></div>
+<label class="bid-input-wrap"><span data-i18n="myMaxBid">Mi tope de oferta</span><div><b>$</b><input data-i18n-placeholder="writeMaxBid" id="bid-amount" inputmode="decimal" min="1" placeholder="Escribe tu tope" step="50" type="number"/><em>USD</em></div></label>
+<div class="bid-cost-preview" id="bid-cost-preview"></div>
+<div class="bid-actions"><button class="btn btn-primary full" data-i18n="wantToBid" id="bid-continue">Quiero ofertar</button><button class="btn btn-ghost full" data-close="bid" data-i18n="cancel">Cancelar</button></div>
+</div>
+<div class="bid-chat-step hidden" id="bid-step-chat">
+<div class="chat-topline">
+<div>
+<div class="brand-mark-inline"><span class="brand-mark">APV</span><span class="brand-name">MOTORS</span></div>
+<span class="eyebrow" data-i18n="bidAssistance">ASISTENCIA DE PUJA</span>
+<h2 data-i18n="continueAdvisor">Continúa con un asesor</h2>
+</div>
+<span class="secure-pill" data-i18n="protectedSession">● Sesión protegida</span>
+</div>
+<p class="chat-welcome" data-i18n="requestReady">¿Cuánto te gustaría ofertar o cómo te puedo ayudar?</p>
+<div class="chat-history-selector hidden" id="chat-history-selector"></div>
+<pre aria-hidden="true" class="hidden" id="auto-message-preview"></pre>
+<div class="kommo-chat-shell">
+<div id="kommo-chat-frame"></div>
+<div class="kommo-fallback" id="kommo-fallback">
+<div class="fallback-message"><span class="avatar">APV</span><div><strong data-i18n="requestReady">¿Cuánto te gustaría ofertar o cómo te puedo ayudar?</strong><p data-i18n="connectingChat" id="fallback-copy">Conectando con el chat de APV Motors…</p></div></div>
+<div class="fallback-payload" id="fallback-payload"></div>
+<div class="fallback-footer"><span data-i18n="stableConversation">Tu cuenta mantiene un identificador estable para conservar la conversación.</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<button aria-label="Volver a abrir tu conversación con APV Motors" class="chat-reopen-button hidden" data-i18n-aria-label="reopenConversation" data-i18n-title="returnChat" id="chat-reopen-button" title="Volver al chat" type="button">
+<span aria-hidden="true" class="chat-reopen-icon"><svg height="22" viewbox="0 0 24 24" width="22"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 6a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 7 10Zm5 0a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 12 10Zm5 0a1.25 1.25 0 1 0 0 2.5A1.25 1.25 0 0 0 17 10Z" fill="currentColor"></path></svg></span>
+</button>
+<div class="toast hidden" id="toast"></div>
+<!-- Cookie Acceptance Banner -->
+<div aria-label="Aviso de cookies" class="cookie-banner hidden" id="cookie-banner" role="region"><div class="cookie-banner-content"><p class="cookie-banner-text" data-i18n="cookieCompact" tabindex="0" title="Usamos cookies esenciales. Si aceptas todas, también medimos visitas con Google y Meta.">Usamos cookies esenciales. Si aceptas todas, también medimos visitas con Google y Meta.</p><div class="cookie-banner-actions"><button class="cookie-link-btn" data-i18n="privacyPolicy" id="cookie-privacy-btn" type="button">Privacidad</button><button class="btn btn-ghost btn-sm" data-i18n="declineCookies" id="cookie-decline-btn" type="button">Solo esenciales</button><button class="btn btn-primary btn-sm" data-i18n="acceptCookies" id="cookie-accept-btn" type="button">Aceptar todas</button></div></div></div>
+<script defer="" onerror="window.__APV_KOMMO_LOAD_ERROR__=true;window.__APV_KOMMO_MODULE_STATE__='script-error';console.error('[APV] No se pudo cargar /kommo.js?v=15.0.0')" onload="if(window.__APV_KOMMO_MODULE_STATE__!=='module-ready')window.__APV_KOMMO_MODULE_STATE__='script-loaded'" src="/kommo.js?v=15.0.0"></script>
+<script defer="" src="/membership.js?v=1.0.0"></script>
+<script defer="" onerror="console.error('[APV] No se pudo cargar /app.js?v=15.1.0')" src="/app.js?v=15.1.0"></script>
+<script defer="" src="/budget.js"></script>
+<script defer="" src="/home.js"></script>
 </body>
 </html>

@@ -53,7 +53,7 @@
     const current = currentPlan();
     const period = config.interval === 'month' ? copy('/mes','/month') : config.interval === 'year' ? copy('/año','/year') : '';
     const allowance = config.consultationCadence === 'period' ? copy('cada año pagado','each paid year') : config.consultationCadence === 'once' ? copy('una sola vez','one time') : '';
-    const common = [copy('Inventario de vehículos','Vehicle inventory'),copy('Favoritos en tu cuenta','Account favorites'),copy('Atención personalizada','Personal assistance')];
+    const common = [copy('Inventario de vehículos','Vehicle inventory'),copy('Favoritos en tu cuenta','Account favorites'),copy('Chat con un asesor','Chat with an advisor')];
     const subtitles = { free:copy('Explora y prepara tu compra.','Explore and plan your purchase.'), plus:copy('Ahorro y orientación para tu compra.','Savings and guidance for your purchase.'), premium:copy('Mayor descuento y una asesoría completa.','A larger discount and a full consultation.') };
     root.innerHTML = `<div class="membership-grid">${config.plans.map(plan => {
       const selected = user && current.id === plan.id;
@@ -68,7 +68,7 @@
           : `${copy('Asesoría de 60 min:','60-minute consultation:')} ${usd(config.consultationPrice)} (${copy('sin descuento','no discount')})` },
         { included: Boolean(plan.includedMinutes), text: plan.includedMinutes
           ? `${copy('Una asesoría de','One')} ${plan.includedMinutes} ${copy('min incluida','minute consultation included')} ${allowance}`
-          : copy('Sin asesoría gratuita incluida','No free consultation included') }
+          : copy('Sin asesoría de 60 min incluida','No 60-minute consultation included') }
       ];
       const action = selected ? 'current' : plan.id === 'free' ? (user && current.id !== 'free' ? 'portal' : 'free') : user && membership?.hasCustomer && membership.status !== 'free' && !['canceled','incomplete_expired'].includes(membership.status) ? 'portal' : 'checkout';
       const label = selected ? copy('Tu plan actual','Your current plan') : action === 'portal' ? copy('Cambiar mi plan','Change my plan') : plan.id === 'free' ? copy('Crear cuenta gratis','Create free account') : copy('Elegir ','Choose ') + plan.name;

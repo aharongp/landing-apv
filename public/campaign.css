@@ -1,0 +1,40 @@
+/* Conversion pages: responsive components shared by / and /lp. */
+[hidden]{display:none!important}
+.cookie-banner{position:fixed!important;inset:auto 0 0!important;border-radius:0!important;padding:6px 16px!important;width:auto!important;max-width:none!important;background:#fff!important;box-shadow:0 -2px 18px #101c321a;z-index:10001!important}
+.cookie-banner-content{display:flex!important;align-items:center;justify-content:center;gap:14px!important;max-width:1280px;margin:auto}
+.cookie-banner .cookie-banner-text{margin:0!important;font-size:12px!important;line-height:16px!important;display:block!important;color:#334155}
+.cookie-banner-actions{display:flex!important;flex-shrink:0;gap:6px!important;align-items:center}
+.cookie-banner-actions button{min-height:30px;padding:5px 10px;font-size:12px;white-space:nowrap}
+.cookie-banner-actions .cookie-link-btn{color:#334155;background:transparent;border:0;text-decoration:underline}
+.lang-btn{color:#475569}.lang-btn.active{color:#fff}
+.featured-price-item>span,.bid-label{color:#475569!important}.evaluation-art>p{color:#334155!important}
+.featured-dot,.review-dots button{min-width:24px!important;min-height:24px!important;border:8px solid white!important;box-sizing:border-box}
+.report-top img{width:90px;height:auto;object-fit:contain}
+#costos #deposito{color:#0f172a;background:#fff;border-radius:20px;margin-top:0;padding:40px;max-width:1200px}
+.featured-card-title button{border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer}
+.price-comparison{font-size:12px;color:#334155;line-height:1.5}.featured-retail{font-size:12px;color:#475569}
+.lp-brand{padding:18px 24px}.lp-brand img{object-fit:contain;width:130px;height:auto}
+.lp-page .site-header,.lp-page .sticky-search-bar,.lp-page .featured-pagination,.lp-page #featured-pagination,.lp-page .home-catalog-link{display:none!important}
+.lp-page{padding-top:0!important}.lp-hero{text-align:center;max-width:880px;padding:45px 24px}.lp-hero h1{font-size:clamp(34px,5vw,58px);line-height:1.06;letter-spacing:-1.5px;margin:15px 0 20px}.lp-hero .lead{max-width:650px;margin:0 auto 25px}.lp-hero .hero-assurances{justify-content:center;margin-top:18px}
+.lp-explainer{max-width:1000px;padding:28px;background:#f6f8fb;border:1px solid #e2e8f0;border-radius:20px}.auction-explainer ol{padding-left:24px;line-height:1.8}.auction-explainer p{color:#475569;line-height:1.5}.lp-budget{text-align:center;width:100%}.budget-chips{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:24px 0}.budget-chips button{min-height:44px;border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:30px;padding:10px 18px;font-weight:700}.budget-chips button[aria-pressed=true]{color:white;background:#bd1531;border-color:#bd1531}.lp-range-link{text-align:center;margin:0 0 50px}.lp-range-link a{color:#bd1531;font-weight:700}.lp-sticky{display:none}.lp-page .faq>div:first-child>a{display:none}.lp-page .hero-featured-section{width:100%}
+.rating-badge{font-weight:700;color:#334155}
+@media(max-width:640px){.cookie-banner{padding:4px 8px!important}.cookie-banner-content{display:block!important}.cookie-banner .cookie-banner-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px!important;line-height:15px!important}.cookie-banner-actions{justify-content:flex-end}.cookie-banner-actions button{font-size:11px;padding:3px 8px;min-height:29px}.cookie-banner-text:focus{white-space:normal}.lp-brand{padding:12px 18px}.lp-brand img{width:100px}.lp-hero{padding:20px 18px 28px}.lp-hero h1{font-size:36px}.lp-hero .lead{font-size:16px}.lp-hero .hero-assurances{font-size:11px;gap:12px}.lp-explainer{margin:0 18px;padding:20px}.lp-sticky{position:fixed;display:flex;align-items:center;justify-content:center;bottom:0;left:0;right:0;border-radius:0;min-height:48px;z-index:1000}.lp-page:has(#cookie-banner:not(.hidden)) .lp-sticky{bottom:52px}.lp-page footer{padding-bottom:120px}#costos #deposito{padding:25px 18px}.lp-page .hero-featured-grid{grid-template-columns:1fr}.home-page .home-video-hero{padding-top:24px}.home-page .home-video-hero .hero-header-center>p{font-size:14px;line-height:1.6}}
+
+.lp-page .sticky-search,.lp-page .featured-pagination-controls{display:none!important}
+.vehicle-title-button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;text-align:left}
+.home-page .reveal-on-scroll{opacity:1;transform:none;transition:none}
+[data-deposit-terms]{margin-inline:.25em}
+.cookie-banner{transform:none!important;animation:none!important}
+.cookie-banner .cookie-banner-actions .btn-sm{min-height:30px;padding:4px 10px;font-size:12px}
+.home-video-hero .hero-header-center h1>span:first-child{color:#0f172a}
+.lp-page .wrap{max-width:1200px;margin-inline:auto}
+.lp-page .lp-hero{max-width:880px}
+.lp-page .lp-explainer{max-width:1000px}
+.lp-page .cost-section,.lp-page .faq{padding:40px 24px}
+.lp-page .cost-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:35px 24px}
+.lp-page .final-cta{margin-block:32px}
+@media(max-width:640px){.cookie-banner .cookie-banner-actions .btn-sm{font-size:11px}.lp-page .lp-explainer{margin-inline:18px}.lp-page .cost-grid{grid-template-columns:1fr;padding:20px 0}.lp-page .final-cta{margin-inline:18px}}
+#costos #deposito .eyebrow{color:#a8172c}
+#costos #deposito .lead{color:#475569}
+#vehicle-overlay .detail-modal{overflow-x:hidden;max-width:100%}
+.bidding-disclaimer{color:#475569!important}

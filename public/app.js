@@ -46,14 +46,14 @@
   function miles(v){ const n=Number(v||0); return n>0 ? n.toLocaleString('en-US')+' mi' : t('noData','N/D'); }
   function km(v){ const n=Number(v||0); return n>0 ? Math.round(n*1.60934).toLocaleString('en-US')+' km' : ''; }
   function dateLabel(value, zone){
-    if(!value) return 'TBA';
+    if(!value) return t('unconfirmedDate');
     const d=new Date(value);
-    if(Number.isNaN(d.getTime())) return 'TBA';
+    if(Number.isNaN(d.getTime())) return t('unconfirmedDate');
     return new Intl.DateTimeFormat(currentLang==='en'?'en-US':'es-US',{month:'short',day:'numeric',year:'numeric'}).format(d)+(zone?' · '+zone:'');
   }
   function conditionLabel(v){
     const x=(v||'').toLowerCase();
-    if(x.includes('run') && x.includes('drive')) return 'Runs & Drives';
+    if(x.includes('run') && x.includes('drive')) return t('runsDrives');
     if(x.includes('start')) return t('starts','Arranca');
     return t('unverified','Sin verificar');
   }
@@ -155,7 +155,7 @@
       createAccount: 'Crear cuenta',
       myBids: '💬 Mis Pujas',
       logout: 'Salir', myAccount: 'Mi cuenta',
-      viewVehicles: 'Ver vehículos',
+      viewVehicles: 'Ver autos',
       exploreCatalog: 'Explorar catálogo',
       seeHow: 'Ver cómo comprar',
       heroEyebrow: 'SUBASTAS EN ESTADOS UNIDOS · 100% ONLINE',
@@ -189,30 +189,30 @@
       step5Title: 'Confirma con un asesor', step5Text: 'Continúa en el chat de APV para coordinar y confirmar la solicitud de puja.', step5Link: 'haciendo clic aquí.',
       step6Title: 'Consulta tus solicitudes', step6Text: 'En «Mi cuenta → Mis pujas» puedes retomar tus conversaciones. Tus vehículos guardados están en «Mis favoritos».',
       catalogEyebrow: 'CATÁLOGO DE SUBASTA',
-      catalogTitle: 'Encuentra el vehículo correcto.',
+      catalogTitle: 'Encuentra el auto correcto.',
       resultsAvailable: 'resultados disponibles.',
       catalogSearchPlaceholder: 'Ej. Silverado 2023, número de lote o VIN',
       search: 'Buscar', sortAuto: 'Aleatorio / búsqueda',
-      navPlans: 'Planes', membershipEyebrow: 'MEMBRESÍAS APV MOTORS', membershipTitle: 'Elige cómo quieres comprar tu próximo vehículo.', membershipIntro: 'Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.', membershipNudge: '¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.',
+      navPlans: 'Planes', membershipEyebrow: 'MEMBRESÍAS APV MOTORS', membershipTitle: 'Elige cómo quieres comprar tu próximo vehículo.', membershipIntro: 'Empieza gratis. Cuando estés listo para comprar, suma descuentos y asesoría.', membershipNudge: '¿Listo para comprar? Conoce los descuentos en honorarios APV y las asesorías incluidas.',
       myFavorites: '♥ Mis favoritos', availableFavorites: 'Vehículos guardados que siguen disponibles',
       filtersTitle: 'Filtros',
       clearFilters: 'Limpiar',
       applyFilters: 'Aplicar filtros',
       brand: 'Marca', allFeminine: 'Todas', allMasculine: 'Todos', yearFrom: 'Año desde', yearTo: 'Año hasta',
-      city: 'Ciudad', zipCode: 'Código postal (ZIP)', zipHint: 'ZIP de la ubicación del vehículo.', cleanTitle: 'Solo Clean Title', limitOdometer: 'Limitar odómetro',
-      primaryDamage: 'Daño principal', condition: 'Condición', state: 'Estado', keysOnly: 'Solo con llaves', buyNowOnly: 'Solo Buy It Now', maxOdometer: 'Odómetro máximo',
+      city: 'Ciudad', zipCode: 'Código postal (ZIP)', zipHint: 'ZIP de la ubicación del vehículo.', cleanTitle: 'Solo título limpio', limitOdometer: 'Limitar odómetro',
+      primaryDamage: 'Daño principal', condition: 'Condición', state: 'Estado', keysOnly: 'Solo con llaves', buyNowOnly: 'Solo «Cómprala ya»', maxOdometer: 'Odómetro máximo',
       mobileFilters: '☰ Filtros', viewNote: 'Precios en USD · el VIN completo se muestra a usuarios registrados', sortBy: 'Ordenar por',
       sortSaleSoon: 'Subasta más próxima', sortNewest: 'Año: más nuevo', sortPriceAsc: 'Precio: menor', sortPriceDesc: 'Precio: mayor', sortMileage: 'Menor millaje',
       emptyTitle: 'No encontramos vehículos', emptyText: 'Prueba otra búsqueda o limpia los filtros.',
       helpEyebrow: '¿NO SABES CUÁNTO PUJAR?', helpTitle: 'Encuentra el vehículo primero. Nosotros te ayudamos con lo demás.', findVehicle: 'Buscar un vehículo',
       footerCatalog: 'Catálogo de vehículos de subasta · EE. UU.', footerSource: 'Datos de inventario obtenidos de listados públicos de subastas de Copart.', footerDisclaimer: 'La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.',
       cookieTitle: 'Uso de cookies y privacidad',
-      cookieText: 'Utilizamos cookies esenciales para tu sesión y preferencias. Si aceptas todas, también usamos Google Analytics para medir las visitas. Consulta nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Términos de Servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Políticas de Privacidad</button>.',
+      cookieText: 'Utilizamos cookies esenciales para tu sesión y preferencias. Si aceptas todas, también usamos Google Analytics para medir las visitas. Consulta nuestros <button type="button" class="cookie-link-btn" id="cookie-terms-btn">Términos de servicio</button> y <button type="button" class="cookie-link-btn" id="cookie-privacy-btn">Política de privacidad</button>.',
       acceptCookies: 'Aceptar todas',
       declineCookies: 'Solo esenciales',
-      termsOfService: 'Términos de Servicio', privacyPolicy: 'Políticas de Privacidad', termsEyebrow: 'ASPECTOS LEGALES', termsTitle: 'Términos de Servicio',
-      termsContent: '<h3>1. Aceptación de los Términos</h3><p>Al acceder y utilizar el portal de APV Motors, el usuario acepta cumplir con los presentes Términos de Servicio. Si no está de acuerdo con alguno de los términos, debe abstenerse de utilizar el sitio.</p><h3>2. Servicios de Intermediación</h3><p>APV Motors actúa como un facilitador e intermediario de servicios para la consulta de catálogo y asistencia en subastas de vehículos en Estados Unidos (como Copart e IAA). APV Motors no es el dueño directo de los vehículos de subasta listados en el catálogo público.</p><h3>3. Ofertas y Pujas</h3><p>Las ofertas o intenciones de puja registradas por los usuarios en la plataforma representan límites de puja deseados y están sujetas a verificación y confirmación por parte de un asesor de APV Motors antes de ser presentadas en la subasta oficial.</p><h3>4. Información de Vehículos</h3><p>La información, fotografías y especificaciones de los vehículos provienen de listados públicos de subastas. Los usuarios son responsables de revisar los detalles técnicos, historial y estado del vehículo antes de autorizar una oferta final.</p><h3>5. Modificaciones</h3><p>APV Motors se reserva el derecho de actualizar o modificar estos términos en cualquier momento para reflejar cambios legales o de servicio.</p>',
-      privacyEyebrow: 'PROTECCIÓN DE DATOS', privacyTitle: 'Políticas de Privacidad',
+      termsOfService: 'Términos de servicio', privacyPolicy: 'Política de privacidad', termsEyebrow: 'ASPECTOS LEGALES', termsTitle: 'Términos de servicio',
+      termsContent: '<h3>1. Aceptación de los Términos</h3><p>Al acceder y utilizar el portal de APV Motors, el usuario acepta cumplir con los presentes Términos de servicio. Si no está de acuerdo con alguno de los términos, debe abstenerse de utilizar el sitio.</p><h3>2. Servicios de Intermediación</h3><p>APV Motors actúa como un facilitador e intermediario de servicios para la consulta de catálogo y asistencia en subastas de vehículos en Estados Unidos (como Copart e IAA). APV Motors no es el dueño directo de los vehículos de subasta listados en el catálogo público.</p><h3>3. Ofertas y Pujas</h3><p>Las ofertas o intenciones de puja registradas por los usuarios en la plataforma representan límites de puja deseados y están sujetas a verificación y confirmación por parte de un asesor de APV Motors antes de ser presentadas en la subasta oficial.</p><h3>4. Información de Vehículos</h3><p>La información, fotografías y especificaciones de los vehículos provienen de listados públicos de subastas. Los usuarios son responsables de revisar los detalles técnicos, historial y estado del vehículo antes de autorizar una oferta final.</p><h3>5. Modificaciones</h3><p>APV Motors se reserva el derecho de actualizar o modificar estos términos en cualquier momento para reflejar cambios legales o de servicio.</p>',
+      privacyEyebrow: 'PROTECCIÓN DE DATOS', privacyTitle: 'Política de privacidad',
       privacyContent: '<h3>1. Información que Recopilamos</h3><p>Recopilamos información personal que usted nos proporciona voluntariamente al registrarse o enviar una solicitud, como su nombre completo, dirección de correo electrónico, número de teléfono/WhatsApp e intenciones de puja.</p><h3>2. Uso de la Información</h3><p>Utilizamos sus datos personales para: brindar asistencia personalizada con asesores de APV Motors, gestionar sus solicitudes de puja, conservar el historial de su conversación y enviarle notificaciones relevantes sobre subastas de su interés.</p><h3>3. Integración con Servicios de Terceros</h3><p>Sus datos pueden ser procesados a través de nuestro sistema de gestión de relaciones con clientes (Kommo CRM) de forma segura para garantizar la continuidad del soporte técnico y comercial.</p><h3>4. Protección y Confidencialidad</h3><p>APV Motors implementa medidas de seguridad técnicas y organizativas para proteger sus datos personales contra acceso no autorizado, alteración o divulgación.</p><h3>5. Sus Derechos</h3><p>Usted puede solicitar en cualquier momento el acceso, corrección o eliminación de sus datos personales comunicándose con nuestro equipo de soporte.</p>',
       close: 'Cerrar', minimizeChat: 'Minimizar chat', accountEyebrow: 'CUENTA APV MOTORS', authTitle: 'Guarda tu conversación y continúa desde cualquier dispositivo.', authReason: 'Regístrate para ver el VIN completo y hablar con un asesor.', registerDirectTitle: 'Crea tu cuenta gratis', registerDirectReason: 'Completa tus datos para guardar vehículos, solicitar pujas y continuar desde cualquier dispositivo.', checkEmailTitle: 'Revisa tu correo', checkEmailReason: 'Te enviamos un código de 6 dígitos. Escríbelo para activar tu cuenta.',
       fullName: 'Nombre completo',
@@ -233,13 +233,13 @@
       resetAllBids: 'Reiniciar todas las pujas', deleteBid: 'Eliminar esta puja', vehicle: 'Vehículo', lot: 'Lote', vin: 'VIN',
       noMatches: 'No encontramos coincidencias para', fullCatalog: 'Ver el catálogo completo', allResultsFor: 'Ver todos los resultados para',
       noPhoto: 'SIN FOTO', keyAvailable: 'Llave disponible', keyUnknown: 'Llave N/D', odometer: 'Odómetro', location: 'Ubicación', damage: 'Daño', document: 'Documento', body: 'Carrocería', color: 'Color',
-      registerForVin: 'Regístrate para ver el VIN', previousPhoto: 'Foto anterior', nextPhoto: 'Siguiente foto', photo: 'foto', photos: 'fotos', keys: 'Llaves', unconfirmed: 'Sin confirmar', directPrice: 'PRECIO COMPRA DIRECTA (BUY IT NOW)', auctionCurrentBid: 'Puja actual subasta', estimatedRetail: 'Valor retail estimado', auctionDate: 'Fecha de subasta', signInVinChat: '🔒 Debes registrarte para ver el VIN completo y abrir el chat.', lotGallery: 'GALERÍA DEL LOTE', allPhotos: 'Todas las fotos', loading: 'Cargando…', technicalPrices: 'FICHA TÉCNICA Y PRECIOS', completeVehicleInfo: 'Información completa del vehículo', officialCopartData: 'Datos oficiales Copart', directPurchase: 'Buy It Now (Compra directa)', estimatedRepair: 'Costo estim. reparación', transmission: 'Transmisión', engine: 'Motor', cylinders: 'Cilindros', traction: 'Tracción', fuel: 'Combustible', secondaryDamage: 'Daño secundario', lossType: 'Tipo de pérdida', availableKeys: 'Llaves disponibles', titleDocument: 'Título / Documento', yardLocation: 'Ubicación / Patio', showAllTechnical: 'Ver toda la información técnica', hideInformation: 'Ocultar información', item: 'Item', vehicleType: 'Tipo de vehículo', year: 'Año', model: 'Modelo', modelGroup: 'Grupo de modelo', trim: 'Trim', conditionCode: 'Código condición', odometerBrand: 'Odómetro brand', saleStatus: 'Estado de venta', repairCost: 'Costo reparación', yard: 'Patio', country: 'País', seller: 'Seller', updated: 'Actualizado', specialNote: 'NOTA ESPECIAL', announcements: 'ANUNCIOS', readyToBid: '¿Listo para ofertar?', afterSignIn: 'Después de iniciar sesión defines tu tope. APV envía a Kommo la ficha, el VIN, el lote, el monto y tus datos de cuenta.', informationSource: 'Fuente de la información', sourceDescription: 'La ficha se construye con el CSV y las fotos se consultan bajo demanda usando el enlace Image URL de Copart.', openCopart: 'Abrir lote en Copart →',
-      pricingAuction: 'Precios y Subasta', mechanicalSpecs: 'Especificaciones Mecánicas', vehicleIdentity: 'Datos del Vehículo', conditionDamage: 'Estado y Condición', locationSeller: 'Ubicación y Subasta',
-      calculatorTitle: 'Calculadora de Costos y Total a Pagar',
-      costCalculator: 'HERRAMIENTA DE CÁLCULO DE FEES',
+      registerForVin: 'Regístrate para ver el VIN', previousPhoto: 'Foto anterior', nextPhoto: 'Siguiente foto', photo: 'foto', photos: 'fotos', keys: 'Llaves', unconfirmed: 'Sin confirmar', directPrice: 'PRECIO COMPRA DIRECTA (BUY IT NOW)', auctionCurrentBid: 'Puja actual subasta', estimatedRetail: 'Valor al público est.', auctionDate: 'Fecha de subasta', signInVinChat: '🔒 Debes registrarte para ver el VIN completo y abrir el chat.', lotGallery: 'GALERÍA DEL LOTE', allPhotos: 'Todas las fotos', loading: 'Cargando…', technicalPrices: 'FICHA TÉCNICA Y PRECIOS', completeVehicleInfo: 'Información completa del vehículo', officialCopartData: 'Datos oficiales Copart', directPurchase: 'Cómprala ya (Compra directa)', estimatedRepair: 'Costo estim. reparación', transmission: 'Transmisión', engine: 'Motor', cylinders: 'Cilindros', traction: 'Tracción', fuel: 'Combustible', secondaryDamage: 'Daño secundario', lossType: 'Tipo de pérdida', availableKeys: 'Llaves disponibles', titleDocument: 'Título / Documento', yardLocation: 'Ubicación / Patio', showAllTechnical: 'Ver toda la información técnica', hideInformation: 'Ocultar información', item: 'Item', vehicleType: 'Tipo de vehículo', year: 'Año', model: 'Modelo', modelGroup: 'Grupo de modelo', trim: 'Versión', conditionCode: 'Código condición', odometerBrand: 'Marca del odómetro', saleStatus: 'Estado de venta', repairCost: 'Costo reparación', yard: 'Patio', country: 'País', seller: 'Vendedor', updated: 'Actualizado', specialNote: 'NOTA ESPECIAL', announcements: 'ANUNCIOS', readyToBid: '¿Listo para ofertar?', afterSignIn: 'Después de iniciar sesión defines tu tope. APV envía a Kommo la ficha, el VIN, el lote, el monto y tus datos de cuenta.', informationSource: 'Fuente de la información', sourceDescription: 'La ficha se construye con el CSV y las fotos se consultan bajo demanda usando el enlace Image URL de Copart.', openCopart: 'Abrir lote en Copart →',
+      pricingAuction: 'Precios y Subasta', mechanicalSpecs: 'Especificaciones Mecánicas', vehicleIdentity: 'Datos del Vehículo', conditionDamage: 'Estado y Condición', locationVendedor: 'Ubicación y Subasta',
+      calculatorTitle: 'Calculadora de costos y total a pagar',
+      costCalculator: 'HERRAMIENTA DE CÁLCULO DE TARIFAS',
       calculatorSub: 'Ingresa tu tope de puja para calcular el desglose exacto de tarifas de subasta y honorarios.',
-      calculatorLockedTitle: 'Calculadora Exclusiva',
-      calculatorLockedSub: 'Inicia sesión o regístrate para usar la Calculadora de Costos y ver el desglose exacto de fees para este vehículo.',
+      calculatorLockedTitle: 'Calculadora exclusiva',
+      calculatorLockedSub: 'Inicia sesión o regístrate para usar la Calculadora de costos y ver el desglose exacto de tarifas para este vehículo.',
       calculatorInputLabel: 'Ingresa tu tope de puja ($ USD)',
       unlockedFor: 'Sesión activa',
       loginToUseCalc: 'Iniciar sesión para usar la calculadora',
@@ -358,6 +358,8 @@
     }
   };
 
+  for(const lang of ['es','en'])Object.assign(TRANSLATIONS[lang],window.APV_I18N?.[lang]||{});
+  for(const lang of ['es','en'])TRANSLATIONS[lang].privacyContent+=window.APV_LEGAL_ADDITION?.[lang]||''; // PENDIENTE DE REVISIÓN LEGAL
   let currentLang = localStorage.getItem('APV_LANG') || 'es';
 
   function t(key, fallback) {
@@ -372,9 +374,9 @@
     currentLang = lang;
     localStorage.setItem('APV_LANG', lang);
     document.documentElement.lang = lang;
-    document.title = t('pageTitle');
+    if(currentLang==='en')document.title = t('pageTitle');
     const description = document.querySelector('meta[name="description"]');
-    if (description) description.content = t('pageDescription');
+    if (description && currentLang==='en') description.content = t('pageDescription');
     if (window.apvKommo && typeof window.apvKommo.setLocale === 'function') window.apvKommo.setLocale(lang);
 
     $$('#lang-switch .lang-btn').forEach(btn => {
@@ -408,6 +410,8 @@
       if (value) el.title = value;
     });
 
+    document.dispatchEvent(new Event('apv:language'));
+    window.APVDisplay?.clean(document.querySelector('main'),lang);
     window.apvMembership?.render();
     if (state.filters) {
       updateCities();
@@ -556,9 +560,10 @@
 
   document.addEventListener('click', e=>{ if(e.target.closest('[data-retry-featured]')) loadFeaturedVehicles(); });
 
+  document.addEventListener('apv:featured',loadFeaturedVehicles);
   async function loadFeaturedVehicles(){
     try {
-      const data = await api('/api/featured');
+      const data = await api('/api/featured'+(window.apvFeaturedQuery?'?'+window.apvFeaturedQuery:''));
       state.featuredVehicles = data.items || [];
       state.featuredPage = 1;
       renderFeaturedVehicles();
@@ -570,20 +575,21 @@
 
   function renderFeaturedVehicles(){
     if(!dom.heroFeaturedGrid) return;
-    const startIndex = (state.featuredPage - 1) * 3;
-    const items = state.featuredVehicles.slice(startIndex, startIndex + 3);
+    const count=document.body.classList.contains('lp-page')?6:3;
+    const startIndex = (state.featuredPage - 1) * count;
+    const items = state.featuredVehicles.slice(startIndex, startIndex + count);
     if(!items.length){
       dom.heroFeaturedGrid.innerHTML = `<div class="hero-quick-empty">${t('emptyTitle')}</div>`;
       return;
     }
     dom.heroFeaturedGrid.innerHTML = items.map(v => `
       <article class="featured-vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="featured-card-photo" role="button" tabindex="0" aria-label="${esc(v.title)}" data-action="detail">
-          ${v.image ? `<img src="${esc(v.image)}" alt="${esc(v.title)}" width="640" height="400" loading="eager" fetchpriority="high" decoding="async" />` : ''}
+        <div class="featured-card-photo" role="button" tabindex="0" aria-label="${esc(v.title)} · COPART" data-action="detail">
+          ${v.image ? `<img src="${esc(v.image)}" alt="${esc(v.title)}" width="640" height="400" loading="lazy" decoding="async" />` : ''}
           <span class="featured-card-badge">COPART</span>
         </div>
         <div class="featured-card-body">
-          <h3 class="featured-card-title" role="button" tabindex="0" data-action="detail">${esc(v.title)}</h3>
+          <h3 class="featured-card-title"><button type="button" data-action="detail">${esc(v.title)}</button></h3>
           <div class="featured-card-meta">${t('lot')} ${esc(v.lot)} · ${esc(locationLabel(v))}</div>
           <div class="featured-card-prices">
             <div class="featured-price-item">
@@ -595,13 +601,14 @@
               <strong>${esc(money(v.buyNow))}</strong>
             </div>
           </div>
-          <div class="featured-card-actions">
-            <button type="button" class="btn btn-primary featured-card-btn" data-action="detail">${currentLang==='en'?'View vehicle and costs':'Ver vehículo y calcular'}</button>
+          <p class="featured-retail">${t('retail')}: ${esc(money(v.retailValue))}</p>${comparison(v)}<div class="featured-card-actions">
+            <button type="button" class="btn btn-primary featured-card-btn" data-action="detail">${t('viewCarCosts')}</button>
           </div>
         </div>
       </article>
     `).join('');
 
+    window.APVDisplay?.clean(dom.heroFeaturedGrid,currentLang);
     if(dom.featuredPrevBtn) dom.featuredPrevBtn.disabled = (state.featuredPage <= 1);
     if(dom.featuredNextBtn) dom.featuredNextBtn.disabled = (state.featuredPage >= 2 || state.featuredVehicles.length <= (startIndex + 3));
 
@@ -660,7 +667,7 @@
     document.querySelector('#catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function populate(select, items){ for(const item of items){ const o=document.createElement('option'); o.value=item; o.textContent=item; select.appendChild(o); } }
+  function populate(select, items){ for(const item of items){ const o=document.createElement('option'); o.value=item; o.textContent=window.APVDisplay?.label(item,currentLang)||item; select.appendChild(o); } }
   function updateOdometerLabel(){ dom.odometerLabel.textContent=Number(dom.odometer.value||0).toLocaleString('en-US')+' mi'; }
 
   function params(){
@@ -675,6 +682,7 @@
     if(dom.city.value) p.set('city',dom.city.value);
     if(dom.zip.value.trim()) p.set('zip',dom.zip.value.trim());
     if(dom.cleanTitle.checked) p.set('cleanTitle','1'); if(dom.buyNow.checked) p.set('buyNowOnly','1');
+    const entry=new URLSearchParams(location.search);for(const k of ['priceMin','priceMax'])if(entry.has(k))p.set(k,entry.get(k));
     return p;
   }
 
@@ -793,12 +801,13 @@
     if(button) toggleFavorite(button.dataset.favorite);
   });
 
+  function comparison(v){const price=Number(v.buyNow)||Number(v.currentBid);const retail=Number(v.retailValue);return price>0&&retail>price?`<p class="price-comparison">${t('todayPrice')} ${money(price)} · ${Math.floor((1-price/retail)*1000)/10} % ${t('belowRetail')}</p>`:'';}
   function renderVehicles(items){
     dom.list.innerHTML=items.map(v=>`
       <article class="vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="vehicle-photo-wrap" role="button" tabindex="0" aria-label="${esc(v.title)}" data-action="detail"><div class="vehicle-photo">${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="320" height="220" loading="lazy" decoding="async" />`:`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
+        <div class="vehicle-photo-wrap" role="button" tabindex="0" aria-label="${esc(v.title)} · COPART" data-action="detail"><div class="vehicle-photo">${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="320" height="220" loading="lazy" decoding="async" />`:`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
         <div class="vehicle-main">
-          <div class="vehicle-title-row"><h3 role="button" tabindex="0" data-action="detail">${esc(v.title)}</h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
+          <div class="vehicle-title-row"><h3><button type="button" data-action="detail" class="vehicle-title-button">${esc(v.title)}</button></h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
           <div class="vehicle-identifiers">⌗ ${esc(vinText(v))} &nbsp;•&nbsp; ${t('lot')} ${esc(v.lot)}</div>
           <div class="spec-chips">
             <span class="spec-chip">${icon('🔑')} ${v.hasKeys==='YES'?t('keyAvailable'):t('keyUnknown')}</span>
@@ -808,7 +817,7 @@
             ${v.cylinders?`<span class="spec-chip">${icon('⬡')} ${esc(v.cylinders)} cyl</span>`:''}
             ${v.fuel?`<span class="spec-chip">${icon('⛽')} ${esc(v.fuel)}</span>`:''}
           </div>
-          <div class="info-grid">
+          ${comparison(v)}<div class="info-grid">
             <div class="info-line"><span>${t('odometer')}</span><strong>${esc(miles(v.odometer))}${v.odometer?' ('+esc(km(v.odometer))+')':''}</strong></div>
             <div class="info-line"><span>${t('location')}</span><strong>${esc(locationLabel(v))}</strong></div>
             <div class="info-line"><span>${t('damage')}</span><strong>${esc([v.primaryDamage,v.secondaryDamage].filter(Boolean).join(' + ')||t('noData'))}</strong></div>
@@ -830,6 +839,7 @@
           <div class="card-actions"><button class="btn btn-primary" data-action="bid">${t('wantToBid')}</button></div>
         </aside>
       </article>`).join('');
+    window.APVDisplay?.clean(dom.list,currentLang);
   }
 
   function renderPagination(data){
@@ -1023,6 +1033,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     return {...result,total:result.total+(result.apvDiscount||0)};
   };
 
+  // PENDIENTE D-082: evaluar total estimado sin registro
   function renderCalculatorHTML(v) {
     const isLoggedIn = Boolean(state.user);
     const autoTitle = detectTitleType(v);
@@ -1033,7 +1044,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         <div class="calc-section-header">
           <div class="calc-header-title">
             <span class="eyebrow-red">🧮 ${t('costCalculator')}</span>
-            <h3>Calculadora de Costos & Opciones de Puja</h3>
+            <h3>${t('calculatorHeading')}</h3>
           </div>
           ${isLoggedIn ? `<span class="calc-badge-user">✓ ${t('unlockedFor')}</span>` : ''}
         </div>
@@ -1046,11 +1057,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
             <!-- Método de Pago -->
             <div class="calc-opt-group">
-              <label class="calc-opt-label">Método de Pago:</label>
+              <label class="calc-opt-label">${t('paymentMethod')}</label>
               <div class="calc-radio-toggle">
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_payment" value="secure" checked />
-                  <span>🔒 Pago Seguro</span>
+                  <span>🔒 Pago seguro</span>
                 </label>
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_payment" value="unsecured" />
@@ -1061,15 +1072,15 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
             <!-- Tipo de Oferta -->
             <div class="calc-opt-group">
-              <label class="calc-opt-label">Tipo de Oferta:</label>
+              <label class="calc-opt-label">${t('offerType')}</label>
               <div class="calc-radio-toggle">
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_offer" value="live" checked />
-                  <span>⚡ Oferta en Vivo</span>
+                  <span>⚡ Oferta en vivo</span>
                 </label>
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_offer" value="prebid" />
-                  <span>📝 Pre oferta</span>
+                  <span>📝 Preoferta</span>
                 </label>
               </div>
             </div>
@@ -1087,7 +1098,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
                 </label>
                 <label class="calc-radio-btn ${autoTitle === 'salvage' ? 'is-selected-locked' : 'is-disabled'}">
                   <input type="radio" name="calc_title" value="salvage" ${autoTitle === 'salvage' ? 'checked' : ''} disabled />
-                  <span>🛠️ Título Salvage</span>
+                  <span>🛠️ ${t('salvageLabel')}</span>
                 </label>
               </div>
             </div>
@@ -1206,7 +1217,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
                 <span>${money(breakdown.copartBuyerFee)}</span>
               </div>
               <div class="calc-subrow">
-                <span>${t('copartVirtualFeeLabel')} (${breakdown.options.offerType === 'prebid' ? 'Pre oferta' : 'En vivo'})</span>
+                <span>${t('copartVirtualFeeLabel')} (${breakdown.options.offerType === 'prebid' ? 'Preoferta' : 'En vivo'})</span>
                 <span>${money(breakdown.copartVirtualFee)}</span>
               </div>
               ${breakdown.unsecuredPaymentFee > 0 ? `
@@ -1283,12 +1294,13 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   async function openDetail(lot, push=true){
-    if(isHome){location.assign('/vehiculo/'+encodeURIComponent(lot));return;}
+    if(isHome){location.assign(window.APVTracking?.campaignURL('/vehiculo/'+encodeURIComponent(lot))||'/vehiculo/'+encodeURIComponent(lot));return;}
     try{
       state.galleryImages=[];
       const v=await getVehicle(lot); state.currentVehicle=v; renderDetail(v); dom.vehicleOverlay.classList.remove('hidden'); document.body.style.overflow='hidden';
       loadGallery(lot);
-      if(push && location.pathname!==`/vehiculo/${encodeURIComponent(lot)}`) history.pushState({lot},'',`/vehiculo/${encodeURIComponent(lot)}`);
+      if(push && location.pathname!==`/vehiculo/${encodeURIComponent(lot)}`) history.pushState({lot},'',window.APVTracking?.campaignURL(`/vehiculo/${encodeURIComponent(lot)}`)||`/vehiculo/${encodeURIComponent(lot)}`);
+      if(push){window.APVTracking?.track('page_view',{page_location:location.href});window.APVTracking?.track('view_vehicle',{lote:String(lot)});}
     }catch(err){ showToast(err.message); }
   }
 
@@ -1300,7 +1312,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const shareLink=new URL('/vehiculo/'+encodeURIComponent(v.lot),location.origin).href;
     const shareText=encodeURIComponent(v.title+' '+shareLink);
     dom.vehicleDetail.innerHTML = `
-      <h2 class="detail-vehicle-title">${esc([v.model,v.make,v.year].filter(Boolean).join(' ') || v.title)}</h2>
+      <h2 class="detail-vehicle-title" id="vehicle-detail-title">${esc([v.year,v.make,v.model,v.trim].filter(Boolean).join(' ') || v.title)}</h2>
       <div class="detail-share-toolbar">
         <a class="detail-share-button" href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
         <a class="detail-share-button" href="sms:?body=${shareText}">SMS</a>
@@ -1334,7 +1346,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           <div class="detail-card">
             <div class="detail-card-header">
               <span class="detail-card-icon">⚖️</span>
-              <h3>Auction / Subasta</h3>${favoriteButton(v.lot)}
+              <h3>${t('auctionHeading')}</h3>${favoriteButton(v.lot)}
             </div>
             <div class="detail-card-grid">
               <button type="button" class="btn btn-ghost btn-small" data-member-history="${esc(v.lot)}">${currentLang==='en'?'Request vehicle history':'Solicitar historial elaborado por APV'}</button>
@@ -1350,7 +1362,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           <div class="detail-card">
             <div class="detail-card-header">
               <span class="detail-card-icon">🧰</span>
-              <h3>Pricing analysis / Análisis de Precios</h3>
+              <h3>${t('priceHeading')}</h3>
             </div>
             <div class="detail-card-grid">
               <div class="detail-card-row"><span>Valor Retail Estimado</span><strong>${esc(money(v.retailValue))}</strong></div>
@@ -1368,7 +1380,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         <div class="detail-card">
           <div class="detail-card-header">
             <span class="detail-card-icon">🛠️</span>
-            <h3>Damage / Daños y Condición</h3>
+            <h3>${t('damageHeading')}</h3>
           </div>
           <div class="detail-card-grid two-col">
             <div class="detail-card-row"><span>Daño principal</span><strong>${esc(v.primaryDamage || 'N/D')}</strong></div>
@@ -1381,7 +1393,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         <div class="detail-card">
           <div class="detail-card-header">
             <span class="detail-card-icon">⚙️</span>
-            <h3>Vehicle Info / Información del Vehículo</h3>
+            <h3>${t('infoHeading')}</h3>
           </div>
           <div class="detail-card-grid two-col">
             <div class="detail-card-row"><span>Odómetro</span><strong>${miles(v.odometer)}</strong></div>
@@ -1397,18 +1409,15 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         <!-- Right Bidding Sidebar Column -->
         <div class="detail-right-col">
           <div class="bidding-action-card">
-            <div class="bidding-card-header">
-              <span class="bidding-timer-icon">⏱️</span>
-              <span>Tiempo para puja preliminar</span>
-            </div>
+
             <div class="bidding-current-bid">
               <span class="bid-label">${t('auctionCurrentBid').toUpperCase()}</span>
               <h2 class="bid-amount">${esc(money(v.currentBid))} USD</h2>
             </div>
             <button class="btn btn-primary btn-bid-now" data-detail-bid>
-              🔨 ${t('wantToBid').toUpperCase()} / OFERTAR
+              🔨 ${t('wantToBid')}
             </button>
-            <p class="bidding-disclaimer">Vehículos vendidos en su estado actual "as is - where is", todas las ventas son finales.</p>
+            <p class="bidding-disclaimer">${t('asIs')}</p>
           </div>
           ${renderCalculatorHTML(v)}
         </div>
@@ -1419,6 +1428,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if (state.user) {
       updateCalculatorResults($('#calc-bid-input')?.value || 0);
     }
+    window.APVDisplay?.clean(dom.vehicleDetail,currentLang);
     setupGalleryNavigation();
     positionMobileBidCard();
   }
@@ -1487,7 +1497,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       const data=await api('/api/vehicles/'+encodeURIComponent(lot)+'/images');
       if(String(state.currentVehicle?.lot)!==String(lot)) return;
       state.galleryImages=data.images || [];
-      setupGalleryNavigation();
+      window.APVDisplay?.clean(dom.vehicleDetail,currentLang);
+    setupGalleryNavigation();
     } catch(err) { if(String(state.currentVehicle?.lot)===String(lot)) showToast('No se pudieron cargar las fotos. Intenta abrir el vehículo de nuevo.'); }
   }
   function selectGalleryPhoto(index) {
@@ -1620,13 +1631,14 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     e.preventDefault(); setAuthStatus('');
     const button=e.currentTarget.querySelector('button[type=submit]'); button.disabled=true;
     try{
-      const d=await api('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:$('#login-email').value,password:$('#login-password').value})});
+      const d=await api('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),email:$('#login-email').value,password:$('#login-password').value})});
       await completeAuth(d.user);
     }catch(err){ setAuthStatus(err.message); }
     finally{ button.disabled=false; }
   }
 
   async function submitRegister(e){
+    window.APVTracking?.track('start_registration');
     e.preventDefault(); setAuthStatus('');
     const inline=e.currentTarget.id==='hero-register-form';
     const prefix=inline?'hero-register':'register';
@@ -1639,7 +1651,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const phone = rawPhone.startsWith('+') ? rawPhone : `${countryCode} ${rawPhone}`;
 
     try{
-      const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:$(`#${prefix}-name`).value,email,phone,password:$(`#${prefix}-password`).value})});
+      const d=await api('/api/auth/register-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),name:$(`#${prefix}-name`).value,email,phone,password:$(`#${prefix}-password`).value})});
       if(inline) openAuth(t('checkEmailReason'),null,'register',true);
       state.inlineRegistration=inline;
       state.pendingVerifyEmail = email;
@@ -1669,7 +1681,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     e.preventDefault(); setAuthStatus('');
     const button=e.currentTarget.querySelector('button[type=submit]'); button.disabled=true;
     try{
-      const d=await api('/api/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email: state.pendingVerifyEmail || $('#register-email').value, code:$('#verify-code').value.trim()})});
+      const d=await api('/api/auth/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),email: state.pendingVerifyEmail || $('#register-email').value, code:$('#verify-code').value.trim()})});
+      window.APVTracking?.track('complete_registration',{},d.eventId);
       await completeAuth(d.user, true);
     }catch(err){ setAuthStatus(err.message); }
     finally{ button.disabled=false; }
@@ -1774,7 +1787,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   async function continueBid(){
     if(!state.user){ closeBid(); openAuth('Debes iniciar sesión antes de abrir el chat con APV Motors.',state.currentVehicle?{type:'bid',lot:state.currentVehicle.lot}:null); return; }
     const v=state.currentVehicle, amount=Number(dom.bidAmount.value||0); if(!v||amount<=0){ showToast('Indica un tope de puja válido.'); dom.bidAmount.focus(); return; }
-    try{ await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lot:v.lot,maxBid:amount})}); }catch(err){ if(err.status===401){ closeBid(); openAuth('Tu sesión expiró. Vuelve a iniciar sesión.',{type:'bid',lot:v.lot}); return; } }
+    try{ const result=await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),lot:v.lot,maxBid:amount})});window.APVTracking?.track('bid_request',{lote:String(v.lot)},result.eventId); }catch(err){ if(err.status===401){ closeBid(); openAuth('Tu sesión expiró. Vuelve a iniciar sesión.',{type:'bid',lot:v.lot}); return; } }
     dom.bidAmountStep.classList.add('hidden'); dom.bidChatStep.classList.remove('hidden'); dom.bidModal?.classList.add('chat-mode');
     if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>Tope solicitado</span><br><strong>${esc(money(amount))} USD</strong></div>`;
     const message=window.apvKommo ? window.apvKommo.buildVehicleMessage(v) : `Vehículo: ${v.title}\nVIN: ${v.vin||'N/D'}`;
@@ -1832,6 +1845,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   function clearFilters(reload=true){
+    const url=new URL(location.href);url.searchParams.delete('priceMin');url.searchParams.delete('priceMax');history.replaceState(history.state,'',url.pathname+url.search+url.hash);
     $('#favorites-heading').classList.add('hidden');
     $('#my-favorites-button').setAttribute('aria-pressed','false');
     dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; setYearRange(dom.yearMin.min,dom.yearMax.max); dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.city.value=''; dom.zip.value=''; dom.cleanTitle.checked=false; dom.limitOdometer.checked=false; updateCities(); stickyInput.value=''; dom.buyNow.checked=false; dom.sort.value='auto';
@@ -2083,7 +2097,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
   window.addEventListener('scroll',scheduleStickySearch,{passive:true});
   window.addEventListener('resize',scheduleStickySearch);
-  if(window.ResizeObserver) new ResizeObserver(scheduleStickySearch).observe($('.hero-centered'));
+  if(window.ResizeObserver && $('.hero-centered')) new ResizeObserver(scheduleStickySearch).observe($('.hero-centered'));
   stickySearch.addEventListener('submit',e=>{
     e.preventDefault();
     dom.heroSearchInput.value=stickyInput.value;
@@ -2380,6 +2394,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       declineBtn.addEventListener('click', () => {
         localStorage.setItem('apv_cookie_consent', 'essential');
         banner.classList.add('hidden');
+        if(window.apvAnalyticsStarted) location.reload();
       });
     }
 

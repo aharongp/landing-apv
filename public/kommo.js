@@ -313,7 +313,7 @@
     const res = await fetch('/api/kommo/sync-bid', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lot: String(lot), maxBid: Number(maxBid) })
+      body: JSON.stringify({ ...window.APVTracking?.payload(), lot: String(lot), maxBid: Number(maxBid) })
     });
     const data = await res.json().catch(function() { return {}; });
     if (!res.ok) {

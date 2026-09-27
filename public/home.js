@@ -22,8 +22,8 @@
   }
   const carousel = document.querySelector('.review-carousel');
   if (carousel) {
-    const slides = [...carousel.querySelectorAll('.review-slide')];
-    const dots = [...carousel.querySelectorAll('[data-review]')];
+    let slides = [...carousel.querySelectorAll('.review-slide')];
+    let dots = [...carousel.querySelectorAll('[data-review]')];
     let current = 0;
     const show = index => {
       current = (index + slides.length) % slides.length;
@@ -33,7 +33,8 @@
     };
     document.getElementById('review-prev').addEventListener('click', () => show(current - 1));
     document.getElementById('review-next').addEventListener('click', () => show(current + 1));
-    dots.forEach(dot => dot.addEventListener('click', () => show(Number(dot.dataset.review))));
+    carousel.addEventListener('click',event=>{const dot=event.target.closest('[data-review]');if(dot)show(Number(dot.dataset.review));});
+    document.addEventListener('apv:reviews',()=>{slides=[...carousel.querySelectorAll('.review-slide')];dots=[...carousel.querySelectorAll('[data-review]')];show(0);});
     carousel.addEventListener('keydown', event => {
       if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
         event.preventDefault(); show(current + (event.key === 'ArrowRight' ? 1 : -1));
