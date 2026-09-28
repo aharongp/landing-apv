@@ -84,7 +84,9 @@
       }
     };
   </script>
-<link href="/favicon.ico" rel="icon"/><script defer="" src="/marketing-config.js"></script><script defer="" src="/marketing-i18n.js"></script><script defer="" src="/tracking.js"></script><script defer="" src="/marketing.js"></script><link href="/campaign.css" rel="stylesheet"/><style id="critical-hero">body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#0f172a}.home-page .home-video-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;max-width:1320px;margin:auto;padding:48px 24px}.home-video-hero h1{font-size:58px;line-height:1.08;letter-spacing:-1.8px}.home-video-hero h1 span{color:#dc2626}.home-page .hero-video-stage{aspect-ratio:16/9}.hero-video-stage video{width:100%;height:auto}.home-page .reveal-on-scroll{opacity:1;transform:none}@media(max-width:640px){.home-page .home-video-hero{grid-template-columns:1fr;padding:24px 18px;gap:28px}.home-video-hero h1{font-size:38px}}</style></head>
+<link href="/favicon.ico" rel="icon"/><script defer="" src="/marketing-config.js"></script><script defer="" src="/marketing-i18n.js"></script><script defer="" src="/tracking.js"></script><script defer="" src="/marketing.js"></script><link href="/campaign.css" rel="stylesheet"/><style id="critical-hero">body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#0f172a}.home-page .home-video-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;max-width:1320px;margin:auto;padding:48px 24px}.home-video-hero h1{font-size:58px;line-height:1.08;letter-spacing:-1.8px}.home-video-hero h1 span{color:#dc2626}.home-page .hero-video-stage{aspect-ratio:16/9}.hero-video-stage video{width:100%;height:auto}.home-page .reveal-on-scroll{opacity:1;transform:none}@media(max-width:640px){.home-page .home-video-hero{grid-template-columns:1fr;padding:24px 18px;gap:28px}.home-video-hero h1{font-size:38px}}</style><link rel="stylesheet" href="/icons.css"/>
+<script defer src="/icons.js"></script>
+</head>
 <body class="catalog-page">
 <div class="scroll-progress-bar" id="scroll-progress-bar"></div>
 <header class="topbar">
@@ -113,8 +115,8 @@
 <div class="account-menu hidden" id="account-menu">
 <div class="account-copy"><strong id="account-name"></strong><span id="account-email"></span></div>
 <button data-member-plans="" id="my-membership-button" type="button" data-i18n="extraLocale0">Mi plan</button>
-<button data-i18n="myFavorites" id="my-favorites-button" type="button">♥ Mis favoritos</button>
-<button data-i18n="myBids" id="my-bids-button" type="button">💬 Mis Pujas</button>
+<button data-i18n="myFavorites" id="my-favorites-button" type="button"><svg class="apv-icon apv-icon-filled" data-icon="heart-filled" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg> Mis favoritos</button>
+<button data-i18n="myBids" id="my-bids-button" type="button"><svg class="apv-icon" data-icon="chat" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 11a8 8 0 0 1-8 8H8l-5 3 1.5-6A8 8 0 1 1 21 11Z"/><path d="M8 10h8M8 14h5"/></svg> Mis Pujas</button>
 <button class="account-logout" data-i18n="logout" id="logout-button" type="button">Salir</button>
 </div>
 </div>
@@ -142,26 +144,26 @@
 <span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
 <div class="phone-input-group">
 <select aria-label="Código de país" class="country-code-select" data-i18n-aria-label="countryCode" id="hero-register-country-code">
-<option value="+1" data-i18n="extraLocale11">🇺🇸 +1 (EE. UU.)</option>
-<option value="+58">🇻🇪 +58 (Venezuela)</option>
-<option value="+52" data-i18n="extraLocale12">🇲🇽 +52 (México)</option>
-<option value="+57">🇨🇴 +57 (Colombia)</option>
-<option value="+34" data-i18n="extraLocale13">🇪🇸 +34 (España)</option>
-<option value="+54">🇦🇷 +54 (Argentina)</option>
-<option value="+56">🇨🇱 +56 (Chile)</option>
-<option value="+51">🇵🇪 +51 (Perú)</option>
-<option value="+593">🇪🇨 +593 (Ecuador)</option>
-<option value="+502">🇬🇹 +502 (Guatemala)</option>
-<option value="+503">🇸🇻 +503 (El Salvador)</option>
-<option value="+504">🇭🇳 +504 (Honduras)</option>
-<option value="+505">🇳🇮 +505 (Nicaragua)</option>
-<option value="+506">🇨🇷 +506 (Costa Rica)</option>
-<option value="+507" data-i18n="extraLocale14">🇵🇦 +507 (Panamá)</option>
-<option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
-<option value="+598">🇺🇾 +598 (Uruguay)</option>
-<option value="+591">🇧🇴 +591 (Bolivia)</option>
-<option value="+509">🇭🇹 +509 (Haití)</option>
-<option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
+<option value="+1" data-i18n="extraLocale11">+1 (EE. UU.)</option>
+<option value="+58">+58 (Venezuela)</option>
+<option value="+52" data-i18n="extraLocale12">+52 (México)</option>
+<option value="+57">+57 (Colombia)</option>
+<option value="+34" data-i18n="extraLocale13">+34 (España)</option>
+<option value="+54">+54 (Argentina)</option>
+<option value="+56">+56 (Chile)</option>
+<option value="+51">+51 (Perú)</option>
+<option value="+593">+593 (Ecuador)</option>
+<option value="+502">+502 (Guatemala)</option>
+<option value="+503">+503 (El Salvador)</option>
+<option value="+504">+504 (Honduras)</option>
+<option value="+505">+505 (Nicaragua)</option>
+<option value="+506">+506 (Costa Rica)</option>
+<option value="+507" data-i18n="extraLocale14">+507 (Panamá)</option>
+<option value="+1787">+1 787 (Puerto Rico)</option>
+<option value="+598">+598 (Uruguay)</option>
+<option value="+591">+591 (Bolivia)</option>
+<option value="+509">+509 (Haití)</option>
+<option value="+1809">+1 809 (Rep. Dom.)</option>
 </select>
 <input autocomplete="tel" id="hero-register-phone" placeholder="414 123 4567" required="" type="tel"/>
 </div>
@@ -295,7 +297,7 @@
 <p><span id="catalog-count">—</span> <span data-i18n="resultsAvailable">resultados disponibles.</span></p>
 </div>
 <div class="membership-nudge hidden" data-membership-nudge=""><span data-i18n="membershipNudge">¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.</span><button class="link-button" data-i18n="navPlans" data-member-plans="" type="button">Ver planes</button><button aria-label="Cerrar aviso" data-i18n-aria-label="extraLocale8" data-member-dismiss="" type="button">×</button></div>
-<div class="favorites-heading hidden" id="favorites-heading"><strong data-i18n="myFavorites">♥ Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button class="btn btn-ghost btn-small" data-i18n="viewVehicles" id="exit-favorites" type="button">Ver vehículos</button></div>
+<div class="favorites-heading hidden" id="favorites-heading"><strong data-i18n="myFavorites"><svg class="apv-icon apv-icon-filled" data-icon="heart-filled" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg> Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button class="btn btn-ghost btn-small" data-i18n="viewVehicles" id="exit-favorites" type="button">Ver vehículos</button></div>
 <input id="search-input" type="hidden"/>
 </div>
 <div class="catalog-shell">
@@ -324,7 +326,7 @@
 </aside>
 <div class="catalog-content">
 <div class="catalog-toolbar">
-<button class="mobile-filter-button" data-i18n="mobileFilters" id="mobile-filter-button">☰ Filtros</button>
+<button class="mobile-filter-button" data-i18n="mobileFilters" id="mobile-filter-button"><svg class="apv-icon" data-icon="sliders" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h5m4 0h7M4 12h10m4 0h2M4 18h2m4 0h10M9 3v6m5 0v6M6 15v6"/></svg> Filtros</button>
 <div class="view-note" data-i18n="viewNote">Precios en USD · el VIN completo se muestra a usuarios registrados</div>
 <label class="sort-select"><span data-i18n="sortBy">Ordenar por</span> <select id="sort-select"><option data-i18n="sortAuto" value="auto">Aleatorio / búsqueda</option><option data-i18n="sortSaleSoon" value="saleSoon">Subasta más próxima</option><option data-i18n="sortNewest" value="newest">Año: más nuevo</option><option data-i18n="sortPriceAsc" value="priceAsc">Precio: menor</option><option data-i18n="sortPriceDesc" value="priceDesc">Precio: mayor</option><option data-i18n="sortMileage" value="odometerAsc">Menor millaje</option></select></label>
 </div>
@@ -401,26 +403,26 @@
 <span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
 <div class="phone-input-group">
 <select aria-label="Código de país" class="country-code-select" data-i18n-aria-label="countryCode" id="register-country-code">
-<option value="+1" data-i18n="extraLocale11">🇺🇸 +1 (EE. UU.)</option>
-<option value="+58">🇻🇪 +58 (Venezuela)</option>
-<option value="+52" data-i18n="extraLocale12">🇲🇽 +52 (México)</option>
-<option value="+57">🇨🇴 +57 (Colombia)</option>
-<option value="+34" data-i18n="extraLocale13">🇪🇸 +34 (España)</option>
-<option value="+54">🇦🇷 +54 (Argentina)</option>
-<option value="+56">🇨🇱 +56 (Chile)</option>
-<option value="+51">🇵🇪 +51 (Perú)</option>
-<option value="+593">🇪🇨 +593 (Ecuador)</option>
-<option value="+502">🇬🇹 +502 (Guatemala)</option>
-<option value="+503">🇸🇻 +503 (El Salvador)</option>
-<option value="+504">🇭🇳 +504 (Honduras)</option>
-<option value="+505">🇳🇮 +505 (Nicaragua)</option>
-<option value="+506">🇨🇷 +506 (Costa Rica)</option>
-<option value="+507" data-i18n="extraLocale14">🇵🇦 +507 (Panamá)</option>
-<option value="+1787">🇵🇷 +1 787 (Puerto Rico)</option>
-<option value="+598">🇺🇾 +598 (Uruguay)</option>
-<option value="+591">🇧🇴 +591 (Bolivia)</option>
-<option value="+509">🇭🇹 +509 (Haití)</option>
-<option value="+1809">🇩🇴 +1 809 (Rep. Dom.)</option>
+<option value="+1" data-i18n="extraLocale11">+1 (EE. UU.)</option>
+<option value="+58">+58 (Venezuela)</option>
+<option value="+52" data-i18n="extraLocale12">+52 (México)</option>
+<option value="+57">+57 (Colombia)</option>
+<option value="+34" data-i18n="extraLocale13">+34 (España)</option>
+<option value="+54">+54 (Argentina)</option>
+<option value="+56">+56 (Chile)</option>
+<option value="+51">+51 (Perú)</option>
+<option value="+593">+593 (Ecuador)</option>
+<option value="+502">+502 (Guatemala)</option>
+<option value="+503">+503 (El Salvador)</option>
+<option value="+504">+504 (Honduras)</option>
+<option value="+505">+505 (Nicaragua)</option>
+<option value="+506">+506 (Costa Rica)</option>
+<option value="+507" data-i18n="extraLocale14">+507 (Panamá)</option>
+<option value="+1787">+1 787 (Puerto Rico)</option>
+<option value="+598">+598 (Uruguay)</option>
+<option value="+591">+591 (Bolivia)</option>
+<option value="+509">+509 (Haití)</option>
+<option value="+1809">+1 809 (Rep. Dom.)</option>
 </select>
 <input autocomplete="tel" id="register-phone" placeholder="414 123 4567" required="" type="tel"/>
 </div>

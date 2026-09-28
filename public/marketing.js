@@ -39,7 +39,7 @@
       if(/^https:\/\//.test(review.authorUrl||'')){const link=document.createElement('a');link.href=review.authorUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent=review.author;author.replaceChildren(link);}
       card.querySelector('.review-avatar').textContent=review.author.slice(0,2).toUpperCase();
       const caption=card.querySelector('.review-author div>span');caption.removeAttribute('data-i18n');caption.textContent=text('Reseña en Google','Google review (translated when available)');
-      const stars=card.querySelector('.review-stars');stars.removeAttribute('data-i18n-aria-label');stars.textContent='★'.repeat(review.rating);stars.setAttribute('aria-label',review.rating+'/5');cards.unshift(card);
+      const stars=card.querySelector('.review-stars');stars.removeAttribute('data-i18n-aria-label');stars.textContent='[icon:star-filled]'.repeat(review.rating);stars.setAttribute('aria-label',review.rating+'/5');cards.unshift(card);
     }
     container.replaceChildren(...cards);dots.replaceChildren();
     cards.forEach((card,i)=>{card.hidden=false;card.setAttribute('aria-label',`${i+1} / ${cards.length}`);card.setAttribute('aria-roledescription',text('diapositiva','slide'));const button=document.createElement('button');button.type='button';button.dataset.review=i;button.setAttribute('aria-label',text('Ver página de reseñas ','View review page ')+(i+1));dots.append(button);});
@@ -53,7 +53,7 @@
       if(version!==requestVersion||!data.live)return;
       document.querySelectorAll('[data-review-score]').forEach(el=>el.textContent=Number(data.rating).toLocaleString(english()?'en-US':'es-US',{minimumFractionDigits:1,maximumFractionDigits:1}));
       document.querySelectorAll('[data-review-score-date]').forEach(el=>el.hidden=true);
-      document.querySelectorAll('[data-live-rating]').forEach(el=>{el.hidden=false;el.classList.add('rating-badge');el.textContent=`★ ${data.rating} ${text('en Google','on Google')} · ${data.total} ${text('reseñas','reviews')}`;});
+      document.querySelectorAll('[data-live-rating]').forEach(el=>{el.hidden=false;el.classList.add('rating-badge');el.textContent=`[icon:star-filled] ${data.rating} ${text('en Google','on Google')} · ${data.total} ${text('reseñas','reviews')}`;});
       render(data);
     }catch{}
   }

@@ -205,14 +205,14 @@
     const total = normalized.reduce(function (sum, bid) { return sum + bid.maxBid; }, 0);
     return [
       `[APV_CHAT_BIDS_SUMMARY:${summaryFingerprint(normalized)}]`,
-      '📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE',
+      'RESUMEN DE PUJAS ACTIVAS DEL CLIENTE',
       `Membresía actual: ${window.apvMembership?.getPlan?.().name || user?.membership?.plan?.name || 'Gratis'}`,
       `Descuento en fee APV: $${Number(window.apvMembership?.getPlan?.().feeDiscount || user?.membership?.plan?.feeDiscount || 0)} USD por vehículo.`,
       '========================================',
       lines.join('\n\n'),
       '========================================',
-      `📊 Total de vehículos a subastar: ${normalized.length}`,
-      `💰 Suma de topes de oferta: $${total.toLocaleString('en-US')} USD`
+      `Total de vehículos a subastar: ${normalized.length}`,
+      `Suma de topes de oferta: $${total.toLocaleString('en-US')} USD`
     ].join('\n');
   }
 

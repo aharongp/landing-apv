@@ -246,3 +246,12 @@ La selección de /lp admite daño principal MINOR DENT/SCRATCHES, NORMAL WEAR o 
 - Las reseñas de Google solicitan el idioma elegido y mantienen cachés independientes ES/EN. El carrusel conserva las reseñas archivadas traducidas y descarta respuestas de un idioma anterior al cambiar rápidamente.
 - Validación: 48 pruebas aprobadas, incluyendo traducciones de reseñas, selector visible en las tres variantes, caché por idioma y cambio de video ES→EN→ES. Entrega parcial del MP4 inglés verificada por HTTP 206. Revisión de sintaxis y `git diff --check` sin errores.
 - La validación visual en Chrome quedó pendiente: la herramienta devuelve `Browser is not available: chrome` en esta sesión. No se realizó push ni despliegue en este cambio.
+
+## 2026-09-28T02:36:40+00:00 — Iconos SVG en lugar de emojis
+
+- Iconos locales de trazo uniforme para navegación, favoritos, fichas, pujas, calculadora, membresías y estados del administrador. Estrellas de reseñas en SVG; se conservan puntuaciones y etiquetas accesibles.
+- La traducción ES/EN y los componentes dinámicos usan tokens de icono explícitos: el renderizador inserta solo SVG de la colección local y escapa el texto, sin interpretar HTML del usuario. Los SVG decorativos no reciben foco ni se anuncian por separado.
+- Los selectores nativos de teléfono conservan país y prefijo, sin banderas emoji. Los resúmenes de texto enviados a Kommo conservan su contenido sin emojis ni tokens de interfaz.
+- Recursos `icons.js` y `icons.css` incluidos en el versionado por contenido, sin fuentes ni solicitudes a servicios externos.
+- Validación: 51 pruebas aprobadas; cobertura de tokens bilingües, escape de texto, favoritos/estrellas, recursos de home/landing/catálogo y conservación de prefijos telefónicos. Recursos locales responden HTTP 200. Sintaxis y `git diff --check` correctos. Sin validación visual en Chrome en este cambio.
+- Cambios locales en `style/replace-emojis-with-icons`, sin push ni despliegue.

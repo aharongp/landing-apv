@@ -9,6 +9,8 @@
     body{background:#f1f5f9;min-height:100vh;display:grid;place-items:center;padding:22px}.admin-card{width:min(760px,100%);background:#fff;border:1px solid #dbe4ee;border-radius:24px;padding:34px;box-shadow:0 22px 60px rgba(15,23,42,.12)}.admin-card h1{font-size:36px;letter-spacing:-.04em;margin:10px 0}.admin-card p{color:#64748b;line-height:1.6}.drop{border:2px dashed #cbd5e1;border-radius:18px;padding:36px 18px;text-align:center;margin:24px 0;background:#f8fafc}.drop input{width:100%;margin-top:14px}.admin-form{display:grid;grid-template-columns:1fr auto auto;gap:10px}.admin-form input[type=password]{height:48px;border:1px solid #cbd5e1;border-radius:12px;padding:0 13px}.status{margin-top:16px;border-radius:12px;padding:12px 14px;background:#f8fafc;color:#475569;font-size:13px;white-space:pre-wrap}.back{display:inline-block;margin-top:18px;font-weight:800;color:#1d4ed8}.progress{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:16px 0 4px}.progress>div{height:100%;width:0;background:#0f172a;transition:width .15s ease}.upload-meta{display:flex;justify-content:space-between;gap:12px;color:#94a3b8;font-size:11px;font-weight:800}.note{margin-top:18px;padding:12px 14px;border-radius:12px;background:#eff6ff;color:#1e40af;font-size:12px;line-height:1.55}
     @media(max-width:600px){.admin-card{padding:24px 18px}.admin-form{grid-template-columns:1fr}.admin-card h1{font-size:31px}}
   </style>
+<link rel="stylesheet" href="/icons.css"/>
+<script defer src="/icons.js"></script>
 </head>
 <body>
   <main class="admin-card">
@@ -61,7 +63,7 @@
       try {
         const done=await jsonFetch('/api/catalog/repair',{method:'POST',headers:{'x-admin-key':key.value}});
         const st=done.stats;
-        status.textContent=`✅ Base de datos reparada.\nVehículos disponibles: ${st.totalInDb.toLocaleString('en-US')}\nVencidos excluidos: ${st.expired} · Filas inválidas: ${st.skipped} · Duplicados: ${st.duplicates}\nRespaldo guardado en el servidor: ${st.backup}`;
+        status.textContent=`[icon:check-circle] Base de datos reparada.\nVehículos disponibles: ${st.totalInDb.toLocaleString('en-US')}\nVencidos excluidos: ${st.expired} · Filas inválidas: ${st.skipped} · Duplicados: ${st.duplicates}\nRespaldo guardado en el servidor: ${st.backup}`;
       } catch(err) { status.textContent='No se pudo reparar: '+err.message; }
       finally { repairBtn.disabled=btn.disabled=syncBtn.disabled=false; }
     });
@@ -72,7 +74,7 @@
         const headers={'Content-Type':'application/json','x-admin-key':key.value};
         const done=await jsonFetch('/api/catalog/sync',{method:'POST',headers});
         const st=done.stats||{};
-        status.textContent=`✅ Catálogo resincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
+        status.textContent=`[icon:check-circle] Catálogo resincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
       }catch(e){status.textContent='Error al sincronizar: '+e.message;}finally{repairBtn.disabled=btn.disabled=syncBtn.disabled=false;}
     });
 
@@ -95,7 +97,7 @@
         const done=await jsonFetch('/api/catalog/upload/finish',{method:'POST',headers,body:JSON.stringify({uploadId:start.uploadId})});
         bar.style.width='100%'; progressText.textContent='100%';
         const st=done.stats||{};
-        status.textContent=`✅ Catálogo sincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
+        status.textContent=`[icon:check-circle] Catálogo sincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
       }catch(e){status.textContent='Error: '+e.message;}finally{repairBtn.disabled=syncBtn.disabled=btn.disabled=false;}
     });
   </script>

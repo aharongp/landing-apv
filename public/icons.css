@@ -1,0 +1,5 @@
+.apv-icon{display:inline-block;width:1em;height:1em;min-width:1em;flex:none;vertical-align:-.15em;overflow:visible;color:inherit;pointer-events:none}
+.apv-icon-filled{fill:currentColor}
+.review-stars .apv-icon,.google-rating-stars .apv-icon{width:1em;height:1em;min-width:1em;vertical-align:-.1em}
+.favorite-button .apv-icon{width:20px;height:20px}
+.detail-card-icon .apv-icon,.calc-icon .apv-icon{width:20px;height:20px}

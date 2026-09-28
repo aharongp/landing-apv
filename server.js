@@ -700,7 +700,7 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
 // Give every deployment content-specific asset URLs, including behind CDN caches.
 const assetVersions = new Map();
 function frontendVersions() {
-  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css'].map(name => {
+  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css', 'icons.js', 'icons.css'].map(name => {
     const file = path.join(PUBLIC_DIR, name), stat = fs.statSync(file);
     let asset = assetVersions.get(name);
     if (!asset || asset.mtime !== stat.mtimeMs || asset.size !== stat.size) {
