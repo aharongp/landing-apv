@@ -237,3 +237,12 @@ A petición del usuario, se incorpora bloque destacado 5,0/5 con cinco estrellas
 ## 2026-09-27T20:55:01+00:00 — Landing solo con daños menores
 
 La selección de /lp admite daño principal MINOR DENT/SCRATCHES, NORMAL WEAR o NO DAMAGE, y daño secundario vacío o de esos mismos tipos. Conserva Buy Now positivo e inferior al valor al público, sin límite semanal, de precio o año. Excluye golpes frontales/laterales, daño estructural y granizo no clasificado como menor. La home y el catálogo general conservan sus filtros.
+
+## 2026-09-28T00:54:51+00:00 — Idioma completo y video ES/EN
+
+- Se resolvió el bloque de 125 claves comerciales que conservaba el español como respaldo de EN; `docs/TODO_EN.json` queda vacío. Se añadieron traducciones para las 15 reseñas verificadas (identificadas como fragmentos traducidos), presupuesto, ficha, calculadora, controles y etiquetas accesibles.
+- La landing muestra el selector ES/EN junto al logo, reutilizando la preferencia persistente de la página principal y el catálogo.
+- Video inglés proporcionado por el usuario: `public/assets/cars-vsl-en.mp4`, con portada propia. El cambio de idioma selecciona video y portada, pausa y reinicia el reproductor; conserva carga diferida.
+- Las reseñas de Google solicitan el idioma elegido y mantienen cachés independientes ES/EN. El carrusel conserva las reseñas archivadas traducidas y descarta respuestas de un idioma anterior al cambiar rápidamente.
+- Validación: 48 pruebas aprobadas, incluyendo traducciones de reseñas, selector visible en las tres variantes, caché por idioma y cambio de video ES→EN→ES. Entrega parcial del MP4 inglés verificada por HTTP 206. Revisión de sintaxis y `git diff --check` sin errores.
+- La validación visual en Chrome quedó pendiente: la herramienta devuelve `Browser is not available: chrome` en esta sesión. No se realizó push ni despliegue en este cambio.

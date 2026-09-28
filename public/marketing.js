@@ -21,26 +21,41 @@
     window.APVTracking.track('budget_select',{bucket:index,price_min:min,price_max:max});
   }));
 
-  fetch('/api/reviews').then(r=>r.json()).then(data=>{
-    if(!data.live)return;
-    const updateScore=()=>{
+  const container=document.querySelector('#review-slides'), dots=document.querySelector('.review-dots');
+  const archived=container ? [...container.children].map(el=>el.cloneNode(true)) : [];
+  let requestVersion=0;
+  function translate(root){
+    root.querySelectorAll('[data-i18n-aria-label]').forEach(el=>{const value=window.APV_I18N?.[english()?'en':'es']?.[el.dataset.i18nAriaLabel];if(value)el.setAttribute('aria-label',value);});
+    root.querySelectorAll('[data-i18n]').forEach(el=>{const value=window.APV_I18N?.[english()?'en':'es']?.[el.dataset.i18n];if(value)el.textContent=value;});
+  }
+  function render(data={}){
+    if(!container)return;
+    const known=new Set((data.reviews||[]).map(r=>r.author.trim().toLowerCase()));
+    const cards=archived.filter(el=>!known.has(el.querySelector('.review-author strong').textContent.trim().toLowerCase())).map(el=>{const card=el.cloneNode(true);translate(card);return card;});
+    for(const review of (data.reviews||[]).slice().reverse()){
+      const card=archived[0].cloneNode(true);translate(card);
+      const quote=card.querySelector('blockquote');quote.removeAttribute('data-i18n');quote.textContent='“'+review.text+'”';
+      const author=card.querySelector('.review-author strong');author.textContent=review.author;
+      if(/^https:\/\//.test(review.authorUrl||'')){const link=document.createElement('a');link.href=review.authorUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent=review.author;author.replaceChildren(link);}
+      card.querySelector('.review-avatar').textContent=review.author.slice(0,2).toUpperCase();
+      const caption=card.querySelector('.review-author div>span');caption.removeAttribute('data-i18n');caption.textContent=text('Reseña en Google','Google review (translated when available)');
+      const stars=card.querySelector('.review-stars');stars.removeAttribute('data-i18n-aria-label');stars.textContent='★'.repeat(review.rating);stars.setAttribute('aria-label',review.rating+'/5');cards.unshift(card);
+    }
+    container.replaceChildren(...cards);dots.replaceChildren();
+    cards.forEach((card,i)=>{card.hidden=false;card.setAttribute('aria-label',`${i+1} / ${cards.length}`);card.setAttribute('aria-roledescription',text('diapositiva','slide'));const button=document.createElement('button');button.type='button';button.dataset.review=i;button.setAttribute('aria-label',text('Ver página de reseñas ','View review page ')+(i+1));dots.append(button);});
+    document.dispatchEvent(new Event('apv:reviews'));
+  }
+  async function loadReviews(){
+    const version=++requestVersion;render();
+    document.querySelectorAll('[data-review-score]').forEach(el=>el.textContent=(5).toLocaleString(english()?'en-US':'es-US',{minimumFractionDigits:1}));
+    try{
+      const response=await fetch('/api/reviews?lang='+(english()?'en':'es'));const data=await response.json();
+      if(version!==requestVersion||!data.live)return;
       document.querySelectorAll('[data-review-score]').forEach(el=>el.textContent=Number(data.rating).toLocaleString(english()?'en-US':'es-US',{minimumFractionDigits:1,maximumFractionDigits:1}));
       document.querySelectorAll('[data-review-score-date]').forEach(el=>el.hidden=true);
-    };
-    updateScore();document.addEventListener('apv:language',updateScore);
-    const applyRating=()=>document.querySelectorAll('[data-live-rating]').forEach(el=>{el.hidden=false;el.classList.add('rating-badge');el.textContent=`★ ${data.rating} ${text('en Google','on Google')} · ${data.total} ${text('reseñas','reviews')}`;});applyRating();document.addEventListener('apv:language',applyRating);
-    const container=document.querySelector('#review-slides'), dots=document.querySelector('.review-dots');
-    if(!container||!data.reviews.length)return;
-    const template=container.querySelector('.review-slide').cloneNode(true);
-    const known=new Set(data.reviews.map(r=>r.author.trim().toLowerCase()));
-    const archived=[...container.querySelectorAll('.review-slide')].map(slide=>({author:slide.querySelector('.review-author strong').textContent,text:slide.querySelector('blockquote').textContent.replace(/^[“]|[”]$/g,''),rating:slide.querySelector('.review-stars').textContent.length,excerpt:true})).filter(r=>!known.has(r.author.trim().toLowerCase()));
-    const ranked=[...data.reviews,...archived].sort((a,b)=>Number(/apv motors/i.test(b.text))-Number(/apv motors/i.test(a.text)));
-    container.replaceChildren();dots.replaceChildren();
-    ranked.forEach((r,i)=>{const slide=template.cloneNode(true);slide.hidden=false;slide.setAttribute('aria-label',`${i+1} / ${ranked.length}`);slide.querySelector('blockquote').textContent='“'+r.text+'”';const author=slide.querySelector('.review-author strong');author.textContent=r.author;
-      if(/^https:\/\//.test(r.authorUrl||'')){const link=document.createElement('a');link.href=r.authorUrl;link.target='_blank';link.rel='noopener noreferrer';link.textContent=r.author;author.replaceChildren(link);}
-      slide.querySelector('.review-stars').textContent='★'.repeat(r.rating);slide.querySelector('.review-stars').setAttribute('aria-label',r.rating+'/5');slide.querySelector('.review-avatar').textContent=r.author.slice(0,2).toUpperCase();const caption=slide.querySelector('.review-author div>span');if(caption)caption.textContent=r.excerpt?text('Fragmento de su reseña','Review excerpt'):text('Reseña en Google','Google review');container.append(slide);
-      const dot=document.createElement('button');dot.type='button';dot.dataset.review=i;dot.setAttribute('aria-label',text('Ver reseña de ','Read review by ')+r.author);dots.append(dot);
-    });
-    document.dispatchEvent(new Event('apv:reviews'));
-  }).catch(()=>{});
+      document.querySelectorAll('[data-live-rating]').forEach(el=>{el.hidden=false;el.classList.add('rating-badge');el.textContent=`★ ${data.rating} ${text('en Google','on Google')} · ${data.total} ${text('reseñas','reviews')}`;});
+      render(data);
+    }catch{}
+  }
+  document.addEventListener('apv:language',loadReviews);loadReviews();
 })();

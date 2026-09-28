@@ -369,18 +369,21 @@
     return fallback || (TRANSLATIONS.es[key] || key);
   }
 
+  const originalTitle=document.title;
+  const originalDescription=document.querySelector('meta[name="description"]')?.content;
   function setLanguage(lang) {
     if (!TRANSLATIONS[lang]) return;
     currentLang = lang;
     localStorage.setItem('APV_LANG', lang);
     document.documentElement.lang = lang;
-    if(currentLang==='en')document.title = t('pageTitle');
+    document.title = currentLang==='en' ? t('pageTitle') : originalTitle;
     const description = document.querySelector('meta[name="description"]');
-    if (description && currentLang==='en') description.content = t('pageDescription');
+    if (description) description.content = currentLang==='en' ? t('pageDescription') : originalDescription;
     if (window.apvKommo && typeof window.apvKommo.setLocale === 'function') window.apvKommo.setLocale(lang);
 
     $$('#lang-switch .lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
+      btn.setAttribute('aria-pressed', String(btn.dataset.lang === lang));
     });
 
     $$('[data-i18n]').forEach(el => {
@@ -1062,7 +1065,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         <div class="calc-grid-layout">
           <!-- LEFT SIDE: Opciones que afectan los fees -->
           <details class="calc-options-card">
-            <summary class="calc-options-title">Parámetros de la oferta <span class="calc-options-chevron" aria-hidden="true">⌄</span></summary>
+            <summary class="calc-options-title">${currentLang==='en'?"Bid settings":"Parámetros de la oferta"} <span class="calc-options-chevron" aria-hidden="true">⌄</span></summary>
             <div class="calc-options-fields">
 
             <!-- Método de Pago -->
@@ -1071,11 +1074,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <div class="calc-radio-toggle">
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_payment" value="secure" checked />
-                  <span>🔒 Pago seguro</span>
+                  <span>${t('detailComplete18')}</span>
                 </label>
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_payment" value="unsecured" />
-                  <span>⚠️ Pago no garantizado</span>
+                  <span>${t('detailComplete19')}</span>
                 </label>
               </div>
             </div>
@@ -1086,11 +1089,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <div class="calc-radio-toggle">
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_offer" value="live" checked />
-                  <span>⚡ Oferta en vivo</span>
+                  <span>${t('detailComplete20')}</span>
                 </label>
                 <label class="calc-radio-btn">
                   <input type="radio" name="calc_offer" value="prebid" />
-                  <span>📝 Preoferta</span>
+                  <span>${t('detailComplete21')}</span>
                 </label>
               </div>
             </div>
@@ -1098,13 +1101,13 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <!-- Tipo de Título (Fijo según el vehículo) -->
             <div class="calc-opt-group">
               <label class="calc-opt-label">
-                Tipo de Título:
-                <span class="auto-badge locked-badge" title="Ajustado obligatoriamente por la ficha del vehículo">🔒 Fijo por vehículo</span>
+                ${currentLang==='en'?"Title type:":"Tipo de Título:"}
+                <span class="auto-badge locked-badge" title="${currentLang==='en'?"Determined by the vehicle details":"Ajustado obligatoriamente por la ficha del vehículo"}">${t('detailComplete22')}</span>
               </label>
               <div class="calc-radio-toggle is-locked">
                 <label class="calc-radio-btn ${autoTitle === 'clean' ? 'is-selected-locked' : 'is-disabled'}">
                   <input type="radio" name="calc_title" value="clean" ${autoTitle === 'clean' ? 'checked' : ''} disabled />
-                  <span>📄 Título Limpio</span>
+                  <span>${t('detailComplete23')}</span>
                 </label>
                 <label class="calc-radio-btn ${autoTitle === 'salvage' ? 'is-selected-locked' : 'is-disabled'}">
                   <input type="radio" name="calc_title" value="salvage" ${autoTitle === 'salvage' ? 'checked' : ''} disabled />
@@ -1116,17 +1119,17 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <!-- Tipo de Vehículo (Fijo según el vehículo) -->
             <div class="calc-opt-group">
               <label class="calc-opt-label">
-                Tipo de Vehículo:
-                <span class="auto-badge locked-badge" title="Ajustado obligatoriamente por la categoría del vehículo">🔒 Fijo por vehículo</span>
+                ${currentLang==='en'?"Vehicle type:":"Tipo de Vehículo:"}
+                <span class="auto-badge locked-badge" title="${currentLang==='en'?"Determined by the vehicle category":"Ajustado obligatoriamente por la categoría del vehículo"}">${t('detailComplete22')}</span>
               </label>
               <div class="calc-radio-toggle is-locked">
                 <label class="calc-radio-btn ${autoVehicle === 'standard' ? 'is-selected-locked' : 'is-disabled'}">
                   <input type="radio" name="calc_vehicle" value="standard" ${autoVehicle === 'standard' ? 'checked' : ''} disabled />
-                  <span>🚗 Vehículos Estándar</span>
+                  <span>${t('detailComplete24')}</span>
                 </label>
                 <label class="calc-radio-btn ${autoVehicle === 'heavy' ? 'is-selected-locked' : 'is-disabled'}">
                   <input type="radio" name="calc_vehicle" value="heavy" ${autoVehicle === 'heavy' ? 'checked' : ''} disabled />
-                  <span>🚛 Vehículo pesado</span>
+                  <span>${t('detailComplete25')}</span>
                 </label>
               </div>
             </div>
@@ -1214,7 +1217,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <div class="calc-label">
                 <span class="calc-icon">🏛️</span>
                 <span>Copart fees</span>
-                <span class="calc-info-badge">Desglose ⌄</span>
+                <span class="calc-info-badge">${t('detailComplete26')}</span>
               </div>
               <div class="calc-val-wrap">
                 <strong class="calc-val">${money(breakdown.totalCopartFees)}</strong>
@@ -1223,22 +1226,22 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             </div>
             <div class="calc-subdetails hidden" id="copart-subdetails">
               <div class="calc-subrow">
-                <span>${t('copartFeeLabel')} (${breakdown.options.vehicleType === 'heavy' ? 'Vehículo Pesado' : 'Estándar'})</span>
+                <span>${t('copartFeeLabel')} (${breakdown.options.vehicleType === 'heavy' ? (currentLang==='en'?"Heavy vehicle":"Vehículo Pesado") : (currentLang==='en'?"Standard":"Estándar")})</span>
                 <span>${money(breakdown.copartBuyerFee)}</span>
               </div>
               <div class="calc-subrow">
-                <span>${t('copartVirtualFeeLabel')} (${breakdown.options.offerType === 'prebid' ? 'Preoferta' : 'En vivo'})</span>
+                <span>${t('copartVirtualFeeLabel')} (${breakdown.options.offerType === 'prebid' ? (currentLang==='en'?"Pre-bid":"Preoferta") : (currentLang==='en'?"Live":"En vivo")})</span>
                 <span>${money(breakdown.copartVirtualFee)}</span>
               </div>
               ${breakdown.unsecuredPaymentFee > 0 ? `
                 <div class="calc-subrow warning-subrow">
-                  <span>Recargo Pago no garantizado (3.5%)</span>
+                  <span>${t('detailComplete27')}</span>
                   <span>${money(breakdown.unsecuredPaymentFee)}</span>
                 </div>
               ` : ''}
               ${breakdown.cleanTitleFee > 0 ? `
                 <div class="calc-subrow">
-                  <span>Procesamiento Título Limpio</span>
+                  <span>${t('detailComplete28')}</span>
                   <span>${money(breakdown.cleanTitleFee)}</span>
                 </div>
               ` : ''}
@@ -1250,8 +1253,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <div class="calc-row calc-row-toggle">
               <div class="calc-label">
                 <span class="calc-icon">📋</span>
-                <span>Otros fees (Portón, Banco, Título)</span>
-                <span class="calc-info-badge">Desglose ⌄</span>
+                <span>${t('detailComplete29')}</span>
+                <span class="calc-info-badge">${t('detailComplete26')}</span>
               </div>
               <div class="calc-val-wrap">
                 <strong class="calc-val">${money(breakdown.fixedOtherFees)}</strong>
@@ -1362,10 +1365,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <button type="button" class="btn btn-ghost btn-small" data-member-history="${esc(v.lot)}">${currentLang==='en'?'Request vehicle history':'Solicitar historial elaborado por APV'}</button>
               <div class="detail-card-row"><span>VIN</span><strong>${vinQuickSpecValue(v)}</strong></div>
               <div class="detail-card-row"><span>${t('lot')}</span><strong>${esc(v.lot)}</strong></div>
-              <div class="detail-card-row"><span>Fecha de subasta</span><strong>${esc(dateLabel(v.saleDate, v.timeZone))}</strong></div>
-              <div class="detail-card-row"><span>Nombre de venta</span><strong>${esc(v.yardName || 'Copart Yard')}</strong></div>
-              <div class="detail-card-row"><span>Ubicación</span><strong>${esc(locationLabel(v))}</strong></div>
-              <div class="detail-card-row"><span>Vendedor</span><strong>${esc(v.sellerName || 'Copart Seller')}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete0')}</span><strong>${esc(dateLabel(v.saleDate, v.timeZone))}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete1')}</span><strong>${esc(v.yardName || 'Copart Yard')}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete2')}</span><strong>${esc(locationLabel(v))}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete3')}</span><strong>${esc(v.sellerName || 'Copart Seller')}</strong></div>
             </div>
           </div>
 
@@ -1375,10 +1378,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <h3>${t('priceHeading')}</h3>
             </div>
             <div class="detail-card-grid">
-              <div class="detail-card-row"><span>Valor Retail Estimado</span><strong>${esc(money(v.retailValue))}</strong></div>
-              ${hasBuyNow ? `<div class="detail-card-row"><span>Compra directa (Buy Now)</span><strong>${esc(cardPrice(v.buyNow))}</strong></div>` : ''}
-              <div class="detail-card-row"><span>Estado de Venta</span><strong>${esc(v.saleStatus || 'Subasta activa')}</strong></div>
-              <div class="detail-card-row"><span>Reserva Vendedor</span><strong>${esc(v.saleStatus || 'Pujas habilitadas')}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete4')}</span><strong>${esc(money(v.retailValue))}</strong></div>
+              ${hasBuyNow ? `<div class="detail-card-row"><span>${t('detailComplete5')}</span><strong>${esc(cardPrice(v.buyNow))}</strong></div>` : ''}
+              <div class="detail-card-row"><span>${t('detailComplete6')}</span><strong>${esc(v.saleStatus || (currentLang==='en'?"Active auction":"Subasta activa"))}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete7')}</span><strong>${esc(v.saleStatus || (currentLang==='en'?"Bidding enabled":"Pujas habilitadas"))}</strong></div>
             </div>
           </div>
         </div>
@@ -1393,10 +1396,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <h3>${t('damageHeading')}</h3>
           </div>
           <div class="detail-card-grid two-col">
-            <div class="detail-card-row"><span>Daño principal</span><strong>${esc(v.primaryDamage || 'N/D')}</strong></div>
-            <div class="detail-card-row"><span>Daño secundario</span><strong>${esc(v.secondaryDamage || 'N/D')}</strong></div>
-            <div class="detail-card-row"><span>Condición</span><strong>${esc(conditionLabel(v.runsDrives))}</strong></div>
-            <div class="detail-card-row"><span>Título / Doc</span><strong>${esc(titleDoc(v))}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete8')}</span><strong>${esc(v.primaryDamage || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete9')}</span><strong>${esc(v.secondaryDamage || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete10')}</span><strong>${esc(conditionLabel(v.runsDrives))}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete11')}</span><strong>${esc(titleDoc(v))}</strong></div>
           </div>
         </div>
 
@@ -1406,12 +1409,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <h3>${t('infoHeading')}</h3>
           </div>
           <div class="detail-card-grid two-col">
-            <div class="detail-card-row"><span>Odómetro</span><strong>${miles(v.odometer)}</strong></div>
-            <div class="detail-card-row"><span>Tiene Llave</span><strong>${v.hasKeys === 'YES' ? 'Sí' : 'No / N/D'}</strong></div>
-            <div class="detail-card-row"><span>Cilindros</span><strong>${v.cylinders ? `${v.cylinders} cyl` : 'N/D'}</strong></div>
-            <div class="detail-card-row"><span>Tipo de motor</span><strong>${esc(v.engine || 'N/D')}</strong></div>
-            <div class="detail-card-row"><span>Tracción</span><strong>${esc(v.drive || 'N/D')}</strong></div>
-            <div class="detail-card-row"><span>Transmisión</span><strong>${esc(v.transmission || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete12')}</span><strong>${miles(v.odometer)}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete13')}</span><strong>${v.hasKeys === 'YES' ? (currentLang==='en'?"Yes":"Sí") : (currentLang==='en'?"No / N/A":"No / N/D")}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete14')}</span><strong>${v.cylinders ? `${v.cylinders} cyl` : 'N/D'}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete15')}</span><strong>${esc(v.engine || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete16')}</span><strong>${esc(v.drive || 'N/D')}</strong></div>
+            <div class="detail-card-row"><span>${t('detailComplete17')}</span><strong>${esc(v.transmission || 'N/D')}</strong></div>
           </div>
         </div>
       </div>
@@ -1511,7 +1514,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       window.APVDisplay?.clean(dom.vehicleDetail,currentLang);
     document.dispatchEvent(new Event('apv:detail'));
     setupGalleryNavigation();
-    } catch(err) { if(String(state.currentVehicle?.lot)===String(lot)) showToast('No se pudieron cargar las fotos. Intenta abrir el vehículo de nuevo.'); }
+    } catch(err) { if(String(state.currentVehicle?.lot)===String(lot)) showToast((currentLang==='en'?"Photos could not load. Please reopen the vehicle.":"No se pudieron cargar las fotos. Intenta abrir el vehículo de nuevo.")); }
   }
   function selectGalleryPhoto(index) {
     const buttons=$$('.gallery-thumb',dom.vehicleDetail);
@@ -1582,7 +1585,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   window.APVAuth={open:openAuth,close:closeAuth};
-  window.openAPVAuth=function(reason){ openAuth(reason||'Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.'); return false; };
+  window.openAPVAuth=function(reason){ openAuth(reason||(currentLang==='en'?"Log in to recover your conversations and access the full VIN.":"Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.")); return false; };
   window.closeAPVAuth=function(){ closeAuth(); return false; };
 
   function switchAuthTab(tab){
@@ -1680,7 +1683,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         $('#verify-code').value = d.devCode;
         setAuthStatus(`Código enviado a tu correo. (Desarrollo: ${d.devCode})`, 'info');
       }
-      showToast(d.message || 'Código de 6 dígitos enviado.');
+      showToast(d.message || (currentLang==='en'?"6-digit code sent.":"Código de 6 dígitos enviado."));
       requestAnimationFrame(()=>$('#verify-code')?.focus());
     }catch(err){
       if(inline){ status.textContent=err.message; status.dataset.kind='error'; status.classList.remove('hidden'); }
@@ -1758,11 +1761,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <strong>${money(breakdown.bid)}</strong>
           </div>
           <div class="bid-mini-row">
-            <span>Copart fees (${autoVehicle === 'heavy' ? 'Vehículo Pesado' : 'Estándar'})</span>
+            <span>Copart fees (${autoVehicle === 'heavy' ? (currentLang==='en'?"Heavy vehicle":"Vehículo Pesado") : (currentLang==='en'?"Standard":"Estándar")})</span>
             <strong>${money(breakdown.totalCopartFees)}</strong>
           </div>
           <div class="bid-mini-row">
-            <span>Otros fees (Portón, Banco, Título)</span>
+            <span>${t('detailComplete29')}</span>
             <strong>${money(breakdown.fixedOtherFees)}</strong>
           </div>
           <div class="bid-mini-row red-highlight">
@@ -1773,7 +1776,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         <div class="bid-mini-total">
           <div class="bid-total-left">
             <span class="bid-total-label">Total estimado a pagar</span>
-            <small class="bid-total-sub">* Sujeto a variaciones de subasta y ubicación</small>
+            <small class="bid-total-sub">${t('detailComplete30')}</small>
           </div>
           <strong class="bid-total-amount">${money(breakdown.total)} USD</strong>
         </div>
@@ -1782,7 +1785,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   async function openBid(v, initialAmount){
-    if(!state.user){ openAuth('Crea tu cuenta o inicia sesión para solicitar la puja. Tu cuenta mantiene el historial de Kommo entre dispositivos.',{type:'bid',lot:v.lot,amount:initialAmount}); return; }
+    if(!state.user){ openAuth((currentLang==='en'?"Create an account or log in to request a bid. Your account keeps your chat history across devices.":"Crea tu cuenta o inicia sesión para solicitar la puja. Tu cuenta mantiene el historial de Kommo entre dispositivos."),{type:'bid',lot:v.lot,amount:initialAmount}); return; }
     if (window.apvMembership && !await window.apvMembership.prompt('bid')) return;
     try{ if(!v.vin) v=await getVehicle(v.lot); }catch(_){}
     state.currentVehicle=v; closeDetail(false); dom.bidModal?.classList.remove('chat-mode');
@@ -1797,9 +1800,9 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   function closeBid(){ dom.bidOverlay.classList.add('hidden'); dom.bidModal?.classList.remove('chat-mode'); syncChatReopenButton(); if(dom.vehicleOverlay.classList.contains('hidden')&&dom.authOverlay.classList.contains('hidden')) document.body.style.overflow=''; }
 
   async function continueBid(){
-    if(!state.user){ closeBid(); openAuth('Debes iniciar sesión antes de abrir el chat con APV Motors.',state.currentVehicle?{type:'bid',lot:state.currentVehicle.lot}:null); return; }
-    const v=state.currentVehicle, amount=Number(dom.bidAmount.value||0); if(!v||amount<=0){ showToast('Indica un tope de puja válido.'); dom.bidAmount.focus(); return; }
-    try{ const result=await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),lot:v.lot,maxBid:amount})});window.APVTracking?.track('bid_request',{lote:String(v.lot)},result.eventId); }catch(err){ if(err.status===401){ closeBid(); openAuth('Tu sesión expiró. Vuelve a iniciar sesión.',{type:'bid',lot:v.lot}); return; } }
+    if(!state.user){ closeBid(); openAuth((currentLang==='en'?"Log in before opening the chat with APV Motors.":"Debes iniciar sesión antes de abrir el chat con APV Motors."),state.currentVehicle?{type:'bid',lot:state.currentVehicle.lot}:null); return; }
+    const v=state.currentVehicle, amount=Number(dom.bidAmount.value||0); if(!v||amount<=0){ showToast((currentLang==='en'?"Enter a valid maximum bid.":"Indica un tope de puja válido.")); dom.bidAmount.focus(); return; }
+    try{ const result=await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),lot:v.lot,maxBid:amount})});window.APVTracking?.track('bid_request',{lote:String(v.lot)},result.eventId); }catch(err){ if(err.status===401){ closeBid(); openAuth((currentLang==='en'?"Your session expired. Please log in again.":"Tu sesión expiró. Vuelve a iniciar sesión."),{type:'bid',lot:v.lot}); return; } }
     dom.bidAmountStep.classList.add('hidden'); dom.bidChatStep.classList.remove('hidden'); dom.bidModal?.classList.add('chat-mode');
     if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>Tope solicitado</span><br><strong>${esc(money(amount))} USD</strong></div>`;
     const message=window.apvKommo ? window.apvKommo.buildVehicleMessage(v) : `Vehículo: ${v.title}\nVIN: ${v.vin||'N/D'}`;
@@ -1814,7 +1817,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if(statusChip) statusChip.textContent='PROCESANDO';
 
     const canSend=window.apvKommo && !window.apvKommo.__bootstrapOnly && typeof window.apvKommo.sendBidContext==='function';
-    const result=canSend ? window.apvKommo.sendBidContext(v,amount,state.user,getUserBidsHistory()) : {ok:false,botParams:{vehicle_message:message},error:'El módulo Kommo de la página no cargó.'};
+    const result=canSend ? window.apvKommo.sendBidContext(v,amount,state.user,getUserBidsHistory()) : {ok:false,botParams:{vehicle_message:message},error:(currentLang==='en'?"The chat module could not load.":"El módulo Kommo de la página no cargó.")};
     if(result.ok && result.ready){ dom.kommoFallback.classList.add('hidden'); }
     else{
       dom.kommoFallback.classList.remove('hidden');
@@ -1823,14 +1826,14 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       if (fallbackCopy) fallbackCopy.textContent='Preparando tu solicitud con APV Motors…';
     }
 
-    if(statusText) statusText.textContent='Abre o continúa la conversación para asociar la solicitud.';
+    if(statusText) statusText.textContent=(currentLang==='en'?"Open or continue the conversation to link your request.":"Abre o continúa la conversación para asociar la solicitud.");
     if(statusChip) statusChip.textContent='ESPERANDO CHAT';
   }
 
   async function reopenLastChat(){
-    if(!state.user){ openAuth('Inicia sesión para recuperar tu conversación de Kommo.'); return; }
+    if(!state.user){ openAuth((currentLang==='en'?"Log in to recover your chat conversation.":"Inicia sesión para recuperar tu conversación de Kommo.")); return; }
     const saved=readChatMemory();
-    if(!saved||saved.userId!==state.user.kommoUserId){ showToast('Todavía no hay una conversación guardada para esta cuenta.'); syncChatReopenButton(); return; }
+    if(!saved||saved.userId!==state.user.kommoUserId){ showToast((currentLang==='en'?"There is no saved conversation for this account yet.":"Todavía no hay una conversación guardada para esta cuenta.")); syncChatReopenButton(); return; }
     try{
       const v=await getVehicle(saved.lot);
       state.currentVehicle=v;
@@ -1838,11 +1841,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       dom.bidAmountStep.classList.add('hidden');
       dom.bidChatStep.classList.remove('hidden');
       dom.bidModal?.classList.add('chat-mode');
-      if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>Conversación</span><br><strong>Guardada en Kommo</strong></div>`;
+      if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>${currentLang==='en'?'Conversation':'Conversación'}</span><br><strong>${currentLang==='en'?'Saved in Kommo':'Guardada en Kommo'}</strong></div>`;
       const message=(window.apvKommo&&typeof window.apvKommo.buildVehicleMessage==='function')?window.apvKommo.buildVehicleMessage(v):`Vehículo: ${v.title}\nVIN: ${v.vin||'N/D'}`;
       dom.autoMessagePreview.textContent=message;
       dom.fallbackPayload.textContent='Recuperando la conversación del vehículo\n\n'+message;
-      $('#fallback-copy').textContent='Recuperando tu conversación de Kommo…';
+      $('#fallback-copy').textContent=(currentLang==='en'?"Recovering your chat conversation\u2026":"Recuperando tu conversación de Kommo…");
       dom.kommoFallback.classList.remove('hidden');
       dom.bidOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; syncChatReopenButton();
 
@@ -1851,7 +1854,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         const result=api.reopenConversation(v,state.user);
         if(result.ok&&result.ready) dom.kommoFallback.classList.remove('hidden');
       }else{
-        $('#fallback-copy').textContent='El módulo Kommo no cargó. Usa “Copiar diagnóstico” para ver la causa.';
+        $('#fallback-copy').textContent=(currentLang==='en'?"The chat module did not load. Use \u201cCopy diagnostics\u201d for details.":"El módulo Kommo no cargó. Usa “Copiar diagnóstico” para ver la causa.");
       }
     }catch(err){ showToast('No se pudo recuperar el chat: '+err.message); }
   }
@@ -1938,7 +1941,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
     const authCalc = e.target.closest('[data-auth-calc]');
     if (authCalc) {
-      openAuth('Regístrate o inicia sesión para usar la calculadora de costos.', { type: 'calc', lot: authCalc.dataset.authCalc });
+      openAuth((currentLang==='en'?"Sign up or log in to use the cost calculator.":"Regístrate o inicia sesión para usar la calculadora de costos."), { type: 'calc', lot: authCalc.dataset.authCalc });
       return;
     }
 
@@ -1954,7 +1957,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const thumb=e.target.closest('[data-gallery-src]');
     if(thumb){ selectGalleryPhoto($$('.gallery-thumb',dom.vehicleDetail).findIndex(b=>b.dataset.gallerySrc===thumb.dataset.gallerySrc)); return; }
     if(e.target.closest('[data-detail-bid]')&&state.currentVehicle){ await openBid(state.currentVehicle); return; }
-    if(e.target.closest('[data-auth-vin]')&&state.currentVehicle){ openAuth('Regístrate o inicia sesión para revelar el VIN completo.',{type:'vin',lot:state.currentVehicle.lot}); return; }
+    if(e.target.closest('[data-auth-vin]')&&state.currentVehicle){ openAuth((currentLang==='en'?"Sign up or log in to reveal the full VIN.":"Regístrate o inicia sesión para revelar el VIN completo."),{type:'vin',lot:state.currentVehicle.lot}); return; }
     const toggle = e.target.closest('#toggle-full-tech');
     if (toggle) {
       const full = $('#full-tech');
@@ -1990,9 +1993,9 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       const statusText=$('#kommo-status-text'); const statusChip=$('#kommo-status-chip');
       if(statusChip){ statusChip.className='kommo-status-chip '+(info.status==='ready'?'ready':info.status==='error'?'error':info.status==='loading'||info.status==='loaded'?'loading':''); statusChip.textContent=String(info.status||'sin estado').toUpperCase(); }
       if(info.status==='loading'){ copy.textContent='Conectando con Kommo…'; if(statusText) statusText.textContent='Conectando con Website Chat Button…'; }
-      else if(info.status==='loaded'){ copy.textContent='Kommo cargó. Inicializando el chat…'; if(statusText) statusText.textContent='button.js cargó; esperando onChatReady…'; }
+      else if(info.status==='loaded'){ copy.textContent=(currentLang==='en'?"Starting chat\u2026":"Kommo cargó. Inicializando el chat…"); if(statusText) statusText.textContent=(currentLang==='en'?"Chat script loaded; waiting for the chat to be ready\u2026":"button.js cargó; esperando onChatReady…"); }
       else if(info.status==='ready'){ if(statusText) statusText.textContent='Chat de Kommo listo'; }
-      else if(info.status==='error'){ copy.textContent='No se pudo conectar con Kommo. Revisa que este dominio esté autorizado en Website Chat Button y pulsa Reintentar conexión.'; if(statusText) statusText.textContent='Kommo reportó un error de conexión'; }
+      else if(info.status==='error'){ copy.textContent=(currentLang==='en'?"Could not connect to chat. Verify that this domain is authorized in Website Chat Button, then press Retry connection.":"No se pudo conectar con Kommo. Revisa que este dominio esté autorizado en Website Chat Button y pulsa Reintentar conexión."); if(statusText) statusText.textContent=(currentLang==='en'?"Chat reported a connection error":"Kommo reportó un error de conexión"); }
     });
   }
   if(window.apvKommo && typeof window.apvKommo.onSync==='function'){
@@ -2000,18 +2003,18 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       const statusText=$('#kommo-status-text');
       const statusChip=$('#kommo-status-chip');
       if(info.ok && !info.pendingChat){
-        if(statusText) statusText.textContent='Solicitud asociada a esta conversación';
+        if(statusText) statusText.textContent=(currentLang==='en'?"Request linked to this conversation":"Solicitud asociada a esta conversación");
         if(statusChip) statusChip.textContent='COMPLETADO';
-        const copy=$('#fallback-copy'); if(copy) copy.textContent='Solicitud registrada con éxito.';
+        const copy=$('#fallback-copy'); if(copy) copy.textContent=(currentLang==='en'?"Request submitted successfully.":"Solicitud registrada con éxito.");
       }else if(info.pendingChat){
-        if(statusText) statusText.textContent='Esperando que la conversación aparezca en Kommo…';
+        if(statusText) statusText.textContent=(currentLang==='en'?"Waiting for the conversation to appear\u2026":"Esperando que la conversación aparezca en Kommo…");
         if(statusChip) statusChip.textContent='ESPERANDO CHAT';
       }
     });
   }
   $('#kommo-retry')?.addEventListener('click',()=>{
     if(window.apvKommo?.retry && !window.apvKommo.__bootstrapOnly){
-      $('#fallback-copy').textContent='Reintentando conexión con Kommo…';
+      $('#fallback-copy').textContent=(currentLang==='en'?"Retrying chat connection\u2026":"Reintentando conexión con Kommo…");
       window.apvKommo.retry();
     }else{
       $('#fallback-copy').textContent='El archivo /kommo.js no cargó. Recarga la v8 y comprueba el diagnóstico.';
@@ -2020,8 +2023,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   $('#kommo-sync-crm')?.addEventListener('click',()=>{
     const api=window.apvKommo;
     if(!api||api.__bootstrapOnly||typeof api.syncCrmNow!=='function'){
-      const statusText=$('#kommo-status-text'); if(statusText) statusText.textContent='No se puede sincronizar: módulo Kommo no disponible.';
-      showToast('Módulo Kommo no disponible.');
+      const statusText=$('#kommo-status-text'); if(statusText) statusText.textContent=(currentLang==='en'?"Unable to sync: chat module unavailable.":"No se puede sincronizar: módulo Kommo no disponible.");
+      showToast((currentLang==='en'?"Chat module unavailable.":"Módulo Kommo no disponible."));
       return;
     }
     const result=api.syncCrmNow();
@@ -2049,14 +2052,14 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const diag=window.apvKommo&&typeof window.apvKommo.debug==='function'?window.apvKommo.debug():{version:'15.0.0',status:'apvKommo ausente',pageUrl:location.href};
     const payload=JSON.stringify(diag,null,2);
     const out=$('#kommo-diagnostic-output'); if(out){ out.textContent=payload; out.classList.remove('hidden'); }
-    try{ await navigator.clipboard.writeText(payload); showToast('Diagnóstico visible y copiado.'); }
-    catch(_){ console.info('[APV Kommo diagnóstico]',diag); showToast('Diagnóstico visible debajo del chat.'); }
+    try{ await navigator.clipboard.writeText(payload); showToast((currentLang==='en'?"Diagnostics displayed and copied.":"Diagnóstico visible y copiado.")); }
+    catch(_){ console.info('[APV Kommo diagnóstico]',diag); showToast((currentLang==='en'?"Diagnostics displayed below the chat.":"Diagnóstico visible debajo del chat.")); }
   });
   dom.chatReopenButton?.addEventListener('click',reopenLastChat);
 
   document.addEventListener('click',e=>{
     const opener=e.target.closest('[data-open-auth]');
-    if(opener){ e.preventDefault(); openAuth('Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.'); return; }
+    if(opener){ e.preventDefault(); openAuth((currentLang==='en'?"Log in to recover your conversations and access the full VIN.":"Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.")); return; }
   },true);
   const accountToggle = $('#account-menu-toggle'), accountMenu = $('#account-menu');
   function closeAccountMenu(restoreFocus = false){
@@ -2165,7 +2168,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   $('#my-bids-button')?.addEventListener('click', async () => {
     if (!state.user) {
-      openAuth('Inicia sesión para ver tus pujas y conversaciones.');
+      openAuth((currentLang==='en'?"Log in to view your bids and conversations.":"Inicia sesión para ver tus pujas y conversaciones."));
       return;
     }
     const bids = getUserBidsHistory();
@@ -2180,7 +2183,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
           return;
         }
       } catch (_) {}
-      showToast('Aún no has enviado solicitudes de puja.');
+      showToast((currentLang==='en'?"You have not submitted any bid requests yet.":"Aún no has enviado solicitudes de puja."));
       return;
     }
     const targetLot = bids[0].lot;
@@ -2202,13 +2205,13 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       const v = await getVehicle(lot);
       state.currentVehicle = v;
       renderConversationSelector();
-      if (dom.chatContext) dom.chatContext.innerHTML = `<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin || 'N/D')}</span></div><div><span>Conversación</span><br><strong>Guardada en Kommo</strong></div>`;
+      if (dom.chatContext) dom.chatContext.innerHTML = `<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin || 'N/D')}</span></div><div><span>${currentLang==='en'?'Conversation':'Conversación'}</span><br><strong>${currentLang==='en'?'Saved in Kommo':'Guardada en Kommo'}</strong></div>`;
       rememberChat(v);
       if (window.apvKommo && typeof window.apvKommo.reopenConversation === 'function') {
         window.apvKommo.reopenConversation(v, state.user);
       }
     } catch (err) {
-      showToast('No se pudo cargar el chat de este vehículo: ' + err.message);
+      showToast((currentLang==='en'?"Could not load the chat for this vehicle: ":"No se pudo cargar el chat de este vehículo: ") + err.message);
     }
   });
 
@@ -2426,7 +2429,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   window.apvMembership?.configure({
     notify: showToast,
-    requireAuth: action=>{openAuth('Inicia sesión o crea tu cuenta gratis para continuar.',action);if(action.type==='subscription')switchAuthTab('register');},
+    requireAuth: action=>{openAuth((currentLang==='en'?"Log in or create your free account to continue.":"Inicia sesión o crea tu cuenta gratis para continuar."),action);if(action.type==='subscription')switchAuthTab('register');},
     closeOverlays: ()=>{closeDetail(false);closeBid();},
     changed: membership=>{
       if(state.user) state.user.membership=membership;

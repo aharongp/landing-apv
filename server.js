@@ -923,7 +923,7 @@ const server = http.createServer(async (req, res) => {
     marketing.capture(req,res,url);
     if(req.method==='GET' && url.pathname==='/go')return marketing.assign(req,res,url);
     if(req.method==='GET' && url.pathname==='/marketing-config.js')return text(res,200,'window.APV_MARKETING='+JSON.stringify(marketing.publicConfig()).replace(/</g,'\\u003c')+';','application/javascript; charset=utf-8');
-    if(req.method==='GET' && url.pathname==='/api/reviews')return json(res,200,await marketing.reviews());
+    if(req.method==='GET' && url.pathname==='/api/reviews')return json(res,200,await marketing.reviews(url.searchParams.get('lang')));
     if(req.method==='POST' && url.pathname==='/api/marketing/consent'){
       const user=getAuthUser(req);if(user){const body=JSON.parse((await readRequestBody(req,8192)).toString('utf8'));attribution().save(user.id,req,body);}return json(res,200,{ok:true});
     }

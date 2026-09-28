@@ -15,7 +15,7 @@
         document.getElementById('budget-catalog').href=window.APVTracking.campaignURL('/catalogo'+(query?'?q='+encodeURIComponent(query):''));
         result.hidden=false;
       } catch (err) {
-        error.textContent=err instanceof RangeError ? err.message : 'No se pudo calcular ahora. Puedes usar la calculadora de la ficha del vehículo.';
+        error.textContent=document.documentElement.lang==='en' ? (err instanceof RangeError ? 'Enter a valid budget and a smaller reserve, leaving enough for the bid and fees.' : 'Unable to calculate now. Please use the calculator on the vehicle page.') : (err instanceof RangeError ? err.message : 'No se pudo calcular ahora. Puedes usar la calculadora de la ficha del vehículo.');
         error.hidden=false;
       }
     });
@@ -68,6 +68,8 @@
   const fullscreen = document.getElementById('video-fullscreen');
   const status = document.getElementById('video-status');
   const format = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+  const text = (es,en) => document.documentElement.lang === 'en' ? en : es;
+  let mediaGeneration = 0;
   let started = false;
   const message = text => { status.textContent = text; status.hidden = !text; };
   const sync = () => {
@@ -75,26 +77,30 @@
     progress.disabled = !duration;
     progress.max = duration || 100;
     progress.value = video.currentTime;
-    progress.setAttribute('aria-valuetext', `${format(video.currentTime)} de ${duration ? format(duration) : 'duración pendiente'}`);
+    progress.setAttribute('aria-valuetext', `${format(video.currentTime)} ${text("de","of")} ${duration ? format(duration) : text("duración pendiente","duration pending")}`);
     time.textContent = `${format(video.currentTime)} / ${duration ? format(duration) : '--:--'}`;
-    toggle.setAttribute('aria-label', video.paused ? 'Reproducir video' : 'Pausar video');
+    toggle.setAttribute('aria-label', video.paused ? text("Reproducir video","Play video") : text("Pausar video","Pause video"));
     toggle.firstElementChild.textContent = video.paused ? '▶' : 'Ⅱ';
-    mute.setAttribute('aria-label', video.muted ? 'Activar sonido' : 'Silenciar video');
+    mute.setAttribute('aria-label', video.muted ? text("Activar sonido","Unmute video") : text("Silenciar video","Mute video"));
     mute.setAttribute('aria-pressed', String(video.muted));
+    fullscreen.setAttribute('aria-label', document.fullscreenElement === stage ? text('Salir de pantalla completa','Exit fullscreen') : text('Ver video en pantalla completa','Watch video in fullscreen'));
   };
   const play = async () => {
+    const generation = mediaGeneration;
     const fromCover = document.activeElement === cover;
     cover.hidden = true;
     controls.hidden = false;
     if (fromCover) toggle.focus({preventScroll:true});
-    message('Cargando video…');
+    message(text("Cargando video…","Loading video\u2026"));
     try {
       if (video.error) video.load();
       await video.play();
+      if (generation !== mediaGeneration) return;
       started = true;
       message('');
     } catch {
-      message('No se pudo reproducir. Pulsa reproducir para reintentar.');
+      if (generation !== mediaGeneration) return;
+      message(text("No se pudo reproducir. Pulsa reproducir para reintentar.","Playback failed. Press play to retry."));
       if (!started) { cover.hidden = false; controls.hidden = true; if (fromCover) cover.focus({preventScroll:true}); }
     }
     sync();
@@ -112,16 +118,31 @@
       if (document.fullscreenElement) await document.exitFullscreen();
       else if (stage.requestFullscreen) await stage.requestFullscreen();
       else video.webkitEnterFullscreen();
-    } catch { message('La pantalla completa no está disponible en este navegador.'); }
+    } catch { message(text("La pantalla completa no está disponible en este navegador.","Fullscreen is not available in this browser.")); }
   });
-  document.addEventListener('fullscreenchange', () => fullscreen.setAttribute('aria-label', document.fullscreenElement === stage ? 'Salir de pantalla completa' : 'Ver video en pantalla completa'));
+  document.addEventListener('fullscreenchange', () => fullscreen.setAttribute('aria-label', document.fullscreenElement === stage ? text("Salir de pantalla completa","Exit fullscreen") : text("Ver video en pantalla completa","Watch video in fullscreen")));
   for (const event of ['timeupdate', 'loadedmetadata', 'durationchange', 'play', 'pause', 'volumechange', 'ended']) video.addEventListener(event, sync);
   video.addEventListener('playing', () => message(''));
-  video.addEventListener('waiting', () => { if (!video.paused) message('Cargando video…'); });
+  video.addEventListener('waiting', () => { if (!video.paused) message(text("Cargando video…","Loading video\u2026")); });
   video.addEventListener('canplay', () => message(''));
-  video.addEventListener('error', () => message('No se pudo cargar el video. Pulsa reproducir para reintentar.'));
+  video.addEventListener('error', () => message(text("No se pudo cargar el video. Pulsa reproducir para reintentar.","The video could not load. Press play to retry.")));
   video.controls = false;
   stage.classList.add('video-enhanced');
   cover.hidden = false;
-  sync();
+  const setMediaLanguage = () => {
+    const en = document.documentElement.lang === 'en';
+    const source = video.querySelector('source');
+    const src = en ? '/assets/cars-vsl-en.mp4' : '/assets/cars-vsl.mp4';
+    if (source.getAttribute('src') !== src) {
+      mediaGeneration++; video.pause(); started = false;
+      source.setAttribute('src', src);
+      video.poster = en ? '/assets/cars-vsl-en-poster.jpg' : '/assets/cars-vsl-poster.jpg?v=182466f81c4e';
+      video.querySelector('a').href = src;
+      cover.hidden = false; controls.hidden = true; message('');
+      speed.value = '1'; video.load();
+    }
+    sync();
+  };
+  document.addEventListener('apv:language', setMediaLanguage);
+  setMediaLanguage();
 })();

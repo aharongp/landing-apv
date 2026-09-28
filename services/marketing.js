@@ -41,23 +41,26 @@ function metadata(html,pathname,vehicle) {
   html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(title)}</title>`).replace(/<meta[^>]+name="description"[^>]*>/i,`<meta name="description" content="${esc(description)}">`);
   return html.replace('</head>',`<link rel="canonical" href="${esc(origin()+pathname)}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:image" content="${esc(image)}"><meta property="og:url" content="${esc(origin()+pathname)}"><meta property="og:type" content="website"><meta property="og:locale" content="es_US"><meta name="twitter:card" content="summary_large_image">${pathname==='/lp'?'<meta name="robots" content="noindex, follow">':''}</head>`);
 }
-let reviewCache=null,reviewExpires=0,reviewPending=null;
-async function reviews() {
+const reviewLocales = new Map();
+async function reviews(language='es') {
+  language = language === 'en' ? 'en' : 'es';
+  if (!reviewLocales.has(language)) reviewLocales.set(language,{cache:null,expires:0,pending:null});
+  const state=reviewLocales.get(language);
   if(!process.env.GOOGLE_PLACES_API_KEY||!process.env.GOOGLE_PLACE_ID)return {live:false};
-  if(reviewExpires>Date.now())return reviewCache;
-  if(reviewPending)return reviewPending;
-  reviewPending=(async()=>{
+  if(state.expires>Date.now())return state.cache;
+  if(state.pending)return state.pending;
+  state.pending=(async()=>{
     try {
       // Legacy supports newest ordering; New returns relevance-ranked reviews only.
       const url=new URL('https://maps.googleapis.com/maps/api/place/details/json');
-      url.search=new URLSearchParams({place_id:process.env.GOOGLE_PLACE_ID,key:process.env.GOOGLE_PLACES_API_KEY,fields:'name,rating,user_ratings_total,reviews,url',language:'es',reviews_sort:'newest'});
+      url.search=new URLSearchParams({place_id:process.env.GOOGLE_PLACE_ID,key:process.env.GOOGLE_PLACES_API_KEY,fields:'name,rating,user_ratings_total,reviews,url',language,reviews_sort:'newest'});
       const response=await fetch(url,{signal:AbortSignal.timeout(5000)});const data=await response.json();
       if(!response.ok||data.status!=='OK')throw Error('places_unavailable');
       const r=data.result;
-      reviewCache={live:true,rating:r.rating,total:r.user_ratings_total,url:r.url,reviews:(r.reviews||[]).filter(x=>x.rating>=4&&x.text?.trim()).slice(0,5).map(x=>({author:x.author_name,authorUrl:x.author_url,text:x.text,rating:x.rating,time:x.time}))};
-      reviewExpires=Date.now()+86400000;return reviewCache;
-    }catch{return {live:false};}finally{reviewPending=null;}
-  })();return reviewPending;
+      state.cache={live:true,rating:r.rating,total:r.user_ratings_total,url:r.url,reviews:(r.reviews||[]).filter(x=>x.rating>=4&&x.text?.trim()).slice(0,5).map(x=>({author:x.author_name,authorUrl:x.author_url,text:x.text,rating:x.rating,time:x.time}))};
+      state.expires=Date.now()+86400000;return state.cache;
+    }catch{return {live:false};}finally{state.pending=null;}
+  })();return state.pending;
 }
 function createAttribution(db) {
   db.exec('CREATE TABLE IF NOT EXISTS marketing_users (userId TEXT PRIMARY KEY, source TEXT, consent TEXT NOT NULL DEFAULT \'essential\'); CREATE TABLE IF NOT EXISTS marketing_events (eventId TEXT PRIMARY KEY, status TEXT NOT NULL)');
