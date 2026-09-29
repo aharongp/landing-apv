@@ -97,3 +97,9 @@ El override Docker pasó `config --quiet` usando un entorno aislado con la ruta 
 El usuario confirmó que producción usa EasyPanel y cargará las variables personalmente. Además de las variables, instalar el JSON privado como archivo persistente fuera de `/app/public` y del repositorio, por ejemplo `/run/secrets/apv-ga4.json`, usando un montaje de archivo de solo lectura. Establecer `GOOGLE_APPLICATION_CREDENTIALS` a esa ruta **dentro del contenedor**; la ruta local `/home/aharon/.config/apv/ga4-reader.json` no existe automáticamente en EasyPanel. Configurar también `GA4_PROPERTY_ID=555122977` y `GA4_HOSTNAME=cars.apvmotorusa.com`. `GA4_CREDENTIALS_HOST_PATH` solo se usa si se despliega con el override Docker Compose.
 
 Tras desplegar, ejecutar `node scripts/check-ga4.js` en la consola del contenedor. La conexión solo estará operativa cuando el resultado sea `ready`; sigue pendiente que Google acepte el permiso de Lector de la cuenta de servicio. No subir el JSON a GitHub ni incorporarlo a la imagen Docker.
+
+## Permiso resuelto y conexión validada — 29 de septiembre de 2026
+
+Google aceptó la cuenta `apv-ga4-reader@annular-climate-510119-e1.iam.gserviceaccount.com` como **Lector** de la propiedad **555122977**, con restricciones de costes e ingresos y sin notificación por correo. Esto resuelve el bloqueo de permisos descrito en las secciones anteriores.
+
+La consulta real `node --env-file=.env scripts/check-ga4.js` devolvió **ready**: dominio `cars.apvmotorusa.com`, zona `America/New_York`, período 23–29 de septiembre de 2026, 19 usuarios, 85 sesiones y 244 páginas vistas. La validación se realizó desde el entorno local usando la credencial privada; la instalación del archivo y las variables en EasyPanel queda a cargo del usuario, según indicó. No se verificó el contenedor de producción.
