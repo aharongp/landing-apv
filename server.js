@@ -15,6 +15,7 @@ const catalogDb = require('./services/catalogDb');
 const marketing = require('./services/marketing');
 const landingPage = require('./services/landingPage');
 const adminMetrics = require('./services/adminMetrics');
+const googleAnalytics = require('./services/googleAnalytics').createGoogleAnalytics();
 let metricsService;
 function metrics(){return metricsService ||= adminMetrics.createMetrics(catalogDb.initDatabase());}
 const ROOT = __dirname;
@@ -703,7 +704,7 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
 // Give every deployment content-specific asset URLs, including behind CDN caches.
 const assetVersions = new Map();
 function frontendVersions() {
-  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css', 'icons.js', 'icons.css', 'admin-metrics.js', 'admin-metrics.css'].map(name => {
+  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css', 'icons.js', 'icons.css', 'admin-metrics.js', 'admin-metrics.css', 'metrics-chart.js'].map(name => {
     const file = path.join(PUBLIC_DIR, name), stat = fs.statSync(file);
     let asset = assetVersions.get(name);
     if (!asset || asset.mtime !== stat.mtimeMs || asset.size !== stat.size) {
@@ -927,6 +928,12 @@ const server = http.createServer(async (req, res) => {
     if(req.method==='GET' && url.pathname==='/go')return marketing.assign(req,res,url);
     if(req.method==='GET' && url.pathname==='/marketing-config.js')return text(res,200,'window.APV_MARKETING='+JSON.stringify(marketing.publicConfig()).replace(/</g,'\\u003c')+';','application/javascript; charset=utf-8');
     if(req.method==='GET' && url.pathname==='/api/reviews')return json(res,200,await marketing.reviews(url.searchParams.get('lang')));
+    if(req.method==='GET' && url.pathname==='/api/admin/metrics/ga4'){
+      if(!ADMIN_KEY||!adminAllowed(req))return json(res,401,{error:'Clave de administración inválida.'});
+      const days=Number(url.searchParams.get('days')||30);
+      if(![7,30,90].includes(days))return json(res,400,{error:'Elige 7, 30 o 90 días.'});
+      return json(res,200,await googleAnalytics.report(days),{'Cache-Control':'no-store'});
+    }
     if(req.method==='GET' && url.pathname==='/api/admin/metrics'){
       if(!ADMIN_KEY||!adminAllowed(req))return json(res,401,{error:'Clave de administración inválida.'});
       const days=Number(url.searchParams.get('days')||30);

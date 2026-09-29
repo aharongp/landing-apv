@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/icons.css"/>
 <script defer src="/icons.js"></script>
 <link rel="stylesheet" href="/admin-metrics.css">
+<script defer src="/metrics-chart.js"></script>
 <script defer src="/admin-metrics.js"></script>
 </head>
 <body>
@@ -38,6 +39,7 @@
         <p id="metrics-period"></p>
         <div class="metrics-kpis" id="metrics-kpis"></div>
         <div class="metrics-charts"><article><h3>Visitantes por día</h3><div id="metrics-visitors-chart"></div></article><article><h3>Cuentas creadas por día</h3><div id="metrics-accounts-chart"></div></article></div>
+        <section class="metrics-ga4" aria-labelledby="metrics-ga4-title"><h3 id="metrics-ga4-title">Google Analytics · historial de visitas</h3><p id="metrics-ga4-status" role="status"></p><div id="metrics-ga4-data" hidden><div class="metrics-kpis" id="metrics-ga4-kpis"></div><div class="metrics-charts"><article><h3>Usuarios de Google Analytics</h3><div id="metrics-ga4-users"></div></article><article><h3>Visitas (sesiones) de Google Analytics</h3><div id="metrics-ga4-sessions"></div></article></div><details><summary>Ver datos diarios de Google Analytics</summary><div class="metrics-table-wrap" id="metrics-ga4-table"></div></details><p id="metrics-ga4-period" class="metrics-explanation"></p></div><p class="metrics-explanation">Los datos de Google Analytics se muestran por separado. No se suman a las visitas locales ni se usan como denominador de la conversión local. Google puede tardar en procesar las visitas recientes; la consulta se guarda en caché durante 5 minutos.</p></section>
         <h3>Visitantes por sección</h3><div id="metrics-pages"></div>
         <details class="metrics-daily"><summary>Ver datos diarios</summary><div class="metrics-table-wrap" id="metrics-table"></div></details>
         <p class="metrics-explanation">Visitantes = navegadores únicos que aceptaron cookies de medición; una persona puede usar varios dispositivos. Las recargas no suman visitantes nuevos. Las cuentas creadas incluyen pendientes de verificación; las verificadas corresponden a esas cuentas y muestran su estado actual.</p>

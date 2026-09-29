@@ -9,6 +9,9 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
+      - GA4_PROPERTY_ID=${GA4_PROPERTY_ID:-}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
+      - GA4_HOSTNAME=${GA4_HOSTNAME:-}
       - NODE_ENV=production
       - ADMIN_KEY=${ADMIN_KEY:-change-me}
       - SESSION_SECRET=${SESSION_SECRET:-use-a-long-random-secret}

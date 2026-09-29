@@ -18,6 +18,8 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
  for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break;}catch{}await new Promise(resolve=>setTimeout(resolve,25));}
  // The dashboard must never disclose metrics before a valid admin key.
  assert.equal((await fetch(base+'/api/admin/metrics')).status,401);
+ assert.equal((await fetch(base+'/api/admin/metrics/ga4')).status,401);
+ assert.equal((await fetch(base+'/api/admin/metrics/ga4?days=999',{headers:{'x-admin-key':'isolated-test'}})).status,400);
  assert.equal((await fetch(base+'/api/admin/metrics',{headers:{'x-admin-key':'wrong'}})).status,401);
  const metricsResponse=await fetch(base+'/api/admin/metrics?days=7',{headers:{'x-admin-key':'isolated-test'}});
  assert.equal(metricsResponse.status,200);assert.match(metricsResponse.headers.get('cache-control'),/no-store/);
