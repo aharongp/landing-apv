@@ -3,6 +3,8 @@
 .env.local
 .env.*.local
 *.pem
+secrets/
+credentials/
 
 # Dependencies
 node_modules/

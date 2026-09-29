@@ -3,7 +3,12 @@
  const $=id=>document.getElementById(id),key=$('key'),panel=$('metrics-panel'),status=$('metrics-status'),load=$('load-metrics'),refresh=$('metrics-refresh'),days=$('metrics-days');
  const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const number=n=>n===null?'—':Number(n).toLocaleString('es-US'),date=iso=>new Intl.DateTimeFormat('es',{day:'2-digit',month:'short',timeZone:'UTC'}).format(new Date(iso));
- let version=0,controller;
+ let version=0,controller,autoRefresh;
+ function stopAutoRefresh(){clearTimeout(autoRefresh);}
+ function scheduleAutoRefresh(){
+  stopAutoRefresh();
+  autoRefresh=setTimeout(()=>{if(!document.hidden&&!panel.hidden)void update();else if(!panel.hidden)scheduleAutoRefresh();},300000);
+ }
  function render(data){
   const total=data.totals;
   const cards=[['Visitantes medidos',number(total.visitors),'Únicos en todo el período'],['Cuentas creadas',number(total.accounts),number(total.verified)+' verificadas actualmente'],['Visitantes registrados',number(total.converted),'Con visita medida y registro verificado'],['Conversión',total.conversion===null?'—':total.conversion.toLocaleString('es-US',{maximumFractionDigits:2})+' %','Registros de visitantes medidos']];
@@ -32,6 +37,7 @@
   catch(error){if(token===version&&error.name!=='AbortError')$('metrics-ga4-status').textContent=error.message;}
  }
  async function update(){
+  stopAutoRefresh();
   const token=++version;controller?.abort();controller=new AbortController();panel.hidden=true;
   if(!key.value.trim()){status.textContent='Introduce la clave de administración para ver las métricas.';status.dataset.error='true';return;}
   load.disabled=refresh.disabled=true;status.dataset.error='false';status.textContent='Cargando métricas…';
@@ -39,10 +45,10 @@
    const response=await fetch('/api/admin/metrics?days='+days.value,{headers:{'x-admin-key':key.value},cache:'no-store',signal:controller.signal});
    const data=await response.json();if(token!==version)return;
    if(!response.ok)throw new Error(data.error||'No se pudieron cargar las métricas.');
-   render(data);panel.hidden=false;status.textContent='Métricas actualizadas.';void loadGoogle(token,controller.signal);
+   render(data);panel.hidden=false;status.textContent='Métricas actualizadas. Actualización automática cada 5 minutos mientras el panel esté visible.';void loadGoogle(token,controller.signal);scheduleAutoRefresh();
   }catch(err){if(token!==version||err.name==='AbortError')return;status.dataset.error='true';status.textContent=err.message||'No se pudieron cargar las métricas.';}
   finally{if(token===version)load.disabled=refresh.disabled=false;}
  }
- key.addEventListener('input',()=>{version++;controller?.abort();panel.hidden=true;load.disabled=refresh.disabled=false;status.textContent='';});
+ key.addEventListener('input',()=>{stopAutoRefresh();version++;controller?.abort();panel.hidden=true;load.disabled=refresh.disabled=false;status.textContent='';});
  load.addEventListener('click',update);refresh.addEventListener('click',update);days.addEventListener('change',update);
 })();

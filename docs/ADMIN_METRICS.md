@@ -32,7 +32,7 @@ Cambios locales; sin push ni despliegue.
 
 ## Google Analytics e interacción de los gráficos
 
-La propiedad indicada por el usuario es **555122977** (APV landing), asociada a la etiqueta instalada `G-B488MP56L8`. Se configuró el ID de propiedad en el `.env` local, no versionado. No se extrajeron ni inventaron cifras: el Chrome conectado devolvió **«Faltan permisos»** al abrir el enlace de la propiedad suministrado por el usuario. Quedó pendiente cambiar a una cuenta con acceso. La API tampoco está conectada todavía: no hay archivo de credenciales de lectura disponible.
+La propiedad indicada por el usuario es **555122977** (APV landing), asociada a la etiqueta instalada `G-B488MP56L8`. Se configuró el ID de propiedad en el `.env` local, no versionado. El acceso inicial falló, pero el usuario abrió la cuenta correcta y el 29 de septiembre se pudo consultar y exportar la propiedad **apv motors landing** desde Chrome. La API todavía no está conectada: no hay archivo de credenciales de lectura disponible para el servidor.
 
 El panel tiene una sección GA4 independiente con usuarios únicos, visitas/sesiones, páginas vistas, gráficos y tabla diaria. No mezcla esos datos con visitantes locales ni calcula conversión con denominadores de otra fuente. Los usuarios únicos del período provienen de un informe agregado; no se suman los usuarios diarios. Los días siguen la zona horaria de la propiedad de Google, que se muestra en el panel. Los errores de acceso y la configuración pendiente se muestran expresamente, sin convertirlos en cero visitas.
 
@@ -54,7 +54,46 @@ Todos los gráficos (locales y GA4) muestran fecha, serie y cifra exacta al pasa
 
 - 62 pruebas aprobadas: autenticación de endpoints, acceso GA4 de solo lectura simulado, filtros de dominio, zonas horarias, usuarios únicos del período, caché, estados sin credenciales/permisos y selección de días del tooltip.
 - Chrome, con datos sintéticos aislados del sitio real: tooltip al pasar el mouse sobre el gráfico mostró «27 sept 2026 · Visitantes: 7»; End mostró «29 sept 2026 · Visitantes: 9» y flecha izquierda «28 sept 2026 · Visitantes: 8».
-- No se validó una respuesta GA4 real porque Google rechazó el acceso. La captura de pantalla de Chrome falló por tiempo de espera; la validación de interacción se hizo leyendo el DOM visible después de las acciones.
+- No se validó una respuesta de la Data API real porque faltan credenciales de servidor. La lectura real desde la interfaz de GA4 sí se completó después de resolver el acceso. La captura de pantalla de Chrome falló por tiempo de espera; la validación de interacción se hizo leyendo el DOM visible después de las acciones.
 - Sin push ni despliegue en esta ampliación.
 
 Referencias oficiales: [Google Analytics Data API, runReport](https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runReport), [configuración del acceso](https://developers.google.com/analytics/devguides/reporting/data/v1/quickstart), [OAuth de servidor](https://developers.google.com/identity/protocols/oauth2/service-account).
+
+## Extracción real desde Chrome — 29 de septiembre de 2026
+
+Propiedad **555122977**, «apv motors landing», informe Adquisición de tráfico, **1–28 de septiembre de 2026**, segmento Todos los usuarios, sin filtro de hostname:
+
+- 131 sesiones; 83 sesiones con interacción; 951 eventos. Son sesiones, no personas únicas.
+- Se descargaron CSV de canales y canales por fecha. Se leyeron los totales diarios directamente de los tooltips visibles: su suma coincide con las 131 sesiones del informe.
+- La suma de las filas por canal da 132; se conserva el total de 131 mostrado por Google, sin corregirlo artificialmente ni derivarlo sumando canales.
+- Archivos privados locales fuera del repositorio: `/home/aharon/Downloads/apv-ga4-2026-09-01_a_2026-09-28/` (`sesiones-diarias.csv`, `canales.csv`, `canales-por-dia.csv`, `fuente.json` con evidencia y procedencia).
+- Es una extracción puntual. No se importó como visitas locales ni se conectó automáticamente al panel: la sesión de Chrome no sustituye la credencial de lectura del servidor. Los cero de GA4 indican ausencia de sesiones registradas, no prueban ausencia de visitantes reales.
+
+## Configuración del acceso automático — 29 de septiembre de 2026
+
+Se creó el proyecto **APV Analytics Reports** (`annular-climate-510119-e1`) en la cuenta indicada por el usuario y se habilitó **Google Analytics Data API**. Se creó la cuenta de servicio `apv-ga4-reader@annular-climate-510119-e1.iam.gserviceaccount.com`, sin roles IAM adicionales sobre el proyecto. Su JSON se movió a `/home/aharon/.config/apv/ga4-reader.json`, fuera del repositorio, con permisos 600. No se dejó copia en Descargas. El `.env` local apunta a esa ruta y a la propiedad 555122977 / dominio cars.apvmotorusa.com.
+
+**Pendiente en Google:** al intentar añadir esta cuenta como Lector de la propiedad (sin notificación por correo y sin métricas de costes/ingresos), GA4 devuelve «Este correo electrónico no coincide con ninguna cuenta de Google». No se ha concedido el permiso; la consulta real todavía devuelve acceso denegado. No se debe presentar esta conexión como activa. Reintentar el alta de esa misma cuenta cuando Google la reconozca, sin crear credenciales adicionales.
+
+**Pendiente en producción:** falta conocer el servidor/plataforma de despliegue e instalar allí la credencial. No se hizo push ni despliegue.
+
+### Despliegue Docker preparado
+
+1. Instalar el JSON privado fuera del repositorio en el servidor, con permisos limitados al proceso/contenedor.
+2. Configurar `GA4_PROPERTY_ID=555122977`, `GA4_HOSTNAME=cars.apvmotorusa.com` y `GA4_CREDENTIALS_HOST_PATH` con la ruta absoluta del JSON en el host Docker.
+3. Ejecutar `docker compose -f docker-compose.yml -f docker-compose.ga4.yml up -d --build`. El override monta el archivo en `/run/secrets/apv-ga4.json` como solo lectura; si falta el archivo, no crea un directorio vacío en su lugar.
+4. Validar con `docker compose -f docker-compose.yml -f docker-compose.ga4.yml exec apv-catalog node scripts/check-ga4.js`. Debe devolver `status: ready` y agregados reales. El script no imprime claves ni tokens.
+
+Para desarrollo local: `node --env-file=.env scripts/check-ga4.js`. Reiniciar el servidor después de cambiar las variables. `.dockerignore` excluye `.env`, claves PEM y carpetas de credenciales del contexto de construcción; las credenciales reales permanecen fuera del proyecto.
+
+El panel autenticado se actualiza cada cinco minutos mientras está visible; pausa las consultas en pestañas ocultas y cancela la actualización al cambiar la clave. La caché del servidor también dura cinco minutos. GA4 puede procesar los datos con demora; la actualización no implica información en tiempo real.
+
+Validación: 63 pruebas aprobadas, incluida la actualización periódica, la pausa en segundo plano y la cancelación al cambiar la clave. La conexión real sigue pendiente del permiso de GA4 descrito arriba.
+
+El override Docker pasó `config --quiet` usando un entorno aislado con la ruta de la credencial. La validación con el `.env` existente detectó además un formato de comillas inválido en `SMTP_FROM` (línea 23); debe corregirse antes de usar ese archivo con Docker Compose. No se modificó esa configuración de correo.
+
+### EasyPanel
+
+El usuario confirmó que producción usa EasyPanel y cargará las variables personalmente. Además de las variables, instalar el JSON privado como archivo persistente fuera de `/app/public` y del repositorio, por ejemplo `/run/secrets/apv-ga4.json`, usando un montaje de archivo de solo lectura. Establecer `GOOGLE_APPLICATION_CREDENTIALS` a esa ruta **dentro del contenedor**; la ruta local `/home/aharon/.config/apv/ga4-reader.json` no existe automáticamente en EasyPanel. Configurar también `GA4_PROPERTY_ID=555122977` y `GA4_HOSTNAME=cars.apvmotorusa.com`. `GA4_CREDENTIALS_HOST_PATH` solo se usa si se despliega con el override Docker Compose.
+
+Tras desplegar, ejecutar `node scripts/check-ga4.js` en la consola del contenedor. La conexión solo estará operativa cuando el resultado sea `ready`; sigue pendiente que Google acepte el permiso de Lector de la cuenta de servicio. No subir el JSON a GitHub ni incorporarlo a la imagen Docker.

@@ -1,0 +1,12 @@
+# Opt-in: docker compose -f docker-compose.yml -f docker-compose.ga4.yml up -d --build
+services:
+  apv-catalog:
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/apv-ga4.json
+    volumes:
+      - type: bind
+        source: ${GA4_CREDENTIALS_HOST_PATH:?Set the absolute path to the private GA4 JSON file}
+        target: /run/secrets/apv-ga4.json
+        read_only: true
+        bind:
+          create_host_path: false
