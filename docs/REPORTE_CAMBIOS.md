@@ -263,3 +263,9 @@ La selección de /lp admite daño principal MINOR DENT/SCRATCHES, NORMAL WEAR o 
 - El ahorro se muestra como etiqueta pequeña exclusivamente si Buy Now es inferior al valor al público, incluyendo el valor de referencia. No se compara la puja actual con retail. La aclaración sobre tarifas, transporte y reparación permanece en la descripción de la etiqueta.
 - Catálogo adaptable a tres, dos o una columna; datos técnicos completos disponibles al abrir la ficha para mantener tarjetas compactas en móvil.
 - Validación: 54 pruebas aprobadas, incluyendo cálculo exclusivo con Buy Now, precios ausentes, acciones de las tarjetas y hora de subasta con zona horaria. Sintaxis y diff sin errores. Sin validación visual en navegador en este cambio. Cambios locales, sin push.
+
+## 2026-09-29T02:43:16+00:00 — Etiqueta de puja y barra de ahorro compacta
+
+- Se agregó la traducción faltante `currentBid`: «Puja actual» en español; se conserva «Current bid» en inglés. También se completa «Compra inmediata» en ES.
+- La etiqueta de ahorro incorpora una barra de 4 px, manteniendo texto de 10 px y espaciado compacto. La proporción usa exclusivamente Buy Now / valor al público y solo aparece cuando existe ahorro válido.
+- Validación: 54 pruebas aprobadas, sintaxis y diff correctos. Cambios locales, sin push.

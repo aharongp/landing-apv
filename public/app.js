@@ -229,6 +229,7 @@
       yourActiveBids: 'Tus Pujas Activas',
       clearAllBids: '[icon:trash] Borrar todas',
       wantToBid: 'Quiero ofertar',
+      currentBid: 'Puja actual', buyNow: 'Compra inmediata',
       viewVehicle: 'Ver ficha',
       resetAllBids: 'Reiniciar todas las pujas', deleteBid: 'Eliminar esta puja', vehicle: 'Vehículo', lot: 'Lote', vin: 'VIN',
       noMatches: 'No encontramos coincidencias para', fullCatalog: 'Ver el catálogo completo', allResultsFor: 'Ver todos los resultados para',
@@ -787,7 +788,8 @@
     const price=Number(v.buyNow),retail=Number(v.retailValue);
     if(!Number.isFinite(price)||!Number.isFinite(retail)||price<=0||retail<=price)return '';
     const percent=Math.floor((1-price/retail)*1000)/10;
-    return `<small class="auction-tile-saving" title="${esc(t('comparisonNote'))}">${window.APVIcons.svg('chart')} ${percent}% ${t('comparisonBelow')} <span>(${esc(money(retail))})</span></small>`;
+    const priceShare=Math.min(100,Math.max(0,price/retail*100));
+    return `<small class="auction-tile-saving" title="${esc(t('comparisonNote'))}"><span class="auction-tile-saving-copy"><strong>${percent}%</strong> ${t('comparisonBelow')} <span>(${esc(money(retail))})</span></span><span class="auction-tile-saving-track" aria-hidden="true"><span style="width:${priceShare}%"></span></span></small>`;
   }
   function auctionCardDate(v){
     if(!v.saleDate||!/[T ]\d{2}:\d{2}/.test(v.saleDate))return dateLabel(v.saleDate,v.timeZone);
