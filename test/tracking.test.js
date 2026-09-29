@@ -1,9 +1,9 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const vm=require('node:vm');const fs=require('node:fs');
 const script=fs.readFileSync('public/tracking.js','utf8');
 function browser(consent,config={ga4Id:'G-TEST',pixelId:'123-test',variants:{ahorro:{}}}){
- const scripts=[],storage=new Map([['apv_cookie_consent',consent]]),listeners={};
- const context={URL,URLSearchParams,Date,setTimeout,fetch:async()=>({ok:true}),location:new URL('https://site.test/lp?utm_source=test&v=ahorro'),localStorage:{getItem:k=>storage.get(k)},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{cookie:'',querySelectorAll:()=>[],createElement:()=>({}),head:{append:s=>scripts.push(s.src)},addEventListener:(name,fn)=>listeners[name]=fn}};
- context.window=context;context.APV_MARKETING=config;vm.runInNewContext(script,context);return {context,scripts,storage,listeners};
+ const requests=[],scripts=[],storage=new Map([['apv_cookie_consent',consent]]),listeners={};
+ const context={URL,URLSearchParams,Date,setTimeout,fetch:async(url,options)=>{requests.push({url,options});return {ok:true};},location:new URL('https://site.test/lp?utm_source=test&v=ahorro'),localStorage:{getItem:k=>storage.get(k)},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)},document:{cookie:'',querySelectorAll:()=>[],createElement:()=>({}),head:{append:s=>scripts.push(s.src)},addEventListener:(name,fn)=>listeners[name]=fn}};
+ context.window=context;context.APV_MARKETING=config;vm.runInNewContext(script,context);return {context,scripts,storage,listeners,requests};
 }
 test('essential consent creates first-party attribution but no Google/Meta scripts or events',()=>{
  const {context,scripts}=browser('essential');assert.equal(scripts.length,0);assert.match(context.document.cookie,/apv_src=/);assert.equal(context.gtag,undefined);assert.equal(context.fbq,undefined);context.APVTracking.track('bid_request',{},'test');assert.equal(scripts.length,0);
@@ -15,3 +15,10 @@ test('all consent enables configured scripts and shares conversion IDs with pixe
  assert.match(context.APVTracking.campaignURL('/vehiculo/12345678'),/utm_source=test/);
 });
 test('missing integrations stay inactive even after consent',()=>{const {context,scripts}=browser('all',{variants:{}});assert.equal(scripts.length,0);assert.equal(context.fbq,undefined);assert.equal(context.gtag,undefined);});
+
+test('local visit measurement follows consent and sends only the page path',()=>{
+ assert.equal(browser('essential').requests.length,0);
+ const {requests}=browser('all');assert.equal(requests.length,1);
+ assert.equal(requests[0].url,'/api/metrics/visit');
+ assert.deepEqual(JSON.parse(requests[0].options.body),{path:'/lp',cookieConsent:'all'});
+});

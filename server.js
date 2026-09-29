@@ -14,6 +14,9 @@ const catalogDb = require('./services/catalogDb');
 
 const marketing = require('./services/marketing');
 const landingPage = require('./services/landingPage');
+const adminMetrics = require('./services/adminMetrics');
+let metricsService;
+function metrics(){return metricsService ||= adminMetrics.createMetrics(catalogDb.initDatabase());}
 const ROOT = __dirname;
 
 function loadEnv() {
@@ -700,7 +703,7 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
 // Give every deployment content-specific asset URLs, including behind CDN caches.
 const assetVersions = new Map();
 function frontendVersions() {
-  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css', 'icons.js', 'icons.css'].map(name => {
+  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css', 'icons.js', 'icons.css', 'admin-metrics.js', 'admin-metrics.css'].map(name => {
     const file = path.join(PUBLIC_DIR, name), stat = fs.statSync(file);
     let asset = assetVersions.get(name);
     if (!asset || asset.mtime !== stat.mtimeMs || asset.size !== stat.size) {
@@ -924,8 +927,22 @@ const server = http.createServer(async (req, res) => {
     if(req.method==='GET' && url.pathname==='/go')return marketing.assign(req,res,url);
     if(req.method==='GET' && url.pathname==='/marketing-config.js')return text(res,200,'window.APV_MARKETING='+JSON.stringify(marketing.publicConfig()).replace(/</g,'\\u003c')+';','application/javascript; charset=utf-8');
     if(req.method==='GET' && url.pathname==='/api/reviews')return json(res,200,await marketing.reviews(url.searchParams.get('lang')));
+    if(req.method==='GET' && url.pathname==='/api/admin/metrics'){
+      if(!ADMIN_KEY||!adminAllowed(req))return json(res,401,{error:'Clave de administración inválida.'});
+      const days=Number(url.searchParams.get('days')||30);
+      if(![7,30,90].includes(days))return json(res,400,{error:'Elige 7, 30 o 90 días.'});
+      return json(res,200,metrics().summary(days),{'Cache-Control':'no-store'});
+    }
+    if(req.method==='POST' && url.pathname==='/api/metrics/visit'){
+      if(req.headers['sec-fetch-site']==='cross-site')return json(res,403,{error:'Origen no permitido.'});
+      let body;try{body=JSON.parse((await readRequestBody(req,2048)).toString('utf8'));}catch{return json(res,400,{error:'Datos inválidos.'});}
+      const header=metrics().visit(req,body||{});
+      return json(res,200,{ok:true},header?{'Set-Cookie':header}:{});
+    }
     if(req.method==='POST' && url.pathname==='/api/marketing/consent'){
-      const user=getAuthUser(req);if(user){const body=JSON.parse((await readRequestBody(req,8192)).toString('utf8'));attribution().save(user.id,req,body);}return json(res,200,{ok:true});
+      const body=JSON.parse((await readRequestBody(req,8192)).toString('utf8'));
+      const user=getAuthUser(req);if(user)attribution().save(user.id,req,body);
+      return json(res,200,{ok:true},body.cookieConsent==='essential'?{'Set-Cookie':adminMetrics.cookie(req,'',0)}:{});
     }
     if(req.method==='GET' && url.pathname==='/robots.txt')return text(res,200,`User-agent: *\nAllow: /\nDisallow: /lp\nDisallow: /go\nSitemap: ${marketing.origin()}/sitemap.xml\n`);
     if(req.method==='GET' && /^\/sitemap(?:-vehicles-\d+)?\.xml$/.test(url.pathname)){
@@ -1202,6 +1219,7 @@ const server = http.createServer(async (req, res) => {
       verificationFailures.delete(email);
       verificationSendWindows.delete(email);
       const consent=attribution().save(user.id,req,body).consent;
+      metrics().registration(user,req,consent);
       void attribution().conversion('CompleteRegistration',user,'registration-'+user.id,consent);
 
       return json(res, 200, { ok: true, user: safeUser(user), eventId:'registration-'+user.id }, { 'Set-Cookie': sessionCookie(req, signSession(user.id)) });
@@ -1229,6 +1247,7 @@ const server = http.createServer(async (req, res) => {
       const email = normalizeEmail(claims.email);
       let user = catalogDb.findUserByEmail(email);
       const isNew=!user;
+      const isNewRegistration=!user||!user.emailVerified;
       if (!user) {
         user = {
           id: crypto.randomUUID(),
@@ -1254,6 +1273,7 @@ const server = http.createServer(async (req, res) => {
       }
       catalogDb.saveUser(user);
       const consent=attribution().save(user.id,req,body).consent;
+      if(isNewRegistration)metrics().registration(user,req,consent);
       if(isNew)void attribution().conversion('CompleteRegistration',user,'registration-'+user.id,consent);
       return json(res,200,{ok:true,user:safeUser(user),eventId:isNew?'registration-'+user.id:null},{'Set-Cookie':sessionCookie(req,signSession(user.id))});
     }

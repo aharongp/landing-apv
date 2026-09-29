@@ -16,6 +16,17 @@ test('public assets revalidate and compress; vehicle data remains uncached', {ti
  t.after(async()=>{if(child.exitCode===null){const stopped=once(child,'exit');child.kill();await stopped;}fs.rmSync(dir,{recursive:true,force:true});});
  const base='http://127.0.0.1:'+port;
  for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break;}catch{}await new Promise(resolve=>setTimeout(resolve,25));}
+ // The dashboard must never disclose metrics before a valid admin key.
+ assert.equal((await fetch(base+'/api/admin/metrics')).status,401);
+ assert.equal((await fetch(base+'/api/admin/metrics',{headers:{'x-admin-key':'wrong'}})).status,401);
+ const metricsResponse=await fetch(base+'/api/admin/metrics?days=7',{headers:{'x-admin-key':'isolated-test'}});
+ assert.equal(metricsResponse.status,200);assert.match(metricsResponse.headers.get('cache-control'),/no-store/);
+ assert.equal((await metricsResponse.json()).daily.length,7);
+ assert.equal((await fetch(base+'/api/admin/metrics?days=999',{headers:{'x-admin-key':'isolated-test'}})).status,400);
+ const unmeasured=await fetch(base+'/api/metrics/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:'/',cookieConsent:'essential'})});assert.equal(unmeasured.headers.get('set-cookie'),null);
+ const visit=await fetch(base+'/api/metrics/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:'/lp',cookieConsent:'all'})});assert.match(visit.headers.get('set-cookie'),/apv_metrics=/);
+ const measured=await (await fetch(base+'/api/admin/metrics',{headers:{'x-admin-key':'isolated-test'}})).json();assert.equal(measured.totals.visitors,1);
+ const declined=await fetch(base+'/api/marketing/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cookieConsent:'essential'})});assert.match(declined.headers.get('set-cookie'),/Max-Age=0/);
  const asset=await fetch(base+'/app.js',{headers:{'accept-encoding':'gzip'}});
  assert.equal(asset.status,200);assert.equal(asset.headers.get('content-encoding'),'gzip');
  const content=await asset.text();assert.ok(content.includes("api('/api/featured'"));assert.ok(Number(asset.headers.get('content-length'))<Buffer.byteLength(content));

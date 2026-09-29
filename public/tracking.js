@@ -16,7 +16,7 @@
     const meta={complete_registration:'CompleteRegistration',bid_request:'Lead'}[name];
     if(meta&&window.fbq)window.fbq('track',meta,{}, {eventID:eventId});
   }
-  function page(){const path=location.pathname;if(path==='/')track('view_home');if(path==='/lp')track('view_landing',{variant});if(/^\/vehiculo\//.test(path))track('view_vehicle',{lote:path.split('/')[2]});const bucket=params.get('ab_bucket');if(['home','lp'].includes(bucket)){try{if(sessionStorage.getItem('apv_ab_reported')!==bucket){track('ab_assign',{bucket});sessionStorage.setItem('apv_ab_reported',bucket);}}catch{track('ab_assign',{bucket});}}}
+  function page(){const path=location.pathname;fetch('/api/metrics/visit',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({path,cookieConsent:'all'})}).catch(()=>{});if(path==='/')track('view_home');if(path==='/lp')track('view_landing',{variant});if(/^\/vehiculo\//.test(path))track('view_vehicle',{lote:path.split('/')[2]});const bucket=params.get('ab_bucket');if(['home','lp'].includes(bucket)){try{if(sessionStorage.getItem('apv_ab_reported')!==bucket){track('ab_assign',{bucket});sessionStorage.setItem('apv_ab_reported',bucket);}}catch{track('ab_assign',{bucket});}}}
   window.apvStartAnalytics=()=>{
     if(started||consent()!=='all')return;started=true;window.apvAnalyticsStarted=true;
     if(cfg.ga4Id){window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments);};window.gtag('js',new Date());window.gtag('config',cfg.ga4Id,{send_page_view:true});const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(cfg.ga4Id);document.head.append(s);}
