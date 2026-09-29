@@ -79,3 +79,11 @@ La selección de /lp admite daño principal MINOR DENT/SCRATCHES, NORMAL WEAR o 
 - Recursos `icons.js` y `icons.css` incluidos en el versionado por contenido, sin fuentes ni solicitudes a servicios externos.
 - Validación: 51 pruebas aprobadas; cobertura de tokens bilingües, escape de texto, favoritos/estrellas, recursos de home/landing/catálogo y conservación de prefijos telefónicos. Recursos locales responden HTTP 200. Sintaxis y `git diff --check` correctos. Sin validación visual en Chrome en este cambio.
 - Cambios locales en `style/replace-emojis-with-icons`, sin push ni despliegue.
+
+## 2026-09-29T02:17:36+00:00 — Tarjetas compactas de vehículos
+
+- Catálogo, home y landing comparten tarjetas verticales: foto, etiqueta Copart, tiempo restante, favorito, título, lote/ubicación, fecha con hora cuando está disponible, oferta actual y acciones al pie.
+- Compra inmediata aparece únicamente con Buy Now válido; abre la ficha. Quiero ofertar mantiene el flujo de puja y registro existente. Los favoritos de destacados ya no abren también la ficha.
+- El ahorro se muestra como etiqueta pequeña exclusivamente si Buy Now es inferior al valor al público, incluyendo el valor de referencia. No se compara la puja actual con retail. La aclaración sobre tarifas, transporte y reparación permanece en la descripción de la etiqueta.
+- Catálogo adaptable a tres, dos o una columna; datos técnicos completos disponibles al abrir la ficha para mantener tarjetas compactas en móvil.
+- Validación: 54 pruebas aprobadas, incluyendo cálculo exclusivo con Buy Now, precios ausentes, acciones de las tarjetas y hora de subasta con zona horaria. Sintaxis y diff sin errores. Sin validación visual en navegador en este cambio. Cambios locales, sin push.

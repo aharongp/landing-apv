@@ -6,6 +6,7 @@
 })(typeof window==='undefined'?this:window,function(){
   'use strict';
   const paths={
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     check:'<path d="m5 12 4 4L19 6"/>',
     'check-circle':'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
     chat:'<path d="M21 11a8 8 0 0 1-8 8H8l-5 3 1.5-6A8 8 0 1 1 21 11Z"/><path d="M8 10h8M8 14h5"/>',

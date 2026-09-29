@@ -587,25 +587,7 @@
       dom.heroFeaturedGrid.innerHTML = `<div class="hero-quick-empty">${t('emptyTitle')}</div>`;
       return;
     }
-    dom.heroFeaturedGrid.innerHTML = items.map(v => `
-      <article class="featured-vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="featured-card-photo" role="button" tabindex="0" aria-label="${esc(v.title)} · COPART" data-action="detail">
-          ${v.image ? `<img src="${esc(v.image)}" alt="${esc(v.title)}" width="640" height="400" loading="lazy" decoding="async" />` : ''}
-          <span class="featured-card-badge">COPART</span>
-        </div>
-        <div class="featured-card-body">
-          <h3 class="featured-card-title"><button type="button" data-action="detail">${esc(v.title)}</button></h3>
-          <div class="featured-card-meta">${t('lot')} ${esc(v.lot)} · ${esc(locationLabel(v))}</div>
-          <div class="featured-card-prices">
-            <div class="featured-price-item"><span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span><strong>${esc(cardPrice(v.currentBid))}</strong></div>
-            <div class="featured-price-item"><span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span><strong>${esc(cardPrice(v.buyNow))}</strong></div>
-          </div>
-          ${comparison(v)}<div class="featured-card-actions">
-            <button type="button" class="btn btn-primary featured-card-btn" data-action="detail">${t('viewCarCosts')}</button>
-          </div>
-        </div>
-      </article>
-    `).join('');
+    dom.heroFeaturedGrid.innerHTML = items.map(v => vehicleCardHTML(v,true)).join('');
 
     window.APVDisplay?.clean(dom.heroFeaturedGrid,currentLang);
     if(dom.featuredPrevBtn) dom.featuredPrevBtn.disabled = (state.featuredPage <= 1);
@@ -757,7 +739,7 @@
   function readFavorites() { return state.accountFavorites; }
   function favoriteButton(lot) {
     const active=readFavorites().includes(String(lot));
-    return `<button type="button" class="favorite-button" data-favorite="${esc(lot)}" aria-pressed="${active}" aria-label="${active?'Quitar de favoritos':'Guardar en mi cuenta'}">${active?'[icon:heart-filled]':'[icon:heart]'}</button>`;
+    return `<button type="button" class="favorite-button" data-favorite="${esc(lot)}" aria-pressed="${active}" aria-label="${currentLang==='en'?(active?'Remove from favorites':'Save to my account'):(active?'Quitar de favoritos':'Guardar en mi cuenta')}">${active?'[icon:heart-filled]':'[icon:heart]'}</button>`;
   }
   function refreshFavoriteButtons() {
     document.querySelectorAll('[data-favorite]').forEach(b=>{ b.outerHTML=favoriteButton(b.dataset.favorite); });
@@ -803,55 +785,52 @@
   function cardPrice(value){return Number(value)>0?money(value):'N/A';}
   function comparison(v){
     const price=Number(v.buyNow),retail=Number(v.retailValue);
-    if(!Number.isFinite(price)||!Number.isFinite(retail)||price<=0||retail<=0)return '';
+    if(!Number.isFinite(price)||!Number.isFinite(retail)||price<=0||retail<=price)return '';
     const percent=Math.floor((1-price/retail)*1000)/10;
-    const bar=Math.min(100,Math.max(0,price/retail*100));
-    return `<div class="price-comparison"><div class="price-comparison-values"><div><span>${t('comparisonBuyNow')}</span><strong>${esc(money(price))}</strong></div><div><span>${t('retail')}</span><strong>${esc(money(retail))}</strong></div></div><div class="price-comparison-track" aria-hidden="true"><span style="width:${bar}%"></span></div>${percent>0?`<span class="price-comparison-badge">${percent} % ${t('comparisonBelow')}</span>`:''}<small>${t('comparisonNote')}</small></div>`;
+    return `<small class="auction-tile-saving" title="${esc(t('comparisonNote'))}">${window.APVIcons.svg('chart')} ${percent}% ${t('comparisonBelow')} <span>(${esc(money(retail))})</span></small>`;
   }
-  const compactCatalogMedia=window.matchMedia('(max-width: 700px)');
-  compactCatalogMedia.addEventListener('change',()=>{
-    dom.list.querySelectorAll('.vehicle-card-details').forEach(details=>details.open=!compactCatalogMedia.matches);
-  });
-  function renderVehicles(items){
-    dom.list.innerHTML=items.map(v=>`
-      <article class="vehicle-card" data-lot="${esc(v.lot)}">
-        <div class="vehicle-photo-wrap" role="button" tabindex="0" aria-label="${esc(v.title)} · COPART" data-action="detail"><div class="vehicle-photo">${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="320" height="220" loading="lazy" decoding="async" />`:`<div class="image-fallback">${t('noPhoto')}</div>`}</div></div>
-        <div class="vehicle-main">
-          <div class="vehicle-title-row"><h3><button type="button" data-action="detail" class="vehicle-title-button">${esc(v.title)}</button></h3><span class="source-pill">COPART</span>${favoriteButton(v.lot)}</div>
-          <div class="vehicle-identifiers">⌗ ${esc(vinText(v))} &nbsp;•&nbsp; ${t('lot')} ${esc(v.lot)}</div>
-          ${comparison(v)}
-          <details class="vehicle-card-details" ${compactCatalogMedia.matches?'':'open'}><summary><span>${t('cardShowDetails')}</span><span>${t('cardHideDetails')}</span></summary>
-          <div class="spec-chips">
-            <span class="spec-chip">${icon('[icon:key]')} ${v.hasKeys==='YES'?t('keyAvailable'):t('keyUnknown')}</span>
-            <span class="spec-chip">${icon('[icon:gear]')} ${esc(v.transmission||t('noData'))}</span>
-            <span class="spec-chip">${icon('[icon:drive]')} ${esc(v.drive||t('noData'))}</span>
-            ${v.engine?`<span class="spec-chip">${icon('[icon:gauge]')} ${esc(v.engine)}</span>`:''}
-            ${v.cylinders?`<span class="spec-chip">${icon('[icon:cylinder]')} ${esc(v.cylinders)} cyl</span>`:''}
-            ${v.fuel?`<span class="spec-chip">${icon('[icon:fuel]')} ${esc(v.fuel)}</span>`:''}
-          </div>
-          <div class="info-grid">
-            <div class="info-line"><span>${t('odometer')}</span><strong>${esc(miles(v.odometer))}${v.odometer?' ('+esc(km(v.odometer))+')':''}</strong></div>
-            <div class="info-line"><span>${t('location')}</span><strong>${esc(locationLabel(v))}</strong></div>
-            <div class="info-line"><span>${t('damage')}</span><strong>${esc([v.primaryDamage,v.secondaryDamage].filter(Boolean).join(' + ')||t('noData'))}</strong></div>
-            <div class="info-line"><span>${t('document')}</span><strong>${esc(titleDoc(v))}</strong></div>
-            <div class="info-line"><span>${t('condition')}</span><strong>${esc(conditionLabel(v.runsDrives))}</strong></div>
-            <div class="info-line"><span>${t('body')}</span><strong>${esc(v.body||t('noData'))}</strong></div>
-            <div class="info-line"><span>${t('color')}</span><strong>${esc(v.color||t('noData'))}</strong></div>
-            <div class="info-line"><span>${t('retail')}</span><strong>${esc(money(v.retailValue))}</strong></div>
-          </div>
-          </details>
+  function auctionCardDate(v){
+    if(!v.saleDate||!/[T ]\d{2}:\d{2}/.test(v.saleDate))return dateLabel(v.saleDate,v.timeZone);
+    const date=new Date(v.saleDate);
+    if(!Number.isFinite(date.getTime()))return 'N/A';
+    const zones={CDT:'America/Chicago',CST:'America/Chicago',EDT:'America/New_York',EST:'America/New_York',MDT:'America/Denver',MST:'America/Phoenix',PDT:'America/Los_Angeles',PST:'America/Los_Angeles'};
+    const options={month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short',timeZone:zones[v.timeZone]||v.timeZone||'UTC'};
+    try{return new Intl.DateTimeFormat(currentLang==='en'?'en-US':'es-US',options).format(date);}
+    catch{return new Intl.DateTimeFormat(currentLang==='en'?'en-US':'es-US',{...options,timeZone:'UTC'}).format(date);}
+  }
+  function auctionTimeLabel(v){
+    const time=new Date(v.saleDate).getTime();
+    if(!v.saleDate||!Number.isFinite(time))return 'N/A';
+    const remaining=time-Date.now();
+    if(remaining<=0)return currentLang==='en'?'Date reached':'Fecha cumplida';
+    const hours=Math.ceil(remaining/3600000),days=Math.floor(hours/24);
+    return `${days?days+'d ':''}${hours%24}h`;
+  }
+  function vehicleCardHTML(v,featured=false){
+    const buyNow=Number(v.buyNow)>0&&Number.isFinite(Number(v.buyNow));
+    return `<article class="${featured?'featured-vehicle-card':'vehicle-card'} auction-tile" data-lot="${esc(v.lot)}">
+      <div class="auction-tile-media">
+        <button type="button" class="auction-tile-photo" data-action="detail" aria-label="${esc(v.title)}">
+          ${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="640" height="400" loading="lazy" decoding="async"/>`:`<span class="image-fallback">${t('noPhoto')}</span>`}
+        </button>
+        <div class="auction-tile-badges"><span class="auction-tile-source">Copart</span><span class="auction-tile-countdown">${window.APVIcons.svg('clock')} ${auctionTimeLabel(v)}</span></div>
+        ${favoriteButton(v.lot)}
+      </div>
+      <div class="auction-tile-body">
+        <h3><button type="button" data-action="detail">${esc(v.title)}</button></h3>
+        <p class="auction-tile-meta">${t('lot')} # ${esc(v.lot)} <span aria-hidden="true">·</span> ${esc(locationLabel(v))}</p>
+        <p class="auction-tile-date">${esc(auctionCardDate(v))}</p>
+        <div class="auction-tile-price"><span>${t('currentBid')}</span><strong>${esc(cardPrice(v.currentBid))}${Number(v.currentBid)>0?' <small>USD</small>':''}</strong></div>
+        ${comparison(v)}
+        <div class="auction-tile-actions">
+          ${buyNow?`<button type="button" class="auction-tile-buy" data-action="detail"><span>${t('buyNow')}</span><strong>${esc(cardPrice(v.buyNow))} <small>USD</small></strong></button>`:''}
+          <button type="button" class="btn btn-primary auction-tile-bid" data-action="bid">${t('wantToBid')}</button>
         </div>
-        <aside class="vehicle-side">
-          <div class="auction-box">
-            <div class="auction-line">▣ <span>${esc(dateLabel(v.saleDate,v.timeZone))}</span></div>
-            <div class="auction-line"><span class="dot">[icon:drive]</span><span>${esc(v.saleStatus||t('auction'))}</span></div>
-            <div class="auction-line">▥ <span>${t('retail')} ${esc(money(v.retailValue))}</span></div>
-          </div>
-          <div class="bid-box"><div><span>${t('currentBid',currentLang==='en'?'Current bid':'Puja actual')}</span><strong>${esc(cardPrice(v.currentBid))}</strong></div><div><span>${t('buyNow',currentLang==='en'?'Buy now':'Compra inmediata')}</span><strong>${esc(cardPrice(v.buyNow))}</strong></div></div>
-          <div class="side-status">● ${esc(v.saleStatus||t('upcoming'))}</div>
-          <div class="card-actions"><button class="btn btn-primary" data-action="bid">${t('wantToBid')}</button></div>
-        </aside>
-      </article>`).join('');
+      </div>
+    </article>`;
+  }
+  function renderVehicles(items){
+    dom.list.innerHTML=items.map(v=>vehicleCardHTML(v)).join('');
     window.APVDisplay?.clean(dom.list,currentLang);
   }
 
@@ -2256,6 +2235,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   if(dom.heroFeaturedGrid){
     dom.heroFeaturedGrid.addEventListener('click', async (e) => {
+      if(e.target.closest('[data-favorite]')) return;
       const card = e.target.closest('[data-lot]');
       if(!card) return;
       const lot = card.dataset.lot;
