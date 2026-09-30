@@ -1053,6 +1053,17 @@ const server = http.createServer(async (req, res) => {
       return json(res, status, health);
     }
 
+    if (req.method === 'POST' && url.pathname === '/api/kommo/whatsapp-transfer') {
+      const user = requireAuth(req, res);
+      if (!user) return;
+      try {
+        const result = await kommoService.requestWhatsAppTransfer(kommoUserId(user));
+        return json(res, result.ok ? 202 : result.code === 'WHATSAPP_COOLDOWN' ? 429 : 409, result);
+      } catch (_) {
+        return json(res, 502, { ok: false, code: 'WHATSAPP_UNAVAILABLE' });
+      }
+    }
+
     if (req.method === 'POST' && url.pathname === '/api/kommo/sync-bid') {
       const user = requireAuth(req, res);
       if (!user) return;

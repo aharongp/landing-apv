@@ -231,6 +231,7 @@
       sendCodeNote: 'Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.',
       confirmEmail: 'Confirma tu correo electrónico', verifyInstructions: 'Ingresa el código de 6 dígitos que enviamos a', sixDigitCode: 'Código de 6 dígitos', verifyCodePlaceholder: 'Ej. 482910', verifyActivate: 'Verificar y activar cuenta', modifyRegistration: '← Modificar datos de registro',
       bidStep: 'PASO 2 DE TU COMPRA', bidTitle: 'Establece tu tope de oferta', bidExplain: 'Indica el máximo que deseas ofertar por este vehículo. Esto no realiza ningún cargo automático.', myMaxBid: 'Mi tope de oferta', writeMaxBid: 'Escribe tu tope', cancel: 'Cancelar',
+      continueWhatsApp: 'Continuar por WhatsApp', whatsappRequesting: 'Solicitando el enlace…', whatsappRequested: 'Abre el enlace de WhatsApp que aparecerá en este chat y envía el mensaje prellenado para vincular tu conversación.', whatsappNotLinked: 'Envía primero un mensaje en este chat. Espera unos segundos y vuelve a pulsar el botón.', whatsappUnavailable: 'No pudimos solicitar el enlace. Inténtalo en un minuto o pídeselo al asesor en este chat.', whatsappCooldown: 'Revisa el enlace en este chat. Si no aparece, vuelve a intentarlo en un minuto.',
       bidAssistance: 'ASISTENCIA DE PUJA', continueAdvisor: 'Continúa con un asesor', protectedSession: '● Sesión protegida', requestReady: '¿Cuánto te gustaría ofertar o cómo te puedo ayudar?', connectingChat: 'Conectando con el chat de APV Motors…', stableConversation: 'Tu cuenta mantiene un identificador estable para conservar la conversación.', returnChat: 'Volver al chat', reopenConversation: 'Volver a abrir tu conversación con APV Motors',
       yourActiveBids: 'Tus Pujas Activas',
       clearAllBids: '[icon:trash] Borrar todas',
@@ -331,6 +332,7 @@
       sendCodeNote: 'We will send a 6-digit verification code to your email to safely activate your account.',
       confirmEmail: 'Confirm your email address', verifyInstructions: 'Enter the 6-digit code we sent to', sixDigitCode: '6-digit code', verifyCodePlaceholder: 'E.g. 482910', verifyActivate: 'Verify and activate account', modifyRegistration: '← Edit registration details',
       bidStep: 'STEP 2 OF YOUR PURCHASE', bidTitle: 'Set your maximum bid', bidExplain: 'Enter the most you want to bid on this vehicle. This will not make an automatic charge.', myMaxBid: 'My maximum bid', writeMaxBid: 'Enter your maximum', cancel: 'Cancel',
+      continueWhatsApp: 'Continue on WhatsApp', whatsappRequesting: 'Requesting your link…', whatsappRequested: 'Open the WhatsApp link that will appear in this chat and send the prefilled message to link your conversation.', whatsappNotLinked: 'Send a message in this chat first. Wait a few seconds and press the button again.', whatsappUnavailable: 'We could not request the link. Try again in a minute or ask your advisor in this chat.', whatsappCooldown: 'Check for the link in this chat. If it does not appear, try again in a minute.',
       bidAssistance: 'BID ASSISTANCE', continueAdvisor: 'Continue with an advisor', protectedSession: '● Protected session', requestReady: 'How much would you like to bid, or how can I help?', connectingChat: 'Connecting to APV Motors chat…', stableConversation: 'Your account uses a stable identifier to preserve the conversation.', returnChat: 'Return to chat', reopenConversation: 'Reopen your conversation with APV Motors',
       yourActiveBids: 'Your Active Bids',
       clearAllBids: '[icon:trash] Clear all',
@@ -2050,6 +2052,31 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     try{ await navigator.clipboard.writeText(payload); showToast((currentLang==='en'?"Diagnostics displayed and copied.":"Diagnóstico visible y copiado.")); }
     catch(_){ console.info('[APV Kommo diagnóstico]',diag); showToast((currentLang==='en'?"Diagnostics displayed below the chat.":"Diagnóstico visible debajo del chat.")); }
   });
+  $('#chat-whatsapp-button')?.addEventListener('click', async () => {
+    const button = $('#chat-whatsapp-button');
+    const status = $('#chat-whatsapp-status');
+    if (button.disabled) return;
+    const showStatus = key => {
+      status.dataset.i18n = key;
+      status.textContent = t(key);
+      status.classList.remove('hidden');
+    };
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    showStatus('whatsappRequesting');
+    try {
+      await api('/api/kommo/whatsapp-transfer', { method: 'POST' });
+      showStatus('whatsappRequested');
+    } catch (err) {
+      const code = err.data?.code;
+      showStatus(code === 'CHAT_NOT_LINKED' ? 'whatsappNotLinked' :
+        code === 'WHATSAPP_COOLDOWN' ? 'whatsappCooldown' : 'whatsappUnavailable');
+    } finally {
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
+    }
+  });
+
   dom.chatReopenButton?.addEventListener('click',reopenLastChat);
 
   document.addEventListener('click',e=>{

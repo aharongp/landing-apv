@@ -15,6 +15,9 @@ test('purchase mode is validated, stored and protected by session version after 
  const signature=crypto.createHmac('sha256',secret).update(payload).digest('base64url');
  const source=fs.readFileSync(path.join(__dirname,'../server.js'),'utf8');const cookieName=source.match(/const SESSION_COOKIE = ['"]([^'"]+)['"]/)[1];
  const headers={'Content-Type':'application/json',cookie:cookieName+'='+payload+'.'+signature};
+ const handoff=()=>fetch(base+'/api/kommo/whatsapp-transfer',{method:'POST',headers,body:JSON.stringify({leadId:999,apvUserId:'another-user'})});
+ assert.equal((await fetch(base+'/api/kommo/whatsapp-transfer',{method:'POST'})).status,401);
+ const unlinked=await handoff();assert.equal(unlinked.status,409);assert.equal((await unlinked.json()).code,'CHAT_NOT_LINKED');
  const post=body=>fetch(base+'/api/bid-intents',{method:'POST',headers,body:JSON.stringify({...body,cookieConsent:'essential'})});
  assert.equal((await post({lot:'71000001',purchaseMode:'buy',maxBid:200})).status,409);
  const staleSync=await fetch(base+'/api/kommo/sync-bid',{method:'POST',headers,body:JSON.stringify({lot:'71000001',purchaseMode:'buy',maxBid:200})});assert.equal(staleSync.status,409);
@@ -28,5 +31,6 @@ test('purchase mode is validated, stored and protected by session version after 
  const email='buyer@example.test',code='234567';db.prepare('INSERT INTO password_resets VALUES(?,?,?,0,?)').run(email,crypto.createHash('sha256').update(email+':'+code).digest('hex'),Date.now()+60000,Date.now());
  const changed=await fetch(base+'/api/auth/password-reset/confirm',{method:'POST',headers,body:JSON.stringify({email,code,password:'isolated-new-password'})});assert.equal(changed.status,200);
  assert.equal((await post({lot:'71000001',purchaseMode:'bid',maxBid:600})).status,401);
+ assert.equal((await handoff()).status,401);
  const login=await fetch(base+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:'isolated-new-password'})});assert.equal(login.status,200);assert.ok(login.headers.get('set-cookie'));
 });

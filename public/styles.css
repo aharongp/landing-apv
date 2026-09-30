@@ -3847,3 +3847,13 @@ body.home-page,body.catalog-page{padding-top:calc(var(--header-height) + 66px)}
   .home-page .nav-links,.catalog-page .nav-links{display:flex!important;order:3;flex-basis:100%;justify-content:space-around;gap:10px;margin:0;padding:8px 0 2px}
   .home-page .nav-links a,.catalog-page .nav-links a{font-size:12px}
 }
+
+/* Handoff stays visible when reopening an existing conversation. */
+.chat-handoff{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex-shrink:0;min-width:0}
+.chat-handoff .chat-welcome{flex:1 1 240px}
+.chat-whatsapp-button{background:#128244;color:#fff;border:1px solid #128244;min-height:44px;flex:0 0 auto}
+.chat-whatsapp-button:hover{background:#0c6635;color:#fff}
+.chat-whatsapp-button:focus-visible{outline:3px solid #125acb;outline-offset:3px}
+.chat-whatsapp-button:disabled{opacity:.65;cursor:wait}
+.chat-whatsapp-status{flex-basis:100%;margin:0;color:#334155;font-size:13px;line-height:1.4}
+@media(max-width:600px){.chat-handoff .chat-welcome{display:none}.chat-whatsapp-button{width:100%}}

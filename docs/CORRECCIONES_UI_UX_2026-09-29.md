@@ -131,3 +131,14 @@ Esta decisión reemplaza las referencias anteriores de este documento al inventa
 - Validación: 74/74 pruebas aprobadas; Chrome a 390 y 1440 px sin desbordamiento horizontal. Revisados el Lexus del ejemplo (lote 62063896), su ficha y los destacados de inicio.
 - Evidencias: [tarjeta móvil](qa/correcciones-2026-09-29/tarjeta-compacta-movil.png), [destacados en computadora](qa/correcciones-2026-09-29/tarjetas-compactas-escritorio.png).
 - Cambios locales en `fix/auditoria-ui-ux-local`, pendientes de revisión; sin push ni merge a main.
+
+## 2026-09-30 — Acceso a WhatsApp desde conversaciones existentes
+
+El enlace de WhatsApp estaba en la bienvenida del Salesbot; no existía un control en el chat de la aplicación y la bienvenida no se vuelve a ejecutar al reabrir una conversación.
+
+- Se añadió «Continuar por WhatsApp» en el encabezado del chat tanto en la portada como en el catálogo, con estados e instrucciones en español e inglés.
+- El botón solicita al servidor ejecutar el Salesbot web configurado en el lead ya vinculado al usuario autenticado. El cliente abre después el enlace recibido en el chat y envía el mensaje prellenado. No se construye un `wa.me` con un identificador inventado ni se crean leads o contactos durante esta solicitud.
+- `POST /api/kommo/whatsapp-transfer` no acepta IDs de clientes ni de leads del navegador. Rechaza registros sin identidad de chat coincidente o con varios leads distintos y limita solicitudes al mismo lead durante un minuto por proceso. No reintenta automáticamente errores ambiguos de Kommo.
+- Bot verificado mediante la interfaz: `92269` en `apvmotorusa`, con URL `https://wa.me/13462048308?text=ID:%20{{session_id}}`. Puede reemplazarse con `KOMMO_WHATSAPP_BOT_ID` en el servidor. Reutiliza el mensaje de bienvenida existente; no se creó otro bot.
+- Validación: sintaxis JS, pruebas de autorización de la ruta, selección de conversación, concurrencia, errores, estados del botón, traducciones y entrega de recursos HTTP. No se enviaron mensajes a clientes para probarlo.
+- Pendiente: publicar estos cambios, comprobar el aspecto en la instancia utilizada por el usuario y realizar una transferencia real controlada. La aceptación de la solicitud por la API no confirma la entrega del enlace ni la vinculación final del canal. Para esta última, el cliente debe enviar el ID prellenado y deben estar activas las reglas de duplicados correspondientes en Kommo.

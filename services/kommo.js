@@ -804,6 +804,34 @@ function getUserSyncRecords(apvUserId) {
   return catalogDb.getUserSyncRecords(apvUserId);
 }
 
+const whatsappRequests = new Map();
+
+async function requestWhatsAppTransfer(apvUserId) {
+  if (!apvUserId) return { ok: false, code: 'CHAT_NOT_LINKED' };
+  const leadIds = [...new Set(getUserSyncRecords(apvUserId)
+    .filter(record => record.chatKey === `apv:${apvUserId}`)
+    .map(record => Number(record.leadId))
+    .filter(id => Number.isSafeInteger(id) && id > 0))];
+  // Never select a customer's lead by a client-supplied ID, phone or recency.
+  if (leadIds.length !== 1) return { ok: false, code: 'CHAT_NOT_LINKED' };
+  if (!isEnabled()) return { ok: false, code: 'WHATSAPP_UNAVAILABLE' };
+  const env = readEnvFile();
+  const botId = Number(process.env.KOMMO_WHATSAPP_BOT_ID || env.KOMMO_WHATSAPP_BOT_ID ||
+    (getSubdomain() === 'apvmotorusa' ? 92269 : 0));
+  if (!Number.isSafeInteger(botId) || botId <= 0) return { ok: false, code: 'WHATSAPP_UNAVAILABLE' };
+  const leadId = leadIds[0];
+  const now = Date.now();
+  for (const [id, expires] of whatsappRequests) if (expires <= now) whatsappRequests.delete(id);
+  if (whatsappRequests.has(leadId)) return { ok: false, code: 'WHATSAPP_COOLDOWN' };
+  // Reserve before awaiting; do not retry an ambiguous timeout and send twice.
+  whatsappRequests.set(leadId, now + 60000);
+  await kommoFetch('/api/v4/bots/run', {
+    method: 'POST', maxRetries: 0,
+    body: [{ bot_id: botId, entity_id: leadId, entity_type: 'leads' }]
+  });
+  return { ok: true, requested: true };
+}
+
 function clearUserSyncRecords(apvUserId) {
   return catalogDb.clearUserSyncRecords(apvUserId);
 }
@@ -822,5 +850,6 @@ module.exports = {
   updateActiveBidsSummary,
   getSyncRecord,
   getUserSyncRecords,
+  requestWhatsAppTransfer,
   clearUserSyncRecords
 };
