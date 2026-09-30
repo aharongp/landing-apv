@@ -805,6 +805,24 @@ function getUserSyncRecords(apvUserId) {
 }
 
 const whatsappRequests = new Map();
+const whatsappLookups = new Map();
+
+async function findWhatsAppLead(apvUserId) {
+  // The widget can create the contact after the initial sync timers expire.
+  // Query by the server-derived account ID, then verify an exact field match.
+  // Phone/email matches and the first search result are not identity checks.
+  const res = await kommoFetch(`/api/v4/contacts?query=${encodeURIComponent(apvUserId)}&with=leads&limit=100`, {
+    timeoutMs: 5000, maxRetries: 0
+  });
+  if (res.data?._links?.next) return null;
+  const contacts = (res.data?._embedded?.contacts || []).filter(contact =>
+    contact.custom_fields_values?.some(field => Number(field.field_id) === 1126783 &&
+      field.values?.some(value => value.value === apvUserId)));
+  if (contacts.length !== 1) return null;
+  const ids = [...new Set((contacts[0]._embedded?.leads || [])
+    .map(lead => Number(lead.id)).filter(id => Number.isSafeInteger(id) && id > 0))];
+  return ids.length === 1 ? ids[0] : null;
+}
 
 async function requestWhatsAppTransfer(apvUserId) {
   if (!apvUserId) return { ok: false, code: 'CHAT_NOT_LINKED' };
@@ -813,13 +831,22 @@ async function requestWhatsAppTransfer(apvUserId) {
     .map(record => Number(record.leadId))
     .filter(id => Number.isSafeInteger(id) && id > 0))];
   // Never select a customer's lead by a client-supplied ID, phone or recency.
-  if (leadIds.length !== 1) return { ok: false, code: 'CHAT_NOT_LINKED' };
+  if (leadIds.length > 1) return { ok: false, code: 'CHAT_NOT_LINKED' };
   if (!isEnabled()) return { ok: false, code: 'WHATSAPP_UNAVAILABLE' };
   const env = readEnvFile();
   const botId = Number(process.env.KOMMO_WHATSAPP_BOT_ID || env.KOMMO_WHATSAPP_BOT_ID ||
-    (getSubdomain() === 'apvmotorusa' ? 92269 : 0));
+    (getSubdomain() === 'apvmotorusa' ? 93029 : 0));
   if (!Number.isSafeInteger(botId) || botId <= 0) return { ok: false, code: 'WHATSAPP_UNAVAILABLE' };
-  const leadId = leadIds[0];
+  let leadId = leadIds[0];
+  if (!leadId) {
+    let lookup = whatsappLookups.get(apvUserId);
+    if (!lookup) {
+      lookup = findWhatsAppLead(apvUserId).finally(() => whatsappLookups.delete(apvUserId));
+      whatsappLookups.set(apvUserId, lookup);
+    }
+    leadId = await lookup;
+  }
+  if (!leadId) return { ok: false, code: 'CHAT_NOT_LINKED' };
   const now = Date.now();
   for (const [id, expires] of whatsappRequests) if (expires <= now) whatsappRequests.delete(id);
   if (whatsappRequests.has(leadId)) return { ok: false, code: 'WHATSAPP_COOLDOWN' };

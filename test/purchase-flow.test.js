@@ -6,7 +6,7 @@ test('purchase mode is validated, stored and protected by session version after 
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'apv-purchase-flow-'));
  fs.writeFileSync(path.join(dir,'current_catalog.csv'),'Lot number,Year,Make,Model Group,VIN,Image Thumbnail,Sale Date M/D/CY,Image URL,Buy-It-Now Price\n71000001,2023,TOYOTA,COROLLA,1ABCDEFGHI2345678,cs.copart.com/car_thb.jpg,0,https://example.test/car,600');
  const socket=net.createServer();await new Promise(r=>socket.listen(0,'127.0.0.1',r));const port=socket.address().port;await new Promise(r=>socket.close(r));
- const secret='test-only-purchase-flow';const child=spawn(process.execPath,['server.js'],{cwd:path.join(__dirname,'..'),env:{...process.env,APV_DATA_DIR:dir,PORT:String(port),SESSION_SECRET:secret,STRIPE_SECRET_KEY:'disabled-test-key',META_CAPI_TOKEN:'disabled-test-token'},stdio:'ignore'});
+ const secret='test-only-purchase-flow';const child=spawn(process.execPath,['server.js'],{cwd:path.join(__dirname,'..'),env:{...process.env,APV_DATA_DIR:dir,PORT:String(port),SESSION_SECRET:secret,STRIPE_SECRET_KEY:'disabled-test-key',META_CAPI_TOKEN:'disabled-test-token',KOMMO_ENABLED:'false'},stdio:'ignore'});
  t.after(async()=>{if(child.exitCode===null){const done=once(child,'exit');child.kill();await done;}fs.rmSync(dir,{recursive:true,force:true});});
  const base='http://127.0.0.1:'+port;for(let i=0;i<100;i++){try{if((await fetch(base+'/api/health')).ok)break;}catch{}await new Promise(r=>setTimeout(r,25));}
  const db=new DatabaseSync(path.join(dir,'catalog.db'));t.after(()=>db.close());
@@ -17,7 +17,7 @@ test('purchase mode is validated, stored and protected by session version after 
  const headers={'Content-Type':'application/json',cookie:cookieName+'='+payload+'.'+signature};
  const handoff=()=>fetch(base+'/api/kommo/whatsapp-transfer',{method:'POST',headers,body:JSON.stringify({leadId:999,apvUserId:'another-user'})});
  assert.equal((await fetch(base+'/api/kommo/whatsapp-transfer',{method:'POST'})).status,401);
- const unlinked=await handoff();assert.equal(unlinked.status,409);assert.equal((await unlinked.json()).code,'CHAT_NOT_LINKED');
+ const unavailable=await handoff();assert.equal(unavailable.status,409);assert.equal((await unavailable.json()).code,'WHATSAPP_UNAVAILABLE');
  const post=body=>fetch(base+'/api/bid-intents',{method:'POST',headers,body:JSON.stringify({...body,cookieConsent:'essential'})});
  assert.equal((await post({lot:'71000001',purchaseMode:'buy',maxBid:200})).status,409);
  const staleSync=await fetch(base+'/api/kommo/sync-bid',{method:'POST',headers,body:JSON.stringify({lot:'71000001',purchaseMode:'buy',maxBid:200})});assert.equal(staleSync.status,409);
