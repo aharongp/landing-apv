@@ -142,3 +142,12 @@ El enlace de WhatsApp estaba en la bienvenida del Salesbot; no existía un contr
 - Bot verificado mediante la interfaz: `92269` en `apvmotorusa`, con URL `https://wa.me/13462048308?text=ID:%20{{session_id}}`. Puede reemplazarse con `KOMMO_WHATSAPP_BOT_ID` en el servidor. Reutiliza el mensaje de bienvenida existente; no se creó otro bot.
 - Validación: sintaxis JS, pruebas de autorización de la ruta, selección de conversación, concurrencia, errores, estados del botón, traducciones y entrega de recursos HTTP. No se enviaron mensajes a clientes para probarlo.
 - Pendiente: publicar estos cambios, comprobar el aspecto en la instancia utilizada por el usuario y realizar una transferencia real controlada. La aceptación de la solicitud por la API no confirma la entrega del enlace ni la vinculación final del canal. Para esta última, el cliente debe enviar el ID prellenado y deben estar activas las reglas de duplicados correspondientes en Kommo.
+
+### Vista compacta del chat
+
+- Se eliminó la cabecera de logo duplicada durante el chat. El título, WhatsApp y minimizar quedan en una sola fila.
+- Se sustituyó la distribución por filas fijas por una columna flexible: solo la conversación recibe el espacio restante. El selector de pujas deja de estirarse en escritorio.
+- Las pujas se muestran en un desplegable nativo, cerrado inicialmente, con desplazamiento horizontal para varios vehículos; se mantienen los controles para cambiar y borrar pujas.
+- Se corrigió el texto blanco sobre fondo claro del vehículo activo y se reservaron 44 px para minimizar.
+- Revisión visual local en Chrome con el HTML/CSS del modal y conversación de muestra, sin conexión a Kommo: a 425 × 879 el área de chat mide 773 px (88 %); con el aviso de WhatsApp visible, 735 px (84 %). Revisadas también la vista de escritorio y las pujas desplegadas. La prueba no valida el contenido interno del iframe de Kommo ni el teclado del dispositivo.
+- Pasaron las nueve pruebas seleccionadas de WhatsApp, idiomas y entrega de recursos HTTP. Pendiente comprobar el despliegue en `cars.apvmotorusa.com` después de actualizar EasyPanel.

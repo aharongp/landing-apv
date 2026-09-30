@@ -3848,12 +3848,39 @@ body.home-page,body.catalog-page{padding-top:calc(var(--header-height) + 66px)}
   .home-page .nav-links a,.catalog-page .nav-links a{font-size:12px}
 }
 
-/* Handoff stays visible when reopening an existing conversation. */
-.chat-handoff{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex-shrink:0;min-width:0}
-.chat-handoff .chat-welcome{flex:1 1 240px}
-.chat-whatsapp-button{background:#128244;color:#fff;border:1px solid #128244;min-height:44px;flex:0 0 auto}
+/* Keep the conversation flexible; headers and bid controls size to content. */
+.overlay#bid-overlay:has(.chat-mode){padding:16px;overflow:hidden}
+.bid-modal.chat-mode > .modal-brand-header{display:none!important}
+.bid-modal.chat-mode .bid-chat-step{
+  display:flex!important;flex-direction:column!important;
+  flex:1 1 0;min-height:0;height:auto!important;
+  padding:12px 16px 14px!important;gap:8px!important;
+}
+.bid-modal.chat-mode .chat-topline{
+  flex:0 0 auto;min-height:44px!important;margin:0!important;
+  padding-right:48px!important;align-items:center;gap:12px;
+}
+.bid-modal.chat-mode .chat-topline h2{font-size:20px!important;line-height:1.2;margin:0;letter-spacing:-.02em}
+.bid-modal.chat-mode .chat-minimize-button{position:absolute!important;float:none;top:12px!important;right:12px!important;left:auto;width:44px!important;height:44px!important}
+.chat-whatsapp-button{background:#128244;color:#fff;border:1px solid #128244;min-height:44px;padding:8px 14px;flex:0 0 auto}
 .chat-whatsapp-button:hover{background:#0c6635;color:#fff}
 .chat-whatsapp-button:focus-visible{outline:3px solid #125acb;outline-offset:3px}
 .chat-whatsapp-button:disabled{opacity:.65;cursor:wait}
-.chat-whatsapp-status{flex-basis:100%;margin:0;color:#334155;font-size:13px;line-height:1.4}
-@media(max-width:600px){.chat-handoff .chat-welcome{display:none}.chat-whatsapp-button{width:100%}}
+.chat-whatsapp-status{flex:0 0 auto;margin:0;color:#334155;font-size:13px;line-height:1.4}
+.bid-modal.chat-mode .chat-history-selector{flex:0 0 auto;margin:0!important;padding:0!important;max-height:150px;overflow:auto}
+.chat-history-summary{padding:8px 12px;min-height:40px;box-sizing:border-box;cursor:pointer;color:#334155;font-size:12px;font-weight:700}
+.chat-history-summary:focus-visible{outline:2px solid #125acb;outline-offset:-3px}
+.chat-history-selector .chat-history-title{justify-content:flex-end;margin:0;padding:0 10px 4px}
+.chat-history-selector .chat-tabs-scroll{padding:0 10px 8px}
+.bid-modal.chat-mode .chat-tab-wrap.active .chat-tab{color:#0f172a!important}
+.bid-modal.chat-mode .kommo-chat-shell{flex:1 1 0!important;min-height:0!important}
+@media(max-width:760px){
+  .overlay#bid-overlay:has(.chat-mode){padding:0}
+  .bid-modal.chat-mode .bid-chat-step{padding:6px 8px max(6px,env(safe-area-inset-bottom))!important;gap:6px!important}
+  .bid-modal.chat-mode .chat-topline{gap:6px;padding-right:46px!important}
+  .bid-modal.chat-mode .chat-topline h2{font-size:15px!important}
+  .bid-modal.chat-mode .chat-minimize-button{top:6px!important;right:6px!important}
+  .chat-whatsapp-button{padding:8px 10px;font-size:13px}
+  .chat-whatsapp-status{font-size:12px;line-height:1.35}
+  .chat-history-summary{padding:7px 10px;min-height:36px}
+}
