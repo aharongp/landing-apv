@@ -171,3 +171,19 @@ El enlace de WhatsApp estaba en la bienvenida del Salesbot; no existía un contr
 - Verificación: se recargó cada página y se reabrió el formulario para comprobar que fuentes, métodos, política de conflictos y diez etapas seleccionadas persistían. Son cambios de configuración de Kommo; no requieren despliegue en EasyPanel.
 - Pendiente: transferencia nueva desde un contacto de prueba que no haya sido fusionado manualmente, enviando el ID prellenado y verificando la conservación del lead, presupuesto e historiales. La configuración guardada no demuestra por sí sola el resultado de esa prueba. Kommo documenta que no fusiona cuando encuentra más de tres duplicados; con varias coincidencias dentro del límite, la política de recencia tampoco garantiza elegir la oportunidad deseada en todos los casos.
 - Referencias: [Control de duplicados](https://support.kommo.com/docs/set-up-duplicate-control) y [Transferencia desde Live chat](https://support.kommo.com/docs/es/set-up-live-chat-with-website-chat-button).
+
+## Recuperación de conversación y traspaso — 30 de septiembre de 2026
+
+Se reprodujo el caso reportado con la cuenta de prueba indicada por el propietario. Kommo conservaba el contacto y los mensajes, pero el lead original `21880225` estaba eliminado. Los eventos muestran su eliminación a las 13:27 (hora de la interfaz CRM); los intentos posteriores volvieron a utilizar el contexto de esa conversación. Se restauró únicamente ese lead mediante la papelera de Kommo y se verificó por UI y API: Prueba → Contacto inicial, Mustang 2021, lote 60157996, presupuesto personalizado 3000. No se restauraron los duplicados descartados por las fusiones.
+
+El contacto recuperado tampoco tenía `APV User ID`. Con la sesión que abrió el propietario se confirmó un mensaje visible y la respuesta incorrecta del botón «Envía primero un mensaje». La restauración del lead por sí sola no acredita la reparación del botón.
+
+Cambios de aplicación:
+
+- Reenviar contacto, identificador APV y datos de solicitud juntos al quedar listo el widget; al reabrir, incluir identidad sin reemplazar el presupuesto por cero.
+- Recuperar el lead existente durante la sincronización mediante coincidencia exacta del campo APV, ya que `onlinechat.user_id` y el `visitor_uid` nativo observado no son iguales. Mantener el contacto que coincidió, incluso si otro es el principal del lead.
+- Comprobar que el lead existe antes de sincronizar o ejecutar el Salesbot. Si fue eliminado y no hay una asociación exacta recuperable, mostrar el motivo correspondiente. No crear leads de reemplazo ni restaurar automáticamente registros eliminados.
+- Corregir la etapa predeterminada de aceptación de entrantes a Contacto inicial de Prueba (`110996284`).
+- Reconstruir el contexto de «Mis Pujas» antes de abrir el chat en un dispositivo sin memoria local. El fallo se reprodujo en Chrome después de iniciar sesión en la cuenta reportada.
+
+Validación: 15 pruebas de Kommo aprobadas (identidad, recuperación, registros eliminados, concurrencia, metadatos al iniciar/reabrir y solicitudes guardadas en otro dispositivo); sintaxis de los tres archivos JavaScript y `git diff --check` correctos. Se retomó la consulta del mismo lote e importe para reproducir el botón en producción. El código nuevo requiere despliegue en EasyPanel; todavía falta confirmar que aparezca el enlace en esa conversación tras desplegar. No se acredita aún el recorrido completo de recepción por WhatsApp y asociación automática.

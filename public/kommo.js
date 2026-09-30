@@ -218,14 +218,18 @@
     ].join('\n');
   }
 
-  function setCrmMeta(vehicle, maxBid, user, activeBids, stage) {
-    ensureOfficialBootstrapObjects();
-    const botParams = buildContext(vehicle, maxBid, user);
+  function contactMeta(user) {
     const contactFields = [];
-    const leadFields = [];
     if (user?.phone) contactFields.push({ id: 479324, values: [{ value: user.phone, enum: 'MOB' }] });
     if (user?.email) contactFields.push({ id: 479326, values: [{ value: user.email, enum: 'PRIV' }] });
     if (user?.kommoUserId) contactFields.push({ id: 1126783, values: [{ value: user.kommoUserId }] });
+    return { name: user?.name || 'Cliente web APV', custom_fields: contactFields };
+  }
+
+  function setCrmMeta(vehicle, maxBid, user, activeBids, stage) {
+    ensureOfficialBootstrapObjects();
+    const botParams = buildContext(vehicle, maxBid, user);
+    const leadFields = [];
     if (botParams.vehicle_model) leadFields.push({ id: 1126777, values: [{ value: botParams.vehicle_model }] });
     if (vehicle?.vin) leadFields.push({ id: 1126779, values: [{ value: vehicle.vin }] });
     if (vehicle?.lot) leadFields.push({ id: 1126781, values: [{ value: String(vehicle.lot) }] });
@@ -233,10 +237,7 @@
 
     const payload = {
       bot_params: botParams,
-      contact: {
-        name: user?.name || 'Cliente web APV',
-        custom_fields: contactFields
-      },
+      contact: contactMeta(user),
       lead: {
         name: `${vehicle.purchaseMode==='buy'?'Compra inmediata':'Puja'} ($${Math.max(0, Math.round(Number(maxBid || 0))).toLocaleString('en-US')} USD) | ${botParams.vehicle_model || 'Vehículo'}`,
         sale: Math.max(0, Math.round(Number(maxBid || 0))),
@@ -401,10 +402,10 @@
     chatReady = true;
     setStatus('ready');
 
-    // Reaplicamos primero SOLO bot_params sobre la implementación real. De esta
-    // forma el Salesbot recibe VIN/modelo antes de abrir visualmente el chat.
+    // Keep contact identity in the final metadata sent before the chat opens.
+    // Replacing it with only bot_params can lose the APV field on a new chat.
     if (pendingBid && pendingBid.vehicle && pendingBid.user) {
-      setBotParamsOnly(pendingBid.vehicle, pendingBid.maxBid, pendingBid.user, 'onChatReady');
+      setCrmMeta(pendingBid.vehicle, pendingBid.maxBid, pendingBid.user, pendingBid.activeBids, 'onChatReady');
     }
 
     readyCallbacks.forEach(function (cb) {
@@ -577,6 +578,11 @@
       createdAt: Date.now()
     };
     ensureOfficialBootstrapObjects();
+
+    // A saved chat can be reopened before its first message, or after Kommo
+    // merged its contact. Always include the account identity before loading.
+    // Do not overwrite the vehicle/budget with the zero used by reopen.
+    window.crm_plugin.setMeta({ contact: contactMeta(currentUser) });
 
     if (loaderState === 'idle' || loaderState === 'error') injectOfficialScript();
     if (chatReady) {

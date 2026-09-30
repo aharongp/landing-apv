@@ -498,7 +498,7 @@ async function findContactForLead(leadId) {
 async function acceptUnsortedLead(incomingUid, statusId) {
   if (!incomingUid) return null;
   try {
-    const body = { status_id: Number(statusId || process.env.KOMMO_STATUS_ID || 70685710) };
+    const body = { status_id: Number(statusId || process.env.KOMMO_STATUS_ID || 110996284) };
     const res = await kommoFetch(`/api/v4/leads/unsorted/${incomingUid}/accept`, {
       method: 'POST',
       body
@@ -566,6 +566,23 @@ async function syncBidInternal(params) {
     leadId = Number(priorRecord.leadId);
     contactId = priorRecord.contactId ? Number(priorRecord.contactId) : null;
     console.log(`[KOMMO] Reusing conversation leadId=${leadId} for APV user ${apvUserId}`);
+  }
+
+  if (leadId && !await getLiveLead(leadId)) {
+    leadId = null;
+    contactId = null;
+    incomingLeadUid = null;
+  }
+
+  // onlinechat.user_id is not Kommo's native visitor_uid. Recover an already
+  // created/accepted chat using the exact APV field, never a recent lead.
+  if (!leadId) {
+    const conversation = await findAccountConversation(apvUserId);
+    const recovered = conversation && await getLiveLead(conversation.leadId);
+    if (recovered) {
+      leadId = recovered.id;
+      contactId = conversation.contactId;
+    }
   }
 
   // Only an exact visitor_uid is accepted. A recent-chat fallback can attach a
@@ -807,7 +824,20 @@ function getUserSyncRecords(apvUserId) {
 const whatsappRequests = new Map();
 const whatsappLookups = new Map();
 
-async function findWhatsAppLead(apvUserId) {
+async function getLiveLead(leadId) {
+  try {
+    const res = await kommoFetch(`/api/v4/leads/${leadId}?with=contacts`, {
+      timeoutMs: 5000, maxRetries: 0
+    });
+    return res.status !== 204 && Number(res.data?.id) === Number(leadId) &&
+      !res.data.is_deleted ? res.data : null;
+  } catch (err) {
+    if (err.statusCode === 404) return null;
+    throw err;
+  }
+}
+
+async function findAccountConversation(apvUserId) {
   // The widget can create the contact after the initial sync timers expire.
   // Query by the server-derived account ID, then verify an exact field match.
   // Phone/email matches and the first search result are not identity checks.
@@ -821,7 +851,11 @@ async function findWhatsAppLead(apvUserId) {
   if (contacts.length !== 1) return null;
   const ids = [...new Set((contacts[0]._embedded?.leads || [])
     .map(lead => Number(lead.id)).filter(id => Number.isSafeInteger(id) && id > 0))];
-  return ids.length === 1 ? ids[0] : null;
+  return ids.length === 1 ? { leadId: ids[0], contactId: contacts[0].id } : null;
+}
+
+async function findWhatsAppLead(apvUserId) {
+  return (await findAccountConversation(apvUserId))?.leadId || null;
 }
 
 async function requestWhatsAppTransfer(apvUserId) {
@@ -838,15 +872,20 @@ async function requestWhatsAppTransfer(apvUserId) {
     (getSubdomain() === 'apvmotorusa' ? 93029 : 0));
   if (!Number.isSafeInteger(botId) || botId <= 0) return { ok: false, code: 'WHATSAPP_UNAVAILABLE' };
   let leadId = leadIds[0];
+  const staleLead = leadId && !await getLiveLead(leadId);
+  if (staleLead) leadId = null;
   if (!leadId) {
     let lookup = whatsappLookups.get(apvUserId);
     if (!lookup) {
-      lookup = findWhatsAppLead(apvUserId).finally(() => whatsappLookups.delete(apvUserId));
+      lookup = (async () => {
+        const id = await findWhatsAppLead(apvUserId);
+        return id && await getLiveLead(id) ? id : null;
+      })().finally(() => whatsappLookups.delete(apvUserId));
       whatsappLookups.set(apvUserId, lookup);
     }
     leadId = await lookup;
   }
-  if (!leadId) return { ok: false, code: 'CHAT_NOT_LINKED' };
+  if (!leadId) return { ok: false, code: staleLead ? 'CHAT_LEAD_REMOVED' : 'CHAT_NOT_LINKED' };
   const now = Date.now();
   for (const [id, expires] of whatsappRequests) if (expires <= now) whatsappRequests.delete(id);
   if (whatsappRequests.has(leadId)) return { ok: false, code: 'WHATSAPP_COOLDOWN' };

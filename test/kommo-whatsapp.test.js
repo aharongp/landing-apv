@@ -4,13 +4,13 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
 
-function service(records, request = async () => ({status:202})) {
+function service(records, request = async () => ({status:202}), leadRequest) {
   const calls = [];
   const context = {
     module: {exports:{}}, __dirname: path.join(__dirname, '../services'),
     require: name => name === './catalogDb' ? {getUserSyncRecords: user => records.filter(r => r.apvUserId === user)} : require(name),
     process: {env:{KOMMO_SUBDOMAIN:'apvmotorusa', KOMMO_WHATSAPP_BOT_ID:'93029'}}, console,
-    request: async (...args) => { calls.push(args); return request(...args); }
+    request: async (...args) => { calls.push(args); const match = args[0].match(/^\/api\/v4\/leads\/(\d+)\?with=contacts$/); return match ? (leadRequest ? leadRequest(...args) : {status:200,data:{id:Number(match[1])}}) : request(...args); }
   };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../services/kommo.js'),'utf8') +
     '\nkommoFetch=request;isEnabled=()=>true;readEnvFile=()=>({});', context);
@@ -21,8 +21,8 @@ const record = (leadId, apvUserId='alice') => ({apvUserId, chatKey:`apv:${apvUse
 test('handoff only runs on one existing lead belonging to the signed-in visitor', async () => {
   const {run,calls} = service([record(11), record(11), record(22,'bob')]);
   assert.equal((await run('alice')).requested, true);
-  assert.equal(calls.length, 1);
-  assert.deepEqual(JSON.parse(JSON.stringify(calls[0])), ['/api/v4/bots/run', {
+  assert.equal(calls.length, 2);
+  assert.deepEqual(JSON.parse(JSON.stringify(calls[1])), ['/api/v4/bots/run', {
     method:'POST', maxRetries:0, body:[{bot_id:93029,entity_id:11,entity_type:'leads'}]
   }]);
   assert.equal((await run('unknown')).code,'CHAT_NOT_LINKED');
@@ -41,13 +41,14 @@ test('concurrent clicks and ambiguous failures do not launch duplicate bots', as
   let release;
   const {run,calls}=service([record(11)],()=>new Promise(resolve=>{release=resolve;}));
   const first=run('alice');
+  await new Promise(resolve=>setImmediate(resolve));
   assert.equal((await run('alice')).code,'WHATSAPP_COOLDOWN');
   release({status:202}); await first;
-  assert.equal(calls.length,1);
+  assert.equal(calls.filter(([,o])=>o.method==='POST').length,1);
   const failed=service([record(11)],async()=>{throw new Error('timeout');});
   await assert.rejects(failed.run('alice'),/timeout/);
   assert.equal((await failed.run('alice')).code,'WHATSAPP_COOLDOWN');
-  assert.equal(failed.calls.length,1);
+  assert.equal(failed.calls.filter(([,o])=>o.method==='POST').length,1);
 });
 
 test('visible handoff button requests a link once and presents recoverable errors', async () => {
@@ -74,7 +75,7 @@ test('late first message recovers the existing lead by exact APV identity withou
  const {run,calls}=service([record(null)],async(endpoint,options)=>options.method==='POST'?{status:202}:{data:{_embedded:{contacts:[contact('alice')]}}});
  assert.equal((await run('alice')).requested,true);
  assert.match(calls[0][0],/contacts\?query=alice&with=leads/);
- assert.equal(calls[1][1].body[0].entity_id,71);
+ assert.equal(calls[2][1].body[0].entity_id,71);
  assert.equal(calls.filter(([,o])=>o.method==='POST').length,1);
 });
 test('recovery refuses partial identities, unrelated fields, multiple contacts, leads and truncated searches',async()=>{
@@ -98,5 +99,76 @@ test('concurrent recovery shares the lookup and launches the bot only once',asyn
  const results=await Promise.all([first,second]);
  assert.equal(results.filter(r=>r.requested).length,1);
  assert.equal(results.filter(r=>r.code==='WHATSAPP_COOLDOWN').length,1);
- assert.equal(calls.length,2);
+ assert.equal(calls.length,3);
+});
+
+test('a deleted cached lead never starts a bot and reports the actual problem', async () => {
+  for (const missing of [{status:204}, {status:200,data:{id:11,is_deleted:true}}]) {
+    const {run,calls}=service([record(11)], async()=>({status:204}), async()=>missing);
+    assert.equal((await run('alice')).code,'CHAT_LEAD_REMOVED');
+    assert.equal(calls.some(([,o])=>o.method==='POST'),false);
+  }
+});
+
+test('a stale mapping recovers only a live lead with the exact APV identity', async () => {
+  const {run,calls}=service([record(11)],async(endpoint,options)=>options.method==='POST'?{status:202}:{data:{_embedded:{contacts:[contact('alice')]}}},
+    async endpoint=>endpoint.includes('/11?')?{status:204}:{status:200,data:{id:71}});
+  assert.equal((await run('alice')).requested,true);
+  assert.equal(calls.find(([,o])=>o.method==='POST')[1].body[0].entity_id,71);
+});
+
+test('a removed lead returned in contact links is not a usable conversation', async () => {
+  const {run,calls}=service([],async()=>({data:{_embedded:{contacts:[contact('alice')]}}}),async()=>({status:204}));
+  assert.equal((await run('alice')).code,'CHAT_NOT_LINKED');
+  assert.equal(calls.some(([,o])=>o.method==='POST'),false);
+});
+
+test('reopening includes account identity before loading the widget without zeroing the budget', () => {
+  const win={setTimeout(){},clearTimeout(){}};
+  let captured;
+  const document={getElementById:()=>null,createElement:()=>({}),head:{appendChild(){captured=JSON.parse(JSON.stringify(win.crm_plugin.params));}}};
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../public/kommo.js'),'utf8'),{window:win,document,console:{info(){}}});
+  const result=win.apvKommo.reopenConversation({lot:'123',title:'Test car'},{kommoUserId:'alice',name:'Alice',email:'alice@example.test',phone:'+15550000001'});
+  assert.equal(result.ok,true);
+  assert.equal(win.crmPluginConfig.onlinechat.user_id,'apv:alice');
+  assert.equal(captured[0].contact.custom_fields.find(f=>f.id===1126783).values[0].value,'alice');
+  assert.equal(captured.some(p=>p.lead||p.note),false);
+});
+
+test('bid sync recovers accepted chats by exact account field, not native visitor UID or main contact',async()=>{
+ const saved=[],updates=[],requests=[];
+ const catalog={getSyncRecord:()=>null,getUserSyncRecords:()=>[],saveSyncRecord:r=>saved.push(r)};
+ const context={module:{exports:{}},require:n=>n==='./catalogDb'?catalog:require(n),__dirname:path.join(__dirname,'../services'),process:{env:{}},console,
+ request:async(ep,o={})=>{requests.push([ep,o]);if(ep.startsWith('/api/v4/contacts?'))return {data:{_embedded:{contacts:[contact('alice')]}}};if(ep==='/api/v4/leads/71?with=contacts')return {status:200,data:{id:71,_embedded:{contacts:[{id:999,is_main:true},{id:21}]}}};return {data:{}};},
+ updated:(id)=>updates.push(id)};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../services/kommo.js'),'utf8')+'\nkommoFetch=request;findKommoIncomingLead=async()=>null;updateContact=async(id)=>updated(id);updateLead=async()=>{};updateActiveBidsSummary=async()=>{};',context);
+ const result=await context.module.exports.syncBid({user:{kommoUserId:'alice'},vehicle:{lot:'123',title:'Car'},maxBid:3000});
+ assert.equal(result.leadId,71);assert.equal(result.contactId,21);assert.deepEqual(updates,[21]);
+ assert.equal(saved[0].chatKey,'apv:alice');
+ assert.equal(requests.some(([ep,o])=>o.method==='POST'&&ep==='/api/v4/leads'),false);
+});
+
+test('My bids rebuilds chat memory on a new device before reopening',async()=>{
+ const source=fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8');
+ const handler=source.slice(source.indexOf("  $('#my-bids-button')?.addEventListener"),source.indexOf('  dom.bidChatStep.addEventListener'));
+ for(const localBids of [[],[{lot:'123'}]]){
+  let click,remembered,reopened=false;
+  const context={$:()=>({addEventListener:(_,fn)=>click=fn}),state:{user:{kommoUserId:'alice'}},getUserBidsHistory:()=>localBids,
+   api:async()=>({ok:true,bids:[{lot:'123'}]}),getVehicle:async lot=>({lot}),rememberChat:v=>remembered=v.lot,
+   reopenLastChat:()=>{assert.equal(remembered,'123');reopened=true;},showToast:msg=>assert.fail(msg),currentLang:'es'};
+  vm.runInNewContext(handler,context);await click();assert.equal(reopened,true);
+ }
+});
+
+test('chat ready sends contact and lead metadata together before showing the chat',()=>{
+ const win={setTimeout(){},clearTimeout(){}};
+ const document={getElementById:()=>null,createElement:()=>({}),head:{appendChild(){}}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../public/kommo.js'),'utf8'),{window:win,document,console:{info(){}}});
+ win.apvKommo.sendBidContext({lot:'123',title:'Test car'},3000,{kommoUserId:'alice',name:'Alice'},[]);
+ const ready=Array.from(win.crmPlugin.q).find(call=>call[0]==='onChatReady')[1];
+ const sent=[];win.crm_plugin.setMeta=payload=>sent.push(payload);ready();
+ assert.equal(sent.length,1);
+ assert.equal(sent[0].contact.custom_fields.find(f=>f.id===1126783).values[0].value,'alice');
+ assert.equal(sent[0].lead.sale,3000);
+ assert.equal(sent[0].bot_params.lot,'123');
 });
