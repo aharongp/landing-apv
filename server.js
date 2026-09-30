@@ -1057,7 +1057,9 @@ const server = http.createServer(async (req, res) => {
       const user = requireAuth(req, res);
       if (!user) return;
       try {
-        const result = await kommoService.requestWhatsAppTransfer(kommoUserId(user));
+        const result = await kommoService.requestWhatsAppTransfer(kommoUserId(user), {
+          email: user.email, phone: user.phone, emailVerified: user.emailVerified
+        });
         return json(res, result.ok ? 202 : result.code === 'WHATSAPP_COOLDOWN' ? 429 : 409, result);
       } catch (_) {
         return json(res, 502, { ok: false, code: 'WHATSAPP_UNAVAILABLE' });
@@ -1084,6 +1086,7 @@ const server = http.createServer(async (req, res) => {
 
       const userFull = {
         ...safeUser(user),
+        emailVerified: user.emailVerified,
         phone: user.phone || '',
         apvSource: attribution().save(user.id,req,body).source
       };

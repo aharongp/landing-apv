@@ -577,7 +577,7 @@ async function syncBidInternal(params) {
   // onlinechat.user_id is not Kommo's native visitor_uid. Recover an already
   // created/accepted chat using the exact APV field, never a recent lead.
   if (!leadId) {
-    const conversation = await findAccountConversation(apvUserId);
+    const conversation = await findAccountConversation(apvUserId, user);
     const recovered = conversation && await getLiveLead(conversation.leadId);
     if (recovered) {
       leadId = recovered.id;
@@ -837,10 +837,50 @@ async function getLiveLead(leadId) {
   }
 }
 
-async function findAccountConversation(apvUserId) {
+async function recoverVerifiedConversation(apvUserId, user) {
+  // Legacy/merged contacts can lose the widget's APV field. Recovery requires
+  // the server's verified email AND phone, one contact/lead and an APV web chat.
+  // Never trust these identity fields from the transfer request body.
+  if (!user || ![true, 1].includes(user.emailVerified) || getSubdomain() !== 'apvmotorusa') return null;
+  const email = String(user.email || '').trim().toLowerCase();
+  const phone = String(user.phone || '').replace(/\D/g, '');
+  if (!email || phone.length < 10) return null;
+  const values = (contact, id) => (contact.custom_fields_values || [])
+    .filter(field => Number(field.field_id) === id).flatMap(field => (field.values || []).map(v => String(v.value || '')));
+  const matches = contact => {
+    const emails = [...new Set(values(contact, 479326).map(v => v.trim().toLowerCase()).filter(Boolean))];
+    const phones = [...new Set(values(contact, 479324).map(v => v.replace(/\D/g, '')).filter(Boolean))];
+    return emails.length === 1 && emails[0] === email && phones.length === 1 && phones[0] === phone;
+  };
+  const ownedElsewhere = contact => values(contact, 1126783).some(v => v && v !== apvUserId);
+  const result = await kommoFetch(`/api/v4/contacts?query=${encodeURIComponent(email)}&with=leads&limit=100`, {timeoutMs:5000,maxRetries:0});
+  if (result.data?._links?.next) return null;
+  const contacts = (result.data?._embedded?.contacts || []).filter(matches);
+  if (contacts.length !== 1 || ownedElsewhere(contacts[0])) return null;
+  const contactId = Number(contacts[0].id);
+  const ids = [...new Set((contacts[0]._embedded?.leads || []).map(l => Number(l.id)))];
+  if (!Number.isSafeInteger(contactId) || contactId <= 0 || ids.length !== 1 || !Number.isSafeInteger(ids[0]) || ids[0] <= 0) return null;
+  const lead = await getLiveLead(ids[0]);
+  if (!lead || ![14370344,12442255].includes(lead.pipeline_id) || [142,143].includes(lead.status_id) ||
+      !lead._embedded?.contacts?.some(c => Number(c.id) === contactId && c.is_main)) return null;
+  const talks = await kommoFetch(`/api/v4/talks?filter[contact_id][]=${contactId}&limit=100`, {timeoutMs:5000,maxRetries:0});
+  if (talks.data?._links?.next || !talks.data?._embedded?.talks?.some(t =>
+    Number(t.contact_id) === contactId && t.origin === 'onlinechat' && [73181,73183].includes(Number(t.source_id)) &&
+    (t.entity_type === 'lead' ? Number(t.entity_id) === lead.id : t.entity_type === 'contact' && Number(t.entity_id) === contactId))) return null;
+  // Re-read just before claiming; refuse another account's identity or a changed link.
+  const fresh = await kommoFetch(`/api/v4/contacts/${contactId}?with=leads`, {timeoutMs:5000,maxRetries:0});
+  const current = fresh.data;
+  if (!current || Number(current.id) !== contactId || !matches(current) || ownedElsewhere(current) ||
+      current._embedded?.leads?.length !== 1 || Number(current._embedded.leads[0].id) !== lead.id) return null;
+  await kommoFetch(`/api/v4/contacts/${contactId}`, {method:'PATCH',maxRetries:0,
+    body:{custom_fields_values:[{field_id:1126783,values:[{value:apvUserId}]}]}});
+  return {leadId:lead.id,contactId};
+}
+
+async function findAccountConversation(apvUserId, user) {
   // The widget can create the contact after the initial sync timers expire.
   // Query by the server-derived account ID, then verify an exact field match.
-  // Phone/email matches and the first search result are not identity checks.
+  // Unverified phone/email matches and the first result are not identity checks.
   const res = await kommoFetch(`/api/v4/contacts?query=${encodeURIComponent(apvUserId)}&with=leads&limit=100`, {
     timeoutMs: 5000, maxRetries: 0
   });
@@ -848,17 +888,18 @@ async function findAccountConversation(apvUserId) {
   const contacts = (res.data?._embedded?.contacts || []).filter(contact =>
     contact.custom_fields_values?.some(field => Number(field.field_id) === 1126783 &&
       field.values?.some(value => value.value === apvUserId)));
+  if (contacts.length === 0) return recoverVerifiedConversation(apvUserId, user);
   if (contacts.length !== 1) return null;
   const ids = [...new Set((contacts[0]._embedded?.leads || [])
     .map(lead => Number(lead.id)).filter(id => Number.isSafeInteger(id) && id > 0))];
   return ids.length === 1 ? { leadId: ids[0], contactId: contacts[0].id } : null;
 }
 
-async function findWhatsAppLead(apvUserId) {
-  return (await findAccountConversation(apvUserId))?.leadId || null;
+async function findWhatsAppLead(apvUserId, user) {
+  return (await findAccountConversation(apvUserId, user))?.leadId || null;
 }
 
-async function requestWhatsAppTransfer(apvUserId) {
+async function requestWhatsAppTransfer(apvUserId, user) {
   if (!apvUserId) return { ok: false, code: 'CHAT_NOT_LINKED' };
   const leadIds = [...new Set(getUserSyncRecords(apvUserId)
     .filter(record => record.chatKey === `apv:${apvUserId}`)
@@ -878,7 +919,7 @@ async function requestWhatsAppTransfer(apvUserId) {
     let lookup = whatsappLookups.get(apvUserId);
     if (!lookup) {
       lookup = (async () => {
-        const id = await findWhatsAppLead(apvUserId);
+        const id = await findWhatsAppLead(apvUserId, user);
         return id && await getLiveLead(id) ? id : null;
       })().finally(() => whatsappLookups.delete(apvUserId));
       whatsappLookups.set(apvUserId, lookup);

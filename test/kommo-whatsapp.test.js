@@ -172,3 +172,56 @@ test('chat ready sends contact and lead metadata together before showing the cha
  assert.equal(sent[0].lead.sale,3000);
  assert.equal(sent[0].bot_params.lot,'123');
 });
+
+const verifiedUser = {email:'alice@example.test',phone:'+15550000001',emailVerified:1};
+function legacyRecovery(options={}) {
+ const legacy={id:21,custom_fields_values:[
+  {field_id:479326,values:[{value:'alice@example.test'}]},
+  {field_id:479324,values:[{value:'+1 555 000 0001'}]}
+ ],_embedded:{leads:[{id:71}]}};
+ if(options.edit)options.edit(legacy);
+ const lead={id:71,pipeline_id:14370344,status_id:110996284,_embedded:{contacts:[{id:21,is_main:true}]},...options.lead};
+ const talks={_embedded:{talks:[{contact_id:21,origin:'onlinechat',source_id:73183,entity_type:'lead',entity_id:71}]},...options.talks};
+ return service([],async(ep,o={})=>{
+  if(ep.includes('query=alice&'))return {data:{_embedded:{contacts:[]}}};
+  if(ep.includes('query=alice%40example.test'))return {data:{_embedded:{contacts:options.duplicate?[legacy,legacy]:[legacy]},...options.search}};
+  if(ep.includes('/talks?'))return {data:talks};
+  if(ep==='/api/v4/contacts/21?with=leads')return {data:options.fresh||legacy};
+  if(o.method==='PATCH'||ep==='/api/v4/bots/run')return {status:202};
+  throw Error('Unexpected endpoint '+ep);
+ },async()=>({status:200,data:lead}));
+}
+
+test('legacy contact recovery verifies server account, phone, unique lead and native chat before binding',async()=>{
+ const {run,calls}=legacyRecovery();
+ assert.equal((await run('alice',verifiedUser)).requested,true);
+ const mutations=calls.filter(([,o])=>['PATCH','POST'].includes(o.method));
+ assert.equal(mutations.length,2);
+ assert.equal(mutations[0][0],'/api/v4/contacts/21');
+ assert.equal(mutations[0][1].body.custom_fields_values[0].values[0].value,'alice');
+ assert.equal(mutations[1][1].body[0].entity_id,71);
+});
+
+test('legacy recovery rejects unverified identities, conflicting ownership and ambiguous or unrelated chats',async()=>{
+ const cases=[
+  {user:{...verifiedUser,emailVerified:0}},
+  {user:{...verifiedUser,phone:'+15559999999'}},
+  {duplicate:true},
+  {search:{_links:{next:{href:'next'}}}},
+  {edit:c=>c.custom_fields_values.push({field_id:1126783,values:[{value:'bob'}]})},
+  {edit:c=>c.custom_fields_values[0].values.push({value:'bob@example.test'})},
+  {edit:c=>c._embedded.leads.push({id:72})},
+  {lead:{is_deleted:true}},
+  {lead:{status_id:142}},
+  {lead:{pipeline_id:11193467}},
+  {lead:{_embedded:{contacts:[{id:999,is_main:true},{id:21}]}}},
+  {talks:{_embedded:{talks:[{contact_id:21,origin:'waba',source_id:62880,entity_type:'lead',entity_id:71}]}}},
+  {talks:{_embedded:{talks:[{contact_id:21,origin:'onlinechat',source_id:73183,entity_type:'lead',entity_id:72}]}}},
+  {fresh:{id:21,custom_fields_values:[],_embedded:{leads:[{id:71}]}}}
+ ];
+ for(const opts of cases){
+  const {run,calls}=legacyRecovery(opts);
+  assert.equal((await run('alice',opts.user||verifiedUser)).code,'CHAT_NOT_LINKED');
+  assert.equal(calls.some(([,o])=>['PATCH','POST'].includes(o.method)),false);
+ }
+});

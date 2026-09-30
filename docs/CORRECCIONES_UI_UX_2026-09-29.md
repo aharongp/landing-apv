@@ -187,3 +187,11 @@ Cambios de aplicación:
 - Reconstruir el contexto de «Mis Pujas» antes de abrir el chat en un dispositivo sin memoria local. El fallo se reprodujo en Chrome después de iniciar sesión en la cuenta reportada.
 
 Validación: 15 pruebas de Kommo aprobadas (identidad, recuperación, registros eliminados, concurrencia, metadatos al iniciar/reabrir y solicitudes guardadas en otro dispositivo); sintaxis de los tres archivos JavaScript y `git diff --check` correctos. Se retomó la consulta del mismo lote e importe para reproducir el botón en producción. El código nuevo requiere despliegue en EasyPanel; todavía falta confirmar que aparezca el enlace en esa conversación tras desplegar. No se acredita aún el recorrido completo de recepción por WhatsApp y asociación automática.
+
+### Validación posterior al despliegue: contactos antiguos sin APV User ID
+
+Se confirmó que `df19974` estaba publicado. Reabrir el chat y retomar la misma solicitud no repuso el identificador APV del contacto antiguo, incluso después de enviar un mensaje nuevo. Por ello la corrección anterior no resuelve por sí sola la recuperación de este contacto.
+
+Se añadió una recuperación exclusivamente para cuentas cuyo correo está verificado en el servidor: exige coincidencia exacta de correo y teléfono normalizados, un solo contacto y lead, contacto principal, lead abierto en Prueba/VENTAS y conversación nativa onlinechat de las fuentes APV. Se rechazan contactos con múltiples correos/teléfonos, resultados paginados o ambiguos, otra identidad APV y cambios detectados al releer el contacto. Solo entonces se escribe el identificador derivado por el servidor. El endpoint no toma estas identidades del cuerpo de la petición.
+
+Pruebas: 17 casos de Kommo aprobados, incluidos rechazo de identidades no verificadas, contactos ambiguos, otro propietario, lead cerrado/eliminado y chats ajenos. No se eliminó ningún lead para repetir la prueba. Se ejecutó el bot sobre el lead de prueba identificado para verificar por separado la entrega del enlace mientras se prepara este ajuste; no se presenta esa ejecución directa como validación del botón de la aplicación.
