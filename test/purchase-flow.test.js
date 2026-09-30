@@ -22,12 +22,32 @@ test('purchase mode is validated, stored and protected by session version after 
  assert.equal((await post({lot:'71000001',purchaseMode:'buy',maxBid:200})).status,409);
  const staleSync=await fetch(base+'/api/kommo/sync-bid',{method:'POST',headers,body:JSON.stringify({lot:'71000001',purchaseMode:'buy',maxBid:200})});assert.equal(staleSync.status,409);
  assert.equal((await post({lot:'71000001',purchaseMode:'unknown',maxBid:600})).status,400);
+ db.prepare('UPDATE vehicles SET currentBid=700 WHERE lot=?').run('71000001');
+ // Buy It Now keeps its own price validation even when the current bid differs.
  const request=await post({lot:'71000001',purchaseMode:'buy',maxBid:600});assert.equal(request.status,201);
  const intent=await request.json();assert.equal(intent.purchaseMode,'buy');assert.equal(intent.maxBid,600);
  assert.equal(db.prepare('SELECT purchaseMode FROM bid_intents WHERE id=?').get(intent.id).purchaseMode,'buy');
  db.prepare('UPDATE vehicles SET buyNow=0 WHERE lot=?').run('71000001');
  // Lookup is uncached so stale UI quotes cannot submit a purchase after availability changes.
  assert.equal((await post({lot:'71000001',purchaseMode:'buy',maxBid:600})).status,409);
+ const countIntents=()=>db.prepare('SELECT COUNT(*) AS total FROM bid_intents').get().total;
+ const beforeRejected=countIntents();
+ for(const endpoint of ['/api/bid-intents','/api/kommo/sync-bid']){
+  const response=await fetch(base+endpoint,{method:'POST',headers,body:JSON.stringify({lot:'71000001',maxBid:699})});
+  assert.equal(response.status,409);
+  const error=await response.json();assert.equal(error.code,'BID_BELOW_CURRENT');assert.equal(error.currentBid,700);
+ }
+ assert.equal(countIntents(),beforeRejected,'Rejected bids must not create requests');
+ for(const maxBid of [700,701]) assert.equal((await post({lot:'71000001',maxBid})).status,201);
+ // A price rise must be checked against the latest catalog value on both routes.
+ db.prepare('UPDATE vehicles SET currentBid=800 WHERE lot=?').run('71000001');
+ for(const endpoint of ['/api/bid-intents','/api/kommo/sync-bid']){
+  const response=await fetch(base+endpoint,{method:'POST',headers,body:JSON.stringify({lot:'71000001',purchaseMode:'bid',maxBid:700})});
+  assert.equal(response.status,409);assert.equal((await response.json()).currentBid,800);
+ }
+ db.prepare('UPDATE vehicles SET currentBid=0 WHERE lot=?').run('71000001');
+ assert.equal((await post({lot:'71000001',maxBid:1})).status,201);
+ assert.equal((await post({lot:'71000001',maxBid:0})).status,400);
  const email='buyer@example.test',code='234567';db.prepare('INSERT INTO password_resets VALUES(?,?,?,0,?)').run(email,crypto.createHash('sha256').update(email+':'+code).digest('hex'),Date.now()+60000,Date.now());
  const changed=await fetch(base+'/api/auth/password-reset/confirm',{method:'POST',headers,body:JSON.stringify({email,code,password:'isolated-new-password'})});assert.equal(changed.status,200);
  assert.equal((await post({lot:'71000001',purchaseMode:'bid',maxBid:600})).status,401);

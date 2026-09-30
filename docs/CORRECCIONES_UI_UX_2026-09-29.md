@@ -207,3 +207,11 @@ La nueva prueba detectó que el contacto de prueba había recibido automáticame
 Desde la cuenta reportada, el botón **Continuar por WhatsApp** recuperó automáticamente la identidad correcta y entregó un enlace nuevo en el chat web, sin ejecución manual del Salesbot en esta comprobación. La búsqueda posterior por APV User ID devolvió únicamente el contacto correcto. Se abrió ese enlace y se envió el mensaje prellenado desde WhatsApp Web. WhatsApp confirmó entrega y Kommo mostró el mensaje en `A55722`. Verificación API: `origin=waba`, `entity_type=lead`, `entity_id=21880225`; la consulta por el teléfono devolvió un único contacto y un único lead, el original. Se validó así el recorrido botón → enlace → envío WhatsApp → misma ficha de Kommo para esta cuenta. Los canales mantienen conversaciones distintas dentro de la misma ficha; no se afirma que compartan un único identificador de conversación.
 
 Esta validación no requirió cambios adicionales de código ni otro despliegue. La causa de los datos cruzados previos queda sin determinar; no se presenta esta prueba como comprobación general de aislamiento entre múltiples cuentas abiertas simultáneamente en un navegador.
+
+### Tope mínimo según la puja actual — 30 de septiembre de 2026
+
+El formulario impide continuar con un tope inferior a la puja actual del vehículo e indica el mínimo en español o inglés. Se permite un importe igual o superior. Sin puja actual informada se conserva la exigencia de un importe positivo; compra inmediata conserva su validación de precio propia.
+
+Las rutas de solicitudes y sincronización con Kommo comprueban también el valor vigente del catálogo antes de guardar o sincronizar. Si la puja aumentó desde que se abrió el formulario, el servidor rechaza el importe y el formulario actualiza su mínimo sin modificar el tope escrito por el usuario.
+
+Validación local: cuatro pruebas aprobadas en `test/bid-amount.test.js` y `test/purchase-flow.test.js`, con casos de importe inferior, igual y superior, cambios del catálogo, ausencia de puja, compra inmediata y rechazo sin guardar solicitudes. Sintaxis JavaScript y `git diff --check` correctos. Requiere despliegue en EasyPanel.

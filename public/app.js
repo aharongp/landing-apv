@@ -1771,6 +1771,20 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     `;
   }
 
+  function validateBidAmount(){
+    const currentBid=Number(state.currentVehicle?.currentBid)||0;
+    const minimum=state.purchaseMode!=='buy'&&currentBid>0?currentBid:1;
+    const amount=Number(dom.bidAmount.value);
+    dom.bidAmount.min=String(minimum);
+    const error=!Number.isFinite(amount)||amount<=0
+      ? (currentLang==='en'?'Enter a valid maximum bid.':'Indica un tope de puja válido.')
+      : state.purchaseMode!=='buy'&&currentBid>0&&amount<currentBid
+        ? (currentLang==='en'?`Your maximum bid must be at least ${money(currentBid)} USD (current bid).`:`Tu tope debe ser de al menos ${money(currentBid)} USD (puja actual).`)
+        : '';
+    dom.bidAmount.setCustomValidity(error);
+    return !error;
+  }
+
   async function openBid(v, initialAmount, mode = 'bid'){
     if(mode==='buy'){if(!(Number(v.buyNow)>0)){showToast(currentLang==='en'?'Buy It Now is no longer available. Review this vehicle with an advisor.':'La compra inmediata ya no está disponible. Consulta este vehículo con un asesor.');return;}initialAmount=Number(v.buyNow);}
     if(!state.user){ openAuth(mode==='buy'?(currentLang==='en'?'Create an account or sign in to request this purchase. We will keep the vehicle and price.':'Crea tu cuenta o inicia sesión para solicitar esta compra. Conservaremos el vehículo y su precio.'):(currentLang==='en'?'Create an account or sign in to request a bid. We will keep your vehicle and amount.':'Crea tu cuenta o inicia sesión para solicitar la puja. Conservaremos este vehículo y tu monto para continuar.'),{type:'bid',lot:v.lot,amount:initialAmount,mode}); return; }
@@ -1780,6 +1794,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const startVal = initialAmount ? Number(initialAmount) : '';
     dom.bidAmount.value = startVal ? String(startVal) : '';
     dom.bidAmount.readOnly=mode==='buy';
+    validateBidAmount();
     $('#bid-title')?.removeAttribute('data-i18n');
     const bidTitle=dom.bidOverlay.querySelector('h2');
     if(bidTitle) {bidTitle.removeAttribute('data-i18n');bidTitle.textContent=mode==='buy'?(currentLang==='en'?'Request Buy It Now':'Solicitar compra inmediata'):(currentLang==='en'?'Request a bid':'Solicitar una puja');}
@@ -1796,8 +1811,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
   async function continueBid(){
     if(!state.user){ closeBid(); openAuth((currentLang==='en'?"Log in before opening the chat with APV Motors.":"Debes iniciar sesión antes de abrir el chat con APV Motors."),state.currentVehicle?{type:'bid',lot:state.currentVehicle.lot,amount:Number(dom.bidAmount.value),mode:state.purchaseMode}:null); return; }
-    const v=state.currentVehicle, amount=Number(dom.bidAmount.value||0); if(!v||amount<=0){ showToast((currentLang==='en'?"Enter a valid maximum bid.":"Indica un tope de puja válido.")); dom.bidAmount.focus(); return; }
-    try{ const result=await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),lot:v.lot,maxBid:amount,purchaseMode:state.purchaseMode||'bid'})});window.APVTracking?.track('bid_request',{lote:String(v.lot)},result.eventId); }catch(err){ if(err.status===401){ closeBid(); openAuth((currentLang==='en'?"Your session expired. Please log in again.":"Tu sesión expiró. Vuelve a iniciar sesión."),{type:'bid',lot:v.lot,amount,mode:state.purchaseMode}); return; } showToast(err.message); return; }
+    const v=state.currentVehicle, amount=Number(dom.bidAmount.value||0);
+    if(!v) return;
+    if(!validateBidAmount()){ dom.bidAmount.reportValidity(); dom.bidAmount.focus(); return; }
+    try{ const result=await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),lot:v.lot,maxBid:amount,purchaseMode:state.purchaseMode||'bid'})});window.APVTracking?.track('bid_request',{lote:String(v.lot)},result.eventId); }catch(err){ if(err.status===401){ closeBid(); openAuth((currentLang==='en'?"Your session expired. Please log in again.":"Tu sesión expiró. Vuelve a iniciar sesión."),{type:'bid',lot:v.lot,amount,mode:state.purchaseMode}); return; } if(err.data?.code==='BID_BELOW_CURRENT'){ v.currentBid=err.data.currentBid; validateBidAmount(); dom.bidAmount.reportValidity(); dom.bidAmount.focus(); } else showToast(err.message); return; }
     dom.bidAmountStep.classList.add('hidden'); dom.bidChatStep.classList.remove('hidden'); dom.bidModal?.classList.add('chat-mode');
     if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>${state.purchaseMode==='buy'?(currentLang==='en'?'Buy It Now requested':'Compra inmediata solicitada'):(currentLang==='en'?'Maximum requested':'Tope solicitado')}</span><br><strong>${esc(money(amount))} USD</strong></div>`;
     const message=window.apvKommo ? window.apvKommo.buildVehicleMessage(v,amount,state.user) : `Vehículo: ${v.title}\nVIN: ${v.vin||'N/D'}`;
@@ -1872,6 +1889,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   dom.pagination.addEventListener('click',e=>{ const b=e.target.closest('[data-page]'); if(!b||b.disabled)return; state.page=Number(b.dataset.page); loadVehicles(); document.querySelector('#catalogo').scrollIntoView({behavior:'smooth'}); });
   
   dom.bidAmount.addEventListener('input', e => {
+    validateBidAmount();
     updateBidCostPreview(e.target.value);
   });
 

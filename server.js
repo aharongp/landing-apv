@@ -1083,6 +1083,7 @@ const server = http.createServer(async (req, res) => {
       const vehicle = catalogDb.findVehicleByLotOrId(lot);
       if (purchaseMode === 'buy' && (!vehicle || !(vehicle.buyNow > 0) || maxBid !== vehicle.buyNow)) return json(res,409,{error:'El precio de compra inmediata cambió o ya no está disponible. Actualiza la ficha antes de continuar.'});
       if (!vehicle) return json(res, 404, { ok: false, error: 'Vehículo no encontrado en el catálogo.', code: 'VEHICLE_NOT_FOUND' });
+      if (purchaseMode === 'bid' && vehicle.currentBid > 0 && maxBid < vehicle.currentBid) return json(res, 409, { ok: false, code: 'BID_BELOW_CURRENT', currentBid: vehicle.currentBid, error: `El tope de puja debe ser de al menos ${vehicle.currentBid} USD (puja actual).` });
 
       const userFull = {
         ...safeUser(user),
@@ -1469,6 +1470,7 @@ const server = http.createServer(async (req, res) => {
       if (!['bid','buy'].includes(purchaseMode)) return json(res,400,{error:'Modalidad inválida.'});
       if (purchaseMode === 'buy' && (!vehicle || !(vehicle.buyNow > 0) || maxBid !== vehicle.buyNow)) return json(res,409,{error:'El precio de compra inmediata cambió o ya no está disponible. Actualiza la ficha antes de continuar.'});
       if (!vehicle || maxBid <= 0) return json(res, 400, { error: 'Solicitud de puja inválida.' });
+      if (purchaseMode === 'bid' && vehicle.currentBid > 0 && maxBid < vehicle.currentBid) return json(res, 409, { ok: false, code: 'BID_BELOW_CURRENT', currentBid: vehicle.currentBid, error: `El tope de puja debe ser de al menos ${vehicle.currentBid} USD (puja actual).` });
       const intent = {
         id: crypto.randomUUID(),
         userId: user.id,
