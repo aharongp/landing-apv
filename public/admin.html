@@ -82,7 +82,7 @@
       try {
         const done=await jsonFetch('/api/catalog/repair',{method:'POST',headers:{'x-admin-key':key.value}});
         const st=done.stats;
-        status.textContent=`[icon:check-circle] Base de datos reparada.\nVehículos disponibles: ${st.totalInDb.toLocaleString('en-US')}\nVencidos excluidos: ${st.expired} · Filas inválidas: ${st.skipped} · Duplicados: ${st.duplicates}\nRespaldo guardado en el servidor: ${st.backup}`;
+        status.textContent=`[icon:check-circle] Base de datos reparada.\nVehículos disponibles: ${st.totalInDb.toLocaleString('en-US')}\nCaducados conservados: ${st.expired} · Cerrados excluidos: ${st.closed || 0} · Filas inválidas: ${st.skipped} · Duplicados: ${st.duplicates}\nRespaldo guardado en el servidor: ${st.backup}`;
       } catch(err) { status.textContent='No se pudo reparar: '+err.message; }
       finally { repairBtn.disabled=btn.disabled=syncBtn.disabled=false; }
     });
@@ -93,7 +93,7 @@
         const headers={'Content-Type':'application/json','x-admin-key':key.value};
         const done=await jsonFetch('/api/catalog/sync',{method:'POST',headers});
         const st=done.stats||{};
-        status.textContent=`[icon:check-circle] Catálogo resincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
+        status.textContent=`[icon:check-circle] Catálogo resincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nCaducados conservados: ${st.expired || 0} · Cerrados excluidos: ${st.closed || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nFecha: ${new Date(st.updatedAt || Date.now()).toLocaleString()}`;
       }catch(e){status.textContent='Error al sincronizar: '+e.message;}finally{repairBtn.disabled=btn.disabled=syncBtn.disabled=false;}
     });
 
@@ -116,7 +116,7 @@
         const done=await jsonFetch('/api/catalog/upload/finish',{method:'POST',headers,body:JSON.stringify({uploadId:start.uploadId})});
         bar.style.width='100%'; progressText.textContent='100%';
         const st=done.stats||{};
-        status.textContent=`[icon:check-circle] Catálogo sincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nVencidos excluidos: ${st.expired || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
+        status.textContent=`[icon:check-circle] Catálogo sincronizado y reparado.\nNuevos: ${st.added || 0} · Actualizados: ${st.updated || 0}\nRetirados del catálogo anterior: ${st.removed || 0}\nReparación: ${st.repaired ? 'completada' : 'no informada'} · Integridad: ${st.integrity || 'no informada'}\nRespaldo: ${st.backup || 'no informado'}\nCaducados conservados: ${st.expired || 0} · Cerrados excluidos: ${st.closed || 0} · Filas inválidas: ${st.skipped || 0} · Duplicados: ${st.duplicates || 0}\nTotal en Base de Datos: ${(done.count || st.totalInDb || 0).toLocaleString('en-US')}\nTamaño CSV: ${fmt(done.bytes||f.size)}\nActualizado: ${new Date(done.updatedAt).toLocaleString()}`;
       }catch(e){status.textContent='Error: '+e.message;}finally{repairBtn.disabled=syncBtn.disabled=btn.disabled=false;}
     });
   </script>

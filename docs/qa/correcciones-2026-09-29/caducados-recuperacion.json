@@ -1,0 +1,20 @@
+{
+  "antes": {
+    "vehicles": 74898,
+    "users": 8,
+    "favorites": 0,
+    "bid_intents": 15,
+    "kommo_sync": 10,
+    "buyNow": 0
+  },
+  "despues": {
+    "vehicles": 142207,
+    "users": 8,
+    "favorites": 0,
+    "bid_intents": 15,
+    "kommo_sync": 10,
+    "buyNow": 22997
+  },
+  "respaldo": "data/backups/catalog-repair-1790728938554-acbfa4a6.db",
+  "cuentas_y_solicitudes_conservadas": true
+}

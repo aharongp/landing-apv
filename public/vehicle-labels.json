@@ -93,5 +93,16 @@
   "RUN & DRIVE VERIFIED": "Prende y corre",
   "VEHICLE STARTS": "Arranca",
   "ENGINE START PROGRAM": "Arranca",
-  "DEFAULT": "Sin confirmar"
+  "DEFAULT": "Sin confirmar",
+  "ON MINIMUM BID": "Sujeto a precio mínimo",
+  "ON APPROVAL": "Sujeto a aprobación del vendedor",
+  "AUTOMOBILE": "Automóvil",
+  "MOTORCYCLE": "Motocicleta",
+  "TRAILER": "Remolque",
+  "HEAVY DUTY TRUCKS": "Camión pesado",
+  "DAMAGE HISTORY": "Historial de daños",
+  "FRAME DAMAGE": "Daño estructural",
+  "MISSING/ALTERED VIN": "VIN ausente o alterado",
+  "REJECTED REPAIR": "Reparación rechazada",
+  "REPLACED VIN": "VIN reemplazado"
 }

@@ -1,0 +1,79 @@
+{
+  "dialog": {
+    "scrollWidth": 305,
+    "width": 305
+  },
+  "pageWidth": 305,
+  "texts": [
+    {
+      "bg": "rgba(15, 23, 42, 0.75)",
+      "fg": "rgb(255, 255, 255)",
+      "font": "22px",
+      "text": "×"
+    },
+    {
+      "bg": "rgb(255, 255, 255)",
+      "fg": "rgb(100, 116, 139)",
+      "font": "13px",
+      "text": "Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.",
+      "contrast": 4.76
+    },
+    {
+      "bg": "rgb(241, 245, 249)",
+      "fg": "rgb(100, 116, 139)",
+      "font": "12px",
+      "text": "Iniciar sesión",
+      "contrast": 4.34
+    },
+    {
+      "bg": "rgb(255, 255, 255)",
+      "fg": "rgb(15, 23, 42)",
+      "font": "12px",
+      "text": "Crear cuenta",
+      "contrast": 17.85
+    },
+    {
+      "bg": "rgb(255, 255, 255)",
+      "fg": "rgb(15, 23, 42)",
+      "font": "16px",
+      "text": "Nombre completo",
+      "contrast": 17.85
+    },
+    {
+      "bg": "rgb(255, 255, 255)",
+      "fg": "rgb(15, 23, 42)",
+      "font": "16px",
+      "text": "Correo electrónico",
+      "contrast": 17.85
+    },
+    {
+      "bg": "rgb(255, 255, 255)",
+      "fg": "rgb(15, 23, 42)",
+      "font": "16px",
+      "text": "Teléfono / WhatsApp\n+1 (EE. UU.)\n+58 (Venezuela)\n+52 (México)\n+57 (Colombia)\n+34 (España)\n+54 (Argen",
+      "contrast": 17.85
+    },
+    {
+      "bg": "rgb(255, 255, 255)",
+      "fg": "rgb(15, 23, 42)",
+      "font": "16px",
+      "text": "Contraseña",
+      "contrast": 17.85
+    },
+    {
+      "bg": "rgb(220, 38, 38)",
+      "fg": "rgb(255, 255, 255)",
+      "font": "16px",
+      "text": "Enviar código de verificación",
+      "contrast": 4.83
+    },
+    {
+      "bg": "rgb(255, 255, 255)",
+      "fg": "rgb(148, 163, 184)",
+      "font": "10px",
+      "text": "Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.",
+      "contrast": 2.56
+    }
+  ],
+  "width": 320
+}

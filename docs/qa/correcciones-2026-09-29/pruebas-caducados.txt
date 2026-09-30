@@ -1,0 +1,493 @@
+
+> apv-auction-catalog@1.5.0 test
+> node --test
+
+TAP version 13
+# Subtest: admin refresh runs only after authentication, pauses while hidden, and stops on key change
+ok 1 - admin refresh runs only after authentication, pauses while hidden, and stops on key change
+  ---
+  duration_ms: 28.277628
+  type: 'test'
+  ...
+# Subtest: visits require consent, exclude invalid pages and bots, and deduplicate browsers across refreshes
+ok 2 - visits require consent, exclude invalid pages and bots, and deduplicate browsers across refreshes
+  ---
+  duration_ms: 5.289363
+  type: 'test'
+  ...
+# Subtest: conversion counts verified measured browsers once and separates all accounts from attributed registrations
+ok 3 - conversion counts verified measured browsers once and separates all accounts from attributed registrations
+  ---
+  duration_ms: 3.467609
+  type: 'test'
+  ...
+# (node:282939) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:282940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: plans fail closed until business terms and Stripe settings are configured
+ok 4 - plans fail closed until business terms and Stripe settings are configured
+  ---
+  duration_ms: 11.764853
+  type: 'test'
+  ...
+# Subtest: checkout rejects client amounts, reuses sessions and prevents duplicate subscriptions
+ok 5 - checkout rejects client amounts, reuses sessions and prevents duplicate subscriptions
+  ---
+  duration_ms: 5.826686
+  type: 'test'
+  ...
+# Subtest: concurrent checkouts create only one session
+ok 6 - concurrent checkouts create only one session
+  ---
+  duration_ms: 2.309746
+  type: 'test'
+  ...
+# Subtest: configured price amount must match the advertised price
+ok 7 - configured price amount must match the advertised price
+  ---
+  duration_ms: 1.994079
+  type: 'test'
+  ...
+# Subtest: signed payments grant discounts; duplicates do not grant multiple consultations
+ok 8 - signed payments grant discounts; duplicates do not grant multiple consultations
+  ---
+  duration_ms: 5.63225
+  type: 'test'
+  ...
+# Subtest: invalid signatures cannot grant benefits
+ok 9 - invalid signatures cannot grant benefits
+  ---
+  duration_ms: 1.394129
+  type: 'test'
+  ...
+# Subtest: unpaid upgrades do not grant Premium; cancel-at-end preserves paid benefits
+ok 10 - unpaid upgrades do not grant Premium; cancel-at-end preserves paid benefits
+  ---
+  duration_ms: 3.292267
+  type: 'test'
+  ...
+# Subtest: out-of-order events retrieve current state and do not reactivate canceled plans
+ok 11 - out-of-order events retrieve current state and do not reactivate canceled plans
+  ---
+  duration_ms: 2.511125
+  type: 'test'
+  ...
+# Subtest: annual renewal grants one new consultation without restoring the used benefit
+ok 12 - annual renewal grants one new consultation without restoring the used benefit
+  ---
+  duration_ms: 3.342062
+  type: 'test'
+  ...
+# Subtest: confirmed public terms show annual prices and the Quick Call base price
+ok 13 - confirmed public terms show annual prices and the Quick Call base price
+  ---
+  duration_ms: 1.293539
+  type: 'test'
+  ...
+# Subtest: subscription updates notify CRM and failed notifications retry on webhook redelivery
+ok 14 - subscription updates notify CRM and failed notifications retry on webhook redelivery
+  ---
+  duration_ms: 4.57256
+  type: 'test'
+  ...
+# Subtest: history requests require an active paid membership on the server
+ok 15 - history requests require an active paid membership on the server
+  ---
+  duration_ms: 2.38648
+  type: 'test'
+  ...
+# Subtest: budget guide reserves additional costs and never exceeds the requested total
+ok 16 - budget guide reserves additional costs and never exceeds the requested total
+  ---
+  duration_ms: 1.616237
+  type: 'test'
+  ...
+# Subtest: base-fee guide is consistent for anonymous and paid members
+ok 17 - base-fee guide is consistent for anonymous and paid members
+  ---
+  duration_ms: 0.692065
+  type: 'test'
+  ...
+# Subtest: budget guide rejects invalid budgets and insufficient purchase funds
+ok 18 - budget guide rejects invalid budgets and insufficient purchase funds
+  ---
+  duration_ms: 1.165517
+  type: 'test'
+  ...
+# Subtest: displayed APV fee tiers match the vehicle calculator
+ok 19 - displayed APV fee tiers match the vehicle calculator
+  ---
+  duration_ms: 0.154852
+  type: 'test'
+  ...
+# (node:282952) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: catalog upload replaces previous lots and repairs even an identical CSV
+ok 20 - catalog upload replaces previous lots and repairs even an identical CSV
+  ---
+  duration_ms: 800.451526
+  type: 'test'
+  ...
+# (node:282958) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# [CATALOG DB] SQLite database initialized at /tmp/apv-test-SyTQ1Q/catalog.db
+# [CATALOG DB] Upsert complete. Added: 4, Total in DB: 4, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 0, Total in DB: 1, Updated: 1
+# [CATALOG DB] Upsert complete. Added: 10, Total in DB: 10, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] All vehicles cleared from SQLite database.
+# [CATALOG DB] Upsert complete. Added: 30, Total in DB: 30, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 2, Total in DB: 2, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 4, Total in DB: 4, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 4, Total in DB: 4, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] All vehicles cleared from SQLite database.
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 1, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 5, Total in DB: 5, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 6, Total in DB: 6, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 2, Total in DB: 2, Updated: 0
+# [CATALOG DB] Upsert complete. Added: 1, Total in DB: 2, Updated: 1
+# Subtest: CSV handles inch marks, commas, multiline and escaped quotes
+ok 21 - CSV handles inch marks, commas, multiline and escaped quotes
+  ---
+  duration_ms: 1.583075
+  type: 'test'
+  ...
+# Subtest: snapshot import, filters, deduplication, expiry, rollback and favorites
+ok 22 - snapshot import, filters, deduplication, expiry, rollback and favorites
+  ---
+  duration_ms: 367.508963
+  type: 'test'
+  ...
+# Subtest: sale time uses export timezone and rejects impossible dates
+ok 23 - sale time uses export timezone and rejects impossible dates
+  ---
+  duration_ms: 0.149322
+  type: 'test'
+  ...
+# Subtest: account favorites are isolated and repair bypasses hash without changing accounts or bids
+ok 24 - account favorites are isolated and repair bypasses hash without changing accounts or bids
+  ---
+  duration_ms: 181.114986
+  type: 'test'
+  ...
+# Subtest: featured sample retains expired lots and is invalidated after imports and clear
+ok 25 - featured sample retains expired lots and is invalidated after imports and clear
+  ---
+  duration_ms: 113.434314
+  type: 'test'
+  ...
+# Subtest: recommended catalog order stays stable across pages and respects searches and sorts
+ok 26 - recommended catalog order stays stable across pages and respects searches and sorts
+  ---
+  duration_ms: 31.744032
+  type: 'test'
+  ...
+# Subtest: shared lot lookup takes priority over a different vehicle internal id
+ok 27 - shared lot lookup takes priority over a different vehicle internal id
+  ---
+  duration_ms: 44.905106
+  type: 'test'
+  ...
+# Subtest: context search, location, title and zero-mileage filters combine without losing ZIP leading zeroes
+ok 28 - context search, location, title and zero-mileage filters combine without losing ZIP leading zeroes
+  ---
+  duration_ms: 18.317256
+  type: 'test'
+  ...
+# Subtest: make options contain manufacturers and listing images use full resolution
+ok 29 - make options contain manufacturers and listing images use full resolution
+  ---
+  duration_ms: 22.712624
+  type: 'test'
+  ...
+# Subtest: catalog cache reuses queries, isolates returned objects and invalidates on import and clear
+ok 30 - catalog cache reuses queries, isolates returned objects and invalidates on import and clear
+  ---
+  duration_ms: 69.657815
+  type: 'test'
+  ...
+# Subtest: catalog query cache expires after fifteen seconds
+ok 31 - catalog query cache expires after fifteen seconds
+  ---
+  duration_ms: 26.650659
+  type: 'test'
+  ...
+# Subtest: campaign inventory excludes unknown prices and retail, and respects exact price bands
+ok 32 - campaign inventory excludes unknown prices and retail, and respects exact price bands
+  ---
+  duration_ms: 15.817182
+  type: 'test'
+  ...
+# Subtest: campaign featured requires minor primary and secondary damage and buy-now pricing
+ok 33 - campaign featured requires minor primary and secondary damage and buy-now pricing
+  ---
+  duration_ms: 13.491368
+  type: 'test'
+  ...
+# Subtest: canonical public auction instant uses actual local time and never displays fallback expiry as a sale time
+ok 34 - canonical public auction instant uses actual local time and never displays fallback expiry as a sale time
+  ---
+  duration_ms: 0.198224
+  type: 'test'
+  ...
+# Subtest: verified model aliases normalize without inventing cross-brand models
+ok 35 - verified model aliases normalize without inventing cross-brand models
+  ---
+  duration_ms: 0.21771
+  type: 'test'
+  ...
+# Subtest: old snapshots restore expired Buy Now lots while sold lots remain excluded
+ok 36 - old snapshots restore expired Buy Now lots while sold lots remain excluded
+  ---
+  duration_ms: 53.275117
+  type: 'test'
+  ...
+# Subtest: GA4 stays explicitly unconfigured when only a measurement ID is available
+ok 37 - GA4 stays explicitly unconfigured when only a measurement ID is available
+  ---
+  duration_ms: 2.159302
+  type: 'test'
+  ...
+# Subtest: GA4 uses readonly OAuth, hostname filter, property timezone and whole-period unique totals
+ok 38 - GA4 uses readonly OAuth, hostname filter, property timezone and whole-period unique totals
+  ---
+  duration_ms: 24.314506
+  type: 'test'
+  ...
+# Subtest: GA4 permission failures remain distinct from zero traffic and expose no credential errors
+ok 39 - GA4 permission failures remain distinct from zero traffic and expose no credential errors
+  ---
+  duration_ms: 2.594451
+  type: 'test'
+  ...
+# Subtest: public assets revalidate and compress; vehicle data remains uncached
+ok 40 - public assets revalidate and compress; vehicle data remains uncached
+  ---
+  duration_ms: 886.873187
+  type: 'test'
+  ...
+# Subtest: icon labels preserve readable text without interpreting user text as HTML
+ok 41 - icon labels preserve readable text without interpreting user text as HTML
+  ---
+  duration_ms: 1.208418
+  type: 'test'
+  ...
+# Subtest: all translated icon tokens resolve in both languages, including filled rating stars
+ok 42 - all translated icon tokens resolve in both languages, including filled rating stars
+  ---
+  duration_ms: 4.124056
+  type: 'test'
+  ...
+# Subtest: home, campaign and catalog ship SVGs and local icon assets; country values remain intact
+ok 43 - home, campaign and catalog ship SVGs and local icon assets; country values remain intact
+  ---
+  duration_ms: 2.900298
+  type: 'test'
+  ...
+# Subtest: gallery tries next endpoint when first response contains no photos
+ok 44 - gallery tries next endpoint when first response contains no photos
+  ---
+  duration_ms: 4.623559
+  type: 'test'
+  ...
+# Subtest: gallery keeps cover if provider unavailable
+ok 45 - gallery keeps cover if provider unavailable
+  ---
+  duration_ms: 2.772537
+  type: 'test'
+  ...
+# Fotos lote 12345678: offline
+# Subtest: existing car conversation records plan changes once, including a return to a previous plan
+ok 46 - existing car conversation records plan changes once, including a return to a previous plan
+  ---
+  duration_ms: 24.881894
+  type: 'test'
+  ...
+# Subtest: all marketing copy and all 15 archived reviews have distinct English translations
+ok 47 - all marketing copy and all 15 archived reviews have distinct English translations
+  ---
+  duration_ms: 4.717986
+  type: 'test'
+  ...
+# Subtest: each landing variant exposes one working language selector outside its hidden header
+ok 48 - each landing variant exposes one working language selector outside its hidden header
+  ---
+  duration_ms: 5.509648
+  type: 'test'
+  ...
+# Subtest: Google reviews request translations and cache each language independently
+ok 49 - Google reviews request translations and cache each language independently
+  ---
+  duration_ms: 1.8879
+  type: 'test'
+  ...
+# Subtest: player changes media with language, resets playback and translates playback controls
+ok 50 - player changes media with language, resets playback and translates playback controls
+  ---
+  duration_ms: 2.006022
+  type: 'test'
+  ...
+# Subtest: catalog starts vehicle requests before account and filter requests resolve
+ok 51 - catalog starts vehicle requests before account and filter requests resolve
+  ---
+  duration_ms: 4.683179
+  type: 'test'
+  ...
+# (node:283056) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: first source wins and source cookie lasts 90 days without marketing consent
+ok 52 - first source wins and source cookie lasts 90 days without marketing consent
+  ---
+  duration_ms: 1.820332
+  type: 'test'
+  ...
+# Subtest: AB route persists group, preserves all parameters and never stores forced assignments
+ok 53 - AB route persists group, preserves all parameters and never stores forced assignments
+  ---
+  duration_ms: 0.685021
+  type: 'test'
+  ...
+# Subtest: SSR metadata escapes inventory content and delivers distinct raw vehicle metadata
+ok 54 - SSR metadata escapes inventory content and delivers distinct raw vehicle metadata
+  ---
+  duration_ms: 12.954836
+  type: 'test'
+  ...
+# Subtest: campaign variants reuse sections, contain four key FAQs, and fall back for invalid variants
+ok 55 - campaign variants reuse sections, contain four key FAQs, and fall back for invalid variants
+  ---
+  duration_ms: 7.848439
+  type: 'test'
+  ...
+# Subtest: consent stored separately from auth; CAPI gated, hashed and deduplicated
+ok 56 - consent stored separately from auth; CAPI gated, hashed and deduplicated
+  ---
+  duration_ms: 2.168188
+  type: 'test'
+  ...
+# Subtest: hover selects the nearest day at desktop and mobile widths with clamped boundaries
+ok 57 - hover selects the nearest day at desktop and mobile widths with clamped boundaries
+  ---
+  duration_ms: 1.568487
+  type: 'test'
+  ...
+# Subtest: tooltips distinguish missing data from a measured zero and include the exact date and value
+ok 58 - tooltips distinguish missing data from a measured zero and include the exact date and value
+  ---
+  duration_ms: 22.119177
+  type: 'test'
+  ...
+# (node:283074) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: recovery is generic, stores no plaintext code and sends only to verified accounts
+ok 59 - recovery is generic, stores no plaintext code and sends only to verified accounts
+  ---
+  duration_ms: 3.675952
+  type: 'test'
+  ...
+# Subtest: successful recovery consumes the code and revokes all previous sessions
+ok 60 - successful recovery consumes the code and revokes all previous sessions
+  ---
+  duration_ms: 0.908393
+  type: 'test'
+  ...
+# Subtest: expired codes, invalid passwords and too many guesses cannot change credentials
+ok 61 - expired codes, invalid passwords and too many guesses cannot change credentials
+  ---
+  duration_ms: 1.499267
+  type: 'test'
+  ...
+# Subtest: recovery rate limiting applies to unknown addresses too
+ok 62 - recovery rate limiting applies to unknown addresses too
+  ---
+  duration_ms: 2.396669
+  type: 'test'
+  ...
+# (node:283076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: purchase mode is validated, stored and protected by session version after recovery
+ok 63 - purchase mode is validated, stored and protected by session version after recovery
+  ---
+  duration_ms: 951.083829
+  type: 'test'
+  ...
+# Subtest: essential consent creates first-party attribution but no Google/Meta scripts or events
+ok 64 - essential consent creates first-party attribution but no Google/Meta scripts or events
+  ---
+  duration_ms: 3.279514
+  type: 'test'
+  ...
+# Subtest: all consent enables configured scripts and shares conversion IDs with pixel
+ok 65 - all consent enables configured scripts and shares conversion IDs with pixel
+  ---
+  duration_ms: 1.354734
+  type: 'test'
+  ...
+# Subtest: missing integrations stay inactive even after consent
+ok 66 - missing integrations stay inactive even after consent
+  ---
+  duration_ms: 0.880661
+  type: 'test'
+  ...
+# Subtest: local visit measurement follows consent and sends only the page path
+ok 67 - local visit measurement follows consent and sends only the page path
+  ---
+  duration_ms: 2.603369
+  type: 'test'
+  ...
+# Subtest: comparison provides a retail reference with explicit exclusions and never uses current bid as savings
+ok 68 - comparison provides a retail reference with explicit exclusions and never uses current bid as savings
+  ---
+  duration_ms: 1.080797
+  type: 'test'
+  ...
+# Subtest: shared cards preserve bid/detail/favorite actions and only show available buy now prices
+ok 69 - shared cards preserve bid/detail/favorite actions and only show available buy now prices
+  ---
+  duration_ms: 0.59966
+  type: 'test'
+  ...
+# Subtest: card dates keep timezone and include actual sale time
+ok 70 - card dates keep timezone and include actual sale time
+  ---
+  duration_ms: 11.831799
+  type: 'test'
+  ...
+# Subtest: card and countdown share canonical instant even when legacy date is misleading
+ok 71 - card and countdown share canonical instant even when legacy date is misleading
+  ---
+  duration_ms: 0.411756
+  type: 'test'
+  ...
+# Subtest: expired auction cards and detail notices agree in Spanish and English
+ok 72 - expired auction cards and detail notices agree in Spanish and English
+  ---
+  duration_ms: 1.486473
+  type: 'test'
+  ...
+# Subtest: video delivery supports playback, seeking, revalidation and invalid ranges
+ok 73 - video delivery supports playback, seeking, revalidation and invalid ranges
+  ---
+  duration_ms: 78.380684
+  type: 'test'
+  ...
+# Subtest: Spanish and English captions have readable, ordered cues within each video
+ok 74 - Spanish and English captions have readable, ordered cues within each video
+  ---
+  duration_ms: 0.696183
+  type: 'test'
+  ...
+1..74
+# tests 74
+# suites 0
+# pass 74
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1164.109114

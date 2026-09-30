@@ -1,0 +1,403 @@
+- banner:
+  - link "APV Motors inicio":
+    - /url: /
+    - img "APV Motors"
+  - navigation "Main navigation":
+    - link "Catalog":
+      - /url: /catalogo
+    - link "How to buy":
+      - /url: "#como-funciona"
+    - link "Reviews":
+      - /url: "#resenas"
+    - link "Plans":
+      - /url: "#planes"
+  - button "ES"
+  - generic: "|"
+  - button "EN" [active] [pressed]
+  - button "Log in"
+- search "Search vehicles":
+  - searchbox "Search vehicles"
+  - button "Search"
+- main:
+  - generic: CARS AT AUCTION PRICES · COPART
+  - heading "Buy your vehicle at US auctions. 100% online." [level=1]:
+    - text: Buy your vehicle at US auctions.
+    - text: 100% online.
+  - paragraph: Choose your vehicle. APV Motors bids for you and guides you through delivery.
+  - strong: Base service fees from US$350
+  - link "See fee tiers →":
+    - /url: "#costos"
+  - link "See auction cars →":
+    - /url: /catalogo
+  - link "Calculate my budget":
+    - /url: "#presupuesto"
+  - text: English and Spanish
+  - text: Human advisor
+  - generic "APV Motors introduction"
+  - button "Play APV Motors introduction":
+    - generic: ▶
+    - generic: Learn how to buy with APV
+    - generic: Play video · Sound on
+  - text: ⌄
+  - list "Buying steps overview":
+    - generic: Choose your car
+    - generic: Calculate the cost
+    - generic: Place your deposit and we bid
+    - generic: Receive your car
+  - region "Featured vehicles":
+    - link "View the full catalog →":
+      - /url: /catalogo
+    - heading "Cars at auction this week" [level=2]
+    - button "Previous page" [disabled]: ‹
+    - button "Page 1"
+    - button "Page 2"
+    - button "Next page": ›
+    - article:
+      - button "2022 TOYOTA CAMRY LE":
+        - img "2022 TOYOTA CAMRY LE"
+      - generic: Copart
+      - text: N/A
+      - button "Save to my account":
+      - heading "2022 TOYOTA CAMRY LE" [level=3]:
+        - button "2022 TOYOTA CAMRY LE"
+      - paragraph: "Lot # 58899026 · HASLET, TX"
+      - paragraph: To be confirmed
+      - generic: Current bid
+      - strong: $175 USD
+      - button "Bid"
+    - article:
+      - button "2025 RAM 1500 LIMITED":
+        - img "2025 RAM 1500 LIMITED"
+      - generic: Copart
+      - text: N/A
+      - button "Save to my account":
+      - heading "2025 RAM 1500 LIMITED" [level=3]:
+        - button "2025 RAM 1500 LIMITED"
+      - paragraph: "Lot # 51657166 · COLTON, CA"
+      - paragraph: To be confirmed
+      - generic: Current bid
+      - strong: $10,000 USD
+      - button "Bid"
+    - article:
+      - button "2022 FORD RANGER":
+        - img "2022 FORD RANGER"
+      - generic: Copart
+      - text: N/A
+      - button "Save to my account":
+      - heading "2022 FORD RANGER" [level=3]:
+        - button "2022 FORD RANGER"
+      - paragraph: "Lot # 58749916 · BLAINE, MN"
+      - paragraph: To be confirmed
+      - generic: Current bid
+      - strong: $5,200 USD
+      - button "Bid"
+  - region "Trusted by people who bought with APV Motors":
+    - heading "Trusted by people who bought with APV Motors" [level=2]
+    - link "5.0 / 5 Our rating on Google Read Google reviews ↗":
+      - /url: https://maps.app.goo.gl/qYoCdegG9996wcyk6
+      - strong: "5.0"
+      - generic: / 5
+      - strong: Our rating on Google
+      - generic: Read Google reviews ↗
+    - paragraph:
+      - text: Rating verified on
+      - time: 27/09/2026
+    - generic: All reviews
+    - link "Google ↗":
+      - /url: https://maps.app.goo.gl/qYoCdegG9996wcyk6
+      - generic: G
+      - text: Google ↗
+    - paragraph: Excerpts from public Google reviews.
+    - region "Customer reviews on Google":
+      - group "1 / 15":
+        - generic: GC
+        - strong: Gabriel Correa
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “I appreciate their great communication and professionalism throughout the bidding process.”
+      - group "2 / 15":
+        - generic: WR
+        - strong: Wolfgang Ramirez
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Excellent service and support from APV”
+      - group "3 / 15":
+        - generic: YA
+        - strong: Ynadsuy Anolacse
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Always very friendly”
+      - group "4 / 15":
+        - generic: DF
+        - strong: Dariel Fernandez
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Excellent service and care. The whole team is very professional…”
+      - group "5 / 15":
+        - generic: JR
+        - strong: Jonathan Rosales
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Good communication throughout the process from start to finish, very reliable and respectful at all times…”
+      - group "6 / 15":
+        - generic: RE
+        - strong: Rosibel Escases
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Really good service, very friendly and great treatment…”
+      - group "7 / 15":
+        - generic: AD
+        - strong: Adrian delgado
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Excellent service, very professional and honest. The process was quick and hassle-free. 100% recommended.”
+      - group "8 / 15":
+        - generic: LS
+        - strong: Luis Soto
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Excellent service, they helped me throughout the process. Truly 100% satisfied with their service”
+      - group "9 / 15":
+        - generic: MR
+        - strong: Moises Rodriguez
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Excellent service. They answered all my questions and helped me buy at auction. 100% recommended”
+      - group "10 / 15":
+        - generic: NV
+        - strong: Nicole Vergara
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: "“Thank you for your help. They do more than handle the purchase: they also provide a lot of guidance…”"
+      - group "11 / 15":
+        - generic: FD
+        - strong: Felix Diaz
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Very grateful for the thorough guidance, both in person and by video call. Thank you so much”
+      - group "12 / 15":
+        - generic: CR
+        - strong: Carlos Rendon
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Thank you very much, APV Motor. It was a great experience; they were always attentive.”
+      - group "13 / 15":
+        - generic: SG
+        - strong: Samuel García Moret
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Excellent service. A fast and safe purchase, 100% recommended.”
+      - group "14 / 15":
+        - generic: JI
+        - strong: Jose Infante
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Thank you, APV Motors. Your service was excellent and fast. Thanks again”
+      - group "15 / 15":
+        - generic: DS
+        - strong: David Soto
+        - generic: Translated review excerpt
+        - generic: G
+        - generic "5 out of 5 stars":
+        - blockquote: “Excellent experience with APV Motors. They helped me throughout the process of buying my truck at auction…”
+      - button "Previous review" [disabled]: ←
+      - button "Next review": →
+      - generic: 1 / 15
+      - button "View review page 1"
+      - button "View review page 2"
+      - button "View review page 15"
+  - region "Your budget is the starting point.":
+    - paragraph: START WITH YOUR BUDGET
+    - heading "Your budget is the starting point." [level=2]
+    - paragraph: Separate your bid budget from what you need to complete the purchase.
+    - paragraph: An initial guide for standard Copart cars. Confirm each lot's amounts and terms before bidding.
+    - generic: Make or model
+    - searchbox "Make or model"
+    - generic: Total budget (USD)
+    - spinbutton "Total budget (USD)"
+    - generic: Your reserve for additional expenses (USD)
+    - spinbutton "Your reserve for additional expenses (USD) Shipping, taxes, paperwork and repairs not covered by the calculator."
+    - generic: Shipping, taxes, paperwork and repairs not covered by the calculator.
+    - button "Calculate my estimated bid limit"
+  - img "APV Motors"
+  - generic: BEFORE YOU BID
+  - heading "A good photo doesn't tell the whole story." [level=3]:
+    - text: A good photo
+    - text: doesn't tell the whole story.
+  - generic: 01 / Damage and condition
+  - generic: Review →
+  - generic: 02 / History and title
+  - generic: Verify →
+  - generic: 03 / Comparable vehicles and costs
+  - generic: Evaluate →
+  - paragraph: More information. Better judgment.
+  - paragraph: APV EVALUATION
+  - heading "A photo isn't enough. Evaluate before you bid." [level=2]:
+    - text: A photo isn't enough.
+    - text: Evaluate before you bid.
+  - paragraph: The auction price is just the beginning. Understand what you are buying before committing your money.
+  - list:
+    - listitem: Analyze visible damage and the information available.
+    - listitem: Review history, paperwork and potential risks.
+    - listitem: Compare the estimated cost with your budget.
+  - link "Choose a car to evaluate →":
+    - /url: /catalogo
+  - paragraph: Select “Request a report prepared by APV” in the vehicle details. Check its scope and terms; it does not replace a physical inspection.
+  - paragraph: APV FEES, UP FRONT
+  - heading "What you pay and what we refund" [level=2]
+  - paragraph: A base service fee by tier, based on the vehicle's winning bid.
+  - link "Calculate my budget →":
+    - /url: "#presupuesto"
+  - paragraph: APV fees do not include the bid, auction fees, shipping or taxes. Review the breakdown in each vehicle listing.
+  - table "APV base service fee · USD":
+    - caption: APV base service fee · USD
+    - rowgroup:
+      - row "Winning bid amount APV service fee":
+        - columnheader "Winning bid amount"
+        - columnheader "APV service fee"
+    - rowgroup:
+      - row "Up to US$5,999 US$350":
+        - cell "Up to US$5,999"
+        - cell "US$350"
+      - row "US$6,000 – US$9,999 US$450":
+        - cell "US$6,000 – US$9,999"
+        - cell "US$450"
+      - row "US$10,000 – US$14,999 US$650":
+        - cell "US$10,000 – US$14,999"
+        - cell "US$650"
+      - row "US$15,000 or more US$700":
+        - cell "US$15,000 or more"
+        - cell "US$700"
+  - paragraph:
+    - text: Do you buy frequently?
+    - link "Compare APV membership discounts.":
+      - /url: "#planes"
+  - paragraph: Service fees are charged only if you win, and never in the same payment as your deposit.
+  - paragraph: DEPOSIT AND SERVICE FEES ARE DIFFERENT
+  - heading "Your deposit is still yours" [level=2]
+  - paragraph: Your deposit is refundable and enables your bid.10% of your limit, minimum US$600.Your advisor confirms it before bidding.
+  - link "Ask an advisor about the deposit ↗":
+    - /url: https://wa.me/13462048308?text=Quiero+confirmar+las+condiciones+del+dep%C3%B3sito+para+pujar+%5Bref%3Ahome-deposito%5D
+  - article:
+    - generic: "01"
+    - heading "If you don't win" [level=3]
+    - paragraph: Keep it active for your next bid or receive a full refund.
+  - article:
+    - generic: "02"
+    - heading "If you win" [level=3]
+    - paragraph: Pay for the vehicle by bank transfer; we apply your deposit according to the terms.
+  - article:
+    - generic: "03"
+    - heading "If you win and don't pay" [level=3]
+    - paragraph: The auction applies penalties under the terms you accepted.
+  - region "Choose how to buy your next vehicle.":
+    - generic: APV MOTORS MEMBERSHIPS
+    - heading "Choose how to buy your next vehicle." [level=2]
+    - paragraph: Start free. When you are ready to buy, add discounts and guidance.
+    - article:
+      - text: START HERE
+      - heading "Gratis" [level=3]
+      - paragraph: Explore and plan your purchase.
+      - generic: US$0
+      - list:
+        - listitem: Included with every plan
+        - generic: Vehicle inventory
+        - generic: Account favorites
+        - generic: Chat with an advisor
+        - listitem: Plan benefits
+        - generic: ×
+        - generic: APV history report not included
+        - generic: ×
+        - generic: Standard APV fees
+        - generic: ×
+        - generic: "60-minute consultation: US$99 (no discount)"
+        - generic: ×
+        - generic: No 60-minute consultation included
+      - button "Create free account"
+      - generic: No card. No automatic charges.
+    - article:
+      - text: FOR YOUR NEXT PURCHASE
+      - heading "APV Plus" [level=3]
+      - paragraph: Savings and guidance for your purchase.
+      - generic: US$97/year
+      - list:
+        - listitem: Included with every plan
+        - generic: Vehicle inventory
+        - generic: Account favorites
+        - generic: Chat with an advisor
+        - listitem: Plan benefits
+        - generic: Vehicle history report prepared by APV Motors
+        - generic: US$100 off APV fees per vehicle purchased
+        - generic: "Additional 60-minute consultations: US$69 instead of US$99 (US$30 off)"
+        - generic: One 20 minute consultation included each paid year
+      - button "Choose APV Plus"
+      - generic: Automatically renews annually. Cancel renewal from your account.
+    - article:
+      - text: MORE GUIDANCE
+      - heading "APV Premium" [level=3]
+      - paragraph: A larger discount and a full consultation.
+      - generic: US$297/year
+      - list:
+        - listitem: Included with every plan
+        - generic: Vehicle inventory
+        - generic: Account favorites
+        - generic: Chat with an advisor
+        - listitem: Plan benefits
+        - generic: Vehicle history report prepared by APV Motors
+        - generic: US$200 off APV fees per vehicle purchased
+        - generic: "Additional 60-minute consultations: US$59 instead of US$99 (US$40 off)"
+        - generic: One 60 minute consultation included each paid year
+      - button "Choose APV Premium"
+      - generic: Automatically renews annually. Cancel renewal from your account.
+    - paragraph: Prices in USD. Membership is billed separately from vehicle purchases. Discounts apply to APV services, not Copart fees, shipping or taxes. The included consultation is offered each paid year; request it through your account while your plan is active.
+  - paragraph: YOUR QUESTIONS, ANSWERED
+  - heading "It all starts with clarity." [level=2]:
+    - text: It all starts
+    - text: with clarity.
+  - paragraph: Need more details about your situation?
+  - link "Talk to an advisor ↗":
+    - /url: https://wa.me/13462048308?text=%5Bref%3Ahome-ayuda%5D
+  - generic "Do I need to register to view vehicles?"
+  - generic "Is the price I see the final price?"
+  - paragraph: No. The bid or purchase price does not necessarily include auction fees, APV service fees, shipping, paperwork, taxes or repairs. Check the vehicle calculator and confirm your budget with your advisor.
+  - generic "What is the deposit?"
+  - generic "Can I buy without a dealer license?"
+  - generic "How do I know the vehicle's condition?"
+  - generic "What happens if I win the auction?"
+  - generic "What happens if I don't win the auction?"
+  - generic "Can I pay for the vehicle with a card?"
+  - generic "How long does the title take?"
+  - generic "How is shipping calculated?"
+  - paragraph: YOUR NEXT CAR IS CLOSER
+  - heading "Find your car today." [level=2]
+  - paragraph: Browse cars or talk to an advisor if this is your first purchase.
+  - link "See auction cars →":
+    - /url: /catalogo
+  - link "First time buying? Message us":
+    - /url: https://wa.me/13462048308?text=%5Bref%3Ahome-final%5D
+- contentinfo:
+  - img "APV Motors"
+  - paragraph:
+    - text: APV Motors LLC ·Dealer license [LICENCIA_NO]· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·
+    - link "+1 346 204 8308":
+      - /url: tel:+13462048308
+  - paragraph: Inventory data sourced from public Copart auction listings.
+  - paragraph: Availability, bids, and final conditions depend on the auction and may change.
+  - button "Cookies"
+  - button "Terms of service"
+  - generic: ·
+  - button "Privacy"

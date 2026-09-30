@@ -21,3 +21,11 @@ test('video delivery supports playback, seeking, revalidation and invalid ranges
  const unchanged=await fetch(url,{headers:{'if-none-match':full.headers.get('etag')}});assert.equal(unchanged.status,304);
  const stale=await fetch(url,{headers:{range:'bytes=0-1','if-range':'"old"'}});assert.equal(stale.status,200);assert.equal(await stale.text(),'0123456789');
 });
+
+test('Spanish and English captions have readable, ordered cues within each video',()=>{
+ for(const [name,duration] of [['cars-vsl',129],['cars-vsl-en',142.2]]){
+  const vtt=fs.readFileSync(path.join(__dirname,'../public/assets',name+'.vtt'),'utf8');assert.ok(vtt.startsWith('WEBVTT\n'));
+  const stamp=s=>s.split(':').reduce((total,value)=>total*60+Number(value),0);let last=0;const blocks=vtt.trim().split(/\n\n+/).slice(1);assert.ok(blocks.length>30);
+  for(const block of blocks){const [id,timing,...lines]=block.split('\n');const [a,b]=timing.split(' --> ').map(stamp);assert.ok(a>=last && b>a && b<=duration,`${name} cue ${id}: ${timing}`);assert.ok(lines.length<=2 && lines.every(line=>line.length<=42));last=b;}
+ }
+});

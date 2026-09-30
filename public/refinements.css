@@ -1,0 +1,128 @@
+/* Review branch: one search, responsive cards and accessible purchase guidance. */
+[hidden]{display:none!important}
+.catalog-content,.catalog-shell>*{min-width:0}
+.vehicle-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))!important}
+.auction-tile-countdown{font-size:12px!important}
+.auction-tile-buy>span{font-size:13px}
+.auction-tile-actions .auction-tile-bid{background:#c91432}
+.auction-tile-body{height:auto;flex:1}
+.auction-tile-actions{margin-top:auto}
+.detail-right-col .calc-total-note,.calc-total-note,.calc-help,.calc-total-sub,.bid-total-sub{font-size:13px!important;line-height:1.6!important;color:#475569!important}
+.calc-locked-info p,.auth-form small,.micro,.auth-tab{color:#475569}
+.auth-tab.active{color:#9f1239}
+.auth-form input,.auth-form select{min-height:44px}
+.auth-form label[for="register-phone"]{display:block}
+.password-toggle{display:block;font-size:13px;min-height:36px;text-align:left;margin:3px 0}
+#reset-code-fields label{display:block;margin:12px 0 6px}
+#reset-code-fields input,#reset-email{width:100%;box-sizing:border-box}
+#reset-status{font-size:14px;line-height:1.6;color:#334155}
+#auth-status{color:#9f1239;line-height:1.5}
+.lang-btn,.lang-switch button,#lang-switch button,.site-nav a,.main-nav a,header nav a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding-block:8px;box-sizing:border-box}
+#lang-switch button{min-width:44px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #1d4ed8;outline-offset:3px}
+.page-btn,.featured-nav-btn,.review-controls button,.modal-close,.mobile-filter-close{min-width:44px;min-height:44px}
+.review-controls .review-dots button{min-width:24px;min-height:24px;border:8px solid transparent;background-clip:content-box}
+.review-selection{font-size:14px;color:#475569;margin:20px 0 0}
+.evaluation{grid-template-columns:minmax(0,1fr);max-width:900px}
+.evaluation>div{max-width:760px}
+.home-page .section,.home-page .budget-section,.home-page .home-reviews{padding-block:40px}
+.membership-common{padding:16px 20px;background:#f1f5f9;border-radius:12px;margin:0 0 20px;color:#334155;line-height:1.6;text-align:center}
+.membership-card{padding:22px}
+.membership-card ul{margin-block:14px}
+.membership-benefit{font-size:14px;line-height:1.5}
+.membership-terms{font-size:13px;color:#475569}
+.membership-dialog .btn{min-height:44px}
+.cookie-banner{padding:16px!important;max-width:820px;width:calc(100% - 32px);box-sizing:border-box}
+.cookie-banner .cookie-banner-text{display:block;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:14px!important;line-height:1.5!important;margin:0 0 8px;color:#334155!important}
+.cookie-banner-actions{flex-wrap:wrap;gap:8px}
+.cookie-banner-actions #cookie-decline-btn,.cookie-banner-actions #cookie-accept-btn{background:#fff!important;color:#0f172a!important;border:1px solid #cbd5e1!important;font-size:13px;min-height:44px;padding:10px 12px;font-weight:600}
+.cookie-link-btn{color:#334155!important;min-height:44px}
+.lp-page:has(#cookie-banner:not(.hidden)) .lp-sticky{display:none}
+.lp-page .lp-hero-copy>.btn{order:3;margin-bottom:18px}
+.lp-page .lp-hero .hero-video-card{order:4}
+.lp-page .lp-entry{order:5}
+.lp-page .lp-hero .hero-assurances{order:6}
+.cost-section p>span+span,.cost-section p>span+a{margin-left:.3em}
+#deposito .lead>span{display:block;margin:8px 0}
+#video-captions{min-width:44px;min-height:44px}
+@media(min-width:769px){.catalog-shell{grid-template-columns:220px minmax(0,1fr)!important}}
+@media(max-width:768px){
+ .catalog-shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+ .catalog-content{width:100%;grid-column:1}
+ .vehicle-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))!important}
+ .home-page .section,.home-page .budget-section,.home-page .home-reviews{padding-block:28px}
+ .membership-grid{gap:16px}.membership-card{padding:20px}
+ .cookie-banner-content{display:block!important}.cookie-banner-actions{justify-content:flex-start}
+ .evaluation h2{font-size:28px}
+}
+@media(max-width:640px){
+ #vehicle-overlay{padding:0!important;width:100%;max-width:100%;box-sizing:border-box;overflow-x:hidden}
+ #vehicle-overlay .detail-modal{width:100%!important;max-width:100%!important;margin:0!important;box-sizing:border-box;min-width:0}
+ #vehicle-detail-content,.detail-layout,.detail-top-grid,.detail-mid-grid,.detail-main-column,.detail-gallery-col,.detail-right-col,.detail-center-col,.detail-hero-header,.detail-share-toolbar{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box}
+ #vehicle-detail-content{padding-inline:12px!important;overflow-wrap:anywhere}
+ .detail-layout>*,.detail-card,.calc-section-container,.calc-grid-layout,.calc-breakdown-card{min-width:0;max-width:100%;box-sizing:border-box}
+ .detail-share-toolbar{flex-wrap:wrap}
+ .detail-gallery-thumbnails,.gallery-thumbs{max-width:100%;overflow-x:auto}
+ .auth-overlay{padding:12px!important}.auth-modal{width:100%!important;max-width:100%;box-sizing:border-box;padding:24px 18px}
+ .phone-input-group{display:grid;grid-template-columns:100px minmax(0,1fr)}
+ .phone-input-group input,.phone-input-group select{width:100%;min-width:0;box-sizing:border-box}
+ .cookie-banner{bottom:12px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+#vehicle-overlay .detail-modal{box-sizing:border-box}
+
+.membership-more{margin:20px 0;border:1px solid #cbd5e1;border-radius:12px;padding:16px;color:#334155;font-size:14px;line-height:1.6}.membership-more summary{cursor:pointer;min-height:32px;font-weight:600}.membership-more ul{padding-left:20px}
+
+.catalog-section h1{font-size:clamp(32px,4vw,48px);line-height:1.1;letter-spacing:-1.5px;margin:0 0 12px}.detail-share-group{margin:12px 0;color:#475569;font-size:14px}.detail-share-group summary{cursor:pointer;min-height:44px;display:flex;align-items:center}.video-transcript-link{display:inline-flex;padding:12px 0;min-height:44px;align-items:center;box-sizing:border-box;color:#475569;font-size:14px}.video-scope-note{font-size:13px;color:#475569;line-height:1.5;margin:0 0 12px}@media(max-width:380px){.video-controls-row{flex-wrap:wrap}.video-controls-spacer{display:none}.video-time{margin-right:auto}}
+
+.home-page .hero-video-card{background:#fff}.hero-video-card>.video-transcript-link,.hero-video-card>.video-scope-note{margin-inline:16px}.auction-tile-countdown[data-sale-at="0"]{display:none}
+@media(max-width:768px){.catalog-toolbar .view-note,.catalog-toolbar .sort-select>span{display:none}.catalog-toolbar .sort-select{min-width:155px}}
+
+/* Mobile home: one title, the video and one next step. */
+@media(max-width:768px){
+ .home-page .home-video-hero{grid-template-columns:minmax(0,1fr);gap:20px;padding:24px 18px}
+ .home-page .home-video-hero .hero-header-center h1{font-size:clamp(29px,7.8vw,38px)!important;line-height:1.12!important;letter-spacing:-1.2px!important;margin:0}
+ .home-video-hero .hero-header-center>.eyebrow,
+ .home-video-hero .hero-header-center>p,
+ .home-video-hero .hero-fee-line,
+ .home-video-hero .hero-assurances,
+ .home-video-hero .hero-secondary-link,
+ .home-video-hero .video-cover-label,
+ .home-video-hero .video-cover-hint,
+ .home-page #video-transcript,
+ .home-page #video-scope-note{display:none}
+ .home-video-hero>.hero-primary-actions{margin:0;display:block}
+ .home-video-hero>.hero-primary-actions>.btn{width:100%;min-height:52px}
+ .home-page .topbar,.catalog-page .topbar{transition:transform .2s ease,visibility .2s}
+ .home-page .sticky-search,.catalog-page .sticky-search{transition:top .2s ease}
+ .mobile-header-collapsed .topbar{transform:translateY(-100%);visibility:hidden;pointer-events:none}
+ .mobile-header-collapsed .sticky-search{top:0}
+}
+
+/* Keep messages intact, with shorter home copy and optional detail on mobile. */
+.copy-mobile{display:none}
+@media(max-width:768px){
+ .home-page .copy-desktop{display:none}
+ .home-page .copy-mobile{display:inline}
+ .home-page main .eyebrow,
+ .home-page #resenas .review-selection,
+ .home-page #evaluacion h2>[data-i18n="marketing_80"],
+ .home-page #evaluacion h2>br,
+ .home-page #ayuda h2>[data-i18n="marketing_120"],
+ .home-page #ayuda h2>br,
+ .home-page .membership-card-top>.membership-label,
+ .home-page .membership-card-top>p{display:none}
+ .home-page #resenas h2,.home-page #presupuesto h2,.home-page #evaluacion h2,.home-page #costos h2,.home-page #planes h2,.home-page #ayuda h2{font-size:28px;line-height:1.18;letter-spacing:-.6px}
+ .home-page .membership-heading{margin-bottom:20px}
+ .home-page .membership-card-top h3{margin-top:0}
+ .home-page .membership-price{margin-top:12px}
+ .mobile-section-details{border:1px solid #cbd5e1;border-radius:12px;padding:0 16px;min-width:0;background:#fff}
+ .mobile-section-details>summary{cursor:pointer;min-height:52px;padding:14px 0;font-size:14px;font-weight:600;color:#334155;line-height:1.5}
+ .mobile-section-details .deposit-cases{padding:4px 0 16px}
+ .home-page #deposito .lead{font-size:16px}
+}
+
+.auction-tile-countdown.is-expired{background:#fff7ed!important;color:#9a3412!important;border:1px solid #fdba74}.auction-expiry-notice{display:flex;flex-direction:column;gap:4px;background:#fff7ed;color:#9a3412;border:1px solid #fdba74;border-radius:12px;padding:12px 16px;margin:12px 0;font-size:14px;line-height:1.5}.auction-expiry-notice strong{font-size:15px}
+
+.detail-price-comparison{font-size:13px;line-height:1.5;color:#475569;margin:12px 0 0}

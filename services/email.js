@@ -183,12 +183,12 @@ async function connectAndAuthenticate() {
   return { socket, reader, config };
 }
 
-function verificationMessage(toEmail, code, config) {
+function verificationMessage(toEmail, code, config, reset = false) {
   const boundary = `apv-${crypto.randomBytes(12).toString('hex')}`;
   const sender = fromHeader(config.from, config.user);
-  const subject = `=?UTF-8?B?${Buffer.from('APV Motors - Código de verificación').toString('base64')}?=`;
-  const text = `Tu código de verificación de APV Motors es: ${code}. Caduca en 15 minutos. Si no solicitaste esta cuenta, ignora este mensaje.`;
-  const html = `<!doctype html><html><body style="font-family:Arial,sans-serif;background:#f8fafc;margin:0;padding:20px"><div style="max-width:520px;margin:0 auto;background:#fff;border-radius:16px;padding:32px;border:1px solid #e2e8f0"><h1 style="color:#dc2626;text-align:center;margin:0 0 6px">APV MOTORS</h1><p style="color:#64748b;text-align:center">Verificación de cuenta para subastas</p><div style="background:#f1f5f9;border-radius:12px;padding:20px;text-align:center;margin:24px 0"><p>Tu código de verificación es:</p><div style="font-size:36px;font-weight:900;letter-spacing:8px;color:#0f172a">${code}</div><p style="color:#64748b;font-size:12px">Caduca en 15 minutos.</p></div><p style="color:#64748b;font-size:13px;text-align:center">Si no solicitaste esta cuenta, puedes ignorar este mensaje.</p></div></body></html>`;
+  const subject = `=?UTF-8?B?${Buffer.from(reset ? 'APV Motors - Recuperar contraseña' : 'APV Motors - Código de verificación').toString('base64')}?=`;
+  const text = `Tu código de ${reset ? 'recuperación de contraseña / password reset' : 'verificación'} de APV Motors es: ${code}. Caduca en 15 minutos. Si no solicitaste este código, ignora este mensaje. / If you did not request this code, ignore this email.`;
+  const html = `<!doctype html><html><body style="font-family:Arial,sans-serif;background:#f8fafc;margin:0;padding:20px"><div style="max-width:520px;margin:0 auto;background:#fff;border-radius:16px;padding:32px;border:1px solid #e2e8f0"><h1 style="color:#dc2626;text-align:center;margin:0 0 6px">APV MOTORS</h1><p style="color:#64748b;text-align:center">${reset ? 'Recuperar contraseña / Reset password' : 'Verificación de cuenta para subastas'}</p><div style="background:#f1f5f9;border-radius:12px;padding:20px;text-align:center;margin:24px 0"><p>Tu código de verificación es:</p><div style="font-size:36px;font-weight:900;letter-spacing:8px;color:#0f172a">${code}</div><p style="color:#64748b;font-size:12px">Caduca en 15 minutos.</p></div><p style="color:#64748b;font-size:13px;text-align:center">Si no solicitaste este código, puedes ignorar este mensaje.</p></div></body></html>`;
   return [
     `From: ${sender}`,
     `To: ${cleanHeader(toEmail)}`,
@@ -213,7 +213,7 @@ function verificationMessage(toEmail, code, config) {
   ].join('\r\n').replace(/\r\n\./g, '\r\n..');
 }
 
-async function sendVerificationEmail(toEmail, code) {
+async function sendVerificationEmail(toEmail, code, reset = false) {
   const recipient = emailAddress(toEmail);
   if (!recipient || /[\r\n]/.test(String(toEmail))) throw new Error('Destinatario de correo inválido.');
   const session = await connectAndAuthenticate();
@@ -223,7 +223,7 @@ async function sendVerificationEmail(toEmail, code) {
     await command(socket, reader, `RCPT TO:<${recipient}>`, [250, 251], 'el destinatario', config.timeoutMs);
     await command(socket, reader, 'DATA', [354], 'el contenido del correo', config.timeoutMs);
     const accepted = reader.next(config.timeoutMs);
-    socket.write(`${verificationMessage(recipient, code, config)}\r\n.\r\n`);
+    socket.write(`${verificationMessage(recipient, code, config, reset)}\r\n.\r\n`);
     expectCode(await accepted, [250], 'el envío del correo');
     try { await command(socket, reader, 'QUIT', [221], 'QUIT', config.timeoutMs); } catch (_) {}
     return true;
@@ -239,4 +239,4 @@ async function verifySmtpConnection() {
   return true;
 }
 
-module.exports = { getSmtpConfigStatus, sendVerificationEmail, verifySmtpConnection };
+module.exports = { sendPasswordResetEmail: (email, code) => sendVerificationEmail(email, code, true), getSmtpConfigStatus, sendVerificationEmail, verifySmtpConnection };

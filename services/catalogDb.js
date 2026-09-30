@@ -16,6 +16,21 @@ function normalizeMake(value) {
   const make = ({CHEVY:'CHEVROLET', CHEV:'CHEVROLET', TOYO:'TOYOTA', VOLKS:'VOLKSWAGEN', 'FRHT - FREIGHTLINER':'FREIGHTLINER', 'YAMA - YAMAHA':'YAMAHA'})[cleaned] || cleaned;
   return MAKES.find(brand => make === brand || make.startsWith(brand + ' ') || make.startsWith(brand + '-')) || make;
 }
+// Only verified spelling aliases are corrected; source data remains in rawJson.
+function normalizeModel(make, value) {
+  const model = str(value).toUpperCase().replace(/\s+/g, ' ');
+  if (/^(?:ALL OTHER|\(NO MODEL\)|NO MODEL|UNKNOWN|OTHER|OTHERS|\*)$/.test(model)) return '';
+  if (make === 'TOYOTA') {
+    if (/^CIVIC(?: |$)/.test(model)) return '';
+    return ({CAMRRY:'CAMRY', COROALLA:'COROLLA'})[model] || model;
+  }
+  return model;
+}
+function publicSaleTime(row) {
+  const known = /^(EST|EDT|CST|CDT|MST|MDT|PST|PDT|AKST|AKDT|HST|AST|ADT|UTC|GMT)$/i.test(str(row.timeZone));
+  const at = known && str(row.saleTime) ? saleTimestamp(str(row.saleDate), row.saleTime, row.timeZone) : null;
+  return { saleAt: at || null, saleDate: at ? new Date(at).toISOString() : '', saleTime: str(row.saleTime), timeZone: str(row.timeZone) };
+}
 const ZIP_SQL = `COALESCE(json_extract(rawJson, '$."Location ZIP"'), json_extract(rawJson, '$."Location zip"'), json_extract(rawJson, '$."Location Zip"'), json_extract(rawJson, '$."Location zip code"'), json_extract(rawJson, '$."Zip Code"'), '')`;
 const SOLD_SQL = "UPPER(TRIM(COALESCE(saleStatus, ''))) IN ('SOLD', 'VENDIDO', 'SALE ENDED', 'CLOSED', 'CANCELLED', 'CANCELED', 'WITHDRAWN')";
 
@@ -173,6 +188,22 @@ function initDatabase() {
       db.exec('COMMIT');
     } catch (err) { db.exec('ROLLBACK'); throw err; }
   }
+
+  if (!db.prepare("SELECT value FROM catalog_meta WHERE key = 'modelNormalizationV1'").get()) {
+    db.exec('BEGIN');
+    try {
+      const update = db.prepare('UPDATE vehicles SET model = ?, title = ? WHERE lot = ?');
+      for (const row of db.prepare('SELECT lot, make, year, model, trim FROM vehicles').all()) {
+        const model = normalizeModel(row.make, row.model);
+        if (model !== row.model) update.run(model, [row.year, row.make, model, row.trim].filter(Boolean).join(' '), row.lot);
+      }
+      db.prepare("INSERT INTO catalog_meta (key,value) VALUES ('modelNormalizationV1','1')").run();
+      db.exec('COMMIT');
+    } catch (err) { db.exec('ROLLBACK'); throw err; }
+  }
+  try { db.exec("ALTER TABLE users ADD COLUMN sessionVersion INTEGER NOT NULL DEFAULT 0"); } catch (_) {}
+  try { db.exec("ALTER TABLE bid_intents ADD COLUMN purchaseMode TEXT NOT NULL DEFAULT 'bid'"); } catch (_) {}
+  db.exec(`CREATE TABLE IF NOT EXISTS password_resets (email TEXT PRIMARY KEY, codeHash TEXT NOT NULL, expiresAt INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, requestedAt INTEGER NOT NULL)`);
 
   // Legacy files must never overwrite newer accounts or chats on restart.
   const legacyMigrated = db.prepare("SELECT value FROM catalog_meta WHERE key = 'legacyJsonMigrated'").get();
@@ -360,7 +391,7 @@ function normalizeRecord(raw) {
   const lot = str(raw['Lot number']);
   const year = num(raw['Year']);
   const make = normalizeMake(raw['Make']);
-  const model = str(raw['Model Group'] || raw['Model Detail'] || raw['Model']);
+  const model = normalizeModel(make, raw['Model Group'] || raw['Model Detail'] || raw['Model']);
   const trim = str(raw['Trim']);
   const title = [year, make, model, trim].filter(Boolean).join(' ') || str(raw['Title']);
   const vin = str(raw['VIN']);
@@ -433,14 +464,17 @@ function saleTimestamp(date, time, zone) {
 function pruneExpired() {
   const database = initDatabase();
   if (Date.now() - lastPruned < 60000) return;
-  const result = database.prepare(`DELETE FROM vehicles WHERE saleAt <= ? OR ${SOLD_SQL}`).run(Date.now());
+  // A past auction date is not proof of a sale. Keep it for browsing and
+  // advisor confirmation; remove only explicitly closed/withdrawn listings.
+  const result = database.prepare(`DELETE FROM vehicles WHERE ${SOLD_SQL}`).run();
   lastPruned = Date.now();
   if (result.changes) invalidateCatalogCaches();
 }
 
 function upsertCatalogFromCsv(csvText, options = {}) {
   const database = initDatabase();
-  const digest = crypto.createHash('sha256').update('catalog-v4:').update(csvText).digest('hex');
+  // Reimport existing snapshots once to recover lots removed by date-only pruning.
+  const digest = crypto.createHash('sha256').update('catalog-v5-retain-expired:').update(csvText).digest('hex');
   if (!options.force && database.prepare("SELECT value FROM catalog_meta WHERE key = 'sourceHash'").get()?.value === digest) {
     pruneExpired();
     return { totalInDb: getVehicleCount(), unchanged: true, updatedAt: lastUpdatedAt };
@@ -456,7 +490,7 @@ function upsertCatalogFromCsv(csvText, options = {}) {
   const nowIso = new Date().toISOString();
   let addedCount = 0;
   let updatedCount = 0;
-  let skipped = 0, expired = 0, valid = 0, duplicates = 0;
+  let skipped = 0, expired = 0, closed = 0, valid = 0, duplicates = 0;
   const seen = new Set();
 
   const previousLots = new Set(database.prepare('SELECT lot FROM vehicles').all().map(r=>r.lot));
@@ -535,7 +569,8 @@ function upsertCatalogFromCsv(csvText, options = {}) {
       const saleAt = saleTimestamp(rec.saleDate, rec.saleTime, rec.timeZone);
       if (rec.saleDate && !saleAt) { skipped++; continue; }
       valid++;
-      if ((saleAt && saleAt <= Date.now()) || /^(SOLD|VENDIDO|SALE ENDED|CLOSED|CANCELLED|CANCELED|WITHDRAWN)$/i.test(rec.saleStatus)) { expired++; continue; }
+      if (/^(SOLD|VENDIDO|SALE ENDED|CLOSED|CANCELLED|CANCELED|WITHDRAWN)$/i.test(rec.saleStatus)) { closed++; continue; }
+      if (saleAt && saleAt <= Date.now()) expired++;
       if (seen.has(rec.lot)) duplicates++;
       seen.add(rec.lot);
 
@@ -577,7 +612,7 @@ function upsertCatalogFromCsv(csvText, options = {}) {
     backup,
     totalInCsv: rows.length - 1,
     added: addedCount,
-    skipped, expired, duplicates, updated: updatedCount,
+    skipped, expired, closed, duplicates, updated: updatedCount,
     removed: [...previousLots].filter(lot => !seen.has(lot)).length,
     totalInDb: countAfter,
     updatedAt: nowIso
@@ -652,9 +687,7 @@ function rowToVehicle(row) {
     currentBid: Number(row.currentBid || 0),
     retailValue: Number(row.retailValue || 0),
     repairCost: Number(row.repairCost || 0),
-    saleDate: /^\d{8}$/.test(row.saleDate) ? `${row.saleDate.slice(0,4)}-${row.saleDate.slice(4,6)}-${row.saleDate.slice(6,8)}T12:00:00` : '',
-    saleTime: str(row.saleTime),
-    timeZone: str(row.timeZone),
+    ...publicSaleTime(row),
     hasKeys: str(row.hasKeys),
     color: str(row.color),
     engine: str(row.engine),
@@ -701,13 +734,14 @@ function getFeaturedVehicles(limit = 6, params = {}) {
   if (!featuredPool) featuredPool = {};
   if (!featuredPool[key]) {
     featuredPool[key] = database.prepare(`SELECT lot, title, imageThumbnail, currentBid, buyNow, retailValue,
-      locationCity, locationState, saleAt FROM vehicles WHERE NOT (${SOLD_SQL}) AND ${clauses.join(' AND ')}`).all().map(row => ({
+      locationCity, locationState, saleAt, saleDate, saleTime, timeZone, primaryDamage, saleTitleState, saleTitleType, odometer FROM vehicles WHERE NOT (${SOLD_SQL}) AND ${clauses.join(' AND ')}`).all().map(row => ({
         lot: row.lot, title: row.title, currentBid: row.currentBid, buyNow: row.buyNow, retailValue: row.retailValue,
-        locationCity: row.locationCity, locationState: row.locationState, saleAt: row.saleAt,
+        locationCity: row.locationCity, locationState: row.locationState, ...publicSaleTime(row),
+        primaryDamage: row.primaryDamage, titleState: row.saleTitleState, titleType: row.saleTitleType, odometer: row.odometer,
         image: ensureHttps(row.imageThumbnail).replace(/_thb(?=\.[a-z]+(?:[?#]|$))/i, '_ful')
       }));
   }
-  const available = featuredPool[key].filter(v => {const price=v.buyNow>0?v.buyNow:v.currentBid;return (!v.saleAt||v.saleAt>Date.now()) && (!(Number(params.priceMin)>0)||price>Number(params.priceMin)) && (!(Number(params.priceMax)>0)||price<=Number(params.priceMax));});
+  const available = featuredPool[key].filter(v => {const price=v.buyNow>0?v.buyNow:v.currentBid;return (!(Number(params.priceMin)>0)||price>Number(params.priceMin)) && (!(Number(params.priceMax)>0)||price<=Number(params.priceMax));});
   const count = Math.min(available.length, Math.max(1, Math.min(12, Number(limit) || 6)));
   const selected = new Set();
   while (selected.size < count) selected.add(Math.floor(Math.random() * available.length));
@@ -740,6 +774,8 @@ function queryVehicles(params = {}) {
     whereClauses.push("LOWER(title || ' ' || lot || ' ' || vin || ' ' || locationCity || ' ' || locationState) LIKE ? ESCAPE '\\'");
     bindings.push('%' + token.replace(/[\\%_]/g, '\\$&') + '%');
   }
+  if (params.vehicleType === 'V') whereClauses.push("json_extract(rawJson, '$.\"Vehicle Type\"') = 'V'");
+  if (params.vehicleType === 'other') whereClauses.push("COALESCE(json_extract(rawJson, '$.\"Vehicle Type\"'),'') != 'V'");
   if (params.model) { whereClauses.push('model = ?'); bindings.push(str(params.model)); }
   if (params.runAndDrive === '1') whereClauses.push("runsDrives = 'Run & Drive Verified'");
   if (params.favorites !== undefined) {
@@ -821,7 +857,10 @@ function queryVehicles(params = {}) {
   const totalRow = database.prepare(countSql).get(...bindings);
   const total = totalRow ? totalRow.total : 0;
 
+  const now = Date.now();
+  const auctionOrder = `CASE WHEN saleAt > ${now} THEN 0 WHEN saleAt IS NULL THEN 1 ELSE 2 END, CASE WHEN saleAt <= ${now} THEN saleAt END DESC`;
   const sortSqlMap = {
+    auto: "CASE WHEN json_extract(rawJson, '$.\"Vehicle Type\"') IN ('AUTOMOBILE','AUTOMOBILE/PICKUP','V','AUTOMOBILE - VEHICLE') THEN 0 ELSE 1 END, (imageThumbnail = '' OR (currentBid <= 0 AND buyNow <= 0)), saleAt IS NULL, saleAt ASC, lot ASC",
     saleSoon: "saleAt IS NULL, saleAt ASC, year DESC, lot ASC",
     newest: "year DESC",
     oldest: "year ASC",
@@ -832,19 +871,14 @@ function queryVehicles(params = {}) {
     featuredClean: "RANDOM()"
   };
 
-  // Keep a stable shuffle across pages; searches and filters use auction order.
-  const randomOrder = sort === 'auto' && whereClauses.length === 0;
-  const rawSeed = Number(params.seed);
-  const seed = Number.isSafeInteger(rawSeed) && rawSeed > 0 && rawSeed <= 1001000000 ? rawSeed : 15485863;
-  const orderBy = randomOrder
-    ? '((CAST(lot AS INTEGER) % 2147483647) * ?) % 2147483647, lot ASC'
-    : sortSqlMap[sort] || sortSqlMap.saleSoon;
+  // Default order prioritizes cars with actionable data, then the next sale.
+  const orderBy = ['auto','saleSoon'].includes(sort) ? auctionOrder + ', ' + sortSqlMap[sort] : sortSqlMap[sort] || auctionOrder + ', ' + sortSqlMap.saleSoon;
   const pages = Math.max(1, Math.ceil(total / pageSize));
   const safePage = Math.min(page, pages);
   const offset = (safePage - 1) * pageSize;
 
   const dataSql = `SELECT * FROM vehicles ${whereSql} ORDER BY ${orderBy} LIMIT ? OFFSET ?`;
-  const rows = database.prepare(dataSql).all(...bindings, ...(randomOrder ? [seed] : []), pageSize, offset);
+  const rows = database.prepare(dataSql).all(...bindings, pageSize, offset);
 
   const result = {
     items: rows.map(rowToVehicle),
@@ -885,6 +919,7 @@ function getFilterMetadata() {
   return filterCache = {
     total,
     modelsByMake,
+    vehicleTypes: ['V','other'],
     cities: database.prepare("SELECT DISTINCT locationCity AS city, locationState AS state FROM vehicles WHERE locationCity != '' ORDER BY locationCity").all(),
     // Only recognized manufacturers appear as makes; unknown CSV labels remain searchable.
     makes: makesRows.map(r => r.make).filter(make => MAKES.includes(make)),
@@ -976,15 +1011,15 @@ function getBidIntents() {
 function saveBidIntent(intent) {
   const database = initDatabase();
   database.prepare(`
-    INSERT INTO bid_intents (id, userId, userEmail, lot, vin, maxBid, vehicle, createdAt)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO bid_intents (id, userId, userEmail, lot, vin, maxBid, vehicle, createdAt, purchaseMode)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(id) DO UPDATE SET
       maxBid=excluded.maxBid,
       createdAt=excluded.createdAt
   `).run(
     intent.id, intent.userId, intent.userEmail,
     intent.lot, intent.vin, intent.maxBid,
-    intent.vehicle, intent.createdAt || new Date().toISOString()
+    intent.vehicle, intent.createdAt || new Date().toISOString(), intent.purchaseMode || 'bid'
   );
   return intent;
 }
@@ -1068,6 +1103,8 @@ module.exports = {
   pruneExpired,
   parseCsv,
   saleTimestamp,
+  publicSaleTime,
+  normalizeModel,
   upsertCatalogFromCsv,
   clearVehicles,
   queryVehicles,

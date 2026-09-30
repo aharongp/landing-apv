@@ -139,7 +139,7 @@
       `VIN: ${vehicle.vin || 'N/D'}`,
       `Lote: ${vehicle.lot || 'N/D'}`
     ];
-    if (Number(maxBid) > 0) lines.push(`Tope de oferta: $${Number(maxBid).toLocaleString('en-US')} USD`);
+    if (Number(maxBid) > 0) lines.push(`${vehicle.purchaseMode==='buy'?'Compra inmediata solicitada':'Tope de oferta'}: $${Number(maxBid).toLocaleString('en-US')} USD`);
     if (user?.name) lines.push(`Cliente: ${user.name}`);
     if (user?.email) lines.push(`Correo: ${user.email}`);
     if (user?.phone) lines.push(`Teléfono: ${user.phone}`);
@@ -152,12 +152,13 @@
   function buildContext(vehicle, maxBid, user) {
     const vehicleMessage = buildVehicleMessage(vehicle, maxBid, user);
     return {
-      context: 'apv_auction_bid_request',
+      context: vehicle.purchaseMode==='buy'?'apv_buy_now_request':'apv_auction_bid_request',
+      purchase_mode: vehicle.purchaseMode||'bid',
       vin: vehicle.vin || '',
       lot: String(vehicle.lot || ''),
       max_bid: Math.max(0, Math.round(Number(maxBid || 0))),
       vehicle_model: vehicle.title || [vehicle.year, vehicle.make, vehicle.model, vehicle.trim].filter(Boolean).join(' '),
-      welcome_message: currentLocale === 'en' ? 'How much would you like to bid, or how can I help?' : '¿Cuánto te gustaría ofertar o cómo te puedo ayudar?',
+      welcome_message: vehicle.purchaseMode==='buy'?(currentLocale==='en'?'Let’s confirm the Buy It Now price, availability and next steps.':'Confirmemos el precio de compra inmediata, la disponibilidad y los siguientes pasos.'):currentLocale === 'en' ? 'How much would you like to bid, or how can I help?' : '¿Cuánto te gustaría ofertar o cómo te puedo ayudar?',
       vehicle_message: vehicleMessage
     };
   }
@@ -190,17 +191,18 @@
   function buildBidsSummary(activeBids, vehicle, maxBid, user) {
     const bids = Array.isArray(activeBids) && activeBids.length
       ? activeBids
-      : [{ lot: vehicle.lot, title: vehicle.title, vin: vehicle.vin, maxBid }];
+      : [{ lot: vehicle.lot, title: vehicle.title, vin: vehicle.vin, maxBid, purchaseMode:vehicle.purchaseMode }];
     const normalized = bids.map(function (bid) {
       return {
         lot: String(bid.lot || ''),
         title: bid.title || `Lote ${bid.lot || 'N/D'}`,
         vin: bid.vin || 'N/D',
+        purchaseMode: bid.purchaseMode || 'bid',
         maxBid: Math.max(0, Math.round(Number(bid.maxBid || 0)))
       };
     }).filter(function (bid) { return bid.lot; });
     const lines = normalized.map(function (bid, index) {
-      return `${index + 1}. ${bid.title}\n   • Lote: ${bid.lot} | VIN: ${bid.vin}\n   • Tope de Oferta: $${bid.maxBid.toLocaleString('en-US')} USD`;
+      return `${index + 1}. ${bid.title}\n   • Lote: ${bid.lot} | VIN: ${bid.vin}\n   • ${bid.purchaseMode==='buy'?'Compra inmediata':'Tope de oferta'}: $${bid.maxBid.toLocaleString('en-US')} USD`;
     });
     const total = normalized.reduce(function (sum, bid) { return sum + bid.maxBid; }, 0);
     return [
@@ -236,7 +238,7 @@
         custom_fields: contactFields
       },
       lead: {
-        name: `Puja ($${Math.max(0, Math.round(Number(maxBid || 0))).toLocaleString('en-US')} USD) | ${botParams.vehicle_model || 'Vehículo'}`,
+        name: `${vehicle.purchaseMode==='buy'?'Compra inmediata':'Puja'} ($${Math.max(0, Math.round(Number(maxBid || 0))).toLocaleString('en-US')} USD) | ${botParams.vehicle_model || 'Vehículo'}`,
         sale: Math.max(0, Math.round(Number(maxBid || 0))),
         custom_fields: leadFields
       },
@@ -279,7 +281,7 @@
     context.crmSyncAttempts = (context.crmSyncAttempts || 0) + 1;
     crmSyncAttempts += 1;
     try {
-      const result = await syncBidBackend(context.lot, context.maxBid);
+      const result = await syncBidBackend(context.lot, context.maxBid, context.vehicle?.purchaseMode);
       context.lastCrmSyncStage = stage;
       const audit = { ok: true, pendingChat: !!result.pendingChat, attempt: context.crmSyncAttempts, stage, at: Date.now() };
       lastCrmSyncResults.push(audit);
@@ -309,11 +311,11 @@
     });
   }
 
-  async function syncBidBackend(lot, maxBid) {
+  async function syncBidBackend(lot, maxBid, purchaseMode = 'bid') {
     const res = await fetch('/api/kommo/sync-bid', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...window.APVTracking?.payload(), lot: String(lot), maxBid: Number(maxBid) })
+      body: JSON.stringify({ ...window.APVTracking?.payload(), lot: String(lot), maxBid: Number(maxBid), purchaseMode })
     });
     const data = await res.json().catch(function() { return {}; });
     if (!res.ok) {

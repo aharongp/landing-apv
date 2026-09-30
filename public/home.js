@@ -1,4 +1,36 @@
 (() => {
+  const hero = document.querySelector('.home-video-hero');
+  if (hero) {
+    const actions = hero.querySelector('.hero-primary-actions');
+    const videoCard = hero.querySelector('.hero-video-card');
+    const originalPosition = document.createComment('hero actions desktop position');
+    actions.before(originalPosition);
+    const mobileHero = window.matchMedia('(max-width:768px)');
+    const arrangeHero = () => {
+      if (mobileHero.matches) videoCard.after(actions);
+      else originalPosition.after(actions);
+    };
+    mobileHero.addEventListener('change', arrangeHero);
+    arrangeHero();
+  }
+  const depositCases = document.querySelector('.deposit-cases');
+  if (depositCases) {
+    const origin = document.createComment('deposit cases desktop position');
+    depositCases.before(origin);
+    const details = document.createElement('details');
+    details.className = 'mobile-section-details';
+    const summary = document.createElement('summary');
+    details.append(summary);
+    const mobile = window.matchMedia('(max-width:768px)');
+    const arrangeDeposit = () => {
+      if (mobile.matches) { origin.after(details); details.append(depositCases); }
+      else { origin.after(depositCases); details.remove(); }
+    };
+    const label = () => { summary.textContent = document.documentElement.lang === 'en' ? 'If you win, lose or don’t pay' : 'Si ganas, no ganas o no pagas'; };
+    label(); arrangeDeposit();
+    mobile.addEventListener('change', arrangeDeposit);
+    document.addEventListener('apv:language', label);
+  }
   const budgetForm = document.getElementById('budget-form');
   if (budgetForm) {
     const result = document.getElementById('budget-result');
@@ -7,6 +39,10 @@
     budgetForm.addEventListener('input', () => { result.hidden=true;error.hidden=true; });
     budgetForm.addEventListener('submit', event => {
       event.preventDefault(); result.hidden=true;error.hidden=true;
+      if(!window.APVAuth?.isAuthenticated()) {
+        window.APVAuth?.open(document.documentElement.lang==='en'?'Create a free account to calculate your budget. Your amounts will be kept.':'Crea tu cuenta gratis para calcular tu presupuesto. Conservaremos los importes que ingresaste.',{type:'budget'},'register');
+        return;
+      }
       try {
         if(!budgetForm.reportValidity()) return;
         const quote = window.APVBudget.quote(document.getElementById('budget-total').value,document.getElementById('budget-reserve').value,window.apvBaseCostEstimate);
@@ -67,6 +103,12 @@
   const speed = document.getElementById('video-speed');
   const fullscreen = document.getElementById('video-fullscreen');
   const status = document.getElementById('video-status');
+  const captions=document.getElementById('hero-captions'),cc=document.getElementById('video-captions'),transcript=document.getElementById('video-transcript');
+  let captionsOn=false;
+  function syncCaptions(){if(captions)captions.track.mode=captionsOn?'showing':'hidden';if(cc){cc.setAttribute('aria-pressed',String(captionsOn));cc.setAttribute('aria-label',captionsOn?text('Ocultar subtítulos','Hide captions'):text('Mostrar subtítulos','Show captions'));}}
+  cc?.addEventListener('click',()=>{captionsOn=!captionsOn;syncCaptions();});
+  video.addEventListener('loadedmetadata',syncCaptions);
+  captions?.addEventListener('load',syncCaptions);
   const format = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
   const text = (es,en) => document.documentElement.lang === 'en' ? en : es;
   let mediaGeneration = 0;
@@ -133,6 +175,10 @@
     const en = document.documentElement.lang === 'en';
     const source = video.querySelector('source');
     const src = en ? '/assets/cars-vsl-en.mp4' : '/assets/cars-vsl.mp4';
+    if(captions){captions.src=src.replace('.mp4','.vtt');captions.srclang=en?'en':'es';captions.label=en?'English':'Español';}
+    if(transcript){transcript.href='/video-transcript-'+(en?'en':'es')+'.html';transcript.textContent=text('Leer transcripción','Read transcript');}
+    const scope=document.getElementById('video-scope-note');if(scope)scope.textContent=text('Video orientativo. Tu asesor confirma disponibilidad, gastos adicionales y depósito.','General overview. Your advisor confirms availability, additional costs and deposit terms.');
+    syncCaptions();
     if (source.getAttribute('src') !== src) {
       mediaGeneration++; video.pause(); started = false;
       source.setAttribute('src', src);

@@ -1,0 +1,291 @@
+- banner:
+  - link "APV Motors inicio":
+    - /url: /
+    - img "APV Motors"
+  - navigation "Navegación principal":
+    - link "Catálogo":
+      - /url: "#catalogo"
+    - link "Cómo comprar":
+      - /url: /#como-funciona
+    - link "Reseñas":
+      - /url: /#resenas
+    - link "Planes":
+      - /url: /#planes
+  - button "ES" [pressed]
+  - generic: "|"
+  - button "EN"
+  - button "Iniciar sesión"
+- search "Buscar vehículos":
+  - searchbox "Buscar vehículos"
+  - button "Buscar"
+- main:
+  - search:
+    - generic: ⌕
+    - searchbox "Ej. Silverado 2023, número de lote o VIN"
+    - button "Buscar"
+    - button "Más filtros ⌄"
+  - generic: CATÁLOGO DE SUBASTA
+  - heading "Encuentra el auto correcto." [level=2]
+  - paragraph: 74,912 resultados disponibles.
+  - button "Filtros":
+    - text: Filtros
+  - combobox:
+    - option "Aleatorio / búsqueda" [selected]
+    - option "Subasta más próxima"
+    - 'option "Año: más nuevo"'
+    - 'option "Precio: menor"'
+    - 'option "Precio: mayor"'
+    - option "Menor millaje"
+  - article:
+    - button "2015 TOYOTA CAMRY SE":
+      - img "2015 TOYOTA CAMRY SE"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2015 TOYOTA CAMRY SE" [level=3]:
+      - button "2015 TOYOTA CAMRY SE"
+    - paragraph: "Lote # 63882666 · LA GRANGE, NC"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2017 HYUNDAI ELANTRA SE":
+      - img "2017 HYUNDAI ELANTRA SE"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2017 HYUNDAI ELANTRA SE" [level=3]:
+      - button "2017 HYUNDAI ELANTRA SE"
+    - paragraph: "Lote # 62227606 · NORTH LAS VEGAS, NV"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2026 BUICK ALL OTHER SPORT TOURING":
+      - img "2026 BUICK ALL OTHER SPORT TOURING"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2026 BUICK ALL OTHER SPORT TOURING" [level=3]:
+      - button "2026 BUICK ALL OTHER SPORT TOURING"
+    - paragraph: "Lote # 65872066 · DAVISON, MI"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2025 TESLA MODEL 3":
+      - img "2025 TESLA MODEL 3"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2025 TESLA MODEL 3" [level=3]:
+      - button "2025 TESLA MODEL 3"
+    - paragraph: "Lote # 62561946 · NORTH BILLERICA, MA"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2019 NISSAN SENTRA S":
+      - img "2019 NISSAN SENTRA S"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2019 NISSAN SENTRA S" [level=3]:
+      - button "2019 NISSAN SENTRA S"
+    - paragraph: "Lote # 58257126 · MENDON, MA"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2015 HONDA CIVIC SI":
+      - img "2015 HONDA CIVIC SI"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2015 HONDA CIVIC SI" [level=3]:
+      - button "2015 HONDA CIVIC SI"
+    - paragraph: "Lote # 59088816 · SEAFORD, DE"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2017 CHEVROLET TRAVERSE LT":
+      - img "2017 CHEVROLET TRAVERSE LT"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2017 CHEVROLET TRAVERSE LT" [level=3]:
+      - button "2017 CHEVROLET TRAVERSE LT"
+    - paragraph: "Lote # 55778696 · WALDORF, MD"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2018 CHEVROLET ALL Models K1500 LT":
+      - img "2018 CHEVROLET ALL Models K1500 LT"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2018 CHEVROLET ALL Models K1500 LT" [level=3]:
+      - button "2018 CHEVROLET ALL Models K1500 LT"
+    - paragraph: "Lote # 65383036 · MENDON, MA"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2025 CHEVROLET TRAILBLAZE LT":
+      - img "2025 CHEVROLET TRAILBLAZE LT"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2025 CHEVROLET TRAILBLAZE LT" [level=3]:
+      - button "2025 CHEVROLET TRAILBLAZE LT"
+    - paragraph: "Lote # 53634606 · SPARTANBURG, SC"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2018 HONDA PILOT EXL":
+      - img "2018 HONDA PILOT EXL"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2018 HONDA PILOT EXL" [level=3]:
+      - button "2018 HONDA PILOT EXL"
+    - paragraph: "Lote # 58934126 · EUGENE, OR"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2023 VOLVO XC40 RECHARGE ULTIMATE":
+      - img "2023 VOLVO XC40 RECHARGE ULTIMATE"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2023 VOLVO XC40 RECHARGE ULTIMATE" [level=3]:
+      - button "2023 VOLVO XC40 RECHARGE ULTIMATE"
+    - paragraph: "Lote # 63573286 · KANSAS CITY, KS"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2018 FORD ESCAPE SE":
+      - img "2018 FORD ESCAPE SE"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2018 FORD ESCAPE SE" [level=3]:
+      - button "2018 FORD ESCAPE SE"
+    - paragraph: "Lote # 56953046 · AMARILLO, TX"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2011 ACURA MDX":
+      - img "2011 ACURA MDX"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2011 ACURA MDX" [level=3]:
+      - button "2011 ACURA MDX"
+    - paragraph: "Lote # 56292686 · HASLET, TX"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2024 NISSAN SENTRA SV":
+      - img "2024 NISSAN SENTRA SV"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2024 NISSAN SENTRA SV" [level=3]:
+      - button "2024 NISSAN SENTRA SV"
+    - paragraph: "Lote # 58942446 · WEST MIFFLIN, PA"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2018 HONDA ACCORD TOURING":
+      - img "2018 HONDA ACCORD TOURING"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2018 HONDA ACCORD TOURING" [level=3]:
+      - button "2018 HONDA ACCORD TOURING"
+    - paragraph: "Lote # 61429196 · FARR WEST, UT"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2015 CHEVROLET ALL Models K2500 HEAVY DUTY":
+      - img "2015 CHEVROLET ALL Models K2500 HEAVY DUTY"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2015 CHEVROLET ALL Models K2500 HEAVY DUTY" [level=3]:
+      - button "2015 CHEVROLET ALL Models K2500 HEAVY DUTY"
+    - paragraph: "Lote # 60605826 · WICHITA, KS"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2021 VOLKSWAGEN JETTA S":
+      - img "2021 VOLKSWAGEN JETTA S"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2021 VOLKSWAGEN JETTA S" [level=3]:
+      - button "2021 VOLKSWAGEN JETTA S"
+    - paragraph: "Lote # 58290406 · THONOTOSASSA, FL"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2014 KIA SOUL +":
+      - img "2014 KIA SOUL +"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2014 KIA SOUL +" [level=3]:
+      - button "2014 KIA SOUL +"
+    - paragraph: "Lote # 56635346 · CHICAGO HEIGHTS, IL"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - button "‹" [disabled]
+  - button "1"
+  - button "2"
+  - button "3"
+  - generic: …
+  - button "4162"
+  - button "›"
+- contentinfo:
+  - img "APV Motors"
+  - paragraph:
+    - text: APV Motors LLC ·Licencia de dealer [LICENCIA_NO]· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·
+    - link "+1 346 204 8308":
+      - /url: tel:+13462048308
+  - paragraph: Datos de inventario obtenidos de listados públicos de subastas de Copart.
+  - paragraph: La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.
+  - button "Cookies"
+  - button "Términos de servicio"
+  - generic: ·
+  - button "Privacidad"

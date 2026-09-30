@@ -17,16 +17,16 @@ test('CSV handles inch marks, commas, multiline and escaped quotes',()=>{
 test('snapshot import, filters, deduplication, expiry, rollback and favorites',()=>{
  const input=csv([row('12345678'),row('12345678'),row('22345678',{'Sale Date M/D/CY':'20000101'}),row('32345678',{'Sale Date M/D/CY':'0','Runs/Drives':'DEFAULT'}),row('bad'),row('42345678',{Make:'FORD TRUCK','Model Group':'F150','Runs/Drives':'Vehicle Starts'})]);
  const stats=catalog.upsertCatalogFromCsv(input);
- assert.equal(stats.totalInDb,3);assert.equal(stats.duplicates,1);assert.equal(stats.expired,1);assert.equal(stats.skipped,1);
- assert.equal(catalog.queryVehicles({q:'silverado 2023'}).total,2);
- assert.equal(catalog.queryVehicles({q:'2023 silverado',model:'SILVERADO',runAndDrive:'1'}).total,1);
+ assert.equal(stats.totalInDb,4);assert.equal(stats.duplicates,1);assert.equal(stats.expired,1);assert.equal(stats.skipped,1);
+ assert.equal(catalog.queryVehicles({q:'silverado 2023'}).total,3);
+ assert.equal(catalog.queryVehicles({q:'2023 silverado',model:'SILVERADO',runAndDrive:'1'}).total,2);
  assert.equal(catalog.queryVehicles({model:'F150',make:'CHEVROLET'}).total,0);
  assert.equal(catalog.queryVehicles({favorites:'12345678,42345678'}).total,2);
  assert.equal(catalog.queryVehicles({favorites:''}).total,0);
  const f=catalog.getFilterMetadata();assert.equal(f.minYear,1950);assert.deepEqual(f.makes,['CHEVROLET','FORD']);assert.deepEqual(f.modelsByMake.FORD,['F150']);
- assert.equal(catalog.findVehicleByLotOrId('12345678').saleDate,'2099-01-01T12:00:00');
+ assert.equal(catalog.findVehicleByLotOrId('12345678').saleDate,'2099-01-01T20:00:00.000Z');
  assert.equal(catalog.upsertCatalogFromCsv(input).unchanged,true);
- assert.throws(()=>catalog.upsertCatalogFromCsv(csv([row('bad')])));assert.equal(catalog.getVehicleCount(),3);
+ assert.throws(()=>catalog.upsertCatalogFromCsv(csv([row('bad')])));assert.equal(catalog.getVehicleCount(),4);
  catalog.upsertCatalogFromCsv(csv([row('52345678')]));assert.equal(catalog.getVehicleCount(),1);assert.equal(catalog.findVehicleByLotOrId('12345678'),null);
 });
 test('sale time uses export timezone and rejects impossible dates',()=>{
@@ -64,7 +64,7 @@ test('account favorites are isolated and repair bypasses hash without changing a
  catalog.setFavorite('user-a','62345678',false);assert.deepEqual(catalog.getFavorites('user-a'),[]);
 });
 
-test('featured sample is unique, public and invalidated after expiry, imports and clear',()=>{
+test('featured sample retains expired lots and is invalidated after imports and clear',()=>{
  const rows=Array.from({length:8},(_,i)=>row(String(70000000+i)));
  rows.push(row('80000000',{'Damage Description':'FRONT END'}),row('80000001',{'Runs/Drives':'DEFAULT'}));
  catalog.upsertCatalogFromCsv(csv(rows));
@@ -77,15 +77,16 @@ test('featured sample is unique, public and invalidated after expiry, imports an
  const originalNow=Date.now;
  try {
   Date.now=()=>originalNow()+61000;
-  assert.ok(catalog.getFeaturedVehicles(12).items.every(v=>v.lot!=='70000000'));
-  assert.equal(catalog.getFeaturedVehicles(12).items.length,7);
+  assert.ok(catalog.getFeaturedVehicles(12).items.some(v=>v.lot==='70000000'));
+  assert.ok(catalog.findVehicleByLotOrId('70000000'));
+  assert.equal(catalog.getFeaturedVehicles(12).items.length,8);
  } finally {Date.now=originalNow;}
  catalog.upsertCatalogFromCsv(csv([row('90000000')]));
  assert.deepEqual(catalog.getFeaturedVehicles().items.map(v=>v.lot),['90000000']);
  catalog.clearVehicles();assert.deepEqual(catalog.getFeaturedVehicles().items,[]);
 });
 
-test('automatic catalog order shuffles consistently across pages and respects searches and sorts',()=>{
+test('recommended catalog order stays stable across pages and respects searches and sorts',()=>{
  const vehicles=Array.from({length:30},(_,i)=>row(String(81000000+i)));
  catalog.upsertCatalogFromCsv(csv(vehicles));
  const lots=params=>catalog.queryVehicles(params).items.map(v=>v.lot);
@@ -93,8 +94,8 @@ test('automatic catalog order shuffles consistently across pages and respects se
  const first=lots(base),second=lots({...base,page:2});
  assert.deepEqual(lots(base),first);
  assert.equal(new Set([...first,...second]).size,12);
- assert.notDeepEqual(lots({...base,seed:123456789}),first);
- assert.notDeepEqual(first,lots({sort:'saleSoon',pageSize:6}));
+ assert.deepEqual(lots({...base,seed:123456789}),first);
+ assert.deepEqual(first,lots({sort:'saleSoon',pageSize:6}));
  for(const filter of [{q:'silverado 2023'},{make:'CHEVROLET'},{model:'SILVERADO'},{runAndDrive:'1'},{yearMin:2020}]){
   assert.deepEqual(lots({...base,...filter}),lots({...base,...filter,sort:'saleSoon'}));
  }
@@ -195,4 +196,37 @@ test('campaign featured requires minor primary and secondary damage and buy-now 
  assert.deepEqual(catalog.getFeaturedVehicles(6,{campaign:'1'}).items.map(v=>v.lot),['97000001']);
  assert.ok(catalog.getFeaturedVehicles().items.some(v=>v.lot==='97000002'));
  assert.ok(!catalog.getFeaturedVehicles().items.some(v=>v.lot==='97000001'));
+});
+
+test('canonical public auction instant uses actual local time and never displays fallback expiry as a sale time',()=>{
+ const time=catalog.publicSaleTime({saleDate:'20260930',saleTime:'1200',timeZone:'PDT'});
+ assert.equal(time.saleAt,Date.parse('2026-09-30T19:00:00Z'));
+ assert.equal(time.saleDate,'2026-09-30T19:00:00.000Z');
+ assert.equal(catalog.publicSaleTime({saleDate:'20260930',saleTime:'1200',timeZone:'UNKNOWN'}).saleAt,null);
+ assert.equal(catalog.publicSaleTime({saleDate:'20260930',saleTime:'',timeZone:'PDT'}).saleAt,null);
+});
+test('verified model aliases normalize without inventing cross-brand models',()=>{
+ assert.equal(catalog.normalizeModel('TOYOTA','CAMRRY'),'CAMRY');
+ assert.equal(catalog.normalizeModel('TOYOTA','COROALLA'),'COROLLA');
+ assert.equal(catalog.normalizeModel('TOYOTA','CIVIC LX-S'),'');
+ assert.equal(catalog.normalizeModel('HONDA','CIVIC LX-S'),'CIVIC LX-S');
+ assert.equal(catalog.normalizeModel('FORD','(NO MODEL)'),'');
+});
+
+
+test('old snapshots restore expired Buy Now lots while sold lots remain excluded',()=>{
+ const input=csv([row('91000001',{'Sale Date M/D/CY':'20000101','Buy-It-Now Price':'600'}),row('91000002',{'Sale Status':'SOLD'}),row('91000003')]);
+ const stats=catalog.upsertCatalogFromCsv(input);assert.equal(stats.totalInDb,2);assert.equal(stats.expired,1);assert.equal(stats.closed,1);
+ const db=catalog.initDatabase();
+ db.prepare('DELETE FROM vehicles WHERE lot=?').run('91000001');
+ const oldHash=require('node:crypto').createHash('sha256').update('catalog-v4:').update(input).digest('hex');
+ db.prepare("UPDATE catalog_meta SET value=? WHERE key='sourceHash'").run(oldHash);
+ const recovered=catalog.upsertCatalogFromCsv(input);assert.equal(recovered.added,1);
+ assert.equal(catalog.queryVehicles({buyNowOnly:'1'}).items[0].lot,'91000001');
+ assert.equal(catalog.queryVehicles({sort:'auto'}).items[0].lot,'91000003');
+ assert.ok(catalog.getFeaturedVehicles(12).items.some(v=>v.lot==='91000001'));
+ assert.equal(catalog.findVehicleByLotOrId('91000002'),null);
+ const originalNow=Date.now;
+ try{Date.now=()=>originalNow()+61000;catalog.pruneExpired();assert.equal(catalog.findVehicleByLotOrId('91000001').buyNow,600);}finally{Date.now=originalNow;}
+ assert.equal(catalog.upsertCatalogFromCsv(input).unchanged,true);
 });

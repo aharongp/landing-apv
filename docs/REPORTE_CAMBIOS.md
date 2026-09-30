@@ -269,3 +269,51 @@ La selección de /lp admite daño principal MINOR DENT/SCRATCHES, NORMAL WEAR o 
 - Se agregó la traducción faltante `currentBid`: «Puja actual» en español; se conserva «Current bid» en inglés. También se completa «Compra inmediata» en ES.
 - La etiqueta de ahorro incorpora una barra de 4 px, manteniendo texto de 10 px y espaciado compacto. La proporción usa exclusivamente Buy Now / valor al público y solo aparece cuando existe ahorro válido.
 - Validación: 54 pruebas aprobadas, sintaxis y diff correctos. Cambios locales, sin push.
+
+## 2026-09-29 — Auditoría de interfaz, experiencia y conversión en Chrome
+
+- Proyecto iniciado en el puerto 3015. Revisión real en Chrome de escritorio (1440×900), móvil (390×844 y 320×740) y tamaños intermedios (768×1024 y 820×1180).
+- Entrega: [Auditoría UI/UX y marketing](AUDITORIA_UI_UX_MARKETING_2026-09-29.md), con 32 hallazgos priorizados, 19 capturas principales, configuración pendiente, propuestas de microtextos y criterios de aceptación. Evidencias en `docs/qa/auditoria-2026-09-29/`.
+- Bloqueos encontrados: hora/contador de subasta inconsistentes con los datos locales y catálogo comprimido a tarjetas de 102 px en viewport de 768 px. También se documentan fechas omitidas en destacados, desbordamiento de ficha móvil, búsquedas duplicadas, barreras de registro y problemas de accesibilidad.
+- Las 54 pruebas automatizadas pasan, pero no detectan los fallos visuales documentados. Esta revisión actualiza la validación pendiente de las tarjetas compactas; no acredita que estén listas sin correcciones.
+- Solo se añadieron documentación y evidencias. No se modificó la interfaz, no se enviaron solicitudes de puja ni mensajes, no se crearon cuentas y no se efectuaron pagos. Integraciones externas y dispositivos físicos pendientes según el alcance del informe. Sin push ni despliegue.
+
+## 2026-09-29 — Correcciones de la auditoría, pendientes de revisión visual del propietario
+
+- Rama local `fix/auditoria-ui-ux-local`, sin commit, push, merge a main ni despliegue. [Lista de revisión y trazabilidad de H01–H32](CORRECCIONES_UI_UX_2026-09-29.md).
+- Fechas y contador unificados, destacados completos, catálogo adaptable, ficha móvil sin desbordamiento, búsqueda y filtros simplificados, modelos normalizados y condición visible en tarjetas.
+- Compra inmediata conserva modalidad/precio y rechaza importes desactualizados; contexto diferenciado en la solicitud y en la integración comercial. Recuperación de contraseña con código, expiración, límites de intentos y revocación de sesiones.
+- Según la instrucción del propietario: registro obligatorio para ambas calculadoras, alertas comerciales y descuentos conservados. Depósito explicado por asesor; licencia provisional retirada. Estimaciones y exclusiones visibles.
+- Planes resumidos, evaluación y reseñas simplificadas, campañas dirigidas al catálogo, controles accesibles, mejor contraste, cookies legibles, 404, subtítulos ES/EN y transcripción.
+- Validación: 72/72 pruebas aprobadas; Chrome en computadora, móvil de 320/390 px y puntos intermedios. Evidencias nuevas en `docs/qa/correcciones-2026-09-29/`. No se enviaron solicitudes comerciales finales ni pagos reales. Integraciones externas y datos de negocio pendientes identificados en el documento.
+
+## 2026-09-29 — Hero móvil simplificado y menú retráctil
+
+- Inicio móvil: título → video → CTA de catálogo. Se ocultan los textos secundarios del hero, transcripción y nota del asesor junto al video en teléfono; escritorio conserva su presentación.
+- Encabezado móvil de inicio/catálogo se retrae al bajar y reaparece al subir; la barra de búsqueda permanece fija. Umbral de desplazamiento para evitar parpadeos y conservación del espacio para evitar saltos.
+- Verificado en Chrome a 320, 390 y 1440 px. 72 pruebas aprobadas. Cambios locales en `fix/auditoria-ui-ux-local`, sin push ni merge a main.
+
+## 2026-09-29 — Textos breves para secciones móviles
+
+- Se agregan variantes ES/EN concisas para las secciones de inicio, manteniendo la versión completa en computadora y el hero ya aprobado.
+- Menos títulos repetidos y explicaciones extensas; los casos del depósito se amplían a demanda. Reseñas, tarifas, descuentos, renovación, exclusiones, registro obligatorio y alertas de venta conservados.
+- Chrome: revisión de texto ES/EN, desplegable y restauración de escritorio; 72 pruebas aprobadas. Todo local en `fix/auditoria-ui-ux-local`, sin push ni merge.
+
+## 2026-09-29 — Caducados visibles y recuperación de Buy Now
+
+- La limpieza deja de eliminar lotes solo por fecha. Tarjetas muestran “Caducado” y la ficha advierte que hay que confirmar disponibilidad y precio; también disponible en inglés.
+- Se recuperan desde el CSV original 67.309 lotes previamente excluidos. Total: 142.207 vehículos, 22.997 con precio Buy Now. Respaldo previo automático, cuentas y solicitudes conservadas.
+- Caducados incluidos en búsquedas, filtro Buy Now y destacados. Vendidos/cerrados explícitos siguen excluidos. Importaciones y resumen administrativo ajustados a la nueva regla.
+- Validación: 74 pruebas aprobadas y Chrome. Sin push ni merge a main.
+
+## 2026-09-29 — Tarjetas compactas a petición del propietario
+
+- Buy Now recupera la comparación verde breve con porcentaje, referencia y barra. Daños, millaje, documento y explicación del precio quedan en la ficha.
+- Se conservan fechas corregidas, “Caducado”, favoritos y acciones de compra/puja. Sin cambios al inventario.
+- Chrome móvil/computadora y 74 pruebas aprobadas. Cambios locales, sin push ni merge a main.
+
+## 2026-09-29 — Entrega aprobada para main
+
+- El propietario autoriza integrar y subir todos los cambios de la auditoría y los ajustes posteriores a `main`.
+- Incluye código, pruebas, documentación y evidencias de Chrome; conserva fuera de Git el `.env`, bases de datos y respaldos locales.
+- Validación previa a la entrega: 74/74 pruebas aprobadas y `git diff --check` sin errores.

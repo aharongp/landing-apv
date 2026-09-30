@@ -1,0 +1,310 @@
+- img "APV Motors"
+- button "ES" [pressed]
+- generic: "|"
+- button "EN"
+- main:
+  - paragraph: AUTOS A PRECIO DE SUBASTA
+  - heading "Compra tu auto a precio de subasta, como los concesionarios." [level=1]
+  - paragraph: APV Motors puja por ti en Copart. Honorarios desde US$350, solo si ganas.
+  - paragraph: ¿Cómo quieres empezar?
+  - link "Es mi primera vez Explícame cómo funciona":
+    - /url: "#lp-explain"
+    - strong: Es mi primera vez
+    - generic: Explícame cómo funciona
+  - link "Ya conozco las subastas Quiero buscar mi auto":
+    - /url: /
+    - strong: Ya conozco las subastas
+    - generic: Quiero buscar mi auto
+  - generic: Asesor humano
+  - link "Ver autos en subasta →":
+    - /url: "#autos"
+  - generic "Presentación de APV Motors"
+  - button "Reproducir presentación de APV Motors":
+    - generic: ▶
+    - generic: Conoce cómo comprar con APV
+    - generic: Reproducir video · Con sonido
+  - heading "Subastas en 3 fases" [level=2]
+  - paragraph:
+    - strong: Qué son.
+    - text: Copart e IAA son subastas donde aseguradoras, bancos y flotas venden cada semana miles de autos por debajo del precio de venta al público.
+  - paragraph:
+    - strong: Quién puede pujar.
+    - text: Solo concesionarios con licencia. APV Motors la tiene.
+  - paragraph:
+    - strong: Qué hacemos.
+    - text: Evaluamos el auto, te damos el costo total y pujamos por ti hasta el tope que tú apruebas.
+  - region "¿Qué auto buscas y cuánto quieres gastar en total?":
+    - heading "¿Qué auto buscas y cuánto quieres gastar en total?" [level=2]
+    - paragraph: Separa lo que puedes ofertar de lo que necesitarás para completar la compra.
+    - generic: Marca o modelo
+    - searchbox "Marca o modelo"
+    - generic: Presupuesto total (USD)
+    - spinbutton "Presupuesto total (USD)"
+    - generic: Tu reserva para gastos adicionales (USD)
+    - spinbutton "Tu reserva para gastos adicionales (USD) Transporte, impuestos, trámites y reparación que no cubra la calculadora."
+    - generic: Transporte, impuestos, trámites y reparación que no cubra la calculadora.
+    - button "Calcular mi tope orientativo"
+  - region "Vehículos destacados":
+    - heading "Algunos autos en subasta" [level=2]
+    - article:
+      - button "2003 TOYOTA COROLLA LE":
+        - img "2003 TOYOTA COROLLA LE"
+      - generic: Copart
+      - text: N/A
+      - button "Guardar en mi cuenta":
+      - heading "2003 TOYOTA COROLLA LE" [level=3]:
+        - button "2003 TOYOTA COROLLA LE"
+      - paragraph: "Lote # 64228046 · EUGENE, OR"
+      - paragraph: Por confirmar
+      - generic: Puja actual
+      - strong: $200 USD
+      - generic "Precio del vehículo; no incluye tarifas, transporte ni reparaciones.":
+        - strong: 92.9%
+        - text: por debajo del valor al público ($8,489)
+      - button "Compra inmediata $600 USD":
+        - generic: Compra inmediata
+        - strong: $600 USD
+      - button "Quiero ofertar"
+  - paragraph:
+    - link "Ver todos los autos disponibles →":
+      - /url: /catalogo
+  - heading "Así compras, en 4 pasos" [level=2]
+  - list:
+    - generic: "1"
+    - heading "Elige el auto y revisa los costos" [level=3]
+    - paragraph: Explora sin registrarte. Guarda tus favoritos y revisa cada ficha antes de decidir.
+    - generic: "2"
+    - heading "Confirma tu depósito reembolsable" [level=3]
+    - paragraph: Tu asesor confirma el monto y las condiciones antes de pujar.
+    - generic: "3"
+    - heading "Nosotros gestionamos la puja" [level=3]
+    - paragraph: Pujamos hasta el tope que tú apruebas y te acompañamos durante el proceso.
+    - generic: "4"
+    - heading "Pago, documentación y transporte" [level=3]
+    - paragraph: Si ganas, pagas el vehículo por transferencia y coordinamos los siguientes pasos contigo.
+  - paragraph: LA TARIFA APV, POR DELANTE
+  - heading "Lo que pagas y lo que te devolvemos" [level=2]
+  - paragraph: Una tarifa base por tramo, según el valor de adjudicación del vehículo.
+  - paragraph: Los honorarios APV no incluyen la puja, las tarifas de subasta, el transporte ni los impuestos. Revisa el desglose de cada ficha.
+  - table "Tarifa base de servicio APV · USD":
+    - caption: Tarifa base de servicio APV · USD
+    - rowgroup:
+      - row "Valor de adjudicación Honorarios APV":
+        - columnheader "Valor de adjudicación"
+        - columnheader "Honorarios APV"
+    - rowgroup:
+      - row "Hasta US$5,999 US$350":
+        - cell "Hasta US$5,999"
+        - cell "US$350"
+      - row "US$6,000 – US$9,999 US$450":
+        - cell "US$6,000 – US$9,999"
+        - cell "US$450"
+      - row "US$10,000 – US$14,999 US$650":
+        - cell "US$10,000 – US$14,999"
+        - cell "US$650"
+      - row "US$15,000 o más US$700":
+        - cell "US$15,000 o más"
+        - cell "US$700"
+  - paragraph: Los honorarios solo se cobran si ganas, y nunca en el mismo pago que tu depósito.
+  - paragraph: DEPÓSITO Y HONORARIOS SON COSAS DISTINTAS
+  - heading "Tu depósito sigue siendo tuyo" [level=2]
+  - paragraph: Tu depósito es reembolsable y habilita tu puja.10 % de tu tope, mínimo US$600.Se confirma con tu asesor antes de pujar.
+  - article:
+    - generic: "01"
+    - heading "Si no ganas" [level=3]
+    - paragraph: Queda activo para tu próxima puja o te lo devolvemos completo.
+  - article:
+    - generic: "02"
+    - heading "Si ganas" [level=3]
+    - paragraph: Pagas el vehículo por transferencia bancaria y aplicamos tu depósito según las condiciones.
+  - article:
+    - generic: "03"
+    - heading "Si ganas y no pagas" [level=3]
+    - paragraph: La subasta aplica penalidades según las condiciones que aceptaste.
+  - heading "El respaldo de APV Motors" [level=2]
+  - article:
+    - heading "Acompañamiento en español" [level=3]
+    - paragraph: Un asesor te ayuda a revisar el auto y los costos antes de pujar.
+  - article:
+    - heading "De la puja a la entrega" [level=3]
+    - paragraph: Coordinamos contigo el pago, la documentación y el transporte.
+  - img "APV Motors"
+  - generic: ANTES DE PUJAR
+  - heading "Una buena foto no cuenta toda la historia." [level=3]:
+    - text: Una buena foto
+    - text: no cuenta toda la historia.
+  - generic: 01 / Daños y condición
+  - generic: Revisar →
+  - generic: 02 / Historial y título
+  - generic: Verificar →
+  - generic: 03 / Comparables y costos
+  - generic: Evaluar →
+  - paragraph: Más información. Mejor criterio.
+  - paragraph: EVALUACIÓN APV
+  - heading "Una foto no basta. Evalúa antes de pujar." [level=2]:
+    - text: Una foto no basta.
+    - text: Evalúa antes de pujar.
+  - paragraph: El precio de la subasta es solo el comienzo. Antes de comprometer tu dinero, entiende qué estás comprando.
+  - list:
+    - listitem: Analiza los daños visibles y la información disponible.
+    - listitem: Revisa historial, documentación y posibles riesgos.
+    - listitem: Compara el costo estimado con tu presupuesto.
+  - link "Elegir un auto para evaluar →":
+    - /url: /catalogo
+  - paragraph: Solicita «Solicitar historial elaborado por APV» desde la ficha. Consulta su alcance y condiciones; no sustituye una inspección física.
+  - region "La confianza de quienes ya compraron con APV Motors":
+    - heading "La confianza de quienes ya compraron con APV Motors" [level=2]
+    - link "5.0 / 5 Nuestra calificación en Google Ver reseñas en Google ↗":
+      - /url: https://maps.app.goo.gl/qYoCdegG9996wcyk6
+      - strong: "5.0"
+      - generic: / 5
+      - strong: Nuestra calificación en Google
+      - generic: Ver reseñas en Google ↗
+    - paragraph:
+      - text: Calificación verificada el
+      - time: 27/09/2026
+    - generic: Todas las reseñas
+    - link "Google ↗":
+      - /url: https://maps.app.goo.gl/qYoCdegG9996wcyk6
+      - generic: G
+      - text: Google ↗
+    - paragraph: Fragmentos de reseñas públicas en Google.
+    - region "Reseñas de clientes en Google":
+      - group "1 / 15":
+        - generic: GC
+        - strong: Gabriel Correa
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Destaco su buena comunicación y profesionalismo durante toda la puja.”
+      - group "2 / 15":
+        - generic: WR
+        - strong: Wolfgang Ramirez
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Excelente servicio y apoyo de Apv”
+      - group "3 / 15":
+        - generic: YA
+        - strong: Ynadsuy Anolacse
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “siempre muy amables”
+      - group "4 / 15":
+        - generic: DF
+        - strong: Dariel Fernandez
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Excelente servicio y atención. Todo el equipo es muy profesional…”
+      - group "5 / 15":
+        - generic: JR
+        - strong: Jonathan Rosales
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Buena comunicación durante todo el proceso de principio a fin, muy confiable y respetuosos todo el tiempo…”
+      - group "6 / 15":
+        - generic: RE
+        - strong: Rosibel Escases
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “La verdad muy buena atención muy amable muy buen trato…”
+      - group "7 / 15":
+        - generic: AD
+        - strong: Adrian delgado
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Excelente atención, muy profesional y honesto. El proceso fue rápido y sin complicaciones. Recomendado 100%.”
+      - group "8 / 15":
+        - generic: LS
+        - strong: Luis Soto
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Excelente atención, me ayudaron el todo el proceso de verdad 100% satisfecho con su servicio”
+      - group "9 / 15":
+        - generic: MR
+        - strong: Moises Rodriguez
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Excelente servicio aclararon todas mis dudas y me ayudaron a comprar en la subasta 100% recomendados”
+      - group "10 / 15":
+        - generic: NV
+        - strong: Nicole Vergara
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Gracias por su ayuda, no solo te gestionan la compra. Sino además que te orientan bastante…”
+      - group "11 / 15":
+        - generic: FD
+        - strong: Felix Diaz
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Muy agradecido una asesoría súper completa tanto en persona como por video llamada. Gracias muchas gracias”
+      - group "12 / 15":
+        - generic: CR
+        - strong: Carlos Rendon
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Muchas gracias APV Motor, fue una gran experiencia, siempre estuvieron al pendiente.”
+      - group "13 / 15":
+        - generic: SG
+        - strong: Samuel García Moret
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Excelente servicio. Compra rápida y segura 100% recomendado.”
+      - group "14 / 15":
+        - generic: JI
+        - strong: Jose Infante
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Gracias el servicio de ustedes apv motors fue excelente y rápido gracias de nuevo”
+      - group "15 / 15":
+        - generic: DS
+        - strong: David Soto
+        - generic: Fragmento de su reseña
+        - generic: G
+        - generic "5 de 5 estrellas":
+        - blockquote: “Excelente experiencia con APV Motors. Me ayudaron en todo el proceso de compra de mi camioneta en subasta…”
+      - button "Reseña anterior" [disabled]: ←
+      - button "Reseña siguiente": →
+      - generic: 1 / 15
+      - button "Ver página de reseñas 1"
+      - button "Ver página de reseñas 2"
+      - button "Ver página de reseñas 15"
+  - paragraph: RESOLVEMOS TUS DUDAS
+  - heading "Todo empieza con claridad." [level=2]:
+    - text: Todo empieza
+    - text: con claridad.
+  - paragraph: ¿Tu caso necesita más detalle?
+  - generic "¿El precio que veo es el precio final?"
+  - generic "¿Qué es el depósito?"
+  - generic "¿Puedo comprar sin licencia de dealer?"
+  - generic "¿Puedo pagar el vehículo con tarjeta?"
+  - heading "Encuentra tu auto hoy" [level=2]
+  - link "Ver autos en subasta →":
+    - /url: "#autos"
+  - link "¿Tienes dudas? Escríbenos ↗":
+    - /url: https://wa.me/13462048308?text=%5Bref%3Alp-final%5D
+  - text: ⌄
+- contentinfo:
+  - img "APV Motors"
+  - paragraph:
+    - text: APV Motors LLC ·Licencia de dealer [LICENCIA_NO]· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·
+    - link "+1 346 204 8308":
+      - /url: tel:+13462048308
+  - paragraph: Datos de inventario obtenidos de listados públicos de subastas de Copart.
+  - paragraph: La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.
+  - button "Cookies"
+  - button "Términos de servicio"
+  - generic: ·
+  - button "Privacidad"

@@ -9,9 +9,7 @@
   }
   const english=()=>document.documentElement.lang==='en';
   const text=(es,en)=>english()?en:es;
-  document.querySelectorAll('[data-license]').forEach(el=>el.textContent=cfg.license||'[LICENCIA_NO]');
-  function deposits(){document.querySelectorAll('[data-deposit-terms]').forEach(el=>el.textContent=text(`${cfg.deposit.percent} % de tu tope, mínimo US$${cfg.deposit.minimum}.`,`${cfg.deposit.percent}% of your limit, minimum US$${cfg.deposit.minimum}.`));}
-  deposits();document.addEventListener('apv:language',deposits);
+  document.querySelectorAll('[data-license]').forEach(el=>{el.textContent=cfg.license||'';const block=el.closest('[data-license-block]');if(block)block.hidden=!cfg.license;});
   const ranges=[[0,6000],[6000,10000],[10000,15000],[15000,null]];
   document.querySelectorAll('[data-budget]').forEach(button=>button.addEventListener('click',()=>{
     const index=Number(button.dataset.budget);document.querySelectorAll('[data-budget]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));

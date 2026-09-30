@@ -86,7 +86,7 @@
   </script>
 <link href="/favicon.ico" rel="icon"/><script defer="" src="/marketing-config.js"></script><script defer="" src="/marketing-i18n.js"></script><script defer="" src="/tracking.js"></script><script defer="" src="/marketing.js"></script><link href="/campaign.css" rel="stylesheet"/><style id="critical-hero">body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#0f172a}.home-page .home-video-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:70px;max-width:1320px;margin:auto;padding:48px 24px}.home-video-hero h1{font-size:58px;line-height:1.08;letter-spacing:-1.8px}.home-video-hero h1 span{color:#dc2626}.home-page .hero-video-stage{aspect-ratio:16/9}.hero-video-stage video{width:100%;height:auto}.home-page .reveal-on-scroll{opacity:1;transform:none}@media(max-width:640px){.home-page .home-video-hero{grid-template-columns:1fr;padding:24px 18px;gap:28px}.home-video-hero h1{font-size:38px}}</style><link rel="stylesheet" href="/icons.css"/>
 <script defer src="/icons.js"></script>
-</head>
+<link rel="stylesheet" href="/refinements.css"/></head>
 <body class="catalog-page">
 <div class="scroll-progress-bar" id="scroll-progress-bar"></div>
 <header class="topbar">
@@ -125,7 +125,7 @@
 </header>
 <form aria-hidden="true" aria-label="Buscar vehículos" data-i18n-aria-label="extraLocale2" class="sticky-search" id="sticky-search" inert="" role="search">
 <div class="sticky-search-inner">
-<input aria-label="Buscar vehículos" data-i18n-aria-label="extraLocale2" data-i18n-aria-label="catalogSearchPlaceholder" data-i18n-placeholder="catalogSearchPlaceholder" id="sticky-search-input" placeholder="Ej. Silverado 2023, número de lote o VIN" type="search"/>
+<input aria-label="Buscar vehículos" data-i18n-aria-label="extraLocale2" data-i18n-placeholder="catalogSearchPlaceholder" id="sticky-search-input" placeholder="Ej. Silverado 2023, número de lote o VIN" type="search"/>
 <button class="btn btn-primary" data-i18n="search" type="submit">Buscar</button>
 </div>
 </form>
@@ -140,8 +140,7 @@
 <form class="auth-form hero-registration-form" id="hero-register-form">
 <label><span data-i18n="fullName">Nombre completo</span><input autocomplete="name" id="hero-register-name" required="" type="text"/></label>
 <label><span data-i18n="email">Correo electrónico</span><input autocomplete="email" id="hero-register-email" required="" type="email"/></label>
-<label>
-<span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
+<div class="phone-field"><label for="hero-register-phone"><span data-i18n="phoneLabel">Teléfono / WhatsApp</span></label>
 <div class="phone-input-group">
 <select aria-label="Código de país" class="country-code-select" data-i18n-aria-label="countryCode" id="hero-register-country-code">
 <option value="+1" data-i18n="extraLocale11">+1 (EE. UU.)</option>
@@ -165,9 +164,9 @@
 <option value="+509">+509 (Haití)</option>
 <option value="+1809">+1 809 (Rep. Dom.)</option>
 </select>
-<input autocomplete="tel" id="hero-register-phone" placeholder="414 123 4567" required="" type="tel"/>
+<input autocomplete="tel" id="hero-register-phone" placeholder="201 555 0123" required="" type="tel"/>
 </div>
-</label>
+</div>
 <label><span data-i18n="password">Contraseña</span><input autocomplete="new-password" id="hero-register-password" minlength="8" required="" type="password"/></label>
 <button class="btn btn-primary full" data-i18n="heroRegister" type="submit">Crea tu cuenta gratis</button>
 <small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
@@ -175,7 +174,7 @@
 <div class="auth-status hidden" id="hero-register-status" role="alert"></div>
 </section>
 </div>
-<div class="hero-filter-card-wrap reveal-on-scroll">
+<div class="hero-filter-card-wrap" hidden inert>
 <form class="hero-filter-card" id="hero-filter-form" role="search">
 <div class="hero-filter-search-row">
 <div class="hero-filter-field full-width">
@@ -293,17 +292,17 @@
 <div class="section-heading catalog-heading">
 <div>
 <span class="eyebrow" data-i18n="catalogEyebrow">CATÁLOGO DE SUBASTA</span>
-<h2 data-i18n="catalogTitle">Encuentra el vehículo correcto.</h2>
+<h1 data-i18n="catalogTitle">Encuentra el vehículo correcto.</h1>
 <p><span id="catalog-count">—</span> <span data-i18n="resultsAvailable">resultados disponibles.</span></p>
 </div>
-<div class="membership-nudge hidden" data-membership-nudge=""><span data-i18n="membershipNudge">¿Listo para comprar? Conoce los descuentos en fees APV y las asesorías incluidas.</span><button class="link-button" data-i18n="navPlans" data-member-plans="" type="button">Ver planes</button><button aria-label="Cerrar aviso" data-i18n-aria-label="extraLocale8" data-member-dismiss="" type="button">×</button></div>
+<div class="membership-nudge hidden" data-membership-nudge=""><span data-i18n="membershipNudge">¿Listo para comprar? Compara los descuentos en honorarios APV y las asesorías de cada plan.</span><button class="link-button" data-i18n="navPlans" data-member-plans="" type="button">Ver planes</button><button aria-label="Cerrar aviso" data-i18n-aria-label="extraLocale8" data-member-dismiss="" type="button">×</button></div>
 <div class="favorites-heading hidden" id="favorites-heading"><strong data-i18n="myFavorites"><svg class="apv-icon apv-icon-filled" data-icon="heart-filled" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg> Mis favoritos</strong><span data-i18n="availableFavorites">Vehículos guardados que siguen disponibles</span><button class="btn btn-ghost btn-small" data-i18n="viewVehicles" id="exit-favorites" type="button">Ver vehículos</button></div>
 <input id="search-input" type="hidden"/>
 </div>
 <div class="catalog-shell">
 <aside class="filters" id="filters-panel">
 <div class="filters-head"><strong data-i18n="filtersTitle">Filtros</strong><button aria-label="Cerrar filtros" data-i18n-aria-label="extraLocale9" class="mobile-filter-close" id="close-mobile-filters" type="button">×</button><button class="link-button" data-i18n="clearFilters" id="clear-filters">Limpiar</button></div>
-<label class="filter-group"><span data-i18n="brand">Marca</span><select id="filter-make"><option data-i18n="allFeminine" value="">Todas</option></select></label>
+<div class="filter-group"><label for="filter-vehicle-type" data-i18n="vehicleType">Tipo de vehículo</label><select id="filter-vehicle-type"><option value="">Todos los tipos</option></select></div><label class="filter-group"><span data-i18n="brand">Marca</span><select id="filter-make"><option data-i18n="allFeminine" value="">Todas</option></select></label>
 <label class="filter-group"><span data-i18n="model">Modelo</span><select id="filter-model"><option value="" data-i18n="complete_11">Todos</option></select></label>
 <div class="filter-group year-range-group">
 <div class="year-range-labels"><label for="filter-year-min"><span data-i18n="yearFrom">Año desde</span> <output id="filter-year-min-value">1950</output></label><label for="filter-year-max"><span data-i18n="yearTo">Año hasta</span> <output id="filter-year-max-value">2027</output></label></div>
@@ -328,7 +327,7 @@
 <div class="catalog-toolbar">
 <button class="mobile-filter-button" data-i18n="mobileFilters" id="mobile-filter-button"><svg class="apv-icon" data-icon="sliders" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h5m4 0h7M4 12h10m4 0h2M4 18h2m4 0h10M9 3v6m5 0v6M6 15v6"/></svg> Filtros</button>
 <div class="view-note" data-i18n="viewNote">Precios en USD · el VIN completo se muestra a usuarios registrados</div>
-<label class="sort-select"><span data-i18n="sortBy">Ordenar por</span> <select id="sort-select"><option data-i18n="sortAuto" value="auto">Aleatorio / búsqueda</option><option data-i18n="sortSaleSoon" value="saleSoon">Subasta más próxima</option><option data-i18n="sortNewest" value="newest">Año: más nuevo</option><option data-i18n="sortPriceAsc" value="priceAsc">Precio: menor</option><option data-i18n="sortPriceDesc" value="priceDesc">Precio: mayor</option><option data-i18n="sortMileage" value="odometerAsc">Menor millaje</option></select></label>
+<label class="sort-select"><span data-i18n="sortBy">Ordenar por</span> <select aria-label="Ordenar vehículos" data-i18n-aria-label="sortLabel" id="sort-select"><option data-i18n="sortAuto" value="auto">Aleatorio / búsqueda</option><option data-i18n="sortSaleSoon" value="saleSoon">Subasta más próxima</option><option data-i18n="sortNewest" value="newest">Año: más nuevo</option><option data-i18n="sortPriceAsc" value="priceAsc">Precio: menor</option><option data-i18n="sortPriceDesc" value="priceDesc">Precio: mayor</option><option data-i18n="sortMileage" value="odometerAsc">Menor millaje</option></select></label>
 </div>
 <div aria-live="polite" class="vehicle-list" id="catalog-list"></div>
 <div class="empty-state hidden" id="catalog-empty"><h3 data-i18n="emptyTitle">No encontramos vehículos</h3><p data-i18n="emptyText">Prueba otra búsqueda o limpia los filtros.</p><button class="btn btn-ghost" data-i18n="clearFilters" id="empty-clear">Limpiar filtros</button></div>
@@ -339,7 +338,7 @@
 </main>
 <footer>
 <div class="brand"><img alt="APV Motors" class="brand-logo-img" src="/assets/apv-logo-red.png"/></div>
-<p><span data-i18n="marketing_149">APV Motors LLC ·</span><span data-i18n="dealerLicense">Licencia de dealer</span> <span data-license="">[LICENCIA_NO]</span><span data-i18n="marketing_150">· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·</span><a href="tel:+13462048308">+1 346 204 8308</a></p>
+<p><span data-i18n="marketing_149">APV Motors LLC</span><span data-license-block hidden> · <span data-i18n="dealerLicense">Licencia de dealer</span> <span data-license></span></span> <span data-i18n="marketing_150">· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·</span><a href="tel:+13462048308">+1 346 204 8308</a></p>
 <p data-i18n="footerSource">Datos de inventario obtenidos de listados públicos de subastas de Copart.</p>
 <p data-i18n="footerDisclaimer">La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.</p>
 <div class="footer-legal-links"><button type="button" id="cookie-settings-btn" class="legal-link-btn" data-i18n="cookieSettings">Cookies</button>
@@ -390,17 +389,27 @@
 <h2 data-i18n="authTitle" id="auth-title">Guarda tu conversación y continúa desde cualquier dispositivo.</h2>
 <p data-i18n="authReason" id="auth-reason">Regístrate para ver el VIN completo y hablar con un asesor.</p>
 </div>
-<div class="auth-tabs" role="tablist"><button class="auth-tab active" data-auth-tab="login" data-i18n="login" type="button">Iniciar sesión</button><button class="auth-tab" data-auth-tab="register" data-i18n="createAccount" type="button">Crear cuenta</button></div>
+<div class="auth-tabs" role="tablist"><button class="auth-tab active" role="tab" aria-selected="true" aria-controls="login-form" data-auth-tab="login" data-i18n="login" type="button">Iniciar sesión</button><button class="auth-tab" role="tab" aria-selected="false" aria-controls="register-form" data-auth-tab="register" data-i18n="createAccount" type="button">Crear cuenta</button></div>
 <form class="auth-form" id="login-form">
 <label><span data-i18n="email">Correo electrónico</span><input autocomplete="email" id="login-email" required="" type="email"/></label>
 <label><span data-i18n="password">Contraseña</span><input autocomplete="current-password" id="login-password" required="" type="password"/></label>
+<button type="button" class="link-button" id="forgot-password" data-i18n="forgotPassword">Olvidé mi contraseña</button>
 <button class="btn btn-dark full" data-i18n="loginContinue" type="submit">Entrar y continuar</button>
+</form>
+<form class="auth-form hidden" id="reset-form">
+<p data-i18n="resetIntro">Recibe un código por correo para crear una nueva contraseña.</p>
+<label for="reset-email" data-i18n="email">Correo electrónico</label><input id="reset-email" type="email" autocomplete="email" required/>
+<div id="reset-code-fields" hidden><label for="reset-code" data-i18n="sixDigitCode">Código de 6 dígitos</label><input id="reset-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"/>
+<label for="reset-password" data-i18n="newPassword">Nueva contraseña</label><input id="reset-password" type="password" autocomplete="new-password" minlength="8" maxlength="256" aria-describedby="reset-password-hint"/><small id="reset-password-hint" data-i18n="passwordHint">Usa al menos 8 caracteres.</small></div>
+<button class="btn btn-primary full" id="reset-submit" type="submit" data-i18n="sendRecovery">Enviar código de recuperación</button>
+<button type="button" class="link-button" id="reset-resend" hidden data-i18n="resendCode">Enviar otro código</button>
+<button type="button" class="link-button" data-auth-tab="login" data-i18n="backToLogin">Volver a iniciar sesión</button>
+<p role="status" aria-live="polite" id="reset-status"></p>
 </form>
 <form class="auth-form hidden" id="register-form">
 <label><span data-i18n="fullName">Nombre completo</span><input autocomplete="name" id="register-name" required="" type="text"/></label>
 <label><span data-i18n="email">Correo electrónico</span><input autocomplete="email" id="register-email" required="" type="email"/></label>
-<label>
-<span data-i18n="phoneLabel">Teléfono / WhatsApp</span>
+<div class="phone-field"><label for="register-phone"><span data-i18n="phoneLabel">Teléfono / WhatsApp</span></label>
 <div class="phone-input-group">
 <select aria-label="Código de país" class="country-code-select" data-i18n-aria-label="countryCode" id="register-country-code">
 <option value="+1" data-i18n="extraLocale11">+1 (EE. UU.)</option>
@@ -424,10 +433,11 @@
 <option value="+509">+509 (Haití)</option>
 <option value="+1809">+1 809 (Rep. Dom.)</option>
 </select>
-<input autocomplete="tel" id="register-phone" placeholder="414 123 4567" required="" type="tel"/>
+<input autocomplete="tel" id="register-phone" placeholder="201 555 0123" required="" type="tel"/>
 </div>
-</label>
-<label><span data-i18n="password">Contraseña</span><input autocomplete="new-password" id="register-password" minlength="8" required="" type="password"/></label>
+</div>
+<label><span data-i18n="password">Contraseña</span><input autocomplete="new-password" id="register-password" aria-describedby="register-password-hint" maxlength="256" minlength="8" required="" type="password"/></label>
+<small id="register-password-hint" data-i18n="passwordHint">Usa al menos 8 caracteres.</small>
 <button class="btn btn-primary full" data-i18n="sendVerificationCode" type="submit">Enviar código de verificación</button>
 <small data-i18n="sendCodeNote">Enviaremos un código de 6 dígitos a tu correo para activar tu cuenta de forma segura.</small>
 </form>
@@ -458,7 +468,7 @@
 <h2 data-i18n="bidTitle" id="bid-title">Establece tu tope de oferta</h2>
 <p class="muted" data-i18n="bidExplain">Indica el máximo que deseas ofertar por este vehículo. Esto no realiza ningún cargo automático.</p>
 <div class="bid-vehicle-mini" id="bid-vehicle-mini"></div>
-<label class="bid-input-wrap"><span data-i18n="myMaxBid">Mi tope de oferta</span><div><b>$</b><input data-i18n-placeholder="writeMaxBid" id="bid-amount" inputmode="decimal" min="1" placeholder="Escribe tu tope" step="50" type="number"/><em>USD</em></div></label>
+<label class="bid-input-wrap"><span data-i18n="myMaxBid">Mi tope de oferta</span><div><b>$</b><input data-i18n-placeholder="writeMaxBid" id="bid-amount" inputmode="decimal" min="1" placeholder="Escribe tu tope" step="1" type="number"/><em>USD</em></div></label>
 <div class="bid-cost-preview" id="bid-cost-preview"></div>
 <div class="bid-actions"><button class="btn btn-primary full" data-i18n="wantToBid" id="bid-continue">Quiero ofertar</button><button class="btn btn-ghost full" data-close="bid" data-i18n="cancel">Cancelar</button></div>
 </div>
@@ -494,5 +504,5 @@
 <script defer="" onerror="window.__APV_KOMMO_LOAD_ERROR__=true;window.__APV_KOMMO_MODULE_STATE__='script-error';console.error('[APV] No se pudo cargar /kommo.js?v=15.0.0')" onload="if(window.__APV_KOMMO_MODULE_STATE__!=='module-ready')window.__APV_KOMMO_MODULE_STATE__='script-loaded'" src="/kommo.js?v=15.0.0"></script>
 <script defer="" src="/membership.js?v=1.0.0"></script>
 <script defer="" onerror="console.error('[APV] No se pudo cargar /app.js?v=15.1.0')" src="/app.js?v=15.1.0"></script>
-</body>
+<script defer src="/accessibility.js"></script></body>
 </html>

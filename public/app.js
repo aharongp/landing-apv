@@ -59,7 +59,12 @@
   }
   function icon(text){ return `<span aria-hidden="true">${text}</span>`; }
   function imageStyle(url){ return url ? `style="background-image:url('${esc(url)}')"` : ''; }
-  function titleDoc(v){ return [v.titleState,v.titleType].filter(Boolean).join(' · ') || t('noData','N/D'); }
+  function titleDoc(v){
+    const code=String(v.titleType||'').trim();
+    const known={CT:currentLang==='en'?'Certificate of title (CT)':'Certificado de título (CT)',LS:currentLang==='en'?'Salvage document (LS)':'Documento de salvamento (LS)'};
+    const doc=known[code] || (/^[A-Z]{1,3}$/.test(code)?(currentLang==='en'?'Document code ':'Código de documento ')+code:(window.APVDisplay?.label(code,currentLang)||code));
+    return [v.titleState,doc].filter(Boolean).join(' · ') || (currentLang==='en'?'Document unconfirmed':'Documento por confirmar');
+  }
   function locationLabel(v){ return [v.locationCity,v.locationState].filter(Boolean).join(', ') || t('noData','N/D'); }
   function vinText(v){ return v.vin || t('protectedVin','VIN protegido · inicia sesión para verlo'); }
   function initials(name){ return String(name||'AP').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase() || 'AP'; }
@@ -87,6 +92,7 @@
         vin: v.vin||'',
         maxBid: Number(maxBid||0),
         image: v.image||'',
+        purchaseMode:v.purchaseMode||'bid',
         date: new Date().toISOString()
       });
       store[state.user.id]=filtered.slice(0, 15);
@@ -255,7 +261,7 @@
       bidWithThisAmount: 'Ofertar con este tope',
       totalDisclaimer: '* No incluye costo de flete/transporte ni impuestos locales.',
       noData: 'N/D', notAvailable: 'N/A', starts: 'Arranca', unverified: 'Sin verificar', protectedVin: 'VIN protegido · inicia sesión para verlo',
-      maxRequested: 'Tope solicitado', conversation: 'Conversación', savedInKommo: 'Guardada en Kommo',
+      maxRequested: 'Tope solicitado', conversation: 'Conversación', savedInKommo: 'Guardada en tu cuenta',
       welcome: 'Bienvenido', codeSent: 'Código de 6 dígitos enviado.', validBid: 'Indica un tope de puja válido.', preparingRequest: 'Preparando tu solicitud...', processing: 'PROCESANDO', waitingChatInstruction: 'Abre o continúa la conversación para asociar la solicitud.', waitingChat: 'ESPERANDO CHAT', associatedConversation: 'Solicitud asociada a esta conversación', completed: 'COMPLETED', waitingKommo: 'Esperando que la conversación aparezca en Kommo…'
     },
     en: {
@@ -354,7 +360,7 @@
       bidWithThisAmount: 'Bid with this amount',
       totalDisclaimer: '* Does not include shipping/towing cost or local taxes.',
       noData: 'N/A', notAvailable: 'N/A', starts: 'Starts', unverified: 'Unverified', protectedVin: 'Protected VIN · log in to view it',
-      maxRequested: 'Requested maximum', conversation: 'Conversation', savedInKommo: 'Saved in Kommo',
+      maxRequested: 'Requested maximum', conversation: 'Conversation', savedInKommo: 'Saved in your account',
       welcome: 'Welcome', codeSent: '6-digit code sent.', validBid: 'Enter a valid maximum bid.', preparingRequest: 'Preparing your request...', processing: 'PROCESSING', waitingChatInstruction: 'Open or continue the conversation to associate the request.', waitingChat: 'WAITING FOR CHAT', associatedConversation: 'Request associated with this conversation', completed: 'COMPLETED', waitingKommo: 'Waiting for the conversation to appear in Kommo…'
     }
   };
@@ -372,6 +378,19 @@
 
   const originalTitle=document.title;
   const originalDescription=document.querySelector('meta[name="description"]')?.content;
+  const mobileCopyQuery = window.matchMedia('(max-width:768px)');
+  function translatedPageText(el, lang) {
+    const key = el.dataset.i18n;
+    const compact = mobileCopyQuery.matches && document.body.classList.contains('home-page') && el.closest('main')
+      ? window.APV_MOBILE_COPY?.[lang]?.[key] : null;
+    return compact || TRANSLATIONS[lang]?.[key];
+  }
+  mobileCopyQuery.addEventListener('change', () => {
+    if (!document.body.classList.contains('home-page')) return;
+    document.querySelectorAll('main [data-i18n]').forEach(el => {
+      if (window.APV_MOBILE_COPY?.[currentLang]?.[el.dataset.i18n]) el.textContent = translatedPageText(el, currentLang);
+    });
+  });
   function setLanguage(lang) {
     if (!TRANSLATIONS[lang]) return;
     currentLang = lang;
@@ -388,10 +407,8 @@
     });
 
     $$('[data-i18n]').forEach(el => {
-      const k = el.dataset.i18n;
-      if (TRANSLATIONS[lang] && TRANSLATIONS[lang][k]) {
-        el.textContent = TRANSLATIONS[lang][k];
-      }
+      const value = translatedPageText(el, lang);
+      if (value) el.textContent = value;
     });
 
     $$('[data-i18n-html]').forEach(el => {
@@ -518,6 +535,8 @@
     populateYears(dom.yearMax,f.minYear,f.maxYear);
     updateYearRangeLabels();
     const maxOdo=1000000; dom.odometer.max=maxOdo; dom.odometer.value=0; updateOdometerLabel();
+    const typeSelect=$('#filter-vehicle-type');
+    if(typeSelect)typeSelect.innerHTML='<option value="">'+(currentLang==='en'?'All types':'Todos los tipos')+'</option>'+(f.vehicleTypes||[]).map(type=>'<option value="'+esc(type)+'">'+esc(type==='V'?(currentLang==='en'?'Cars and pickups':'Autos y pickups'):(currentLang==='en'?'Other vehicles':'Otros vehículos'))+'</option>').join('');
     updateCatalogModels();
     if(!isHome){
       const query=new URLSearchParams(location.search);
@@ -604,9 +623,10 @@
   function fillModels(select, make) {
     const previous = select.value;
     const groups = state.filters?.modelsByMake || {};
-    const models = make ? (groups[make] || []) : [...new Set(Object.values(groups).flat())].sort();
-    select.innerHTML = `<option value="">${t('allModels')}</option>`;
-    populate(select, models);
+    const models = make ? (groups[make] || []) : [];
+    select.disabled=!make;
+    select.innerHTML = `<option value="">${make?t('allModels'):(currentLang==='en'?'Choose a make first':'Primero elige una marca')}</option>`;
+    for(const model of models){const option=document.createElement('option');option.value=model;option.textContent=model;select.appendChild(option);}
     select.value = models.includes(previous) ? previous : '';
   }
   function updateHeroModels(make) { fillModels(dom.heroFilterModel, make); }
@@ -664,6 +684,7 @@
     if(dom.city.value) p.set('city',dom.city.value);
     if(dom.zip.value.trim()) p.set('zip',dom.zip.value.trim());
     if(dom.cleanTitle.checked) p.set('cleanTitle','1'); if(dom.buyNow.checked) p.set('buyNowOnly','1');
+    if($('#filter-vehicle-type')?.value)p.set('vehicleType',$('#filter-vehicle-type').value);
     const entry=new URLSearchParams(location.search);for(const k of ['priceMin','priceMax'])if(entry.has(k))p.set(k,entry.get(k));
     return p;
   }
@@ -791,23 +812,42 @@
     const priceShare=Math.min(100,Math.max(0,price/retail*100));
     return `<small class="auction-tile-saving" title="${esc(t('comparisonNote'))}"><span class="auction-tile-saving-copy"><strong>${percent}%</strong> ${t('comparisonBelow')} <span>(${esc(money(retail))})</span></span><span class="auction-tile-saving-track" aria-hidden="true"><span style="width:${priceShare}%"></span></span></small>`;
   }
+  function comparisonDetails(v){
+    if(!comparison(v))return '';
+    return `<p class="detail-price-comparison">${currentLang==='en'?'Buy It Now compared with the estimated retail reference. Excludes fees, shipping, taxes and repairs; not a final saving.':'Compra inmediata frente al valor estimado al público. Excluye tarifas, transporte, impuestos y reparaciones; no es ahorro final.'}</p>`;
+  }
   function auctionCardDate(v){
-    if(!v.saleDate||!/[T ]\d{2}:\d{2}/.test(v.saleDate))return dateLabel(v.saleDate,v.timeZone);
-    const date=new Date(v.saleDate);
-    if(!Number.isFinite(date.getTime()))return 'N/A';
-    const zones={CDT:'America/Chicago',CST:'America/Chicago',EDT:'America/New_York',EST:'America/New_York',MDT:'America/Denver',MST:'America/Phoenix',PDT:'America/Los_Angeles',PST:'America/Los_Angeles'};
-    const options={month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short',timeZone:zones[v.timeZone]||v.timeZone||'UTC'};
-    try{return new Intl.DateTimeFormat(currentLang==='en'?'en-US':'es-US',options).format(date);}
-    catch{return new Intl.DateTimeFormat(currentLang==='en'?'en-US':'es-US',{...options,timeZone:'UTC'}).format(date);}
+    if(!v.saleAt)return t('unconfirmedDate');
+    const offsets={CDT:-5,CST:-6,EDT:-4,EST:-5,MDT:-6,MST:-7,PDT:-7,PST:-8,AKST:-9,AKDT:-8,HST:-10,AST:-4,ADT:-3,UTC:0,GMT:0};
+    const offset=offsets[v.timeZone?.toUpperCase()];
+    if(offset===undefined)return t('unconfirmedDate');
+    const date=new Date(Number(v.saleAt)+offset*3600000);
+    return new Intl.DateTimeFormat(currentLang==='en'?'en-US':'es-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',timeZone:'UTC'}).format(date)+' '+v.timeZone;
   }
   function auctionTimeLabel(v){
-    const time=new Date(v.saleDate).getTime();
-    if(!v.saleDate||!Number.isFinite(time))return 'N/A';
-    const remaining=time-Date.now();
-    if(remaining<=0)return currentLang==='en'?'Date reached':'Fecha cumplida';
-    const hours=Math.ceil(remaining/3600000),days=Math.floor(hours/24);
-    return `${days?days+'d ':''}${hours%24}h`;
+    if(!v.saleAt)return t('unconfirmedDate');
+    const remaining=Number(v.saleAt)-Date.now();
+    if(remaining<=0)return currentLang==='en'?'Expired':'Caducado';
+    const minutes=Math.ceil(remaining/60000),hours=Math.floor(minutes/60),days=Math.floor(hours/24);
+    return days?`${days}d ${hours%24}h`:hours?`${hours}h ${minutes%60}m`:`${minutes}m`;
   }
+  function refreshAuctionCountdowns(){
+    document.querySelectorAll('.auction-tile-countdown[data-sale-at]').forEach(el=>{
+      el.innerHTML=window.APVIcons.svg('clock')+' '+auctionTimeLabel({saleAt:Number(el.dataset.saleAt)});
+      el.classList.toggle('is-expired', isAuctionExpired({saleAt:Number(el.dataset.saleAt)}));
+    });
+    document.querySelectorAll('[data-expiry-notice]').forEach(el=>{
+      el.hidden=!isAuctionExpired({saleAt:Number(el.dataset.saleAt)});
+    });
+  }
+  function isAuctionExpired(v){
+    return Number(v.saleAt)>0 && Number(v.saleAt)<=Date.now();
+  }
+  function auctionExpiryNotice(v){
+    return `<p class="auction-expiry-notice" data-expiry-notice data-sale-at="${Number(v.saleAt)||0}" role="status" ${isAuctionExpired(v)?'':'hidden'}><strong>${currentLang==='en'?'Expired':'Caducado'}</strong><span>${currentLang==='en'?'The auction date has passed. Confirm availability and price with an advisor.':'La fecha de subasta venció. Confirma disponibilidad y precio con un asesor.'}</span></p>`;
+  }
+  setInterval(refreshAuctionCountdowns,60000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAuctionCountdowns();});
   function vehicleCardHTML(v,featured=false){
     const buyNow=Number(v.buyNow)>0&&Number.isFinite(Number(v.buyNow));
     return `<article class="${featured?'featured-vehicle-card':'vehicle-card'} auction-tile" data-lot="${esc(v.lot)}">
@@ -815,7 +855,7 @@
         <button type="button" class="auction-tile-photo" data-action="detail" aria-label="${esc(v.title)}">
           ${v.image?`<img src="${esc(v.image)}" alt="${esc(v.title)}" width="640" height="400" loading="lazy" decoding="async"/>`:`<span class="image-fallback">${t('noPhoto')}</span>`}
         </button>
-        <div class="auction-tile-badges"><span class="auction-tile-source">Copart</span><span class="auction-tile-countdown">${window.APVIcons.svg('clock')} ${auctionTimeLabel(v)}</span></div>
+        <div class="auction-tile-badges"><span class="auction-tile-source">Copart</span><span class="auction-tile-countdown ${isAuctionExpired(v)?'is-expired':''}" data-sale-at="${Number(v.saleAt)||0}">${window.APVIcons.svg('clock')} ${auctionTimeLabel(v)}</span></div>
         ${favoriteButton(v.lot)}
       </div>
       <div class="auction-tile-body">
@@ -825,7 +865,7 @@
         <div class="auction-tile-price"><span>${t('currentBid')}</span><strong>${esc(cardPrice(v.currentBid))}${Number(v.currentBid)>0?' <small>USD</small>':''}</strong></div>
         ${comparison(v)}
         <div class="auction-tile-actions">
-          ${buyNow?`<button type="button" class="auction-tile-buy" data-action="detail"><span>${t('buyNow')}</span><strong>${esc(cardPrice(v.buyNow))} <small>USD</small></strong></button>`:''}
+          ${buyNow?`<button type="button" class="auction-tile-buy" data-action="buy"><span>${t('buyNow')}</span><strong>${esc(cardPrice(v.buyNow))} <small>USD</small></strong></button>`:''}
           <button type="button" class="btn btn-primary auction-tile-bid" data-action="bid">${t('wantToBid')}</button>
         </div>
       </div>
@@ -839,11 +879,11 @@
   function renderPagination(data){
     if(data.pages<=1){ dom.pagination.innerHTML=''; return; }
     const start=Math.max(1,data.page-2), end=Math.min(data.pages,data.page+2); const btn=[];
-    btn.push(`<button class="page-btn" data-page="${data.page-1}" ${data.page===1?'disabled':''}>‹</button>`);
+    btn.push(`<button class="page-btn" aria-label="${currentLang==='en'?'Previous page':'Página anterior'}" data-page="${data.page-1}" ${data.page===1?'disabled':''}>‹</button>`);
     if(start>1){ btn.push('<button class="page-btn" data-page="1">1</button>'); if(start>2) btn.push('<span>…</span>'); }
     for(let i=start;i<=end;i++) btn.push(`<button class="page-btn ${i===data.page?'active':''}" data-page="${i}">${i}</button>`);
     if(end<data.pages){ if(end<data.pages-1) btn.push('<span>…</span>'); btn.push(`<button class="page-btn" data-page="${data.pages}">${data.pages}</button>`); }
-    btn.push(`<button class="page-btn" data-page="${data.page+1}" ${data.page===data.pages?'disabled':''}>›</button>`); dom.pagination.innerHTML=btn.join('');
+    btn.push(`<button class="page-btn" aria-label="${currentLang==='en'?'Next page':'Página siguiente'}" data-page="${data.page+1}" ${data.page===data.pages?'disabled':''}>›</button>`); dom.pagination.innerHTML=btn.join('');
   }
 
 async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(lot)); }
@@ -1079,67 +1119,22 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               </div>
             </div>
 
-            <!-- Tipo de Título (Fijo según el vehículo) -->
-            <div class="calc-opt-group">
-              <label class="calc-opt-label">
-                ${currentLang==='en'?"Title type:":"Tipo de Título:"}
-                <span class="auto-badge locked-badge" title="${currentLang==='en'?"Determined by the vehicle details":"Ajustado obligatoriamente por la ficha del vehículo"}">${t('detailComplete22')}</span>
-              </label>
-              <div class="calc-radio-toggle is-locked">
-                <label class="calc-radio-btn ${autoTitle === 'clean' ? 'is-selected-locked' : 'is-disabled'}">
-                  <input type="radio" name="calc_title" value="clean" ${autoTitle === 'clean' ? 'checked' : ''} disabled />
-                  <span>${t('detailComplete23')}</span>
-                </label>
-                <label class="calc-radio-btn ${autoTitle === 'salvage' ? 'is-selected-locked' : 'is-disabled'}">
-                  <input type="radio" name="calc_title" value="salvage" ${autoTitle === 'salvage' ? 'checked' : ''} disabled />
-                  <span>[icon:tool] ${t('salvageLabel')}</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Tipo de Vehículo (Fijo según el vehículo) -->
-            <div class="calc-opt-group">
-              <label class="calc-opt-label">
-                ${currentLang==='en'?"Vehicle type:":"Tipo de Vehículo:"}
-                <span class="auto-badge locked-badge" title="${currentLang==='en'?"Determined by the vehicle category":"Ajustado obligatoriamente por la categoría del vehículo"}">${t('detailComplete22')}</span>
-              </label>
-              <div class="calc-radio-toggle is-locked">
-                <label class="calc-radio-btn ${autoVehicle === 'standard' ? 'is-selected-locked' : 'is-disabled'}">
-                  <input type="radio" name="calc_vehicle" value="standard" ${autoVehicle === 'standard' ? 'checked' : ''} disabled />
-                  <span>${t('detailComplete24')}</span>
-                </label>
-                <label class="calc-radio-btn ${autoVehicle === 'heavy' ? 'is-selected-locked' : 'is-disabled'}">
-                  <input type="radio" name="calc_vehicle" value="heavy" ${autoVehicle === 'heavy' ? 'checked' : ''} disabled />
-                  <span>${t('detailComplete25')}</span>
-                </label>
-              </div>
-            </div>
+            <div class="calc-opt-group"><p>${currentLang==='en'?'Title reported by the auction':'Documento informado por la subasta'}: <strong>${esc(titleDoc(v))}</strong></p><p>${currentLang==='en'?'Fee category':'Categoría de tarifas'}: <strong>${autoVehicle==='heavy'?t('detailComplete25'):t('detailComplete24')}</strong></p></div>
+            <p class="calc-help">${currentLang==='en'?'Secured payment: bank transfer. Unsecured payment: methods with additional auction fees. Live bid: during the auction; pre-bid: before it starts. Confirm the applicable category with your advisor.':'Pago seguro: transferencia bancaria. No seguro: medios con cargos adicionales de la subasta. En vivo: durante la subasta; preoferta: antes de comenzar. Confirma la categoría aplicable con tu asesor.'}</p>
             </div>
           </details>
 
           <!-- RIGHT SIDE: Calculadora más pequeña -->
           <div class="calc-breakdown-card">
-            ${!isLoggedIn ? `
-              <div class="calc-locked-content">
-                <div class="calc-locked-icon">[icon:lock]</div>
-                <div class="calc-locked-info">
-                  <span class="eyebrow-red">${t('calculatorLockedTitle')}</span>
-                  <h4>${t('calculatorTitle')}</h4>
-                  <p>${t('calculatorLockedSub')}</p>
-                </div>
-                <button class="btn btn-primary btn-red" data-auth-calc="${esc(v.lot)}">
-                  [icon:key] ${t('loginToUseCalc')}
-                </button>
-              </div>
-            ` : `
+            ${!isLoggedIn ? `<div class="calc-locked-content"><div class="calc-locked-info"><h4>${currentLang==='en'?'Plan your purchase with a free account':'Planifica tu compra con una cuenta gratis'}</h4><p>${currentLang==='en'?'Estimate this vehicle’s auction fees and APV service charges before choosing your bid.':'Estima las tarifas de subasta y los honorarios APV de este vehículo antes de elegir tu tope.'}</p></div><button class="btn btn-primary" data-auth-calc="${esc(v.lot)}">${currentLang==='en'?'Create an account and calculate':'Crear cuenta y calcular'}</button></div>` : `
               <div class="calc-input-section">
                 <label for="calc-bid-input">
-                  <span>Ingresa tu tope de puja:</span>
+                  <span>${currentLang==='en'?'Enter your maximum bid:':'Ingresa tu tope de puja:'}</span>
                 </label>
                 <div class="calc-input-row">
                   <div class="calc-input-currency-wrap">
                     <span class="currency-symbol">$</span>
-                    <input type="number" id="calc-bid-input" class="calc-bid-input" min="100" step="50" value="" placeholder="Ej. 5000" />
+                    <input type="number" id="calc-bid-input" class="calc-bid-input" min="1" step="1" value="" placeholder="5000" />
                     <span class="currency-code">USD</span>
                   </div>
 
@@ -1158,8 +1153,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const root = dom.vehicleDetail;
     const paymentMethod = root.querySelector('input[name="calc_payment"]:checked')?.value || 'secure';
     const offerType = root.querySelector('input[name="calc_offer"]:checked')?.value || 'live';
-    const titleType = root.querySelector('input[name="calc_title"]:checked')?.value || 'clean';
-    const vehicleType = root.querySelector('input[name="calc_vehicle"]:checked')?.value || 'standard';
+    const titleType = detectTitleType(state.currentVehicle || {});
+    const vehicleType = detectVehicleType(state.currentVehicle || {});
     return { paymentMethod, offerType, titleType, vehicleType };
   }
 
@@ -1172,7 +1167,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       wrap.innerHTML = `
         <div class="calc-empty-prompt">
           <span class="prompt-icon">[icon:bulb]</span>
-          <p>Ingresa tu tope de puja arriba para ver el desglose exacto de tarifas y el total a pagar.</p>
+          <p>${currentLang==='en'?'Enter your maximum bid to estimate the purchase cost. Shipping, taxes and repairs are additional.':'Ingresa tu tope de puja para estimar la compra. Transporte, impuestos y reparaciones se calculan por separado.'}</p>
         </div>
       `;
       return;
@@ -1197,7 +1192,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <div class="calc-row calc-row-toggle">
               <div class="calc-label">
                 <span class="calc-icon">[icon:bank]</span>
-                <span>Copart fees</span>
+                <span>${currentLang==='en'?'Copart fees':'Tarifas Copart'}</span>
                 <span class="calc-info-badge">${t('detailComplete26')}</span>
               </div>
               <div class="calc-val-wrap">
@@ -1267,12 +1262,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
         </details>
 
-        ${breakdown.apvDiscount ? `<p class="membership-calculator-note">${currentLang==='en'?'Membership discount applied to APV fees':'Descuento de tu membresía aplicado a los fees APV'}: −${money(breakdown.apvDiscount)}</p>` : window.apvMembership?.available() ? `<div class="membership-calculator-note"><span>${currentLang==='en'?'With APV Plus, save US$100 on the APV fee for this purchase. Membership billed separately.':'Con APV Plus, descuenta US$100 del fee APV de esta compra. La membresía se paga por separado.'}</span><button type="button" class="link-button" data-member-plans>${currentLang==='en'?'Compare plans':'Comparar planes'}</button></div>` : ''}
+        ${breakdown.apvDiscount ? `<p class="membership-calculator-note">${currentLang==='en'?'Membership discount applied to APV fees':'Descuento de tu membresía aplicado a los honorarios APV'}: −${money(breakdown.apvDiscount)}</p>` : window.apvMembership?.available() ? `<div class="membership-calculator-note"><span>${currentLang==='en'?'With APV Plus, save US$100 on the APV fee for this purchase. Membership billed separately.':'Con APV Plus, descuenta US$100 de los honorarios APV de esta compra. La membresía se paga por separado.'}</span><button type="button" class="link-button" data-member-plans>${currentLang==='en'?'Compare plans':'Comparar planes'}</button></div>` : ''}
         <div class="calc-total-box">
           <div class="calc-total-highlight">
             <span class="calc-total-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 6h8v4H8zM8 14h1m3 0h1m3 0h0M8 18h1m3 0h1m3 0h0"/></svg></span>
             <div class="calc-total-left">
-              <span class="calc-total-eyebrow">${currentLang==='en'?'Estimated total to pay':'Total estimado a pagar'}</span>
+              <span class="calc-total-eyebrow">${currentLang==='en'?'Estimated purchase cost':'Compra estimada'}</span>
               <h2 class="calc-total-amount">${money(breakdown.total)}</h2>
             </div>
           </div>
@@ -1281,7 +1276,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               ${t('bidWithThisAmount')} →
             </button>
           </div>
-          <small class="calc-total-note">${currentLang==='en'?'* Fees are estimates and may vary by auction, vehicle location and applicable regulations. Freight/transport and local taxes are not included.':'* Nota: Las tarifas y honorarios son estimados y pueden variar de acuerdo con la subasta, ubicación del vehículo y regulaciones aplicables. No incluye costos de flete/transporte ni impuestos locales.'}</small>
+          <small class="calc-total-note">${currentLang==='en'?'* Fees are estimates and may vary by auction, vehicle location and applicable regulations. Shipping, taxes and repairs are not included.':'* Nota: Las tarifas y honorarios son estimados y pueden variar de acuerdo con la subasta, ubicación del vehículo y regulaciones aplicables. No incluye transporte, impuestos ni reparaciones.'}</small>
         </div>
       </div>
     `;
@@ -1307,7 +1302,8 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const shareText=encodeURIComponent(v.title+' '+shareLink);
     dom.vehicleDetail.innerHTML = `
       <h2 class="detail-vehicle-title" id="vehicle-detail-title">${esc([v.year,v.make,v.model,v.trim].filter(Boolean).join(' ') || v.title)}</h2>
-      <div class="detail-share-toolbar">
+      ${auctionExpiryNotice(v)}
+      <details class="detail-share-group"><summary>${currentLang==='en'?'Share vehicle':'Compartir vehículo'}</summary><div class="detail-share-toolbar">
         <a class="detail-share-button" href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
         <a class="detail-share-button" href="sms:?body=${shareText}">SMS</a>
         <button type="button" class="detail-share-button" data-share-vehicle="${esc(v.lot)}" title="${currentLang==='en'?'Copy vehicle link':'Copiar enlace del vehículo'}">
@@ -1317,7 +1313,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
         <span class="detail-share-status" role="status" aria-live="polite"></span>
         <input class="detail-share-link hidden" type="text" readonly aria-label="${currentLang==='en'?'Vehicle link':'Enlace del vehículo'}" />
       </div>
-      <div class="detail-layout">
+      </details><div class="detail-layout">
         <div class="detail-main-column">
       <!-- TOP GRID: Gallery (Left), Auction & Pricing (Center), Bidding Sidebar (Right) -->
       <div class="detail-top-grid">
@@ -1346,7 +1342,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
               <button type="button" class="btn btn-ghost btn-small" data-member-history="${esc(v.lot)}">${currentLang==='en'?'Request vehicle history':'Solicitar historial elaborado por APV'}</button>
               <div class="detail-card-row"><span>VIN</span><strong>${vinQuickSpecValue(v)}</strong></div>
               <div class="detail-card-row"><span>${t('lot')}</span><strong>${esc(v.lot)}</strong></div>
-              <div class="detail-card-row"><span>${t('detailComplete0')}</span><strong>${esc(dateLabel(v.saleDate, v.timeZone))}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete0')}</span><strong>${esc(auctionCardDate(v))}</strong></div>
               <div class="detail-card-row"><span>${t('detailComplete1')}</span><strong>${esc(v.yardName || 'Copart Yard')}</strong></div>
               <div class="detail-card-row"><span>${t('detailComplete2')}</span><strong>${esc(locationLabel(v))}</strong></div>
               <div class="detail-card-row"><span>${t('detailComplete3')}</span><strong>${esc(v.sellerName || 'Copart Seller')}</strong></div>
@@ -1361,9 +1357,9 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <div class="detail-card-grid">
               <div class="detail-card-row"><span>${t('detailComplete4')}</span><strong>${esc(money(v.retailValue))}</strong></div>
               ${hasBuyNow ? `<div class="detail-card-row"><span>${t('detailComplete5')}</span><strong>${esc(cardPrice(v.buyNow))}</strong></div>` : ''}
-              <div class="detail-card-row"><span>${t('detailComplete6')}</span><strong>${esc(v.saleStatus || (currentLang==='en'?"Active auction":"Subasta activa"))}</strong></div>
-              <div class="detail-card-row"><span>${t('detailComplete7')}</span><strong>${esc(v.saleStatus || (currentLang==='en'?"Bidding enabled":"Pujas habilitadas"))}</strong></div>
+              <div class="detail-card-row"><span>${t('detailComplete6')}</span><strong>${esc(window.APVDisplay?.label(v.saleStatus,currentLang) || (currentLang==='en'?"Active auction":"Subasta activa"))}</strong></div>
             </div>
+            ${comparisonDetails(v)}
           </div>
         </div>
 
@@ -1411,6 +1407,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <button class="btn btn-primary btn-bid-now" data-detail-bid>
               [icon:gavel] ${t('wantToBid')}
             </button>
+            ${Number(v.buyNow)>0?`<button type="button" class="btn btn-dark" data-detail-buy>${currentLang==='en'?'Request Buy It Now':'Solicitar compra inmediata'} · ${money(v.buyNow)}</button>`:''}
             <p class="bidding-disclaimer">${t('asIs')}</p>
           </div>
           ${renderCalculatorHTML(v)}
@@ -1419,9 +1416,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
     `;
 
-    if (state.user) {
-      updateCalculatorResults($('#calc-bid-input')?.value || 0);
-    }
+    updateCalculatorResults($('#calc-bid-input')?.value || 0);
     window.APVDisplay?.clean(dom.vehicleDetail,currentLang);
     document.dispatchEvent(new Event('apv:detail'));
     setupGalleryNavigation();
@@ -1543,12 +1538,18 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     dom.authStatus.textContent=message; dom.authStatus.dataset.kind=kind; dom.authStatus.classList.remove('hidden');
   }
 
+  function authHeading(){
+    const kind=state.pendingAuthAction?.type;
+    const labels={favorite:['Guarda este vehículo en tus favoritos','Save this vehicle to your favorites'],bid:[state.pendingAuthAction?.mode==='buy'?'Continúa tu compra inmediata':'Continúa con tu puja',state.pendingAuthAction?.mode==='buy'?'Continue your Buy It Now request':'Continue your bid'],subscription:['Activa el plan que elegiste','Activate your selected plan'],'member-service':['Solicita tu asesoría o historial','Request your consultation or history report'],calc:['Calcula tu compra con una cuenta gratis','Estimate your purchase with a free account'],budget:['Planifica tu presupuesto','Plan your budget'],vin:['Consulta el VIN completo','View the full VIN']};
+    return labels[kind]?.[currentLang==='en'?1:0] || (currentLang==='en'?'Welcome to APV Motors':'Bienvenido a APV Motors');
+  }
   function openAuth(reason, action, initialTab = 'login', directRegistration = false){
     state.pendingAuthAction=action||null;
+    dom.authTitle.removeAttribute('data-i18n'); dom.authReason.removeAttribute('data-i18n');
     const modal = dom.authOverlay.querySelector('.auth-modal');
     modal.classList.toggle('registration-direct', directRegistration);
     modal.classList.remove('verification-pending');
-    dom.authTitle.textContent=directRegistration?t('registerDirectTitle'):t('authTitle');
+    dom.authTitle.textContent=authHeading();
     dom.authReason.textContent=reason||t('authReason');
     switchAuthTab(initialTab);
     setAuthStatus('');
@@ -1565,7 +1566,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if(dom.bidOverlay.classList.contains('hidden')&&dom.vehicleOverlay.classList.contains('hidden')) document.body.style.overflow='';
   }
 
-  window.APVAuth={open:openAuth,close:closeAuth};
+  window.APVAuth={open:openAuth,close:closeAuth,isAuthenticated:()=>Boolean(state.user)};
   window.openAPVAuth=function(reason){ openAuth(reason||(currentLang==='en'?"Log in to recover your conversations and access the full VIN.":"Inicia sesión para recuperar tus conversaciones y acceder al VIN completo.")); return false; };
   window.closeAPVAuth=function(){ closeAuth(); return false; };
 
@@ -1573,11 +1574,12 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const modal=dom.authOverlay.querySelector('.auth-modal');
     $('.auth-tabs',dom.authOverlay).classList.remove('hidden');
     modal.classList.remove('verification-pending');
-    dom.authTitle.textContent=modal.classList.contains('registration-direct')&&tab==='register'?t('registerDirectTitle'):t('authTitle');
-    $$('[data-auth-tab]').forEach(b=>b.classList.toggle('active',b.dataset.authTab===tab));
+    dom.authTitle.textContent=authHeading();
+    $$('[data-auth-tab]').forEach(b=>(b.classList.toggle('active',b.dataset.authTab===tab),b.setAttribute('aria-selected',String(b.dataset.authTab===tab))));
     $('#login-form').classList.toggle('hidden',tab!=='login');
     $('#register-form').classList.toggle('hidden',tab!=='register');
     $('#verify-form').classList.add('hidden');
+    $('#reset-form')?.classList.add('hidden');
     setAuthStatus('');
   }
 
@@ -1607,13 +1609,15 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     showToast(`Bienvenido, ${user.name.split(' ')[0]}.`);
     await state.favoritesReady;
     await loadVehicles();
-    if (registered && !['subscription','member-service','bid'].includes(action?.type)) await window.apvMembership?.prompt('registration');
+    if(registered && !['subscription','member-service','bid','calc','budget'].includes(action?.type)) await window.apvMembership?.prompt('registration');
     if(action&&action.type==='bid'){
-      try{ await openBid(await getVehicle(action.lot), action.amount); }catch(err){ showToast(err.message); }
+      try{ await openBid(await getVehicle(action.lot), action.amount, action.mode); }catch(err){ showToast(err.message); }
     }else if(action&&action.type==='favorite'){
       if(!readFavorites().includes(action.lot)) await toggleFavorite(action.lot);
     }else if(action&&['subscription','member-service'].includes(action.type)){
       try {await window.apvMembership?.resume(action);} catch(err){showToast(err.message);}
+    }else if(action&&action.type==='budget'){
+      $('#budget-form')?.requestSubmit();
     }else if(action&&action.type==='calc'){
       await openDetail(action.lot,false);
     }else if(action&&action.type==='vin'){
@@ -1742,7 +1746,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
             <strong>${money(breakdown.bid)}</strong>
           </div>
           <div class="bid-mini-row">
-            <span>Copart fees (${autoVehicle === 'heavy' ? (currentLang==='en'?"Heavy vehicle":"Vehículo Pesado") : (currentLang==='en'?"Standard":"Estándar")})</span>
+            <span>${currentLang==='en'?'Copart fees':'Tarifas Copart'} (${autoVehicle === 'heavy' ? (currentLang==='en'?"Heavy vehicle":"Vehículo Pesado") : (currentLang==='en'?"Standard":"Estándar")})</span>
             <strong>${money(breakdown.totalCopartFees)}</strong>
           </div>
           <div class="bid-mini-row">
@@ -1765,28 +1769,36 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     `;
   }
 
-  async function openBid(v, initialAmount){
-    if(!state.user){ openAuth((currentLang==='en'?"Create an account or log in to request a bid. Your account keeps your chat history across devices.":"Crea tu cuenta o inicia sesión para solicitar la puja. Tu cuenta mantiene el historial de Kommo entre dispositivos."),{type:'bid',lot:v.lot,amount:initialAmount}); return; }
+  async function openBid(v, initialAmount, mode = 'bid'){
+    if(mode==='buy'){if(!(Number(v.buyNow)>0)){showToast(currentLang==='en'?'Buy It Now is no longer available. Review this vehicle with an advisor.':'La compra inmediata ya no está disponible. Consulta este vehículo con un asesor.');return;}initialAmount=Number(v.buyNow);}
+    if(!state.user){ openAuth(mode==='buy'?(currentLang==='en'?'Create an account or sign in to request this purchase. We will keep the vehicle and price.':'Crea tu cuenta o inicia sesión para solicitar esta compra. Conservaremos el vehículo y su precio.'):(currentLang==='en'?'Create an account or sign in to request a bid. We will keep your vehicle and amount.':'Crea tu cuenta o inicia sesión para solicitar la puja. Conservaremos este vehículo y tu monto para continuar.'),{type:'bid',lot:v.lot,amount:initialAmount,mode}); return; }
     if (window.apvMembership && !await window.apvMembership.prompt('bid')) return;
     try{ if(!v.vin) v=await getVehicle(v.lot); }catch(_){}
-    state.currentVehicle=v; closeDetail(false); dom.bidModal?.classList.remove('chat-mode');
+    v={...v,purchaseMode:mode}; state.purchaseMode=mode; state.currentVehicle=v; closeDetail(false); dom.bidModal?.classList.remove('chat-mode');
     const startVal = initialAmount ? Number(initialAmount) : '';
     dom.bidAmount.value = startVal ? String(startVal) : '';
+    dom.bidAmount.readOnly=mode==='buy';
+    $('#bid-title')?.removeAttribute('data-i18n');
+    const bidTitle=dom.bidOverlay.querySelector('h2');
+    if(bidTitle) {bidTitle.removeAttribute('data-i18n');bidTitle.textContent=mode==='buy'?(currentLang==='en'?'Request Buy It Now':'Solicitar compra inmediata'):(currentLang==='en'?'Request a bid':'Solicitar una puja');}
+    const amountLabel=dom.bidOverlay.querySelector('label[for="bid-amount"], .bid-input-wrap>span');
+    if(amountLabel){amountLabel.removeAttribute('data-i18n');amountLabel.textContent=mode==='buy'?(currentLang==='en'?'Buy It Now price (USD)':'Precio de compra inmediata (USD)'):(currentLang==='en'?'Your maximum bid (USD)':'Tu tope de puja (USD)');}
+    const continueButton=$('#bid-continue');continueButton.removeAttribute('data-i18n');continueButton.textContent=mode==='buy'?(currentLang==='en'?'Request this purchase':'Solicitar esta compra'):(currentLang==='en'?'Request this bid':'Solicitar esta puja');
     updateBidCostPreview(startVal);
     dom.bidAmountStep.classList.remove('hidden'); dom.bidChatStep.classList.add('hidden'); dom.kommoFallback.classList.remove('hidden');
-    dom.bidVehicleMini.innerHTML=`<div class="thumb" ${imageStyle(v.image)}></div><div><h4>${esc(v.title)}</h4><p>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</p><p>Puja actual ${esc(cardPrice(v.currentBid))} · Retail ${esc(money(v.retailValue))}</p></div>`;
+    dom.bidVehicleMini.innerHTML=`<div class="thumb" ${imageStyle(v.image)}></div><div><h4>${esc(v.title)}</h4><p>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</p><p>${t('currentBid')} ${esc(cardPrice(v.currentBid))} · ${t('estimatedRetail')} ${esc(money(v.retailValue))}</p></div>`;
     dom.bidOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; syncChatReopenButton(); setTimeout(()=>dom.bidAmount.focus(),100);
   }
 
   function closeBid(){ dom.bidOverlay.classList.add('hidden'); dom.bidModal?.classList.remove('chat-mode'); syncChatReopenButton(); if(dom.vehicleOverlay.classList.contains('hidden')&&dom.authOverlay.classList.contains('hidden')) document.body.style.overflow=''; }
 
   async function continueBid(){
-    if(!state.user){ closeBid(); openAuth((currentLang==='en'?"Log in before opening the chat with APV Motors.":"Debes iniciar sesión antes de abrir el chat con APV Motors."),state.currentVehicle?{type:'bid',lot:state.currentVehicle.lot}:null); return; }
+    if(!state.user){ closeBid(); openAuth((currentLang==='en'?"Log in before opening the chat with APV Motors.":"Debes iniciar sesión antes de abrir el chat con APV Motors."),state.currentVehicle?{type:'bid',lot:state.currentVehicle.lot,amount:Number(dom.bidAmount.value),mode:state.purchaseMode}:null); return; }
     const v=state.currentVehicle, amount=Number(dom.bidAmount.value||0); if(!v||amount<=0){ showToast((currentLang==='en'?"Enter a valid maximum bid.":"Indica un tope de puja válido.")); dom.bidAmount.focus(); return; }
-    try{ const result=await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),lot:v.lot,maxBid:amount})});window.APVTracking?.track('bid_request',{lote:String(v.lot)},result.eventId); }catch(err){ if(err.status===401){ closeBid(); openAuth((currentLang==='en'?"Your session expired. Please log in again.":"Tu sesión expiró. Vuelve a iniciar sesión."),{type:'bid',lot:v.lot}); return; } }
+    try{ const result=await api('/api/bid-intents',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.APVTracking?.payload(),lot:v.lot,maxBid:amount,purchaseMode:state.purchaseMode||'bid'})});window.APVTracking?.track('bid_request',{lote:String(v.lot)},result.eventId); }catch(err){ if(err.status===401){ closeBid(); openAuth((currentLang==='en'?"Your session expired. Please log in again.":"Tu sesión expiró. Vuelve a iniciar sesión."),{type:'bid',lot:v.lot,amount,mode:state.purchaseMode}); return; } showToast(err.message); return; }
     dom.bidAmountStep.classList.add('hidden'); dom.bidChatStep.classList.remove('hidden'); dom.bidModal?.classList.add('chat-mode');
-    if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>Tope solicitado</span><br><strong>${esc(money(amount))} USD</strong></div>`;
-    const message=window.apvKommo ? window.apvKommo.buildVehicleMessage(v) : `Vehículo: ${v.title}\nVIN: ${v.vin||'N/D'}`;
+    if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>${state.purchaseMode==='buy'?(currentLang==='en'?'Buy It Now requested':'Compra inmediata solicitada'):(currentLang==='en'?'Maximum requested':'Tope solicitado')}</span><br><strong>${esc(money(amount))} USD</strong></div>`;
+    const message=window.apvKommo ? window.apvKommo.buildVehicleMessage(v,amount,state.user) : `Vehículo: ${v.title}\nVIN: ${v.vin||'N/D'}`;
     dom.autoMessagePreview.textContent=message;
     saveUserBidRecord(v, amount);
     rememberChat(v);
@@ -1802,7 +1814,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if(result.ok && result.ready){ dom.kommoFallback.classList.add('hidden'); }
     else{
       dom.kommoFallback.classList.remove('hidden');
-      dom.fallbackPayload.textContent='Mensaje preparado para Kommo:\n\n'+message;
+      dom.fallbackPayload.textContent=(currentLang==='en'?'Your request:\n\n':'Tu solicitud:\n\n')+message;
       const fallbackCopy = $('#fallback-copy');
       if (fallbackCopy) fallbackCopy.textContent='Preparando tu solicitud con APV Motors…';
     }
@@ -1812,7 +1824,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   }
 
   async function reopenLastChat(){
-    if(!state.user){ openAuth((currentLang==='en'?"Log in to recover your chat conversation.":"Inicia sesión para recuperar tu conversación de Kommo.")); return; }
+    if(!state.user){ openAuth((currentLang==='en'?"Log in to recover your chat conversation.":"Inicia sesión para recuperar tu conversación con APV.")); return; }
     const saved=readChatMemory();
     if(!saved||saved.userId!==state.user.kommoUserId){ showToast((currentLang==='en'?"There is no saved conversation for this account yet.":"Todavía no hay una conversación guardada para esta cuenta.")); syncChatReopenButton(); return; }
     try{
@@ -1822,11 +1834,11 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       dom.bidAmountStep.classList.add('hidden');
       dom.bidChatStep.classList.remove('hidden');
       dom.bidModal?.classList.add('chat-mode');
-      if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>${currentLang==='en'?'Conversation':'Conversación'}</span><br><strong>${currentLang==='en'?'Saved in Kommo':'Guardada en Kommo'}</strong></div>`;
+      if (dom.chatContext) dom.chatContext.innerHTML=`<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin||'N/D')}</span></div><div><span>${currentLang==='en'?'Conversation':'Conversación'}</span><br><strong>${currentLang==='en'?'Saved in your account':'Guardada en tu cuenta'}</strong></div>`;
       const message=(window.apvKommo&&typeof window.apvKommo.buildVehicleMessage==='function')?window.apvKommo.buildVehicleMessage(v):`Vehículo: ${v.title}\nVIN: ${v.vin||'N/D'}`;
       dom.autoMessagePreview.textContent=message;
       dom.fallbackPayload.textContent='Recuperando la conversación del vehículo\n\n'+message;
-      $('#fallback-copy').textContent=(currentLang==='en'?"Recovering your chat conversation\u2026":"Recuperando tu conversación de Kommo…");
+      $('#fallback-copy').textContent=(currentLang==='en'?"Recovering your chat conversation\u2026":"Recuperando tu conversación con APV…");
       dom.kommoFallback.classList.remove('hidden');
       dom.bidOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; syncChatReopenButton();
 
@@ -1844,6 +1856,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     const url=new URL(location.href);url.searchParams.delete('priceMin');url.searchParams.delete('priceMax');history.replaceState(history.state,'',url.pathname+url.search+url.hash);
     $('#favorites-heading').classList.add('hidden');
     $('#my-favorites-button').setAttribute('aria-pressed','false');
+    if($('#filter-vehicle-type'))$('#filter-vehicle-type').value='';
     dom.search.value=''; dom.make.value=''; dom.model.value=''; updateCatalogModels(); dom.runDrive.checked=false; state.favoritesOnly=false; dom.heroRunDrive.checked=false; dom.heroFilterBuyNow.checked=false; dom.heroFilterMake.value=''; updateHeroModels(''); dom.heroSearchInput.value=''; dom.heroFilterState.value=''; setYearRange(dom.yearMin.min,dom.yearMax.max); dom.damage.value=''; dom.run.value=''; dom.state.value=''; dom.city.value=''; dom.zip.value=''; dom.cleanTitle.checked=false; dom.limitOdometer.checked=false; updateCities(); stickyInput.value=''; dom.buyNow.checked=false; dom.sort.value='auto';
     if(state.filters){ setYearRange(dom.yearMin.min,dom.yearMax.max); dom.odometer.value=0; updateOdometerLabel(); }
     state.page=1; if(reload) loadVehicles();
@@ -1852,7 +1865,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   dom.list.addEventListener('click',async e=>{
     const card=e.target.closest('.vehicle-card'); if(!card)return; const action=e.target.closest('[data-action]')?.dataset.action; if(!action)return; const lot=card.dataset.lot;
     if(action==='detail') openDetail(lot);
-    if(action==='bid'){ try{ await openBid(await getVehicle(lot)); }catch(err){showToast(err.message);} }
+    if(action==='bid'||action==='buy'){ try{ await openBid(await getVehicle(lot), undefined, action); }catch(err){showToast(err.message);} }
   });
   dom.pagination.addEventListener('click',e=>{ const b=e.target.closest('[data-page]'); if(!b||b.disabled)return; state.page=Number(b.dataset.page); loadVehicles(); document.querySelector('#catalogo').scrollIntoView({behavior:'smooth'}); });
   
@@ -1922,7 +1935,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
 
     const authCalc = e.target.closest('[data-auth-calc]');
     if (authCalc) {
-      openAuth((currentLang==='en'?"Sign up or log in to use the cost calculator.":"Regístrate o inicia sesión para usar la calculadora de costos."), { type: 'calc', lot: authCalc.dataset.authCalc });
+      openAuth((currentLang==='en'?"Sign up or log in to use the cost calculator.":"Regístrate o inicia sesión para usar la calculadora de costos."), { type: 'calc', lot: authCalc.dataset.authCalc }, 'register');
       return;
     }
 
@@ -1937,6 +1950,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     if(e.target.closest('#gallery-next-btn')) { selectGalleryPhoto(state.currentPhotoIdx+1); return; }
     const thumb=e.target.closest('[data-gallery-src]');
     if(thumb){ selectGalleryPhoto($$('.gallery-thumb',dom.vehicleDetail).findIndex(b=>b.dataset.gallerySrc===thumb.dataset.gallerySrc)); return; }
+    if(e.target.closest('[data-detail-buy]')&&state.currentVehicle){ await openBid(state.currentVehicle,undefined,'buy'); return; }
     if(e.target.closest('[data-detail-bid]')&&state.currentVehicle){ await openBid(state.currentVehicle); return; }
     if(e.target.closest('[data-auth-vin]')&&state.currentVehicle){ openAuth((currentLang==='en'?"Sign up or log in to reveal the full VIN.":"Regístrate o inicia sesión para revelar el VIN completo."),{type:'vin',lot:state.currentVehicle.lot}); return; }
     const toggle = e.target.closest('#toggle-full-tech');
@@ -2080,6 +2094,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   syncHeroOrder();
   const stickySearch=$('#sticky-search');
   const stickyInput=$('#sticky-search-input');
+  stickyInput.addEventListener('input',()=>{dom.search.value=stickyInput.value;dom.heroSearchInput.value=stickyInput.value;});
   let stickyFrame=0;
   function syncStickySearch(){
     stickyFrame=0;
@@ -2113,6 +2128,35 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   const syncHeaderHeight=()=>document.documentElement.style.setProperty('--header-height',header.getBoundingClientRect().height+'px');
   syncHeaderHeight();
   if(window.ResizeObserver)new ResizeObserver(syncHeaderHeight).observe(header);
+  const mobileHeader = window.matchMedia('(max-width:768px)');
+  let lastHeaderScroll = Math.max(0, window.scrollY), headerTravel = 0, headerFrame = 0;
+  function revealHeader() {
+    document.body.classList.remove('mobile-header-collapsed');
+    headerTravel = 0;
+    lastHeaderScroll = Math.max(0, window.scrollY);
+  }
+  function updateMobileHeader() {
+    headerFrame = 0;
+    const y = Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+    const delta = y - lastHeaderScroll;
+    lastHeaderScroll = y;
+    if (!mobileHeader.matches || document.body.classList.contains('lp-page') || y < 48) {
+      revealHeader();
+      return;
+    }
+    if (document.querySelector('dialog[open],.overlay:not(.hidden),#filters-panel.mobile-open') || header.querySelector('[aria-expanded="true"]')) return;
+    if (Math.sign(delta) !== Math.sign(headerTravel)) headerTravel = 0;
+    headerTravel += delta;
+    if (Math.abs(headerTravel) >= 12) {
+      document.body.classList.toggle('mobile-header-collapsed', headerTravel > 0);
+      headerTravel = 0;
+    }
+  }
+  window.addEventListener('scroll', () => {
+    if (!headerFrame) headerFrame = requestAnimationFrame(updateMobileHeader);
+  }, {passive:true});
+  mobileHeader.addEventListener('change', revealHeader);
+  header.addEventListener('focusin', revealHeader);
   $('#logout-button').addEventListener('click',logout);
   $$('[data-auth-tab]').forEach(b=>b.addEventListener('click',()=>switchAuthTab(b.dataset.authTab)));
   $('#login-form').addEventListener('submit',submitLogin);
@@ -2130,6 +2174,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
     dom.authReason.textContent=t('registerDirectReason');
     $('.auth-tabs',dom.authOverlay).classList.remove('hidden');
     $('#verify-form').classList.add('hidden');
+    $('#reset-form')?.classList.add('hidden');
     $('#register-form').classList.remove('hidden');
     setAuthStatus('');
   });
@@ -2186,7 +2231,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       const v = await getVehicle(lot);
       state.currentVehicle = v;
       renderConversationSelector();
-      if (dom.chatContext) dom.chatContext.innerHTML = `<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin || 'N/D')}</span></div><div><span>${currentLang==='en'?'Conversation':'Conversación'}</span><br><strong>${currentLang==='en'?'Saved in Kommo':'Guardada en Kommo'}</strong></div>`;
+      if (dom.chatContext) dom.chatContext.innerHTML = `<div><strong>${esc(v.title)}</strong><br><span>Lote ${esc(v.lot)} · VIN ${esc(v.vin || 'N/D')}</span></div><div><span>${currentLang==='en'?'Conversation':'Conversación'}</span><br><strong>${currentLang==='en'?'Saved in your account':'Guardada en tu cuenta'}</strong></div>`;
       rememberChat(v);
       if (window.apvKommo && typeof window.apvKommo.reopenConversation === 'function') {
         window.apvKommo.reopenConversation(v, state.user);
@@ -2242,10 +2287,10 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
       if(!card) return;
       const lot = card.dataset.lot;
       const action = e.target.closest('[data-action]')?.dataset.action || 'detail';
-      if(action === 'bid'){
+      if(action === 'bid' || action === 'buy'){
         try {
           const v = await getVehicle(lot);
-          openBid(v);
+          openBid(v,undefined,action);
         } catch(err) { showToast(err.message); }
       } else {
         openDetail(lot);
@@ -2317,7 +2362,7 @@ async function getVehicle(lot){ return api('/api/vehicles/'+encodeURIComponent(l
   });
 
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){
+    if(e.key==='Escape'&&!document.querySelector('dialog[open]')){
       if(dom.termsOverlay && !dom.termsOverlay.classList.contains('hidden')) dom.termsOverlay.classList.add('hidden');
       else if(dom.privacyOverlay && !dom.privacyOverlay.classList.contains('hidden')) dom.privacyOverlay.classList.add('hidden');
       else if(!dom.authOverlay.classList.contains('hidden')) closeAuth();

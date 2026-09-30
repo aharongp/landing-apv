@@ -411,7 +411,7 @@ async function updateLead(leadId, data) {
   const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
 
   const payload = {
-    name: `Puja (${formattedBudget}) | ${vehicleTitle}`,
+    name: `${data.purchaseMode==='buy'?'Compra inmediata':'Puja'} (${formattedBudget}) | ${vehicleTitle}`,
     price: priceAmount,
     pipeline_id: targetPipelineId,
     custom_fields_values
@@ -622,7 +622,8 @@ async function syncBidInternal(params) {
     vehicleModel,
     vin,
     lot,
-    maxBid: sale
+    maxBid: sale,
+    purchaseMode: vehicle.purchaseMode
   });
 
   saveSyncRecord({
@@ -659,7 +660,7 @@ async function syncBid(params) {
 
 function summaryFingerprint(activeBids, membership) {
   const seed = activeBids
-    .map((bid) => `${bid.lot}:${Number(bid.maxBid || 0)}`)
+    .map((bid) => `${bid.lot}:${Number(bid.maxBid || 0)}:${bid.purchaseMode || 'bid'}`)
     .sort()
     .join('|') + '|' + JSON.stringify([membership?.plan?.id || 'free', membership?.plan?.feeDiscount || 0, membership?.status || 'free', membership?.paidThrough || 0, Boolean(membership?.cancelAtPeriodEnd)]);
   let hash = 2166136261;
@@ -712,7 +713,8 @@ async function updateActiveBidsSummary(user, { strict = false, noteOnly = false 
       lot: r.lot,
       title,
       vin,
-      maxBid
+      maxBid,
+      purchaseMode: intent?.purchaseMode || 'bid'
     });
   }
 
@@ -723,7 +725,7 @@ async function updateActiveBidsSummary(user, { strict = false, noteOnly = false 
   if (activeBids.length === 0) {
     summaryText = [
       marker,
-      `📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE`,
+      `📋 RESUMEN DE SOLICITUDES ACTIVAS DEL CLIENTE`,
       `----------------------------------------`,
       `Membresía vigente del cliente: ${user.membership?.plan?.name || 'Gratis'}.`,
       `El cliente no tiene vehículos activos en su lista de pujas actualmente.`,
@@ -733,7 +735,7 @@ async function updateActiveBidsSummary(user, { strict = false, noteOnly = false 
   } else {
     const lines = activeBids.map((b, idx) => {
       const budget = b.maxBid > 0 ? `$${Number(b.maxBid).toLocaleString('en-US')} USD` : 'Sin definir';
-      return `${idx + 1}. ${b.title}\n   • Lote: ${b.lot} | VIN: ${b.vin || 'N/D'}\n   • Tope de Oferta: ${budget}`;
+      return `${idx + 1}. ${b.title}\n   • Lote: ${b.lot} | VIN: ${b.vin || 'N/D'}\n   • ${b.purchaseMode==='buy'?'Compra inmediata':'Tope de oferta'}: ${budget}`;
     });
 
     const totalVal = activeBids.reduce((sum, b) => sum + (Number(b.maxBid) || 0), 0);
@@ -741,12 +743,12 @@ async function updateActiveBidsSummary(user, { strict = false, noteOnly = false 
 
     summaryText = [
       marker,
-      `📋 RESUMEN DE PUJAS ACTIVAS DEL CLIENTE`,
+      `📋 RESUMEN DE SOLICITUDES ACTIVAS DEL CLIENTE`,
       `========================================`,
       lines.join('\n\n'),
       `========================================`,
-      `📊 Total de vehículos a subastar: ${activeBids.length}`,
-      `💰 Suma de topes de oferta: ${totalValFormatted}`,
+      `📊 Total de vehículos solicitados: ${activeBids.length}`,
+      `💰 Suma de importes solicitados: ${totalValFormatted}`,
       `Membresía vigente del cliente: ${user.membership?.plan?.name || 'Gratis'}. Descuento en fee APV: $${Number(user.membership?.plan?.feeDiscount || 0)} USD por vehículo. Verificar vigencia antes de facturar.`,
       `🕒 Última actualización: ${formattedDate}`
     ].join('\n');
@@ -773,7 +775,7 @@ async function updateActiveBidsSummary(user, { strict = false, noteOnly = false 
 
   const targetPipelineId = Number(process.env.KOMMO_PIPELINE_ID || 14370344);
   const payload = {
-    name: activeBids.length > 0 ? `Pujas (${activeBids.length} autos) | ${user.name}` : `Cliente | ${user.name}`,
+    name: activeBids.length > 0 ? `Solicitudes (${activeBids.length} autos) | ${user.name}` : `Cliente | ${user.name}`,
     price: lastPrice,
     pipeline_id: targetPipelineId,
     custom_fields_values

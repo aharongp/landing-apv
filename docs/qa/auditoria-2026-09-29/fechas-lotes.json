@@ -1,0 +1,29 @@
+[
+  {
+    "lot": "53788996",
+    "saleDate": "20260930",
+    "saleTime": "1000",
+    "timeZone": "EDT",
+    "saleAt": 1790776800000,
+    "currentBid": 1000.0,
+    "buyNow": 0.0
+  },
+  {
+    "lot": "54448506",
+    "saleDate": "20260929",
+    "saleTime": "1200",
+    "timeZone": "PDT",
+    "saleAt": 1790708400000,
+    "currentBid": 400.0,
+    "buyNow": 0.0
+  },
+  {
+    "lot": "64228046",
+    "saleDate": "20260929",
+    "saleTime": "1200",
+    "timeZone": "PDT",
+    "saleAt": 1790708400000,
+    "currentBid": 200.0,
+    "buyNow": 600.0
+  }
+]

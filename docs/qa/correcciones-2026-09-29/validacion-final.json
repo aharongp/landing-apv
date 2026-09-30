@@ -1,0 +1,58 @@
+{
+  "fecha": "2026-09-29",
+  "rama": "fix/auditoria-ui-ux-local",
+  "pruebas": {
+    "aprobadas": 72,
+    "fallidas": 0
+  },
+  "chrome": {
+    "catalogo320": {
+      "viewport": 320,
+      "contenido": 305,
+      "scroll": 305,
+      "tarjetas": 277
+    },
+    "catalogo768": {
+      "viewport": 768,
+      "contenido": 753,
+      "scroll": 753,
+      "tarjetas": 354.5
+    },
+    "catalogo1440": {
+      "viewport": 1440,
+      "contenido": 1425,
+      "scroll": 1425
+    },
+    "ficha390": {
+      "contenido": 375,
+      "scroll": 375
+    },
+    "presupuestoAnonimo": {
+      "totalConservado": 10000,
+      "reservaConservada": 2000,
+      "requiereRegistro": true,
+      "resultadoOculto": true
+    },
+    "buscarYLimpiar": {
+      "sinResultados": 0,
+      "trasLimpiar": 74898,
+      "busqueda": ""
+    },
+    "campana": {
+      "destino": "/catalogo?utm_source=revision_local&v=conocedor",
+      "ctaAntesDelVideo": true
+    },
+    "video": {
+      "es": "/assets/cars-vsl.vtt",
+      "en": "/assets/cars-vsl-en.vtt",
+      "ccActivable": true,
+      "transcripcionAmbosIdiomas": true
+    }
+  },
+  "limites": [
+    "Sin pagos ni solicitudes comerciales finales",
+    "Sin entrega SMTP real de prueba",
+    "Sin dispositivos físicos ni lector de pantalla",
+    "Compra inmediata validada en base desechable; inventario real sin lotes Buy Now disponibles al revisar"
+  ]
+}

@@ -15,6 +15,8 @@ const catalogDb = require('./services/catalogDb');
 const marketing = require('./services/marketing');
 const landingPage = require('./services/landingPage');
 const adminMetrics = require('./services/adminMetrics');
+let passwordReset;
+function recovery() { return passwordReset ||= require('./services/passwordReset').createPasswordReset({db:catalogDb.initDatabase(),sendEmail:emailService.sendPasswordResetEmail,hashPassword}); }
 const googleAnalytics = require('./services/googleAnalytics').createGoogleAnalytics();
 let metricsService;
 function metrics(){return metricsService ||= adminMetrics.createMetrics(catalogDb.initDatabase());}
@@ -318,7 +320,7 @@ function base64urlJson(value) {
 }
 
 function signSession(userId) {
-  const payload = base64urlJson({ uid: userId, exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS });
+  const payload = base64urlJson({ uid: userId, sv: catalogDb.findUserById(userId)?.sessionVersion || 0, exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS });
   const sig = crypto.createHmac('sha256', SESSION_SECRET).update(payload).digest('base64url');
   return `${payload}.${sig}`;
 }
@@ -345,7 +347,8 @@ function getAuthUser(req) {
   try {
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
     if (!data.uid || !data.exp || data.exp < Math.floor(Date.now() / 1000)) return null;
-    return catalogDb.findUserById(data.uid);
+    const user = catalogDb.findUserById(data.uid);
+    return user && (data.sv || 0) === user.sessionVersion ? user : null;
   } catch (_) {
     return null;
   }
@@ -704,7 +707,7 @@ function text(res, status, body, type = 'text/plain; charset=utf-8') {
 // Give every deployment content-specific asset URLs, including behind CDN caches.
 const assetVersions = new Map();
 function frontendVersions() {
-  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css', 'icons.js', 'icons.css', 'admin-metrics.js', 'admin-metrics.css', 'metrics-chart.js'].map(name => {
+  return ['app.js', 'styles.css', 'membership.js', 'kommo.js', 'landing.css', 'home.js', 'budget.js', 'tracking.js', 'marketing.js', 'marketing-i18n.js', 'campaign.css', 'icons.js', 'icons.css', 'admin-metrics.js', 'admin-metrics.css', 'metrics-chart.js', 'refinements.css', 'accessibility.js'].map(name => {
     const file = path.join(PUBLIC_DIR, name), stat = fs.statSync(file);
     let asset = assetVersions.get(name);
     if (!asset || asset.mtime !== stat.mtimeMs || asset.size !== stat.size) {
@@ -723,6 +726,7 @@ function serveFile(req, res, filePath) {
     '.css': 'text/css; charset=utf-8',
     '.js': 'application/javascript; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
+    '.vtt': 'text/vtt; charset=utf-8',
     '.svg': 'image/svg+xml',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
@@ -746,7 +750,7 @@ function serveFile(req, res, filePath) {
       if(route.pathname==='/lp')html=landingPage(html,route.searchParams.get('v'));
       body=Buffer.from(marketing.metadata(html,route.pathname,vehicle));
       const hashes = Object.fromEntries(versions);
-      body = Buffer.from(body.toString('utf8').replace(/((?:src|href)=")\/(app\.js|styles\.css|membership\.js|kommo\.js|landing\.css|home\.js|budget\.js|tracking\.js|marketing\.js|marketing-i18n\.js|campaign\.css)(?:\?[^"\s]*)?"/g,
+      body = Buffer.from(body.toString('utf8').replace(/((?:src|href)=")\/(app\.js|styles\.css|membership\.js|kommo\.js|landing\.css|home\.js|budget\.js|tracking\.js|marketing\.js|marketing-i18n\.js|campaign\.css|refinements\.css|accessibility\.js)(?:\?[^"\s]*)?"/g,
         (_, attr, name) => `${attr}/${name}?v=${hashes[name]}"`));
     }
     const compressible = /\.(html|css|js|json|svg)$/.test(ext) && body.length > 1024;
@@ -1040,12 +1044,16 @@ const server = http.createServer(async (req, res) => {
 
       const body = JSON.parse((await readRequestBody(req, 128 * 1024)).toString('utf8') || '{}');
       const lot = str(body.lot);
+      const purchaseMode = body.purchaseMode || 'bid';
       const maxBid = num(body.maxBid);
+      if (!['bid','buy'].includes(purchaseMode)) return json(res,400,{error:'Modalidad inválida.'});
+
 
       if (!lot) return json(res, 400, { ok: false, error: 'El número de lote es obligatorio.', code: 'INVALID_LOT' });
       if (maxBid <= 0) return json(res, 400, { ok: false, error: 'El tope de puja debe ser un número positivo.', code: 'INVALID_MAX_BID' });
 
       const vehicle = catalogDb.findVehicleByLotOrId(lot);
+      if (purchaseMode === 'buy' && (!vehicle || !(vehicle.buyNow > 0) || maxBid !== vehicle.buyNow)) return json(res,409,{error:'El precio de compra inmediata cambió o ya no está disponible. Actualiza la ficha antes de continuar.'});
       if (!vehicle) return json(res, 404, { ok: false, error: 'Vehículo no encontrado en el catálogo.', code: 'VEHICLE_NOT_FOUND' });
 
       const userFull = {
@@ -1057,7 +1065,7 @@ const server = http.createServer(async (req, res) => {
       try {
         const syncResult = await kommoService.syncBid({
           user: userFull,
-          vehicle,
+          vehicle: {...vehicle,purchaseMode},
           maxBid
         });
         return json(res, 200, { ...syncResult, apvFee: billing.apvFeeQuote(user.id, maxBid) });
@@ -1147,6 +1155,17 @@ const server = http.createServer(async (req, res) => {
       return json(res, 200, user ? { authenticated: true, user: safeUser(user) } : { authenticated: false, user: null });
     }
 
+    if (req.method === 'POST' && ['/api/auth/password-reset/request','/api/auth/password-reset/confirm'].includes(url.pathname)) {
+      const body = JSON.parse((await readRequestBody(req, 8192)).toString('utf8') || '{}');
+      const ip = req.socket.remoteAddress || '';
+      if (url.pathname.endsWith('/request')) {
+        await recovery().request(body.email, ip);
+        return json(res, 200, {ok:true, message:'Si existe una cuenta con ese correo, recibirás un código. Caduca en 15 minutos.'});
+      }
+      recovery().confirm(body.email, body.code, body.password, ip);
+      return json(res, 200, {ok:true}, {'Set-Cookie':sessionCookie(req, '', 0)});
+    }
+
     if (req.method === 'POST' && url.pathname === '/api/auth/register-request') {
       const body = JSON.parse((await readRequestBody(req, 128 * 1024)).toString('utf8') || '{}');
       const name = str(body.name).slice(0, 120);
@@ -1189,7 +1208,7 @@ const server = http.createServer(async (req, res) => {
         console.log(`[APV EMAIL SUCCESS] Correo de verificación enviado a ${email}`);
       } catch (err) {
         console.error(`[APV EMAIL ERROR] No se pudo enviar la verificación a ${email}: ${err.message}`);
-        return json(res, 502, { error: 'No pudimos enviar el código de verificación. Revisa la configuración SMTP e inténtalo de nuevo.' });
+        return json(res, 502, { error: 'No pudimos enviar el código de verificación. Inténtalo en unos minutos o contacta a un asesor.' });
       }
 
       const response = {
@@ -1416,7 +1435,10 @@ const server = http.createServer(async (req, res) => {
       if (!user) return;
       const body = JSON.parse((await readRequestBody(req, 256 * 1024)).toString('utf8') || '{}');
       const vehicle = catalogDb.findVehicleByLotOrId(str(body.lot));
+      const purchaseMode = body.purchaseMode || 'bid';
       const maxBid = num(body.maxBid);
+      if (!['bid','buy'].includes(purchaseMode)) return json(res,400,{error:'Modalidad inválida.'});
+      if (purchaseMode === 'buy' && (!vehicle || !(vehicle.buyNow > 0) || maxBid !== vehicle.buyNow)) return json(res,409,{error:'El precio de compra inmediata cambió o ya no está disponible. Actualiza la ficha antes de continuar.'});
       if (!vehicle || maxBid <= 0) return json(res, 400, { error: 'Solicitud de puja inválida.' });
       const intent = {
         id: crypto.randomUUID(),
@@ -1425,6 +1447,7 @@ const server = http.createServer(async (req, res) => {
         lot: vehicle.lot,
         vin: vehicle.vin,
         maxBid,
+        purchaseMode,
         vehicle: vehicle.title,
         createdAt: new Date().toISOString()
       };

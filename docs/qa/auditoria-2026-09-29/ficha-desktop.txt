@@ -1,0 +1,1199 @@
+- banner:
+  - link "APV Motors inicio":
+    - /url: /
+    - img "APV Motors"
+  - navigation "Navegación principal":
+    - link "Catálogo":
+      - /url: "#catalogo"
+    - link "Cómo comprar":
+      - /url: /#como-funciona
+    - link "Reseñas":
+      - /url: /#resenas
+    - link "Planes":
+      - /url: /#planes
+  - button "ES" [pressed]
+  - generic: "|"
+  - button "EN"
+  - button "Iniciar sesión"
+  - link "Ver autos":
+    - /url: "#catalogo"
+- search "Buscar vehículos":
+  - searchbox "Buscar vehículos"
+  - button "Buscar"
+- main:
+  - search:
+    - generic: Ej. Silverado 2023, número de lote o VIN
+    - generic: ⌕
+    - searchbox "Ej. Silverado 2023, número de lote o VIN"
+    - generic: Marca
+    - combobox "Marca":
+      - option "Todas las marcas"
+      - option "ACURA"
+      - option "AIRSTREAM"
+      - option "ALFA ROMEO"
+      - option "ASTON MARTIN"
+      - option "AUDI"
+      - option "BENTLEY"
+      - option "BMW"
+      - option "BUICK"
+      - option "CADILLAC"
+      - option "CAN-AM"
+      - option "CHEVROLET"
+      - option "CHRYSLER"
+      - option "DODGE"
+      - option "DUCATI"
+      - option "DUTCHMEN"
+      - option "FERRARI"
+      - option "FIAT"
+      - option "FISKER"
+      - option "FLEETWOOD"
+      - option "FORD"
+      - option "FOREST RIVER"
+      - option "FREIGHTLINER"
+      - option "GENESIS"
+      - option "GMC"
+      - option "GRAND DESIGN"
+      - option "GULF STREAM"
+      - option "HARLEY-DAVIDSON"
+      - option "HEARTLAND"
+      - option "HINO"
+      - option "HONDA"
+      - option "HUMMER"
+      - option "HYUNDAI"
+      - option "HYUNDAI TRANSLEAD"
+      - option "INFINITI"
+      - option "INTERNATIONAL"
+      - option "ISUZU"
+      - option "JAGUAR"
+      - option "JAYCO"
+      - option "JEEP"
+      - option "KAWASAKI"
+      - option "KENWORTH"
+      - option "KEYSTONE"
+      - option "KIA"
+      - option "KTM"
+      - option "KUBOTA"
+      - option "LAMBORGHINI"
+      - option "LAND ROVER"
+      - option "LEXUS"
+      - option "LINCOLN"
+      - option "LUCID"
+      - option "MACK"
+      - option "MASERATI"
+      - option "MAZDA"
+      - option "MERCEDES-BENZ"
+      - option "MERCURY"
+      - option "MINI"
+      - option "MITSUBISHI"
+      - option "NISSAN"
+      - option "OLDSMOBILE"
+      - option "PETERBILT"
+      - option "PLYMOUTH"
+      - option "POLARIS"
+      - option "POLESTAR"
+      - option "PONTIAC"
+      - option "PORSCHE"
+      - option "RAM"
+      - option "RIVIAN"
+      - option "SAAB"
+      - option "SATURN"
+      - option "SCION"
+      - option "SEA-DOO"
+      - option "SMART"
+      - option "STARCRAFT"
+      - option "SUBARU"
+      - option "SUZUKI"
+      - option "TESLA"
+      - option "TOYOTA" [selected]
+      - option "VOLKSWAGEN"
+      - option "VOLVO"
+      - option "YAMAHA"
+    - generic: Modelo
+    - combobox "Modelo":
+      - option "Todos los modelos" [selected]
+      - option "4 CYLINDER"
+      - option "4RUNNER"
+      - option "4RUNNER SP"
+      - option "86"
+      - option "ALAVON"
+      - option "ALL OTHER"
+      - option "ALTEZZA"
+      - option "AVALON"
+      - option "AVALON LIM"
+      - option "AVALON XLS"
+      - option "All Models"
+      - option "BASE"
+      - option "BZ4X XLE"
+      - option "C-HR"
+      - option "C-HR LE"
+      - option "C-HR SE"
+      - option "C-HR XLE P"
+      - option "CAMRRY"
+      - option "CAMRY"
+      - option "CAMRY CE V"
+      - option "CAMRY LE"
+      - option "CAMRY LE V"
+      - option "CAMRY SE"
+      - option "CAMRY SOLA"
+      - option "CAMRY STAN"
+      - option "CAMRY XSE"
+      - option "CELICA"
+      - option "CELSIOR"
+      - option "CIVIC LX-S"
+      - option "COROALLA"
+      - option "COROLLA"
+      - option "COROLLA 50"
+      - option "COROLLA CE"
+      - option "COROLLA CR"
+      - option "COROLLA HA"
+      - option "COROLLA L"
+      - option "COROLLA LE"
+      - option "COROLLA S"
+      - option "CRESSIDA"
+      - option "CROWN"
+      - option "CROWN LIMI"
+      - option "CROWN PLAT"
+      - option "CROWN SIGN"
+      - option "CROWN SIGNIA"
+      - option "CROWN XLE"
+      - option "ECHO"
+      - option "ECHO BASE"
+      - option "FJ CRUISER"
+      - option "GR 86 PREM"
+      - option "GR COROLLA"
+      - option "GR SUPRA 3"
+      - option "GR86"
+      - option "GR86 BASE"
+      - option "GR86 PREMI"
+      - option "GRAND HIGH"
+      - option "HIGHLANDER"
+      - option "HILUX"
+      - option "LAND CRUIS"
+      - option "MATRIX"
+      - option "MIRAI"
+      - option "MIRAI LIMI"
+      - option "MR2"
+      - option "PREVIA"
+      - option "PRIUS"
+      - option "PRIUS BASE"
+      - option "PRIUS C ON"
+      - option "PRIUS C TH"
+      - option "PRIUS II"
+      - option "PRIUS IV"
+      - option "PRIUS LE A"
+      - option "PRIUS LIMI"
+      - option "PRIUS NIGH"
+      - option "PRIUS ONE"
+      - option "PRIUS THRE"
+      - option "PRIUS TOUR"
+      - option "PRIUS V TH"
+      - option "PRIUS V TW"
+      - option "RAV4"
+      - option "RAV4 BASE"
+      - option "RAV4 HYBD"
+      - option "RAV4 HYBRID"
+      - option "RAV4 PLUG-"
+      - option "RAV4 WOODL"
+      - option "RAV4 XLE"
+      - option "SCION"
+      - option "SEQUOIA"
+      - option "SIENNA"
+      - option "SIENNA L 7"
+      - option "SIENNA LE"
+      - option "SIENNA PLA"
+      - option "SIENNA WOO"
+      - option "SOARER"
+      - option "SUPRA"
+      - option "T100"
+      - option "TACOMA"
+      - option "TACOMA 4WD"
+      - option "TACOMA DOU"
+      - option "TACOMA SR"
+      - option "TACOMA TRD"
+      - option "TACOMA V6"
+      - option "TACOMA XTR"
+      - option "TC"
+      - option "TERCEL"
+      - option "TUNDRA"
+      - option "TUNDRA 179"
+      - option "TUNDRA CRE"
+      - option "TUNDRA GRA"
+      - option "TUNDRA PLA"
+      - option "VENZA"
+      - option "VENZA FWD"
+      - option "VENZA NIGH"
+      - option "XA"
+      - option "YARIS"
+      - option "YARIS 5-DO"
+      - option "YARIS FLEE"
+      - option "YARIS IA B"
+    - generic: Estado
+    - combobox "Estado":
+      - option "Todos" [selected]
+      - option "AB"
+      - option "Alaska"
+      - option "Alabama"
+      - option "Arkansas"
+      - option "Arizona"
+      - option "California"
+      - option "Colorado"
+      - option "Connecticut"
+      - option "Delaware"
+      - option "Florida"
+      - option "Georgia"
+      - option "Hawaii"
+      - option "Iowa"
+      - option "Idaho"
+      - option "Illinois"
+      - option "Indiana"
+      - option "Kansas"
+      - option "Kentucky"
+      - option "Louisiana"
+      - option "Massachusetts"
+      - option "Maryland"
+      - option "Maine"
+      - option "Michigan"
+      - option "Minnesota"
+      - option "Missouri"
+      - option "Mississippi"
+      - option "Montana"
+      - option "NB"
+      - option "North Carolina"
+      - option "North Dakota"
+      - option "Nebraska"
+      - option "New Hampshire"
+      - option "New Jersey"
+      - option "New Mexico"
+      - option "NS"
+      - option "Nevada"
+      - option "New York"
+      - option "Ohio"
+      - option "Oklahoma"
+      - option "ON"
+      - option "Oregon"
+      - option "Pennsylvania"
+      - option "QC"
+      - option "Rhode Island"
+      - option "South Carolina"
+      - option "South Dakota"
+      - option "Tennessee"
+      - option "Texas"
+      - option "Utah"
+      - option "Virginia"
+      - option "Vermont"
+      - option "Washington"
+      - option "Wisconsin"
+      - option "West Virginia"
+      - option "Wyoming"
+    - generic: Año desde
+    - status: "1950"
+    - generic: Año hasta
+    - status: "2027"
+    - slider "Año desde": "1950"
+    - slider "Año hasta": "2027"
+    - button "BUSCAR"
+    - checkbox "Prende y corre"
+    - generic: Prende y corre
+    - checkbox "Cómprala ya"
+    - generic: Cómprala ya
+  - generic: CATÁLOGO DE SUBASTA
+  - heading "Encuentra el auto correcto." [level=2]
+  - paragraph: 9,065 resultados disponibles.
+  - complementary:
+    - strong: Filtros
+    - button "Limpiar"
+    - generic: Marca
+    - combobox "Marca":
+      - option "Todas"
+      - option "ACURA"
+      - option "AIRSTREAM"
+      - option "ALFA ROMEO"
+      - option "ASTON MARTIN"
+      - option "AUDI"
+      - option "BENTLEY"
+      - option "BMW"
+      - option "BUICK"
+      - option "CADILLAC"
+      - option "CAN-AM"
+      - option "CHEVROLET"
+      - option "CHRYSLER"
+      - option "DODGE"
+      - option "DUCATI"
+      - option "DUTCHMEN"
+      - option "FERRARI"
+      - option "FIAT"
+      - option "FISKER"
+      - option "FLEETWOOD"
+      - option "FORD"
+      - option "FOREST RIVER"
+      - option "FREIGHTLINER"
+      - option "GENESIS"
+      - option "GMC"
+      - option "GRAND DESIGN"
+      - option "GULF STREAM"
+      - option "HARLEY-DAVIDSON"
+      - option "HEARTLAND"
+      - option "HINO"
+      - option "HONDA"
+      - option "HUMMER"
+      - option "HYUNDAI"
+      - option "HYUNDAI TRANSLEAD"
+      - option "INFINITI"
+      - option "INTERNATIONAL"
+      - option "ISUZU"
+      - option "JAGUAR"
+      - option "JAYCO"
+      - option "JEEP"
+      - option "KAWASAKI"
+      - option "KENWORTH"
+      - option "KEYSTONE"
+      - option "KIA"
+      - option "KTM"
+      - option "KUBOTA"
+      - option "LAMBORGHINI"
+      - option "LAND ROVER"
+      - option "LEXUS"
+      - option "LINCOLN"
+      - option "LUCID"
+      - option "MACK"
+      - option "MASERATI"
+      - option "MAZDA"
+      - option "MERCEDES-BENZ"
+      - option "MERCURY"
+      - option "MINI"
+      - option "MITSUBISHI"
+      - option "NISSAN"
+      - option "OLDSMOBILE"
+      - option "PETERBILT"
+      - option "PLYMOUTH"
+      - option "POLARIS"
+      - option "POLESTAR"
+      - option "PONTIAC"
+      - option "PORSCHE"
+      - option "RAM"
+      - option "RIVIAN"
+      - option "SAAB"
+      - option "SATURN"
+      - option "SCION"
+      - option "SEA-DOO"
+      - option "SMART"
+      - option "STARCRAFT"
+      - option "SUBARU"
+      - option "SUZUKI"
+      - option "TESLA"
+      - option "TOYOTA" [selected]
+      - option "VOLKSWAGEN"
+      - option "VOLVO"
+      - option "YAMAHA"
+    - generic: Modelo
+    - combobox "Modelo":
+      - option "Todos los modelos" [selected]
+      - option "4 CYLINDER"
+      - option "4RUNNER"
+      - option "4RUNNER SP"
+      - option "86"
+      - option "ALAVON"
+      - option "ALL OTHER"
+      - option "ALTEZZA"
+      - option "AVALON"
+      - option "AVALON LIM"
+      - option "AVALON XLS"
+      - option "All Models"
+      - option "BASE"
+      - option "BZ4X XLE"
+      - option "C-HR"
+      - option "C-HR LE"
+      - option "C-HR SE"
+      - option "C-HR XLE P"
+      - option "CAMRRY"
+      - option "CAMRY"
+      - option "CAMRY CE V"
+      - option "CAMRY LE"
+      - option "CAMRY LE V"
+      - option "CAMRY SE"
+      - option "CAMRY SOLA"
+      - option "CAMRY STAN"
+      - option "CAMRY XSE"
+      - option "CELICA"
+      - option "CELSIOR"
+      - option "CIVIC LX-S"
+      - option "COROALLA"
+      - option "COROLLA"
+      - option "COROLLA 50"
+      - option "COROLLA CE"
+      - option "COROLLA CR"
+      - option "COROLLA HA"
+      - option "COROLLA L"
+      - option "COROLLA LE"
+      - option "COROLLA S"
+      - option "CRESSIDA"
+      - option "CROWN"
+      - option "CROWN LIMI"
+      - option "CROWN PLAT"
+      - option "CROWN SIGN"
+      - option "CROWN SIGNIA"
+      - option "CROWN XLE"
+      - option "ECHO"
+      - option "ECHO BASE"
+      - option "FJ CRUISER"
+      - option "GR 86 PREM"
+      - option "GR COROLLA"
+      - option "GR SUPRA 3"
+      - option "GR86"
+      - option "GR86 BASE"
+      - option "GR86 PREMI"
+      - option "GRAND HIGH"
+      - option "HIGHLANDER"
+      - option "HILUX"
+      - option "LAND CRUIS"
+      - option "MATRIX"
+      - option "MIRAI"
+      - option "MIRAI LIMI"
+      - option "MR2"
+      - option "PREVIA"
+      - option "PRIUS"
+      - option "PRIUS BASE"
+      - option "PRIUS C ON"
+      - option "PRIUS C TH"
+      - option "PRIUS II"
+      - option "PRIUS IV"
+      - option "PRIUS LE A"
+      - option "PRIUS LIMI"
+      - option "PRIUS NIGH"
+      - option "PRIUS ONE"
+      - option "PRIUS THRE"
+      - option "PRIUS TOUR"
+      - option "PRIUS V TH"
+      - option "PRIUS V TW"
+      - option "RAV4"
+      - option "RAV4 BASE"
+      - option "RAV4 HYBD"
+      - option "RAV4 HYBRID"
+      - option "RAV4 PLUG-"
+      - option "RAV4 WOODL"
+      - option "RAV4 XLE"
+      - option "SCION"
+      - option "SEQUOIA"
+      - option "SIENNA"
+      - option "SIENNA L 7"
+      - option "SIENNA LE"
+      - option "SIENNA PLA"
+      - option "SIENNA WOO"
+      - option "SOARER"
+      - option "SUPRA"
+      - option "T100"
+      - option "TACOMA"
+      - option "TACOMA 4WD"
+      - option "TACOMA DOU"
+      - option "TACOMA SR"
+      - option "TACOMA TRD"
+      - option "TACOMA V6"
+      - option "TACOMA XTR"
+      - option "TC"
+      - option "TERCEL"
+      - option "TUNDRA"
+      - option "TUNDRA 179"
+      - option "TUNDRA CRE"
+      - option "TUNDRA GRA"
+      - option "TUNDRA PLA"
+      - option "VENZA"
+      - option "VENZA FWD"
+      - option "VENZA NIGH"
+      - option "XA"
+      - option "YARIS"
+      - option "YARIS 5-DO"
+      - option "YARIS FLEE"
+      - option "YARIS IA B"
+    - generic: Año desde
+    - status: "1950"
+    - generic: Año hasta
+    - status: "2027"
+    - slider "Año desde": "1950"
+    - slider "Año hasta": "2027"
+    - generic: Daño principal
+    - combobox "Daño principal":
+      - option "Todos" [selected]
+      - option "Daños generalizados"
+      - option "Riesgo biológico / químico"
+      - option "Incendio"
+      - option "Incendio en el motor"
+      - option "Incendio interior"
+      - option "DAMAGE HISTORY"
+      - option "FRAME DAMAGE"
+      - option "Daño frontal"
+      - option "Granizo"
+      - option "Daño mecánico"
+      - option "Abolladuras y rayones menores"
+      - option "MISSING/ALTERED VIN"
+      - option "Desgaste normal"
+      - option "Reparación parcial"
+      - option "Daño trasero"
+      - option "REJECTED REPAIR"
+      - option "REPLACED VIN"
+      - option "Vuelco"
+      - option "Daño lateral"
+      - option "Piezas retiradas"
+      - option "Techo"
+      - option "Bajos"
+      - option "Sin confirmar"
+      - option "Vandalismo"
+      - option "Agua / inundación"
+    - generic: Condición
+    - combobox "Condición":
+      - option "Todas" [selected]
+      - option "Prende y corre"
+      - option "Sin verificar"
+      - option "Arranca"
+    - generic: Estado
+    - combobox "Estado":
+      - option "Todos" [selected]
+      - option "AB"
+      - option "Alaska"
+      - option "Alabama"
+      - option "Arkansas"
+      - option "Arizona"
+      - option "California"
+      - option "Colorado"
+      - option "Connecticut"
+      - option "Delaware"
+      - option "Florida"
+      - option "Georgia"
+      - option "Hawaii"
+      - option "Iowa"
+      - option "Idaho"
+      - option "Illinois"
+      - option "Indiana"
+      - option "Kansas"
+      - option "Kentucky"
+      - option "Louisiana"
+      - option "Massachusetts"
+      - option "Maryland"
+      - option "Maine"
+      - option "Michigan"
+      - option "Minnesota"
+      - option "Missouri"
+      - option "Mississippi"
+      - option "Montana"
+      - option "NB"
+      - option "North Carolina"
+      - option "North Dakota"
+      - option "Nebraska"
+      - option "New Hampshire"
+      - option "New Jersey"
+      - option "New Mexico"
+      - option "NS"
+      - option "Nevada"
+      - option "New York"
+      - option "Ohio"
+      - option "Oklahoma"
+      - option "ON"
+      - option "Oregon"
+      - option "Pennsylvania"
+      - option "QC"
+      - option "Rhode Island"
+      - option "South Carolina"
+      - option "South Dakota"
+      - option "Tennessee"
+      - option "Texas"
+      - option "Utah"
+      - option "Virginia"
+      - option "Vermont"
+      - option "Washington"
+      - option "Wisconsin"
+      - option "West Virginia"
+      - option "Wyoming"
+    - generic: Ciudad
+    - combobox "Ciudad":
+      - option "Todas" [selected]
+      - option "ABILENE"
+      - option "ADAMSBURG"
+      - option "ADELANTO"
+      - option "AIRWAY HEIGHTS"
+      - option "ALBANY"
+      - option "ALBUQUERQUE"
+      - option "AMARILLO"
+      - option "AMERICAN CANYON"
+      - option "ANCHORAGE"
+      - option "ANDERSON"
+      - option "ANDREWS"
+      - option "ANGOLA"
+      - option "ANTELOPE"
+      - option "ANTHONY"
+      - option "APOPKA"
+      - option "APPLETON"
+      - option "ARCADIA"
+      - option "ARLINGTON"
+      - option "ASSONET"
+      - option "AUGUSTA"
+      - option "AUSTELL"
+      - option "AVON"
+      - option "BAKERSFIELD"
+      - option "BALTIMORE"
+      - option "BARBERTON"
+      - option "BILLINGS"
+      - option "BISMARCK"
+      - option "BLAINE"
+      - option "BOWMANVILLE"
+      - option "BRIDGETON"
+      - option "BRIGHTON"
+      - option "BROOKHAVEN"
+      - option "BYRON"
+      - option "CAHOKIA HEIGHTS"
+      - option "CANDIA"
+      - option "CARTERSVILLE"
+      - option "CASPER"
+      - option "CEDAR RAPIDS"
+      - option "CENTER RUTLAND"
+      - option "CENTRAL SQUARE"
+      - option "CHALFONT"
+      - option "CHAMBERSBURG"
+      - option "CHARLES CITY"
+      - option "CHATHAM"
+      - option "CHICAGO HEIGHTS"
+      - option "CHINA GROVE"
+      - option "CICERO"
+      - option "CLEWISTON"
+      - option "COLORADO SPRINGS"
+      - option "COLTON"
+      - option "COLUMBIA"
+      - option "COLUMBIA STATION"
+      - option "COLUMBUS"
+      - option "CONCORD"
+      - option "CONWAY"
+      - option "COOKSTOWN"
+      - option "CORPUS CHRISTI"
+      - option "DALLAS"
+      - option "DAVISON"
+      - option "DENVER"
+      - option "DES MOINES"
+      - option "DUNN"
+      - option "DURYEA"
+      - option "DYER"
+      - option "EARLINGTON"
+      - option "EAST GRANBY"
+      - option "EBENSBURG"
+      - option "EIGHT MILE"
+      - option "ELDRIDGE"
+      - option "ELGIN"
+      - option "ELLENWOOD"
+      - option "ELLWOOD CITY"
+      - option "ELMSDALE"
+      - option "EUGENE"
+      - option "EXETER"
+      - option "FAIRBURN"
+      - option "FARR WEST"
+      - option "FINKSBURG"
+      - option "FLORENCE"
+      - option "FORT PIERCE"
+      - option "FORT WAYNE"
+      - option "FRANKLIN"
+      - option "FREDERICKSBURG"
+      - option "FRESNO"
+      - option "GAINESVILLE"
+      - option "GASTON"
+      - option "GASTONIA"
+      - option "GLASSBORO"
+      - option "GRAND PRAIRIE"
+      - option "GRANTVILLE"
+      - option "GREENWELL SPRINGS"
+      - option "GREENWOOD"
+      - option "GRENADA"
+      - option "HAM LAKE"
+      - option "HAMPTON"
+      - option "HARLEYVILLE"
+      - option "HASLET"
+      - option "HAYWARD"
+      - option "HELENA"
+      - option "HILLSBOROUGH"
+      - option "HOMESTEAD"
+      - option "HOUSTON"
+      - option "HUEYTOWN"
+      - option "HURRICANE"
+      - option "INDIANAPOLIS"
+      - option "JACKSONVILLE"
+      - option "KANSAS CITY"
+      - option "KAPOLEI"
+      - option "KINCHELOE"
+      - option "KNIGHTDALE"
+      - option "LA GRANGE"
+      - option "LANSING"
+      - option "LAS VEGAS"
+      - option "LAWRENCEBURG"
+      - option "LEBANON"
+      - option "LEROY"
+      - option "LEWISVILLE"
+      - option "LEXINGTON"
+      - option "LITTLETON"
+      - option "LOGANVILLE"
+      - option "LONDON"
+      - option "LONGVIEW"
+      - option "LOS ANGELES"
+      - option "LOUISVILLE"
+      - option "LUFKIN"
+      - option "LUMBERTON"
+      - option "LYMAN"
+      - option "MADISONVILLE"
+      - option "MAGNA"
+      - option "MARLBORO"
+      - option "MARTINEZ"
+      - option "MCFARLAND"
+      - option "MEBANE"
+      - option "MEMPHIS"
+      - option "MENDON"
+      - option "MENTONE"
+      - option "MERCEDES"
+      - option "MIAMI"
+      - option "MIDWAY"
+      - option "MILWAUKEE"
+      - option "MOCKSVILLE"
+      - option "MONCTON"
+      - option "MONTGOMERY"
+      - option "MONTREAL-EST"
+      - option "MORAINE"
+      - option "NAMPA"
+      - option "NEW BRAUNFELS"
+      - option "NEW BRITAIN"
+      - option "NEW ORLEANS"
+      - option "NEWTON"
+      - option "NORTH BILLERICA"
+      - option "NORTH LAS VEGAS"
+      - option "NORTHFIELD"
+      - option "OCALA"
+      - option "OKLAHOMA CITY"
+      - option "OPA LOCKA"
+      - option "ORLANDO"
+      - option "OTTAWA"
+      - option "PASCO"
+      - option "PEKIN"
+      - option "PENNSBURG"
+      - option "PHOENIX"
+      - option "PORTLAND"
+      - option "PRAIRIE GROVE"
+      - option "RANCHO CUCAMONGA"
+      - option "RAPID CITY"
+      - option "RENO"
+      - option "RIVERVIEW"
+      - option "ROCKY VIEW COUNTY"
+      - option "ROGERSVILLE"
+      - option "SACRAMENTO"
+      - option "SAN ANTONIO"
+      - option "SAN DIEGO"
+      - option "SAN MARTIN"
+      - option "SANDSTON"
+      - option "SAVANNAH"
+      - option "SEAFORD"
+      - option "SHREVEPORT"
+      - option "SIKESTON"
+      - option "SPANAWAY"
+      - option "SPARTANBURG"
+      - option "SULPHUR"
+      - option "SUN VALLEY"
+      - option "TANNER"
+      - option "TAYLOR"
+      - option "TEMPLE"
+      - option "THEODORE"
+      - option "THONOTOSASSA"
+      - option "TIFTON"
+      - option "TUCSON"
+      - option "TULSA"
+      - option "VALLEJO"
+      - option "VAN NUYS"
+      - option "WALDORF"
+      - option "WALTON"
+      - option "WAYLAND"
+      - option "WEST MIFFLIN"
+      - option "WEST PALM BEACH"
+      - option "WEST WARREN"
+      - option "WHEELING"
+      - option "WICHITA"
+      - option "WILMER"
+      - option "WILMINGTON"
+      - option "WINDHAM"
+      - option "WINDSOR"
+      - option "WOODBURN"
+      - option "WOODHAVEN"
+      - option "YORK HAVEN"
+    - generic: Código postal (ZIP)
+    - textbox "Código postal (ZIP) ZIP de la ubicación del vehículo.":
+      - /placeholder: Ej. 78701
+    - generic: ZIP de la ubicación del vehículo.
+    - generic: Solo título limpio
+    - checkbox "Solo título limpio"
+    - generic: Prende y corre
+    - checkbox "Prende y corre"
+    - generic: Solo «Cómprala ya»
+    - checkbox "Solo «Cómprala ya»"
+    - text: Odómetro máximo
+    - strong: 0 mi
+    - slider "Odómetro máximo 0 mi": "0"
+    - generic: Limitar odómetro
+    - checkbox "Limitar odómetro"
+    - button "Aplicar filtros"
+  - generic: Precios en USD · el VIN completo se muestra a usuarios registrados
+  - generic: Ordenar por
+  - combobox "Ordenar por":
+    - option "Aleatorio / búsqueda" [selected]
+    - option "Subasta más próxima"
+    - 'option "Año: más nuevo"'
+    - 'option "Precio: menor"'
+    - 'option "Precio: mayor"'
+    - option "Menor millaje"
+  - article:
+    - button "2011 TOYOTA RAV4 LIMITED" [active]:
+      - img "2011 TOYOTA RAV4 LIMITED"
+    - generic: Copart
+    - text: Fecha cumplida
+    - button "Guardar en mi cuenta":
+    - heading "2011 TOYOTA RAV4 LIMITED" [level=3]:
+      - button "2011 TOYOTA RAV4 LIMITED"
+    - paragraph: "Lote # 54448506 · EUGENE, OR"
+    - paragraph: 29 sept 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: $400 USD
+    - button "Quiero ofertar"
+  - article:
+    - button "2003 TOYOTA COROLLA LE":
+      - img "2003 TOYOTA COROLLA LE"
+    - generic: Copart
+    - text: Fecha cumplida
+    - button "Guardar en mi cuenta":
+    - heading "2003 TOYOTA COROLLA LE" [level=3]:
+      - button "2003 TOYOTA COROLLA LE"
+    - paragraph: "Lote # 64228046 · EUGENE, OR"
+    - paragraph: 29 sept 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: $200 USD
+    - generic "Precio del vehículo; no incluye tarifas, transporte ni reparaciones.":
+      - strong: 92.9%
+      - text: por debajo del valor al público ($8,489)
+    - button "Compra inmediata $600 USD":
+      - generic: Compra inmediata
+      - strong: $600 USD
+    - button "Quiero ofertar"
+  - article:
+    - button "2001 TOYOTA HIGHLANDER BASE":
+      - img "2001 TOYOTA HIGHLANDER BASE"
+    - generic: Copart
+    - text: Fecha cumplida
+    - button "Guardar en mi cuenta":
+    - heading "2001 TOYOTA HIGHLANDER BASE" [level=3]:
+      - button "2001 TOYOTA HIGHLANDER BASE"
+    - paragraph: "Lote # 60280926 · EUGENE, OR"
+    - paragraph: 29 sept 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2001 TOYOTA HIGHLANDER BASE":
+      - img "2001 TOYOTA HIGHLANDER BASE"
+    - generic: Copart
+    - text: Fecha cumplida
+    - button "Guardar en mi cuenta":
+    - heading "2001 TOYOTA HIGHLANDER BASE" [level=3]:
+      - button "2001 TOYOTA HIGHLANDER BASE"
+    - paragraph: "Lote # 62875396 · EUGENE, OR"
+    - paragraph: 29 sept 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2012 TOYOTA RAV4 LIMITED":
+      - img "2012 TOYOTA RAV4 LIMITED"
+    - generic: Copart
+    - text: 23h
+    - button "Guardar en mi cuenta":
+    - heading "2012 TOYOTA RAV4 LIMITED" [level=3]:
+      - button "2012 TOYOTA RAV4 LIMITED"
+    - paragraph: "Lote # 53788996 · BROOKHAVEN, NY"
+    - paragraph: 30 sept 2026, 12:00 p.m. EDT
+    - generic: Puja actual
+    - strong: $1,000 USD
+    - button "Quiero ofertar"
+  - article:
+    - button "2017 TOYOTA COROLLA L":
+      - img "2017 TOYOTA COROLLA L"
+    - generic: Copart
+    - text: 23h
+    - button "Guardar en mi cuenta":
+    - heading "2017 TOYOTA COROLLA L" [level=3]:
+      - button "2017 TOYOTA COROLLA L"
+    - paragraph: "Lote # 65499506 · ROCKY VIEW COUNTY, AB"
+    - paragraph: 30 sept 2026, 12:00 p.m. EDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2019 TOYOTA RAV4 XLE PREMIUM":
+      - img "2019 TOYOTA RAV4 XLE PREMIUM"
+    - generic: Copart
+    - text: 9d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2019 TOYOTA RAV4 XLE PREMIUM" [level=3]:
+      - button "2019 TOYOTA RAV4 XLE PREMIUM"
+    - paragraph: "Lote # 58114006 · BROOKHAVEN, NY"
+    - paragraph: 9 oct 2026, 12:00 p.m. EDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2026 TOYOTA ALL OTHER XLE PLUS":
+      - img "2026 TOYOTA ALL OTHER XLE PLUS"
+    - generic: Copart
+    - text: 13d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2026 TOYOTA ALL OTHER XLE PLUS" [level=3]:
+      - button "2026 TOYOTA ALL OTHER XLE PLUS"
+    - paragraph: "Lote # 55624676 · EUGENE, OR"
+    - paragraph: 13 oct 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: $5,300 USD
+    - button "Quiero ofertar"
+  - article:
+    - button "2013 TOYOTA CAMRY SE":
+      - img "2013 TOYOTA CAMRY SE"
+    - generic: Copart
+    - text: 13d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2013 TOYOTA CAMRY SE" [level=3]:
+      - button "2013 TOYOTA CAMRY SE"
+    - paragraph: "Lote # 57260366 · EUGENE, OR"
+    - paragraph: 13 oct 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2022 TOYOTA CAMRY SE":
+      - img "2022 TOYOTA CAMRY SE"
+    - generic: Copart
+    - text: 20d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2022 TOYOTA CAMRY SE" [level=3]:
+      - button "2022 TOYOTA CAMRY SE"
+    - paragraph: "Lote # 58711746 · EUGENE, OR"
+    - paragraph: 20 oct 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2019 TOYOTA CAMRY SE":
+      - img "2019 TOYOTA CAMRY SE"
+    - generic: Copart
+    - text: 23d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2019 TOYOTA CAMRY SE" [level=3]:
+      - button "2019 TOYOTA CAMRY SE"
+    - paragraph: "Lote # 60799276 · BROOKHAVEN, NY"
+    - paragraph: 23 oct 2026, 12:00 p.m. EDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2006 TOYOTA RAV4 BASE":
+      - img "2006 TOYOTA RAV4 BASE"
+    - generic: Copart
+    - text: 23d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2006 TOYOTA RAV4 BASE" [level=3]:
+      - button "2006 TOYOTA RAV4 BASE"
+    - paragraph: "Lote # 60148846 · BROOKHAVEN, NY"
+    - paragraph: 23 oct 2026, 12:00 p.m. EDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2025 TOYOTA TACOMA TRD SPORT":
+      - img "2025 TOYOTA TACOMA TRD SPORT"
+    - generic: Copart
+    - text: 27d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2025 TOYOTA TACOMA TRD SPORT" [level=3]:
+      - button "2025 TOYOTA TACOMA TRD SPORT"
+    - paragraph: "Lote # 52590896 · EUGENE, OR"
+    - paragraph: 27 oct 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2007 TOYOTA PRIUS BASE BASE":
+      - img "2007 TOYOTA PRIUS BASE BASE"
+    - generic: Copart
+    - text: 27d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2007 TOYOTA PRIUS BASE BASE" [level=3]:
+      - button "2007 TOYOTA PRIUS BASE BASE"
+    - paragraph: "Lote # 62523326 · EUGENE, OR"
+    - paragraph: 27 oct 2026, 9:00 a.m. PDT
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2007 TOYOTA CAMRY":
+      - img "2007 TOYOTA CAMRY"
+    - generic: Copart
+    - text: 33d 23h
+    - button "Guardar en mi cuenta":
+    - heading "2007 TOYOTA CAMRY" [level=3]:
+      - button "2007 TOYOTA CAMRY"
+    - paragraph: "Lote # 43045141 · DYER, IN"
+    - paragraph: 2 nov 2026, 10:00 a.m. CST
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2026 TOYOTA TUNDRA PLATINUM":
+      - img "2026 TOYOTA TUNDRA PLATINUM"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2026 TOYOTA TUNDRA PLATINUM" [level=3]:
+      - button "2026 TOYOTA TUNDRA PLATINUM"
+    - paragraph: "Lote # 46394566 · WOODBURN, OR"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2026 TOYOTA CAMRY SE":
+      - img "2026 TOYOTA CAMRY SE"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2026 TOYOTA CAMRY SE" [level=3]:
+      - button "2026 TOYOTA CAMRY SE"
+    - paragraph: "Lote # 49978526 · ALBUQUERQUE, NM"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - article:
+    - button "2026 TOYOTA ALL OTHER L":
+      - img "2026 TOYOTA ALL OTHER L"
+    - generic: Copart
+    - text: N/A
+    - button "Guardar en mi cuenta":
+    - heading "2026 TOYOTA ALL OTHER L" [level=3]:
+      - button "2026 TOYOTA ALL OTHER L"
+    - paragraph: "Lote # 50554466 · JACKSONVILLE, FL"
+    - paragraph: Por confirmar
+    - generic: Puja actual
+    - strong: N/A
+    - button "Quiero ofertar"
+  - button "‹" [disabled]
+  - button "1"
+  - button "2"
+  - button "3"
+  - generic: …
+  - button "504"
+  - button "›"
+- contentinfo:
+  - img "APV Motors"
+  - paragraph:
+    - text: APV Motors LLC ·Licencia de dealer [LICENCIA_NO]· 5757 Addicks Satsuma Rd, Office 12, Houston, TX 77084 ·
+    - link "+1 346 204 8308":
+      - /url: tel:+13462048308
+  - paragraph: Datos de inventario obtenidos de listados públicos de subastas de Copart.
+  - paragraph: La disponibilidad, pujas y condiciones finales dependen de la subasta y pueden cambiar.
+  - button "Cookies"
+  - button "Términos de servicio"
+  - generic: ·
+  - button "Privacidad"
+- dialog "2011 TOYOTA RAV4 LIMITED":
+  - button "Cerrar": ×
+  - heading "2011 TOYOTA RAV4 LIMITED" [level=2]
+  - link "WhatsApp":
+    - /url: https://wa.me/?text=2011+TOYOTA+RAV4+LIMITED+http%3A%2F%2F127.0.0.1%3A3015%2Fvehiculo%2F54448506+%5Bref%3Ahome-contact%5D
+  - link "SMS":
+    - /url: sms:?body=2011%20TOYOTA%20RAV4%20LIMITED%20http%3A%2F%2F127.0.0.1%3A3015%2Fvehiculo%2F54448506
+  - button "Copiar enlace":
+    - generic: Copiar enlace
+  - status
+  - button "Foto anterior": ‹
+  - img "2011 TOYOTA RAV4 LIMITED"
+  - button "Siguiente foto": ›
+  - button "Ampliar foto"
+  - generic: 13 fotos
+  - button "Ver foto 1":
+    - img "Foto 1 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 2":
+    - img "Foto 2 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 3":
+    - img "Foto 3 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 4":
+    - img "Foto 4 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 5":
+    - img "Foto 5 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 6":
+    - img "Foto 6 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 7":
+    - img "Foto 7 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 8":
+    - img "Foto 8 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 9":
+    - img "Foto 9 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 10":
+    - img "Foto 10 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 11":
+    - img "Foto 11 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 12":
+    - img "Foto 12 de 2011 TOYOTA RAV4 LIMITED"
+  - button "Ver foto 13":
+    - img "Foto 13 de 2011 TOYOTA RAV4 LIMITED"
+  - heading "Subasta" [level=3]
+  - button "Guardar en mi cuenta":
+  - button "Solicitar historial elaborado por APV"
+  - generic: VIN
+  - strong:
+    - button "Regístrate para ver el VIN":
+      - text: Regístrate para ver el VIN
+  - generic: Lote
+  - strong: "54448506"
+  - generic: Fecha de subasta
+  - strong: 29 sept 2026 · PDT
+  - generic: Nombre de venta
+  - strong: OR - EUGENE
+  - generic: Ubicación
+  - strong: EUGENE, OR
+  - generic: Vendedor
+  - strong: Farmers Insurance
+  - heading "Análisis de precio" [level=3]
+  - generic: Valor al público est.
+  - strong: $11,310
+  - generic: Estado de venta
+  - strong: On Minimum Bid
+  - generic: Reserva del vendedor
+  - strong: On Minimum Bid
+  - heading "Daños y condición" [level=3]
+  - generic: Daño principal
+  - strong: Daño frontal
+  - generic: Condición
+  - strong: Prende y corre
+  - generic: Título / documento
+  - strong: OR · LS
+  - heading "Información del vehículo" [level=3]
+  - generic: Odómetro
+  - strong: 139,090 mi
+  - generic: Tiene llave
+  - strong: Sí
+  - generic: Cilindros
+  - strong: 4 cil.
+  - generic: Tipo de motor
+  - strong: 2.5L 4
+  - generic: Tracción
+  - strong: Tracción total
+  - generic: Transmisión
+  - strong: Automática
+  - text: PUJA ACTUAL SUBASTA
+  - heading "$400 USD" [level=2]
+  - button "Quiero ofertar":
+    - text: Quiero ofertar
+  - paragraph: Se vende tal como está. Todas las ventas son finales.
+  - text: HERRAMIENTA DE CÁLCULO DE TARIFAS
+  - heading "Calculadora de costos y opciones de puja" [level=3]
+  - generic "Parámetros de la oferta":
+    - text: Parámetros de la oferta
+    - generic: ⌄
+  - text: Calculadora exclusiva
+  - heading "Calculadora de costos y total a pagar" [level=4]
+  - paragraph: Inicia sesión o regístrate para usar la Calculadora de costos y ver el desglose exacto de tarifas para este vehículo.
+  - button "Iniciar sesión para usar la calculadora":
+    - text: Iniciar sesión para usar la calculadora

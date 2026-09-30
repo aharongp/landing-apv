@@ -1,0 +1,25 @@
+{
+  "ancestors": [
+    {
+      "class": "vehicle-card auction-tile",
+      "grid": "none",
+      "w": 102
+    },
+    {
+      "class": "vehicle-list",
+      "grid": "102px 102px",
+      "w": 220
+    },
+    {
+      "class": "catalog-content",
+      "grid": "none",
+      "w": 220
+    },
+    {
+      "class": "catalog-shell",
+      "grid": "220px 487px",
+      "w": 725
+    }
+  ],
+  "viewport": 768
+}

@@ -30,10 +30,10 @@ function assign(req,res,url) {
   const params=new URLSearchParams(url.searchParams);params.set('ab_bucket',bucket);
   res.writeHead(302,{'Location':(bucket==='home'?'/':'/lp')+'?'+params,'X-Robots-Tag':'noindex, follow','Cache-Control':'no-store'});res.end();
 }
-function publicConfig() { return {...campaign,labels,license:process.env.DEALER_LICENSE_NO||'[LICENCIA_NO]',ga4Id:process.env.GA4_MEASUREMENT_ID||'',pixelId:process.env.META_PIXEL_ID||''}; }
+function publicConfig() { return {...campaign,labels,license:/^[A-Za-z0-9][A-Za-z0-9 .-]{2,39}$/.test(process.env.DEALER_LICENSE_NO||'') ? process.env.DEALER_LICENSE_NO : '',ga4Id:process.env.GA4_MEASUREMENT_ID||'',pixelId:process.env.META_PIXEL_ID||''}; }
 function metadata(html,pathname,vehicle) {
   let title='Autos de subasta en EE. UU. sin licencia | APV Motors';
-  let description='Compra autos de Copart con APV Motors. Pujamos por ti con licencia de dealer. Honorarios desde US$350 y depósito reembolsable.';
+  let description='Compra autos de Copart con APV Motors. Pujamos por ti con licencia de dealer. Consulta los costos y las condiciones con un asesor.';
   let image=origin()+'/assets/og-default.jpg';
   if(pathname==='/catalogo'){title='Autos en subasta: catálogo | APV Motors';description='Explora autos de Copart, revisa su estado y calcula los costos de tu puja con APV Motors.';}
   if(pathname==='/lp'){title='Elige tu auto de subasta | APV Motors';description='Mira autos por presupuesto. APV Motors puja por ti en Copart y te acompaña durante la compra.';}
