@@ -317,3 +317,10 @@ La selección de /lp admite daño principal MINOR DENT/SCRATCHES, NORMAL WEAR o 
 - El propietario autoriza integrar y subir todos los cambios de la auditoría y los ajustes posteriores a `main`.
 - Incluye código, pruebas, documentación y evidencias de Chrome; conserva fuera de Git el `.env`, bases de datos y respaldos locales.
 - Validación previa a la entrega: 74/74 pruebas aprobadas y `git diff --check` sin errores.
+
+## 2026-09-29 — Consulta y exportación de cuentas en administración
+
+- Nueva sección “Cuentas creadas”: contacto, verificación, tipo de acceso y fechas; búsqueda, filtro y paginación.
+- Exportación CSV de todos los resultados filtrados, compatible con Excel y protegida con la clave del admin. Sin contraseñas ni códigos de acceso.
+- 78 pruebas aprobadas y revisión en Chrome con datos ficticios. [Instrucciones de uso](ADMIN_CUENTAS.md).
+- Desarrollado en `feat/admin-cuentas-exportacion`; integración y subida a `main` autorizadas por el propietario. Validación previa: 78/78 pruebas aprobadas.

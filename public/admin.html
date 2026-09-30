@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>APV Motors · Administración y métricas</title>
+  <title>APV Motors · Administración</title>
   <link rel="stylesheet" href="/styles.css">
   <style>
     body{background:#f1f5f9;min-height:100vh;display:grid;place-items:center;padding:22px}.admin-card{width:min(760px,100%);background:#fff;border:1px solid #dbe4ee;border-radius:24px;padding:34px;box-shadow:0 22px 60px rgba(15,23,42,.12)}.admin-card h1{font-size:36px;letter-spacing:-.04em;margin:10px 0}.admin-card p{color:#64748b;line-height:1.6}.drop{border:2px dashed #cbd5e1;border-radius:18px;padding:36px 18px;text-align:center;margin:24px 0;background:#f8fafc}.drop input{width:100%;margin-top:14px}.admin-form{display:grid;grid-template-columns:1fr auto auto;gap:10px}.admin-form input[type=password]{height:48px;border:1px solid #cbd5e1;border-radius:12px;padding:0 13px}.status{margin-top:16px;border-radius:12px;padding:12px 14px;background:#f8fafc;color:#475569;font-size:13px;white-space:pre-wrap}.back{display:inline-block;margin-top:18px;font-weight:800;color:#1d4ed8}.progress{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin:16px 0 4px}.progress>div{height:100%;width:0;background:#0f172a;transition:width .15s ease}.upload-meta{display:flex;justify-content:space-between;gap:12px;color:#94a3b8;font-size:11px;font-weight:800}.note{margin-top:18px;padding:12px 14px;border-radius:12px;background:#eff6ff;color:#1e40af;font-size:12px;line-height:1.55}
@@ -14,15 +14,17 @@
 <link rel="stylesheet" href="/admin-metrics.css">
 <script defer src="/metrics-chart.js"></script>
 <script defer src="/admin-metrics.js"></script>
+<link rel="stylesheet" href="/admin-accounts.css">
+<script defer src="/admin-accounts.js"></script>
 </head>
 <body>
   <main class="admin-card">
     <span class="eyebrow">ADMINISTRACIÓN · APV MOTORS</span>
     <h1>Cargar catálogo CSV</h1>
-    <p>Selecciona el export completo y actualizado de Copart. Cada carga reemplaza el catálogo anterior, evita duplicados por lote y excluye las subastas vencidas. Al terminar, repara y verifica la integridad de la base de datos automáticamente. Los vehículos sin fecha se mantienen disponibles.</p>
+    <p>Selecciona el export completo y actualizado de Copart. Cada carga reemplaza el catálogo anterior, evita duplicados por lote y excluye los lotes vendidos o cerrados. Al terminar, repara y verifica la integridad de la base de datos automáticamente. Los vehículos sin fecha se mantienen disponibles.</p>
     <div class="drop"><strong>Archivo CSV de Copart</strong><input id="file" type="file" accept=".csv,text/csv"></div>
     <div class="admin-form">
-      <input id="key" type="password" placeholder="ADMIN_KEY (si está configurada)">
+      <input id="key" type="password" placeholder="Clave de administración" aria-label="Clave de administración" autocomplete="off">
       <button id="upload" class="btn btn-dark">Cargar catálogo</button>
       <button id="sync-btn" class="btn btn-ghost" style="border:1px solid #cbd5e1;">Re-sincronizar catálogo</button>
     </div>
@@ -30,7 +32,23 @@
     <p>La reparación guarda un respaldo y reconstruye los vehículos desde el último CSV cargado. Conserva las cuentas, favoritos y pujas.</p>
     <div class="progress"><div id="progress-bar"></div></div><div class="upload-meta"><span id="progress-text">0%</span><span id="file-meta">Sin archivo</span></div>
     <div class="status" id="status">Esperando archivo…</div>
-    <div class="note">Las subastas vencidas se retiran automáticamente cada minuto. Carga un nuevo CSV para incorporar cambios de disponibilidad y precios.</div>
+    <div class="note">Las subastas vencidas se conservan y muestran “Caducado”. Carga un nuevo CSV para incorporar cambios de disponibilidad y precios.</div>
+    <section class="admin-accounts" aria-labelledby="accounts-title">
+      <div class="metrics-heading"><div><h2 id="accounts-title">Cuentas creadas</h2><p>Consulta los registros y descarga sus datos de contacto con la clave de administración.</p></div><button id="load-accounts" class="btn btn-dark" type="button">Ver cuentas</button></div>
+      <p id="accounts-status" role="status" aria-live="polite"></p>
+      <div id="accounts-panel" hidden>
+        <form id="accounts-filters" class="accounts-toolbar">
+          <label>Buscar cuenta<input id="accounts-query" type="search" placeholder="Nombre, correo o teléfono" maxlength="200"></label>
+          <label>Correo verificado<select id="accounts-verified"><option value="all">Todas las cuentas</option><option value="verified">Verificadas</option><option value="pending">Pendientes</option></select></label>
+          <button class="btn btn-ghost" type="submit">Buscar cuentas</button>
+          <button id="export-accounts" class="btn btn-dark" type="button">Exportar CSV</button>
+        </form>
+        <p class="accounts-note">El CSV incluye todos los resultados de la búsqueda, no solo esta página. Las fechas se muestran en UTC.</p>
+        <p id="accounts-count"></p>
+        <div class="accounts-table-wrap" tabindex="0" role="region" aria-label="Lista de cuentas, desplazable horizontalmente"><table><caption class="sr-only">Cuentas creadas, más recientes primero</caption><thead><tr><th scope="col">Nombre</th><th scope="col">Contacto</th><th scope="col">Verificación</th><th scope="col">Acceso</th><th scope="col">Registro (UTC)</th><th scope="col">Último acceso (UTC)</th></tr></thead><tbody id="accounts-rows"></tbody></table></div>
+        <nav class="accounts-pagination" aria-label="Páginas de cuentas"><button id="accounts-prev" class="btn btn-ghost" type="button">Anterior</button><span id="accounts-page"></span><button id="accounts-next" class="btn btn-ghost" type="button">Siguiente</button></nav>
+      </div>
+    </section>
     <section class="admin-metrics" aria-labelledby="metrics-title">
       <div class="metrics-heading"><div><h2 id="metrics-title">Visitas y conversión</h2><p>Introduce la clave de administración en el campo de arriba y pulsa Ver métricas.</p></div><button id="load-metrics" class="btn btn-dark" type="button">Ver métricas</button></div>
       <p id="metrics-status" role="status" aria-live="polite"></p>
